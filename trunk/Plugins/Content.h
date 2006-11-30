@@ -11,6 +11,8 @@ class cContent
 	public:
 		void Load();										///< loads content plugins
 																/** fills qhPlugins */
+		bool Loaded(QString qsName);					///< checks if plugin qsName has been succesfully loaded
+																/**< \param qsName plugin name */
 		void SetSettings(QSettings *qsSettings);	///< sets main settings "file"
 																/**< \param qsSettings settings "file" */
 
@@ -31,10 +33,12 @@ class cContent
 																	  \param iMaxLen max size for returned parameters
 																	  \param iFlags
 																	  \return */
+		/// column info
 		struct sField {
 			QString qsName;								///< displayed column name
 			QString qsUnits;								///< units for column
 		};
+		/// plugin info
 		struct sPluginInfo {
 			QList<sField> qlFields;						///< plugin's columns
 			tContentGetValue tcgvContentGetValue;	///< pointer to plugin's ContentGetValue function

@@ -4,8 +4,8 @@
 #include "ui_MainWindow.h"
 
 #include <QSettings>
-#include "DirModel.h"
 #include "Plugins/Plugins.h"
+#include "DirTree.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";
@@ -21,8 +21,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 										/**< load plugins, prepare panels, load settings, setup GUI */
 
 	private:
-		cDirModel cdmLeft;		///< left dir panel
-		cDirModel cdmRight;		///< right dir panel
+		cDirTree cdtLeft;			///< left directory panel (tree view)
+		cDirTree cdtRight;		///< right directory panel (tree view)
 		cPlugins	cpPlugins;		///< application's plugins
 		QSettings qsSettings;	///< application's settings
 }; // cMainWindow

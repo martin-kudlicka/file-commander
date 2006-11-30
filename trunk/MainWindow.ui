@@ -400,7 +400,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTreeView" name="qtvLeft" >
+   <widget class="QTreeWidget" name="qtwLeftPanel" >
     <property name="geometry" >
      <rect>
       <x>10</x>
@@ -410,7 +410,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTreeView" name="qtvRight" >
+   <widget class="QTreeWidget" name="qtwRightPanel" >
     <property name="geometry" >
      <rect>
       <x>140</x>
