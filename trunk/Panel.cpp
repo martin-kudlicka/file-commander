@@ -77,16 +77,16 @@ void cPanel::RefreshContent(const int iIndex)
 		for (iJ = 0; iJ < qhTabs.value(iIndex).qlColumns->count(); iJ++) {
 			if (qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin == qsNO) {
 				// native
-				if (qhTabs.value(iIndex).qlColumns->at(iJ).qsName == qsICON) {
+				if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsICON) {
 					qtwiFile->setIcon(iJ, qfipIcon.icon(qfilFiles.at(iI)));
 				} else {
-					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsName == qsNAME) {
+					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsNAME) {
 						qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
 					} else {
-						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsName == qsEXTENSION) {
+						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsEXTENSION) {
 							qtwiFile->setText(iJ, qfilFiles.at(iI).suffix());
 						} else {
-							if (qhTabs.value(iIndex).qlColumns->at(iJ).qsName == qsDATE) {
+							if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsDATE) {
 								qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
 							} // if
 						} // if else
@@ -94,7 +94,7 @@ void cPanel::RefreshContent(const int iIndex)
 				} // if else
 			} else {
 				// plugin
-				qtwiFile->setText(iJ, ccContent->GetPluginValue(qfilFiles.at(iI).filePath(), qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iJ).qsName, qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit));
+				qtwiFile->setText(iJ, ccContent->GetPluginValue(qfilFiles.at(iI).filePath(), qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit));
 			} // if else
 		} // for
 	} // for

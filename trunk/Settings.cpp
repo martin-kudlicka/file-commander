@@ -27,6 +27,7 @@ void cSettings::CreateColumnSet(const QString qsColumnSet, const QList<sColumn> 
 	qsSettings.beginGroup(qsCOLUMN_SET + "/" + qsColumnSet);
 	for (iI = 0; iI < qlColumns.count(); iI++) {
 		qsSettings.beginGroup(QString("%1").arg(iI));
+		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
 		qsSettings.setValue(qsNAME, qlColumns.at(iI).qsName);
 		qsSettings.setValue(qsPLUGIN, qlColumns.at(iI).qsPlugin);
 		qsSettings.endGroup();
@@ -41,19 +42,23 @@ void cSettings::CreateDefaultColumnSet()
 	sColumn scColumn;
 
 	// icon
-	scColumn.qsName = qsICON;
+	scColumn.qsIdentifier = qsICON;
+	scColumn.qsName = tr("Icon");
 	scColumn.qsPlugin = qsNO;
 	qlColumns.append(scColumn);
 	// name
-	scColumn.qsName = qsNAME;
+	scColumn.qsIdentifier = qsNAME;
+	scColumn.qsName = tr("Name");
 	scColumn.qsPlugin = qsNO;
 	qlColumns.append(scColumn);
 	// extension
-	scColumn.qsName = qsEXTENSION;
+	scColumn.qsIdentifier = qsEXTENSION;
+	scColumn.qsName = tr("Extension");
 	scColumn.qsPlugin = qsNO;
 	qlColumns.append(scColumn);
 	// date
-	scColumn.qsName = qsDATE;
+	scColumn.qsIdentifier = qsDATE;
+	scColumn.qsName = tr("Date");
 	scColumn.qsPlugin = qsNO;
 	qlColumns.append(scColumn);
 
@@ -82,6 +87,7 @@ cSettings::sColumn cSettings::GetColumnInfo(const QString qsColumnSet, const QSt
 	sColumn scColumn;
 
 	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet + "/" + qsColumn);
+	scColumn.qsIdentifier = qsSettings.value(qsIDENTIFIER).toString();
 	scColumn.qsName = qsSettings.value(qsNAME).toString();
 	scColumn.qsPlugin = qsSettings.value(qsPLUGIN).toString();
 	scColumn.qsUnit = qsSettings.value(qsUNIT).toString();
