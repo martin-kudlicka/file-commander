@@ -9,10 +9,11 @@ const QString qsDATE = "Date";
 const QString qsEXTENSION = "Extension";
 const QString qsFULL = "Full";									///< full dir panel view (icon, filename, extension, date)
 const QString qsICON = "Icon";
+const QString qsIDENTIFIER = "Identifier";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
 
-class cSettings
+class cSettings : private QObject
 {
 	public:
 		/// plugin type
@@ -26,7 +27,8 @@ class cSettings
 		};
 		/// column in dir tree view
 		struct sColumn {
-			QString qsName;											///< visible column name
+			QString qsIdentifier;									///< column identifier
+			QString qsName;											///< column name to show
 			QString qsPlugin;											///< plugin filename or "no" if native
 			QString qsUnit;											///< selected unit for column
 		};
