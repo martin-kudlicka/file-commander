@@ -5,6 +5,8 @@
 
 #include <QTreeWidget>
 #include "Plugins/Content.h"
+#include <QFileInfo>
+#include <QFileIconProvider>
 
 class cDirTree
 {
@@ -31,6 +33,8 @@ class cDirTree
 			QString qsPlugin;										///< plugin filename or "no" if native
 		};
 
+		QFileIconProvider qfipIcon;								///< icon for files
+		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;		///< info about files listed in dir panel
 		QList<sColumn> qlColumns;								///< current columns in dir view
 		QString qsPath;											///< path on drive to display
 		QTreeWidgetItem *qtwiHeader;							///< dir panel header

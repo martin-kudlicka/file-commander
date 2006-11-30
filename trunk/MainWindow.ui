@@ -400,24 +400,30 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTreeWidget" name="qtwLeftPanel" >
+   <widget class="QTreeWidget" name="qtwRightPanel" >
     <property name="geometry" >
      <rect>
-      <x>10</x>
+      <x>450</x>
       <y>90</y>
       <width>120</width>
       <height>80</height>
      </rect>
     </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
+    </property>
    </widget>
-   <widget class="QTreeWidget" name="qtwRightPanel" >
+   <widget class="QTreeWidget" name="qtwLeftPanel" >
     <property name="geometry" >
      <rect>
-      <x>140</x>
+      <x>10</x>
       <y>90</y>
-      <width>120</width>
+      <width>431</width>
       <height>80</height>
      </rect>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
