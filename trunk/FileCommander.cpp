@@ -13,8 +13,11 @@ int main(int argc, char **argv)
 		// change style on X11 - Motif is not very nice
 		qaApplication.setStyle("plastique");
 #endif
+
+	// set QSettings location
 	QCoreApplication::setOrganizationName(qsCOMPANY);
  	QCoreApplication::setApplicationName(qsAPPLICATION);
+
 	cmwMainWindow = new cMainWindow();
 	cmwMainWindow->show();
 

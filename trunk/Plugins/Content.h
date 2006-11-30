@@ -3,23 +3,23 @@
 #ifndef CONTENT_H
 #define CONTENT_H
 
-#include <QSettings>
 #include <QHash>
+#include "Settings.h"
 
 class cContent
 {
 	public:
-		QString GetPluginValue(QString qsPlugin, QString qsColumn, QString qsFilename);
+		cSettings *csSettings;							///< main settings "file"
+
+		QString GetPluginValue(const QString qsPlugin, const QString qsColumn, const QString qsFilename);
 																///< returns plugin's value for specified column
 																/**< \param qsPlugin name of column's plugin
 																	  \param qsColumn column to get value for
 																	  \param qsFilename file name to probe */
 		void Load();										///< loads content plugins
 																/** fills qhPlugins */
-		bool Loaded(QString qsName);					///< checks if plugin qsName has been succesfully loaded
+		bool Loaded(const QString qsName);			///< checks if plugin qsName has been succesfully loaded
 																/**< \param qsName plugin name */
-		void SetSettings(QSettings *qsSettings);	///< sets main settings "file"
-																/**< \param qsSettings settings "file" */
 
 	private:
 		typedef int (__stdcall *tContentGetSupportedField)(int iFieldIndex, char *cFieldName, char *cUnits, int iMaxLen);
@@ -38,6 +38,9 @@ class cContent
 																	  \param iMaxLen max size for returned parameters
 																	  \param iFlags
 																	  \return */
+
+		static const uint uiMAX_CHAR = 272;			///< maximum length of char field for plugins
+
 		/// column info
 		struct sField {
 			QString qsName;								///< displayed column name
@@ -52,7 +55,6 @@ class cContent
 
 		QHash<QString, sPluginInfo> qhPlugins;		///< table of plugins
 																/**< key is plugin name, value contains plugin's info */
-		QSettings *qsSettings;							///< main settings "file"
 }; // cContent
 
 #endif

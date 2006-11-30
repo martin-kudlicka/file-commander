@@ -6,12 +6,11 @@
 #include <QStringList>
 #include <QFileInfo>
 
-const unsigned int uiMAX_CHAR = 272;
-
 // returns plugin's value for specified column
-QString cContent::GetPluginValue(QString qsPlugin, QString qsColumn, QString qsFilename)
+QString cContent::GetPluginValue(const QString qsPlugin, const QString qsColumn, const QString qsFilename)
 {
-	char cFieldValue[uiMAX_CHAR];
+	// TODO GetPluginValue
+	/*char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iUnitIndex;
 	sPluginInfo spiPluginInfo;
 
@@ -28,7 +27,7 @@ QString cContent::GetPluginValue(QString qsPlugin, QString qsColumn, QString qsF
 	} // while
 
 	// get value
-	//spiPluginInfo.tcgvContentGetValue(qsFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 
+	//spiPluginInfo.tcgvContentGetValue(qsFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, */
 
 	return "";
 } // GetPluginValue
@@ -37,15 +36,13 @@ QString cContent::GetPluginValue(QString qsPlugin, QString qsColumn, QString qsF
 void cContent::Load()
 {
 	int iI;
-	QStringList qslKeys;
+	QStringList qslPlugins;
 
-	// get files
-	qsSettings->beginGroup(qsPLUGINS__CONTENT);
-	qslKeys = qsSettings->childKeys();
-	qsSettings->endGroup();
+	// get plugin file list
+	qslPlugins = csSettings->GetPlugins(cSettings::ContentPlugins);
 
 	// enumerate plugins
-	for (iI = 0; iI < qslKeys.count(); iI++) {
+	for (iI = 0; iI < qslPlugins.count(); iI++) {
 		int iField;
 		QFileInfo qfiFile;
 		QLibrary qlLibrary;
@@ -53,7 +50,7 @@ void cContent::Load()
 		tContentGetSupportedField tcgsfContentGetSupportedField;
 
 		// load plugin
-		qlLibrary.setFileName(qslKeys.at(iI));
+		qlLibrary.setFileName(qslPlugins.at(iI));
 		qlLibrary.load();
 		tcgsfContentGetSupportedField = (tContentGetSupportedField)qlLibrary.resolve("ContentGetSupportedField");
 
@@ -80,19 +77,13 @@ void cContent::Load()
 			iField++;
 		} // while
 		// add new plugin
-		qfiFile.setFile(qslKeys.at(iI));
+		qfiFile.setFile(qslPlugins.at(iI));
 		qhPlugins.insert(qfiFile.fileName(), spiPluginInfo);
 	} // for
 } // Load
 
 // checks if plugin qsName has been succesfully loaded
-bool cContent::Loaded(QString qsName)
+bool cContent::Loaded(const QString qsName)
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
-
-// sets main settings "file"
-void cContent::SetSettings(QSettings *qsSettings)
-{
-	this->qsSettings = qsSettings;
-} // SetSettings

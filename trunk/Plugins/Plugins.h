@@ -4,19 +4,15 @@
 #define PLUGINS_H
 
 #include "Plugins/Content.h"
-#include <QSettings>
+#include "Settings.h"
 
 class cPlugins
 {
 	public:
-		cContent	ccContent;								///< content plugins
+		cContent	ccContent;		///< content plugins
+		cSettings *csSettings;	///< main settings
 
-		void Load();										///< loads all plugins
-		void SetSettings(QSettings *qsSettings);	///< sets main settings "file"
-																/**< \param qsSettings settings "file" */
-
-	private:
-		QSettings *qsSettings;							///< main settings "file"
+		void Load();				///< loads all plugins
 }; // cPlugins
 
 #endif
