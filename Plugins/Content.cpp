@@ -57,6 +57,12 @@ void cContent::Load()
 	} // for
 } // Load
 
+// checks if plugin qsName has been succesfully loaded
+bool cContent::Loaded(QString qsName)
+{
+	return qhPlugins.contains(qsName);
+} // Loaded
+
 // sets main settings "file"
 void cContent::SetSettings(QSettings *qsSettings)
 {

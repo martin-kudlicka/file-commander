@@ -11,20 +11,22 @@ cMainWindow::cMainWindow()
 	cpPlugins.Load();
 
 	// set variables
-	cdmLeft.SetContentPlugins(&cpPlugins.ccContent);
-	cdmLeft.SetPanel(cDirModel::PanelLeft);
-	cdmLeft.SetSettings(&qsSettings);
-	cdmRight.SetContentPlugins(&cpPlugins.ccContent);
-	cdmRight.SetPanel(cDirModel::PanelRight);
-	cdmRight.SetSettings(&qsSettings);
+	cdtLeft.etpPanel = cDirTree::TreePanelLeft;
+	cdtLeft.ccContent = &cpPlugins.ccContent;
+	cdtLeft.qsSettings = &qsSettings;
+	cdtRight.etpPanel = cDirTree::TreePanelRight;
+	cdtRight.ccContent = &cpPlugins.ccContent;
+	cdtRight.qsSettings = &qsSettings;
 
 	// load settings
 	// main window
-	cdmLeft.SetPath(qsSettings.value(qsMAIN_WINDOW__LEFT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
-	cdmRight.SetPath(qsSettings.value(qsMAIN_WINDOW__RIGHT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
+	cdtLeft.SetPath(qsSettings.value(qsMAIN_WINDOW__LEFT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
+	cdtRight.SetPath(qsSettings.value(qsMAIN_WINDOW__RIGHT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
 
 	// setup GUI
 	setupUi(this);
-	qtvLeft->setModel(&cdmLeft);
-	qtvRight->setModel(&cdmRight);
+	cdtLeft.qtwTreeWidget = qtwLeftPanel;
+	cdtLeft.RefreshHeader();
+	cdtRight.qtwTreeWidget = qtwRightPanel;
+	cdtRight.RefreshHeader();
 } // cMainWindow
