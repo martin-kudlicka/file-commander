@@ -72,7 +72,7 @@ void cPanel::RefreshContent(const int iIndex)
 				} // if else
 			} else {
 				// plugin
-				// TODO RefreshContent by plugin
+				qtwiFile->setText(iJ, ccContent->GetPluginValue(qfilFiles.at(iI).filePath(), qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iJ).qsName, qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit));
 			} // if else
 		} // for
 	} // for

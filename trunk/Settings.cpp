@@ -6,6 +6,7 @@
 const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
+const QString qsUNIT = "Unit";
 // LeftPanel
 // LeftPanel/Tabs/
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
@@ -83,6 +84,7 @@ cSettings::sColumn cSettings::GetColumnInfo(const QString qsColumnSet, const QSt
 	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet + "/" + qsColumn);
 	scColumn.qsName = qsSettings.value(qsNAME).toString();
 	scColumn.qsPlugin = qsSettings.value(qsPLUGIN).toString();
+	scColumn.qsUnit = qsSettings.value(qsUNIT).toString();
 	qsSettings.endGroup();
 
 	return scColumn;

@@ -47,9 +47,9 @@ class cPanel
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 
 		void RefreshContent(const int iIndex);					///< refresh dir content
-																			/**< /param iIndex index of dir view */
+																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int iIndex);					///< refresh column's header
-																			/**< /param iIndex index of dir view */
+																			/**< \param iIndex index of dir view */
 }; // cPanel
 
 #endif
