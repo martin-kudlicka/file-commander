@@ -64,7 +64,7 @@ class cContent
 																/**< \param qsPlugin plugin filename
 																	  \param qsColumn plugin's column name
 																	  \return index of column */
-		QString ValidateFieldValue(char *cFieldValue, const int iType);
+		QString ValidateFieldValue(const char *cFieldValue, const int iType);
 																///< "converts" plugin's returned value to QString
 																/**< \param cFieldValue value returned by plugin
 																	  \param iType type of value
