@@ -2,7 +2,7 @@ CONFIG += qt warn_on
 //RC_FILE = FileCommander.rc
 FORMS = MainWindow.ui
 HEADERS = MainWindow.h \
-			 DirTree.h \
+			 Panel.h \
 			 Settings.h \
 			 Plugins/Plugins.h \
 			 Plugins/Content.h \
@@ -11,7 +11,8 @@ HEADERS = MainWindow.h \
 			 Common/System.h
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
-			 DirTree.cpp \
+			 Panel.cpp \
+			 Settings.cpp \
 			 Plugins/Plugins.cpp \
 			 Plugins/Content.cpp \
 			 Common/System.cpp

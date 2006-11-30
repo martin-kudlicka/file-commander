@@ -3,9 +3,9 @@
 
 #include "ui_MainWindow.h"
 
-#include <QSettings>
 #include "Plugins/Plugins.h"
-#include "DirTree.h"
+#include "Panel.h"
+#include "Settings.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";
@@ -17,14 +17,22 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	Q_OBJECT
 
 	public:
-		cMainWindow();				///< creates main window
-										/**< load plugins, prepare panels, load settings, setup GUI */
+		cMainWindow();											///< creates main window
+																	/**< load plugins, prepare panels, load settings, setup GUI */
 
 	private:
-		cDirTree cdtLeft;			///< left directory panel (tree view)
-		cDirTree cdtRight;		///< right directory panel (tree view)
-		cPlugins	cpPlugins;		///< application's plugins
-		QSettings qsSettings;	///< application's settings
+		static const int iTAB_POS = 1;					///< position of TabBar in layout
+
+		cPanel cpLeft;											///< left dir panel
+		cPanel cpRight;										///< right dir panel
+		cPlugins cpPlugins;									///< application's plugins
+		cSettings csSettings;								///< accessing application's settings
+		QTabBar qtbLeft;										///< left's panel tab bar
+		QTabBar qtbRight;										///< right's panel tab bar
+
+		void LoadTabs(const cSettings::ePosition epPosition);
+																	///< load tabs from qsSettings
+																	/**< /param epPos means left or right TabBar */
 }; // cMainWindow
 
 #endif
