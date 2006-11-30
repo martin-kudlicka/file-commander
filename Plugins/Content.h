@@ -11,15 +11,18 @@ class cContent
 	public:
 		cSettings *csSettings;							///< main settings "file"
 
-		QString GetPluginValue(const QString qsPlugin, const QString qsColumn, const QString qsFilename);
+		QString GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit);
 																///< returns plugin's value for specified column
-																/**< \param qsPlugin name of column's plugin
+																/**< \param qsFilename file name to probe
+																	  \param qsPlugin name of column's plugin
 																	  \param qsColumn column to get value for
-																	  \param qsFilename file name to probe */
+																	  \param qsUnit unit for column value
+																	  \return plugin's column value for specified file */
 		void Load();										///< loads content plugins
 																/** fills qhPlugins */
 		bool Loaded(const QString qsName);			///< checks if plugin qsName has been succesfully loaded
-																/**< \param qsName plugin name */
+																/**< \param qsName plugin name
+																	  \return true if plugin was succesfully loaded and can be used */
 
 	private:
 		typedef int (__stdcall *tContentGetSupportedField)(int iFieldIndex, char *cFieldName, char *cUnits, int iMaxLen);
@@ -29,9 +32,9 @@ class cContent
 																	  \param cUnits units for column
 																	  \param iMaxLen max size for returned parameters
 																	  \return type of column */
-		typedef int (__stdcall *tContentGetValue)(char *cFileName, int iFieldIndex, int iUnitIndex, void *vFieldValue, int iMaxLen, int iFlags);
+		typedef int (__stdcall *tContentGetValue)(char *cFilename, int iFieldIndex, int iUnitIndex, void *vFieldValue, int iMaxLen, int iFlags);
 																///< plugin's ContentGetValue function
-																/**< \param cFileName file name to analyze
+																/**< \param cFilename file name to analyze
 																	  \param iFieldIndex column index to fill
 																	  \param iUnitIndex unit to use
 																	  \param vFieldValue returned column value
@@ -55,6 +58,17 @@ class cContent
 
 		QHash<QString, sPluginInfo> qhPlugins;		///< table of plugins
 																/**< key is plugin name, value contains plugin's info */
+
+		int GetFieldIndex(const QString qsPlugin, const QString qsColumn);
+																///< get index of column in plugin
+																/**< \param qsPlugin plugin filename
+																	  \param qsColumn plugin's column name
+																	  \return index of column */
+		QString ValidateFieldValue(char *cFieldValue, const int iType);
+																///< "converts" plugin's returned value to QString
+																/**< \param cFieldValue value returned by plugin
+																	  \param iType type of value
+																	  \return QString presentation of value */
 }; // cContent
 
 #endif

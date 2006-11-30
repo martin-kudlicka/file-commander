@@ -32,7 +32,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 		void LoadTabs(const cSettings::ePosition epPosition);
 																	///< load tabs from qsSettings
-																	/**< /param epPos means left or right TabBar */
+																	/**< \param epPos means left or right TabBar */
 }; // cMainWindow
 
 #endif

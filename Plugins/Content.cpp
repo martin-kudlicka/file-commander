@@ -6,30 +6,36 @@
 #include <QStringList>
 #include <QFileInfo>
 
-// returns plugin's value for specified column
-QString cContent::GetPluginValue(const QString qsPlugin, const QString qsColumn, const QString qsFilename)
+// get index of column in plugin
+int cContent::GetFieldIndex(const QString qsPlugin, const QString qsColumn)
 {
-	// TODO GetPluginValue
-	/*char cFieldValue[uiMAX_CHAR];
-	int iFieldIndex, iUnitIndex;
-	sPluginInfo spiPluginInfo;
+	int iI;
 
-	// find plugin
-	spiPluginInfo = qhPlugins.value(qsPlugin);
-
-	// search for column index
-	iFieldIndex = 0;
-	while(true) {
-		if (spiPluginInfo.qlFields.at(iFieldIndex).qsName == qsColumn) {
-			break;
+	for (iI = 0; iI < qhPlugins.value(qsPlugin).qlFields.count(); iI++) {
+		if (qhPlugins.value(qsPlugin).qlFields.at(iI).qsName == qsColumn) {
+			return iI;
 		} // if
-		iFieldIndex++;
-	} // while
+	} // for
+
+	return -1;	// error
+} // GetFieldIndex
+
+// returns plugin's value for specified column
+QString cContent::GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit)
+{
+	char cFieldValue[uiMAX_CHAR], cFilename[uiMAX_CHAR];
+	int iFieldIndex, iType, iUnitIndex;
+	QString qsFieldValue;
+
+	strcpy(cFilename, qsFilename.toAscii().data());
+	iFieldIndex = GetFieldIndex(qsPlugin, qsColumn);
+	iUnitIndex = qhPlugins.value(qsPlugin).qlFields.at(iFieldIndex).qsUnits.toInt();
 
 	// get value
-	//spiPluginInfo.tcgvContentGetValue(qsFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, */
+	iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(cFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+	qsFieldValue = ValidateFieldValue(cFieldValue, iType);
 
-	return "";
+	return qsFieldValue;
 } // GetPluginValue
 
 // loads content plugins
@@ -87,3 +93,13 @@ bool cContent::Loaded(const QString qsName)
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
+
+// "converts" plugin's returned value to QString
+QString cContent::ValidateFieldValue(char *cFieldValue, const int iType)
+{
+	// TODO ValidateFieldValue other types
+	switch (iType) {
+		case ft_numeric_32:	return QString("%1").arg(static_cast<int>(*cFieldValue));
+		default:					return "";
+	} // switch
+} // ValidateFieldValue
