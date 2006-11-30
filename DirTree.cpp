@@ -50,6 +50,7 @@ void cDirTree::RefreshContent()
 							} // if else
 			} else {
 				// plugin
+				// TODO get plugin column value
 			} // if else
 		} // for
 	} // for

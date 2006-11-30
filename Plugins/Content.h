@@ -9,6 +9,11 @@
 class cContent
 {
 	public:
+		QString GetPluginValue(QString qsPlugin, QString qsColumn, QString qsFilename);
+																///< returns plugin's value for specified column
+																/**< \param qsPlugin name of column's plugin
+																	  \param qsColumn column to get value for
+																	  \param qsFilename file name to probe */
 		void Load();										///< loads content plugins
 																/** fills qhPlugins */
 		bool Loaded(QString qsName);					///< checks if plugin qsName has been succesfully loaded
@@ -37,6 +42,7 @@ class cContent
 		struct sField {
 			QString qsName;								///< displayed column name
 			QString qsUnits;								///< units for column
+			int iType;										///< type of field
 		};
 		/// plugin info
 		struct sPluginInfo {
