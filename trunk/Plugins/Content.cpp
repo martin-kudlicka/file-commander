@@ -6,6 +6,33 @@
 #include <QStringList>
 #include <QFileInfo>
 
+const unsigned int uiMAX_CHAR = 272;
+
+// returns plugin's value for specified column
+QString cContent::GetPluginValue(QString qsPlugin, QString qsColumn, QString qsFilename)
+{
+	char cFieldValue[uiMAX_CHAR];
+	int iFieldIndex, iUnitIndex;
+	sPluginInfo spiPluginInfo;
+
+	// find plugin
+	spiPluginInfo = qhPlugins.value(qsPlugin);
+
+	// search for column index
+	iFieldIndex = 0;
+	while(true) {
+		if (spiPluginInfo.qlFields.at(iFieldIndex).qsName == qsColumn) {
+			break;
+		} // if
+		iFieldIndex++;
+	} // while
+
+	// get value
+	//spiPluginInfo.tcgvContentGetValue(qsFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 
+
+	return "";
+} // GetPluginValue
+
 // loads content plugins
 void cContent::Load()
 {
@@ -35,10 +62,10 @@ void cContent::Load()
 		// get fields
 		iField = 0;
 		while(true) {
-			char cFieldName[MAX_PATH], cUnits[MAX_PATH];
+			char cFieldName[uiMAX_CHAR], cUnits[uiMAX_CHAR];
 			int iResult;
 
-			iResult = tcgsfContentGetSupportedField(iField, cFieldName, cUnits, MAX_PATH);
+			iResult = tcgsfContentGetSupportedField(iField, cFieldName, cUnits, uiMAX_CHAR);
 			if (iResult == ft_nomorefields) {
 				break;
 			} else {
@@ -46,6 +73,7 @@ void cContent::Load()
 
 				sfField.qsName = cFieldName;
 				sfField.qsUnits = cUnits;
+				sfField.iType = iResult;
 				spiPluginInfo.qlFields.append(sfField);
 			} // if else
 
