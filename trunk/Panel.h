@@ -48,6 +48,7 @@ class cPanel : private QObject
 
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 
+		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		void RefreshContent(const int iIndex);					///< refresh dir content
 																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int iIndex);					///< refresh column's header
