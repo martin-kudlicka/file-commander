@@ -19,14 +19,13 @@ cMainWindow::cMainWindow()
 	cdtRight.qsSettings = &qsSettings;
 
 	// load settings
-	// main window
-	cdtLeft.SetPath(qsSettings.value(qsMAIN_WINDOW__LEFT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
-	cdtRight.SetPath(qsSettings.value(qsMAIN_WINDOW__RIGHT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
 
 	// setup GUI
 	setupUi(this);
 	cdtLeft.qtwTreeWidget = qtwLeftPanel;
 	cdtLeft.RefreshHeader();
+	cdtLeft.SetPath(qsSettings.value(qsMAIN_WINDOW__LEFT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
 	cdtRight.qtwTreeWidget = qtwRightPanel;
 	cdtRight.RefreshHeader();
+	cdtRight.SetPath(qsSettings.value(qsMAIN_WINDOW__RIGHT_PANEL__PATH, cSystem::GetFirstDrive()).toString());
 } // cMainWindow

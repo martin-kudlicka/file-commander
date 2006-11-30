@@ -1,15 +1,58 @@
 #include "DirTree.h"
 
 #include "Settings.h"
+#include <QDir>
+#include <QDateTime>
 
+const QString qsDATE = "Date";
+const QString qsEXT = "Ext";
+const QString qsICON = "Icon";
 const QString qsNAME = "Name";
-const QString cNO = "no";
+const QString qsNO = "no";
 const QString qsPLUGIN = "Plugin";
 
 // refreshes directory content
 void cDirTree::RefreshContent()
 {
-	// TODO RefreshContent
+	int iI;
+	QDir qdDir(qsPath);
+	QFileInfoList qfilFiles;
+
+	// get file list in qsPath
+	qfilFiles = qdDir.entryInfoList();
+
+	// go through files and fill dir panel and add them into file list (qhFiles)
+	qtwTreeWidget->clear();
+	qhFiles.clear();
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		int iJ;
+		QTreeWidgetItem *qtwiFile;
+
+		// add to internal file list
+		qtwiFile = new QTreeWidgetItem(qtwTreeWidget);
+		qhFiles.insert(qtwiFile, qfilFiles.at(iI));
+
+		// fill columns
+		for (iJ = 0; iJ < qlColumns.count(); iJ++) {
+			if (qlColumns.at(iJ).qsPlugin == qsNO) {
+				// native
+				if (qlColumns.at(iJ).qsName == qsICON) {
+					qtwiFile->setIcon(iJ, qfipIcon.icon(qfilFiles.at(iI)));
+				} else
+					if (qlColumns.at(iJ).qsName == qsNAME) {
+						qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
+					} else
+						if (qlColumns.at(iJ).qsName == qsEXT) {
+							qtwiFile->setText(iJ, qfilFiles.at(iI).suffix());
+						} else
+							if (qlColumns.at(iJ).qsName == qsDATE) {
+								qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
+							} // if else
+			} else {
+				// plugin
+			} // if else
+		} // for
+	} // for
 } // RefreshContent
 
 // refreshes header and directory content
@@ -34,7 +77,7 @@ void cDirTree::RefreshHeader()
 		scColumn.qsPlugin = qsSettings->value(qsPLUGIN).toString();
 		scColumn.qsName = qsSettings->value(qsNAME).toString();
 		// test if is native or plugin and loaded
-		if (scColumn.qsPlugin == cNO || ccContent->Loaded(scColumn.qsPlugin)) {
+		if (scColumn.qsPlugin == qsNO || ccContent->Loaded(scColumn.qsPlugin)) {
 			// ok -> add to column list
 			qlColumns.append(scColumn);
 		} // if
@@ -50,6 +93,7 @@ void cDirTree::RefreshHeader()
 	} // for
 	qtwTreeWidget->setHeaderItem(qtwiHeader);
 
+	// refresh content according to header
 	RefreshContent();
 } // RefreshHeader
 
