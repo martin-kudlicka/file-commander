@@ -3,6 +3,21 @@
 #include <QDir>
 #include <QDateTime>
 
+// actualize widgets with info about current directory view
+void cPanel::ActualizeWidgets()
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+
+	if (qdDir.dirName() == "") {
+		qtbTab->setTabText(qswDir->currentIndex(), qdDir.path().at(0));
+	} else {
+		qtbTab->setTabText(qswDir->currentIndex(), qdDir.dirName());
+	} // if else
+	qlPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+} // ActualizeWidgets
+
 // add new tab with dir view
 void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 {
@@ -11,7 +26,7 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 	sTab stTab;
 
 	// create tab
-	qtbTab->addTab(stiTabInfo.qsPath);
+	qtbTab->addTab("");
 	qtwTree = new QTreeWidget();
 	qtwTree->setRootIsDecorated(false);
 	iIndex = qswDir->addWidget(qtwTree);
@@ -98,6 +113,8 @@ void cPanel::RefreshContent(const int iIndex)
 			} // if else
 		} // for
 	} // for
+
+	ActualizeWidgets();
 } // RefreshContent
 
 // refresh column's header
@@ -140,6 +157,6 @@ void cPanel::RefreshHeader(const int iIndex)
 // set new path for current dir view
 void cPanel::SetPath(const QString qsPath)
 {
-	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = qsPath;
+	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
 	RefreshContent(qswDir->currentIndex());
 } // SetPath
