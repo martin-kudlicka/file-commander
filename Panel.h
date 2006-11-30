@@ -13,8 +13,10 @@
 #include <QFileInfo>
 #include <QFileIconProvider>
 
-class cPanel
+class cPanel : private QObject
 {
+	Q_OBJECT
+
 	public:
 		cContent *ccContent;											///< access to content plugins
 		cSettings *csSettings;										///< main settings
@@ -39,7 +41,7 @@ class cPanel
 			QHash<QTreeWidgetItem *, QFileInfo> *qhFiles;	///< info about files listed in dir panel
 			QList<cSettings::sColumn> *qlColumns;				///< columns in specified tab
 			QString qsColumnSet;										///< column set for tab
-			sWidgets swWidgets;										///< to remember displayed strings
+			sWidgets *swWidgets;										///< to remember displayed strings
 		};
 
 		QFileIconProvider qfipIcon;								///< icons
@@ -50,6 +52,14 @@ class cPanel
 																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int iIndex);					///< refresh column's header
 																			/**< \param iIndex index of dir view */
+		void SetPath(const QString qsPath);						///< set new path for current dir view
+																			/**< \param qsPath new path */
+
+	private slots:
+		void qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
+																			///< double click in tree view
+																			/**< \param item item clicked on
+																				  \param column column in item clicked in */
 }; // cPanel
 
 #endif

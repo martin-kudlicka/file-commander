@@ -16,16 +16,32 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 	qtwTree->setRootIsDecorated(false);
 	iIndex = qswDir->addWidget(qtwTree);
 
+	// connect signals to slots
+	connect(qtwTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), SLOT(qtwTree_itemDoubleClicked(QTreeWidgetItem *, int)));
+
 	// set tab properties
-	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
-	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
 	stTab.qlColumns = new QList<cSettings::sColumn>;
+	stTab.swWidgets = new sWidgets();
+	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
+	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	qhTabs.insert(iIndex, stTab);
 
 	// set header
 	RefreshHeader(iIndex);
 } // AddTab
+
+// double click in tree view
+void cPanel::qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+	QFileInfo qfiFile;
+
+	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(item);
+	if (qfiFile.isDir()) {
+		// double click on directory
+		SetPath(qfiFile.filePath());
+	} // if
+} // qtwTree_itemDoubleClicked
 
 // refresh dir content
 void cPanel::RefreshContent(const int iIndex)
@@ -39,13 +55,19 @@ void cPanel::RefreshContent(const int iIndex)
 	qhTabs.value(iIndex).qhFiles->clear();
 
 	// get file list
-	qdDir.setPath(qhTabs.value(iIndex).swWidgets.qsPath);
+	qdDir.setPath(qhTabs.value(iIndex).swWidgets->qsPath);
 	qfilFiles = qdDir.entryInfoList();
 
 	// go through files and fill dir panel and add them into file list (qhFiles)
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		int iJ;
 		QTreeWidgetItem *qtwiFile;
+
+		// omit some entries
+		if (qfilFiles.at(iI).fileName() == ".") {
+			QString a = qfilFiles.at(iI).fileName();
+			continue;
+		} // if
 
 		// add to internal file list
 		qtwiFile = new QTreeWidgetItem(static_cast<QTreeWidget *>(qswDir->widget(iIndex)));
@@ -114,3 +136,10 @@ void cPanel::RefreshHeader(const int iIndex)
 	// refresh dir content according to new header
 	RefreshContent(iIndex);
 } // RefreshHeader
+
+// set new path for current dir view
+void cPanel::SetPath(const QString qsPath)
+{
+	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = qsPath;
+	RefreshContent(qswDir->currentIndex());
+} // SetPath

@@ -95,7 +95,7 @@ bool cContent::Loaded(const QString qsName)
 } // Loaded
 
 // "converts" plugin's returned value to QString
-QString cContent::ValidateFieldValue(char *cFieldValue, const int iType)
+QString cContent::ValidateFieldValue(const char *cFieldValue, const int iType)
 {
 	// TODO ValidateFieldValue other types
 	switch (iType) {
