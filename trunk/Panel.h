@@ -12,6 +12,7 @@
 #include <QTreeWidget>
 #include <QFileInfo>
 #include <QFileIconProvider>
+#include "ShellMenu.h"
 
 class cPanel : private QObject
 {
@@ -26,6 +27,9 @@ class cPanel : private QObject
 		QLabel *qlSelected;											///< selected items
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view
+
+		cPanel(QStackedWidget *qswPanel);						///< constructor
+																			/**< \param qswPanel panel for QTreeWidget */
 
 		void AddTab(const cSettings::sTabInfo stiTabInfo);	///< add new tab with dir view
 
@@ -44,11 +48,13 @@ class cPanel : private QObject
 			sWidgets *swWidgets;										///< to remember displayed strings
 		};
 
+		cShellMenu csmMenu;											///< right click "native" shell menu
 		QFileIconProvider qfipIcon;								///< icons
-
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
+		QStringList GetSelectedItems();						///< get selected files and directories from current dir view
+																			/**< \return names of selected items in string list */
 		void RefreshContent(const int iIndex);					///< refresh dir content
 																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int iIndex);					///< refresh column's header
@@ -57,7 +63,10 @@ class cPanel : private QObject
 																			/**< \param qsPath new path */
 
 	private slots:
-		void qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
+		void on_qtwTree_customContextMenuRequested(const QPoint &pos);
+																			///< show tree view context menu
+																			/**< \param pos position of context menu */
+		void on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
 																			///< double click in tree view
 																			/**< \param item item clicked on
 																				  \param column column in item clicked in */

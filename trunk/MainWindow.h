@@ -23,8 +23,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private:
 		static const int iTAB_POS = 1;					///< position of TabBar in layout
 
-		cPanel cpLeft;											///< left dir panel
-		cPanel cpRight;										///< right dir panel
+		cPanel *cpLeft;										///< left dir panel
+		cPanel *cpRight;										///< right dir panel
 		cPlugins cpPlugins;									///< application's plugins
 		cSettings csSettings;								///< accessing application's settings
 		QTabBar qtbLeft;										///< left's panel tab bar
