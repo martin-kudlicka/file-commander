@@ -10,11 +10,13 @@ void cPanel::ActualizeWidgets()
 
 	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 
+	// tab bar
 	if (qdDir.dirName() == "") {
 		qtbTab->setTabText(qswDir->currentIndex(), qdDir.path().at(0));
 	} else {
 		qtbTab->setTabText(qswDir->currentIndex(), qdDir.dirName());
 	} // if else
+	// path
 	qlPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 } // ActualizeWidgets
 
@@ -29,10 +31,13 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 	qtbTab->addTab("");
 	qtwTree = new QTreeWidget();
 	qtwTree->setRootIsDecorated(false);
+	qtwTree->setContextMenuPolicy(Qt::CustomContextMenu);
+	qtwTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	iIndex = qswDir->addWidget(qtwTree);
 
 	// connect signals to slots
-	connect(qtwTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), SLOT(qtwTree_itemDoubleClicked(QTreeWidgetItem *, int)));
+	connect(qtwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_qtwTree_customContextMenuRequested(const QPoint &)));
+	connect(qtwTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), SLOT(on_qtwTree_itemDoubleClicked(QTreeWidgetItem *, int)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -46,8 +51,22 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 	RefreshHeader(iIndex);
 } // AddTab
 
+// constructor
+cPanel::cPanel(QStackedWidget *qswPanel)
+{
+	qswDir = qswPanel;
+	csmMenu.hwParent = qswPanel->winId();
+} // cPanel
+
+// show tree view context menu
+void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
+{
+	csmMenu.qslObjects = GetSelectedItems();
+	csmMenu.Show(static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+} // on_qtwTree_customContextMenuRequested
+
 // double click in tree view
-void cPanel::qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void cPanel::on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
 	QFileInfo qfiFile;
 
@@ -56,7 +75,7 @@ void cPanel::qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 		// double click on directory
 		SetPath(qfiFile.filePath());
 	} // if
-} // qtwTree_itemDoubleClicked
+} // on_qtwTree_itemDoubleClicked
 
 // refresh dir content
 void cPanel::RefreshContent(const int iIndex)
@@ -116,6 +135,21 @@ void cPanel::RefreshContent(const int iIndex)
 
 	ActualizeWidgets();
 } // RefreshContent
+
+// get selected files and directories from current dir view
+QStringList cPanel::GetSelectedItems()
+{
+	int iI;
+	QList<QTreeWidgetItem *> qlSelected;
+	QStringList qslSelected;
+
+	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		qslSelected.append(QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).filePath()));
+	} // for
+
+	return qslSelected;
+} // GetSelectedItems
 
 // refresh column's header
 void cPanel::RefreshHeader(const int iIndex)

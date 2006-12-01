@@ -24,23 +24,23 @@ cMainWindow::cMainWindow()
 
 	// set variables
 	// left panel
-	cpLeft.qcbDrive = qcbLeftDrive;
-	cpLeft.qlDriveInfo = qlLeftDriveInfo;
-	cpLeft.qtbTab = &qtbLeft;
-	cpLeft.qlPath = qlLeftPath;
-	cpLeft.qswDir = qswLeft;
-	cpLeft.qlSelected = qlLeftSelected;
-	cpLeft.csSettings = &csSettings;
-	cpLeft.ccContent = &cpPlugins.ccContent;
+	cpLeft = new cPanel(qswLeft);
+	cpLeft->qcbDrive = qcbLeftDrive;
+	cpLeft->qlDriveInfo = qlLeftDriveInfo;
+	cpLeft->qtbTab = &qtbLeft;
+	cpLeft->qlPath = qlLeftPath;
+	cpLeft->qlSelected = qlLeftSelected;
+	cpLeft->csSettings = &csSettings;
+	cpLeft->ccContent = &cpPlugins.ccContent;
 	// right panel
-	cpRight.qcbDrive = qcbRightDrive;
-	cpRight.qlDriveInfo = qlRightDriveInfo;
-	cpRight.qtbTab = &qtbRight;
-	cpRight.qlPath = qlRightPath;
-	cpRight.qswDir = qswRight;
-	cpRight.qlSelected = qlRightSelected;
-	cpRight.csSettings = &csSettings;
-	cpRight.ccContent = &cpPlugins.ccContent;
+	cpRight = new cPanel(qswRight);
+	cpRight->qcbDrive = qcbRightDrive;
+	cpRight->qlDriveInfo = qlRightDriveInfo;
+	cpRight->qtbTab = &qtbRight;
+	cpRight->qlPath = qlRightPath;
+	cpRight->qlSelected = qlRightSelected;
+	cpRight->csSettings = &csSettings;
+	cpRight->ccContent = &cpPlugins.ccContent;
 
 	// load settings
 	// left tabs
@@ -70,9 +70,9 @@ void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
 
 		stiTabInfo = csSettings.GetTabInfo(epPosition, qslTabs.at(iI));
 		if (epPosition == cSettings::PositionLeft) {
-			cpLeft.AddTab(stiTabInfo);
+			cpLeft->AddTab(stiTabInfo);
 		} else {
-			cpRight.AddTab(stiTabInfo);
+			cpRight->AddTab(stiTabInfo);
 		} // if else
 	} // for
 } // LoadTabs

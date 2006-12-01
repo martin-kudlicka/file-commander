@@ -23,16 +23,15 @@ int cContent::GetFieldIndex(const QString qsPlugin, const QString qsColumn)
 // returns plugin's value for specified column
 QString cContent::GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit)
 {
-	char cFieldValue[uiMAX_CHAR], cFilename[uiMAX_CHAR];
+	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
 	QString qsFieldValue;
 
-	strcpy(cFilename, qsFilename.toAscii().data());
 	iFieldIndex = GetFieldIndex(qsPlugin, qsColumn);
 	iUnitIndex = qhPlugins.value(qsPlugin).qlFields.at(iFieldIndex).qsUnits.toInt();
 
 	// get value
-	iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(cFilename, iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+	iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toAscii().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
 	qsFieldValue = ValidateFieldValue(cFieldValue, iType);
 
 	return qsFieldValue;
