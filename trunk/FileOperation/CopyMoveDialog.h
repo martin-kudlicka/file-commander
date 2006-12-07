@@ -5,7 +5,7 @@
 
 #include "ui_CopyMoveDialog.h"
 
-class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
+class cCopyMoveDialog : public QDialog, public Ui::qdCopyMove
 {
 	public:
 		cCopyMoveDialog(QWidget *qwParent);	///< constructor

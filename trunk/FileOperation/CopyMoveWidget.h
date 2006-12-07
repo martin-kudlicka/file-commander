@@ -5,7 +5,7 @@
 
 #include "ui_CopyMoveWidget.h"
 
-class cCopyMoveWidget : public QWidget, private Ui::qwCopyMove
+class cCopyMoveWidget : public QWidget, public Ui::qwCopyMove
 {
 	public:
 		cCopyMoveWidget(); ///< constructor
