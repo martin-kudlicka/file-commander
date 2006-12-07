@@ -302,6 +302,9 @@
          <property name="text" >
           <string>F3 View</string>
          </property>
+         <property name="shortcut" >
+          <string>F3</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -311,6 +314,9 @@
          </property>
          <property name="text" >
           <string>F4 Edit</string>
+         </property>
+         <property name="shortcut" >
+          <string>F4</string>
          </property>
         </widget>
        </item>
@@ -322,6 +328,9 @@
          <property name="text" >
           <string>F5 Copy</string>
          </property>
+         <property name="shortcut" >
+          <string>F5</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -331,6 +340,9 @@
          </property>
          <property name="text" >
           <string>F6 Move</string>
+         </property>
+         <property name="shortcut" >
+          <string>F6</string>
          </property>
         </widget>
        </item>
@@ -342,6 +354,9 @@
          <property name="text" >
           <string>F7 New Folder</string>
          </property>
+         <property name="shortcut" >
+          <string>F7</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -351,6 +366,9 @@
          </property>
          <property name="text" >
           <string>F8 Delete</string>
+         </property>
+         <property name="shortcut" >
+          <string>F8</string>
          </property>
         </widget>
        </item>

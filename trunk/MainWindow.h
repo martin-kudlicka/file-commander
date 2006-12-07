@@ -25,14 +25,13 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private:
 		static const int iTAB_POS = 1;					///< position of TabBar in layout
 
+		cFileOperation *cfoFileOperation;				///< handling file operations
 		cPanel *cpLeft;										///< left dir panel
 		cPanel *cpRight;										///< right dir panel
 		cPlugins *cpPlugins;									///< application's plugins
 		cSettings csSettings;								///< accessing application's settings
 		QTabBar qtbLeft;										///< left's panel tab bar
 		QTabBar qtbRight;										///< right's panel tab bar
-
-		cFileOperation cfoFileOperation;					///< handling file operations
 
 		QStackedWidget *GetActivePanel();				///< find active panel (left or right)
 																	/**< \return pointer to active panel */
@@ -46,6 +45,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 	private slots:
 		void on_qpbCopy_clicked(bool checked = false);	
+																	///< copy button is clicked on
+																	/**< \param checked true if button is checkable and checked */
+		void on_qpbMove_clicked(bool checked = false);	
 																	///< copy button is clicked on
 																	/**< \param checked true if button is checkable and checked */
 }; // cMainWindow
