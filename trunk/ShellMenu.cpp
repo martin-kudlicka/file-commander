@@ -8,7 +8,11 @@ void cShellMenu::Show(const QPoint qpPoint)
 
 	pPoint.x = qpPoint.x();
 	pPoint.y = qpPoint.y();
-	cscmShellMenu.SetObjects(qslObjects);
+	if (qslObjects.count() == 0) {
+		cscmShellMenu.SetObjects("");
+	} else {
+		cscmShellMenu.SetObjects(qslObjects);
+	} // if else
 	cscmShellMenu.ShowContextMenu(hwParent, pPoint);
 #endif
 } // Show

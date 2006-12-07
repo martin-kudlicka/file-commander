@@ -184,15 +184,7 @@ void cShellContextMenu::SetObjects(const QStringList qslObjects)
 	// that means that it's a fully qualified PIDL, which is what we need
 	LPITEMIDLIST pidl = NULL;
 	
-#ifndef _UNICODE
-	OLECHAR * olePath = NULL;
-	olePath = (OLECHAR *) calloc (qslObjects.at(0).length() + 1, sizeof (OLECHAR));
-	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, qslObjects.at(0).toAscii().constData(), -1, olePath, qslObjects.at(0).length() + 1);
-	psfDesktop->ParseDisplayName (NULL, 0, olePath, NULL, &pidl, NULL);
-	free (olePath);
-#else
-	psfDesktop->ParseDisplayName (NULL, 0, (LPOLESTR)qslObjects.at(0).toAscii().constData(), NULL, &pidl, NULL);
-#endif
+	psfDesktop->ParseDisplayName (NULL, 0, (LPOLESTR)qslObjects.at(0).unicode(), NULL, &pidl, NULL);
 
 	// now we need the parent IShellFolder interface of pidl, and the relative PIDL to that interface
 	LPITEMIDLIST pidlItem = NULL;	// relative pidl
@@ -211,14 +203,7 @@ void cShellContextMenu::SetObjects(const QStringList qslObjects)
 	nItems = qslObjects.count();
 	for (int i = 0; i < nItems; i++)
 	{
-#ifndef _UNICODE
-		olePath = (OLECHAR *) calloc (qslObjects.at(i).length() + 1, sizeof (OLECHAR));
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, qslObjects.at(i).toLatin1().constData(), -1, olePath, qslObjects.at(i).length() + 1);
-		psfDesktop->ParseDisplayName (NULL, 0, olePath, NULL, &pidl, NULL);
-		free (olePath);
-#else
-		psfDesktop->ParseDisplayName (NULL, 0, (LPOLESTR)qslObjects.at(0).toAscii().constData(), NULL, &pidl, NULL);
-#endif
+		psfDesktop->ParseDisplayName (NULL, 0, (LPOLESTR)qslObjects.at(i).unicode(), NULL, &pidl, NULL);
 		m_pidlArray = (LPITEMIDLIST *) realloc (m_pidlArray, (i + 1) * sizeof (LPITEMIDLIST));
 		// get relative pidl via SHBindToParent
 		SHBindToParentEx (pidl, IID_IShellFolder, (void **) &psfFolder, (LPCITEMIDLIST *) &pidlItem);
@@ -231,76 +216,6 @@ void cShellContextMenu::SetObjects(const QStringList qslObjects)
 	psfDesktop->Release ();
 
 	bDelete = TRUE;	// indicates that m_psfFolder should be deleted by cShellContextMenu
-}
-
-
-// only one full qualified PIDL has been passed
-void cShellContextMenu::SetObjects(LPITEMIDLIST pidl)
-{
-	// free all allocated datas
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release ();
-	m_psfFolder = NULL;
-	FreePIDLArray (m_pidlArray);
-	m_pidlArray = NULL;
-
-		// full qualified PIDL is passed so we need
-	// its parent IShellFolder interface and its relative PIDL to that
-	LPITEMIDLIST pidlItem = NULL;
-	SHBindToParent ((LPCITEMIDLIST) pidl, IID_IShellFolder, (void **) &m_psfFolder, (LPCITEMIDLIST *) &pidlItem);	
-
-	m_pidlArray = (LPITEMIDLIST *) malloc (sizeof (LPITEMIDLIST));	// allocate ony for one elemnt
-	m_pidlArray[0] = CopyPIDL (pidlItem);
-
-
-	// now free pidlItem via IMalloc interface (but not m_psfFolder, that we need later
-	LPMALLOC lpMalloc = NULL;
-	SHGetMalloc (&lpMalloc);
-	lpMalloc->Free (pidlItem);
-	lpMalloc->Release();
-
-	nItems = 1;
-	bDelete = TRUE;	// indicates that m_psfFolder should be deleted by cShellContextMenu
-}
-
-
-// IShellFolder interface with a relative pidl has been passed
-void cShellContextMenu::SetObjects(IShellFolder *psfFolder, LPITEMIDLIST pidlItem)
-{
-	// free all allocated datas
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release ();
-	m_psfFolder = NULL;
-	FreePIDLArray (m_pidlArray);
-	m_pidlArray = NULL;
-
-	m_psfFolder = psfFolder;
-
-	m_pidlArray = (LPITEMIDLIST *) malloc (sizeof (LPITEMIDLIST));
-	m_pidlArray[0] = CopyPIDL (pidlItem);
-	
-	nItems = 1;
-	bDelete = FALSE;	// indicates wheter m_psfFolder should be deleted by cShellContextMenu
-}
-
-void cShellContextMenu::SetObjects(IShellFolder * psfFolder, LPITEMIDLIST *pidlArray, int nItemCount)
-{
-	// free all allocated datas
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release ();
-	m_psfFolder = NULL;
-	FreePIDLArray (m_pidlArray);
-	m_pidlArray = NULL;
-
-	m_psfFolder = psfFolder;
-
-	m_pidlArray = (LPITEMIDLIST *) malloc (nItemCount * sizeof (LPITEMIDLIST));
-
-	for (int i = 0; i < nItemCount; i++)
-		m_pidlArray[i] = CopyPIDL (pidlArray[i]);
-
-	nItems = nItemCount;
-	bDelete = FALSE;	// indicates wheter m_psfFolder should be deleted by cShellContextMenu
 }
 
 
