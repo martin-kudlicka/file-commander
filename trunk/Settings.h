@@ -38,8 +38,6 @@ class cSettings : private QObject
 			QString qsPath;											///< path selected in tab
 		};
 
-		QSettings qsSettings;										///< application's settings
-
 		void CreateDefaultColumnSet();							///< create default (Full) column set
 		void CreateTab(const ePosition epPosition, const uint uiIndex, const QString qsColumnSet, const QString qsPath);
 																			///< create new tab in settings file
@@ -69,6 +67,8 @@ class cSettings : private QObject
 																				  \return list of tabs in panel */
 
 	private:
+		QSettings qsSettings;										///< application's settings
+
 		void CreateColumnSet(const QString qsColumnSet, const QList<sColumn> qlColumns);
 																			///< create new column set
 																			/**< \param qsColumnSet column set to create

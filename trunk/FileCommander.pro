@@ -1,11 +1,13 @@
 CONFIG += qt warn_on
 //RC_FILE = FileCommander.rc
-FORMS = MainWindow.ui
+FORMS = MainWindow.ui \
+		  CopyMoveDialog.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
 			 ShellMenu.h \
 			 Process.h \
 			 FileOperation.h \
+			 CopyMoveDialog.h \
 			 Settings.h \
 			 Plugins/Plugins.h \
 			 Plugins/Content.h \
@@ -21,6 +23,7 @@ SOURCES = FileCommander.cpp \
 			 ShellMenu.cpp \
 			 Process.cpp \
 			 FileOperation.cpp \
+			 CopyMoveDialog.cpp \
 			 Settings.cpp \
 			 Plugins/Plugins.cpp \
 			 Plugins/Content.cpp \

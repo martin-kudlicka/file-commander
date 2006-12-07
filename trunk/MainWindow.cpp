@@ -7,8 +7,8 @@ cMainWindow::cMainWindow()
 	QVBoxLayout *qvblTabBar;
 
 	// load plugins
-	cpPlugins.csSettings = &csSettings;
-	cpPlugins.Load();
+	cpPlugins = new cPlugins(&csSettings);
+	cpPlugins->Load();
 
 	// setup GUI
 	setupUi(this);
@@ -23,32 +23,23 @@ cMainWindow::cMainWindow()
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
-
-	// set variables
-	// left panel
-	cpLeft = new cPanel(qswLeft);
-	cpLeft->qcbDrive = qcbLeftDrive;
-	cpLeft->qlDriveInfo = qlLeftDriveInfo;
-	cpLeft->qtbTab = &qtbLeft;
-	cpLeft->qlPath = qlLeftPath;
-	cpLeft->qlSelected = qlLeftSelected;
-	cpLeft->csSettings = &csSettings;
-	cpLeft->ccContent = &cpPlugins.ccContent;
-	// right panel
-	cpRight = new cPanel(qswRight);
-	cpRight->qcbDrive = qcbRightDrive;
-	cpRight->qlDriveInfo = qlRightDriveInfo;
-	cpRight->qtbTab = &qtbRight;
-	cpRight->qlPath = qlRightPath;
-	cpRight->qlSelected = qlRightSelected;
-	cpRight->csSettings = &csSettings;
-	cpRight->ccContent = &cpPlugins.ccContent;
+	// panels
+	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent);
+	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent);
 
 	// load settings
 	// left tabs
 	LoadTabs(cSettings::PositionLeft);
 	// right tabs
 	LoadTabs(cSettings::PositionRight);
+} // cMainWindow
+
+// destructor
+cMainWindow::~cMainWindow()
+{
+	delete cpLeft;
+	delete cpRight;
+	delete cpPlugins;
 } // cMainWindow
 
 // find active panel (left or right)
@@ -90,7 +81,7 @@ void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
 } // LoadTabs
 
 // copy button is clicked on
-void cMainWindow::on_qpbCopy_clicked(bool checked /* = false */)
+void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {
 	cPanel *cpDestination, *cpSource;
 

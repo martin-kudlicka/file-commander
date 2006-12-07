@@ -19,19 +19,29 @@ class cPanel : private QObject
 	Q_OBJECT
 
 	public:
-		cContent *ccContent;											///< access to content plugins
-		cSettings *csSettings;										///< main settings
-		QComboBox *qcbDrive;											///< drive
-		QLabel *qlPath;												///< path
-		QLabel *qlDriveInfo;											///< drive info - label, used/free place
-		QLabel *qlSelected;											///< selected items
-		QStackedWidget *qswDir;										///< directory view
-		QTabBar *qtbTab;												///< tabs for dir view
+		// count of objects
+		struct sObjects {
+			uint Directories;											///< number of directories
+			uint Files;													///< number of files
+		};
 
-		cPanel(QStackedWidget *qswPanel);						///< constructor
-																			/**< \param qswPanel panel for QTreeWidget */
+		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent);
+																			///< constructor
+																			/**< \param qswPanel panel for QTreeWidget
+																				  \param qcbDrive drive combo box
+																				  \param qlDriveInfo drive name and it's space information
+																				  \param qtbTab panel's tab bar
+																				  \param qlPath current path
+																				  \param qlSelected information about selected directories and files
+																				  \param csSettings application's settings
+																				  \param ccContent application'c content plugins */
+		~cPanel();														///< destructor
 
 		void AddTab(const cSettings::sTabInfo stiTabInfo);	///< add new tab with dir view
+		static sObjects GetCount(const QFileInfoList qfilObjects);
+																			///< count objects
+																			/**< \param qfilObjects objects to count
+																				  \return count of objects */
 		QString GetPath();											///< get path for current dir
 																			/**< \return current dir view path */
 		QFileInfoList GetSelectedItemsList();					///< get file infos of selected items
@@ -51,9 +61,17 @@ class cPanel : private QObject
 			sWidgets *swWidgets;										///< to remember displayed strings
 		};
 
-		cShellMenu csmMenu;											///< right click "native" shell menu
+		cContent *ccContent;											///< access to content plugins
+		cSettings *csSettings;										///< main settings
+		cShellMenu *csmMenu;											///< right click "native" shell menu
+		QComboBox *qcbDrive;											///< drive
 		QFileIconProvider qfipIcon;								///< icons
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
+		QLabel *qlPath;												///< path
+		QLabel *qlDriveInfo;											///< drive info - label, used/free place
+		QLabel *qlSelected;											///< selected items
+		QStackedWidget *qswDir;										///< directory view
+		QTabBar *qtbTab;												///< tabs for dir view
 
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view

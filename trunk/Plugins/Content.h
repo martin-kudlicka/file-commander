@@ -9,7 +9,8 @@
 class cContent
 {
 	public:
-		cSettings *csSettings;							///< main settings "file"
+		cContent(cSettings *csSettings);				///< constructor
+																/**< \param csSettings application's settings */
 
 		QString GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit);
 																///< returns plugin's value for specified column
@@ -56,6 +57,7 @@ class cContent
 			tContentGetValue tcgvContentGetValue;	///< pointer to plugin's ContentGetValue function
 		};
 
+		cSettings *csSettings;							///< main settings "file"
 		QHash<QString, sPluginInfo> qhPlugins;		///< table of plugins
 																/**< key is plugin name, value contains plugin's info */
 

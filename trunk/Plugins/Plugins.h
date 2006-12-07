@@ -9,10 +9,16 @@
 class cPlugins
 {
 	public:
-		cContent	ccContent;		///< content plugins
-		cSettings *csSettings;	///< main settings
+		cContent	*ccContent;					///< content plugins
 
-		void Load();				///< loads all plugins
+		cPlugins(cSettings *csSettings);	///< constructor
+													/**< \param csSettings application's settings */
+		~cPlugins();							///< destructor
+
+		void Load();							///< loads all plugins
+
+	private:
+		cSettings *csSettings;				///< main settings
 }; // cPlugins
 
 #endif
