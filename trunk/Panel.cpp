@@ -2,7 +2,7 @@
 
 #include <QDir>
 #include <QDateTime>
-#include <QProcess>
+#include "Process.h"
 
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
@@ -76,14 +76,7 @@ void cPanel::on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 		SetPath(qfiFile.filePath());
 	} else {
 		// double click on file -> execute it
-		QString qsProcess;
-
-#ifdef Q_WS_WIN
-		qsProcess = '\"' + qfiFile.filePath() + '\"';
-#else
-		qsProcess = qfiFile.filePath();
-#endif
-		QProcess::startDetached(qsProcess);
+		cProcess::Execute(qfiFile.filePath());
 	} // if else
 } // on_qtwTree_itemDoubleClicked
 
