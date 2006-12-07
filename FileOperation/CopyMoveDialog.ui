@@ -12,19 +12,6 @@
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton" >
-   <property name="geometry" >
-    <rect>
-     <x>190</x>
-     <y>90</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Cancel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="qlSource" >
    <property name="geometry" >
     <rect>
@@ -71,6 +58,19 @@
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>190</x>
+     <y>90</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_2" >

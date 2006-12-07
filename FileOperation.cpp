@@ -20,18 +20,18 @@ QFileInfoList cFileOperation::GetDirectoryContent(const QString qsPath, const QD
 	return qdDir.entryInfoList();
 } // GetDirectoryContent
 
-// return list of files only (within subdirectories too)
-QFileInfoList cFileOperation::GetFiles(const QFileInfoList qfilFileAndDirList)
+// return list of sources (within subdirectories too)
+QFileInfoList cFileOperation::GetSources(const QFileInfoList qfilFileAndDirList)
 {
 	int iI;
-	QFileInfoList qfilDirectories, qfilFiles;
+	QFileInfoList qfilDirectories, qfilSources;
+
+	qfilSources = qfilFileAndDirList;
 
 	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
 		if (qfilFileAndDirList.at(iI).isDir()) {
 			qfilDirectories.append(qfilFileAndDirList.at(iI));
-		} else {
-			qfilFiles.append(qfilFileAndDirList.at(iI));
-		} // if else
+		} // if
 	} // for
 
 	while (!qfilDirectories.isEmpty()) {
@@ -40,17 +40,16 @@ QFileInfoList cFileOperation::GetFiles(const QFileInfoList qfilFileAndDirList)
 
 		qfiDir = qfilDirectories.takeAt(0);
 		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+		qfilSources += qfilDirContent;
 		for (iI = 0; iI < qfilDirContent.count(); iI++) {
 			if (qfilDirContent.at(iI).isDir()) {
 				qfilDirectories.append(qfilDirContent.at(iI));
-			} else {
-				qfilFiles.append(qfilDirContent.at(iI));
-			} // if else
+			} // if
 		} // for
 	} // while
 
-	return qfilFiles;
-} // GetFiles
+	return qfilSources;
+} // GetSources
 
 // prepare operation
 void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
