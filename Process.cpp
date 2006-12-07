@@ -6,6 +6,7 @@
 #include <QProcess>
 #endif
 
+// execute file
 void cProcess::Execute(QString qsProcess)
 {
 #ifdef Q_WS_WIN

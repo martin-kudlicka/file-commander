@@ -6,6 +6,7 @@
 #include "Plugins/Plugins.h"
 #include "Panel.h"
 #include "Settings.h"
+#include "FileOperation.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";
@@ -30,9 +31,22 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTabBar qtbLeft;										///< left's panel tab bar
 		QTabBar qtbRight;										///< right's panel tab bar
 
+		cFileOperation cfoFileOperation;					///< handling file operations
+
+		QStackedWidget *GetActivePanel();				///< find active panel (left or right)
+																	/**< \return pointer to active panel */
 		void LoadTabs(const cSettings::ePosition epPosition);
 																	///< load tabs from qsSettings
 																	/**< \param epPos means left or right TabBar */
+		void SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination = NULL);
+																	///< set focused panel as source, other as destination
+																	/**< \param cpSource source panel
+																		  \param cpDestination destination panel */
+
+	private slots:
+		void on_qpbCopy_clicked(bool checked = false);	
+																	///< copy button is clicked on
+																	/**< \param checked true if button is checkable and checked */
 }; // cMainWindow
 
 #endif

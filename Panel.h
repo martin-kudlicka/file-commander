@@ -32,6 +32,9 @@ class cPanel : private QObject
 																			/**< \param qswPanel panel for QTreeWidget */
 
 		void AddTab(const cSettings::sTabInfo stiTabInfo);	///< add new tab with dir view
+		QString GetPath();											///< get path for current dir
+																			/**< \return current dir view path */
+		QFileInfoList GetSelectedItemsList();					///< get file infos of selected items
 
 	private:
 		/// strings for widgets
@@ -53,7 +56,7 @@ class cPanel : private QObject
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
-		QStringList GetSelectedItems();						///< get selected files and directories from current dir view
+		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */
 		void RefreshContent(const int iIndex);					///< refresh dir content
 																			/**< \param iIndex index of dir view */
