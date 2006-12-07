@@ -14,10 +14,11 @@ class cShellMenu
 #ifdef Q_WS_WIN
 		HWND hwParent;							///< parent window handle (Windows)
 #endif
-		QStringList qslObjects;				///< objects for context menu
 
-		void Show(const QPoint qpPoint);	///< show context menu
-													/**< \param qpPoint coordinates of context menu */
+		void Show(const QStringList qslObjects, const QPoint qpPoint);
+													///< show context menu
+													/**< \param qslObjects objects for context menu
+														  \param qpPoint coordinates of context menu */
 
 	private:
 #ifdef Q_WS_WIN
