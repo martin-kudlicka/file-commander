@@ -12,7 +12,7 @@
 #include <QTreeWidget>
 #include <QFileInfo>
 #include <QFileIconProvider>
-#include "ShellMenu.h"
+#include "Panel/ShellMenu.h"
 
 class cPanel : private QObject
 {

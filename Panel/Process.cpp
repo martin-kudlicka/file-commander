@@ -1,4 +1,4 @@
-#include "Process.h"
+#include "Panel/Process.h"
 
 #ifdef Q_WS_WIN
 #include <windows.h>

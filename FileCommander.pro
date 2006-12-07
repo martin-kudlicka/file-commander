@@ -1,35 +1,43 @@
 CONFIG += qt warn_on
 //RC_FILE = FileCommander.rc
 FORMS = MainWindow.ui \
-		  FileOperationDialog.ui
+		  FileOperation/FileOperationDialog.ui \
+		  FileOperation/CopyMoveDialog.ui \
+		  FileOperation/CopyMoveWidget.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
-			 ShellMenu.h \
-			 Process.h \
+			 Panel/ShellMenu.h \
+			 Panel/Process.h \
 			 FileOperation.h \
-			 FileOperationDialog.h \
+			 FileOperation/FileOperationDialog.h \
+			 FileOperation/CopyMove.h \
+			 FileOperation/CopyMoveDialog.h \
+			 FileOperation/CopyMoveWidget.h \
 			 Settings.h \
-			 Plugins/Plugins.h \
+			 Plugins.h \
 			 Plugins/Content.h \
 			 Plugins/ContPlug.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h
 win32 {
-	 HEADERS += Win32/ShellContextMenu.h
+	 HEADERS += Panel/Win32/ShellContextMenu.h
 }
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 Panel.cpp \
-			 ShellMenu.cpp \
-			 Process.cpp \
+			 Panel/ShellMenu.cpp \
+			 Panel/Process.cpp \
 			 FileOperation.cpp \
-			 FileOperationDialog.cpp \
+			 FileOperation/FileOperationDialog.cpp \
+			 FileOperation/CopyMove.cpp \
+			 FileOperation/CopyMoveDialog.cpp \
+			 FileOperation/CopyMoveWidget.cpp \
 			 Settings.cpp \
-			 Plugins/Plugins.cpp \
+			 Plugins.cpp \
 			 Plugins/Content.cpp \
 			 Common/System.cpp
 win32 {
-	 SOURCES += Win32/ShellContextMenu.cpp
+	 SOURCES += Panel/Win32/ShellContextMenu.cpp
 }
 win32 {
 	 LIBS += User32.lib shell32.lib

@@ -2,7 +2,7 @@
 
 #include <QDir>
 #include <QDateTime>
-#include "Process.h"
+#include "Panel/Process.h"
 
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
