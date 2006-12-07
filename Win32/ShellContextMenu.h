@@ -1,3 +1,6 @@
+#ifndef SHELL_CONTEXT_MENU_H
+#define SHELL_CONTEXT_MENU_H
+
 /// Windows shell context menu class
 /** slightly modified http://www.codeproject.com/shell/shellcontextmenu.asp
 	 developed by R. Engels 2003 */
@@ -6,15 +9,9 @@
 #include <malloc.h>
 #include <QStringList>
 
-#if !defined(AFX_SHELLCONTEXTMENU_H__A358AACF_7C7C_410D_AD29_67310B2DDC22__INCLUDED_)
-#define AFX_SHELLCONTEXTMENU_H__A358AACF_7C7C_410D_AD29_67310B2DDC22__INCLUDED_
-
 class cShellContextMenu  
 {
 	public:
-		void SetObjects(IShellFolder *psfFolder, LPITEMIDLIST pidlItem);
-		void SetObjects(IShellFolder *psfFolder, LPITEMIDLIST *pidlArray, int nItemCount);
-		void SetObjects(LPITEMIDLIST pidl);
 		void SetObjects(const QString qsObject);			///< set object for context menu
 																		/**< \param qsObject object name (filename) */
 		void SetObjects(const QStringList qslObjects);	///< set objects for context menu
@@ -46,4 +43,4 @@ class cShellContextMenu
 		int GetPIDLCount(LPCITEMIDLIST pidl);
 }; // cShellContextMenu
 
-#endif // !defined(AFX_SHELLCONTEXTMENU_H__A358AACF_7C7C_410D_AD29_67310B2DDC22__INCLUDED_)
+#endif
