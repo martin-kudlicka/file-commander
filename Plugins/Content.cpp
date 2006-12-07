@@ -6,6 +6,12 @@
 #include <QStringList>
 #include <QFileInfo>
 
+// constructor
+cContent::cContent(cSettings *csSettings)
+{
+	this->csSettings = csSettings;
+} // cContent
+
 // get index of column in plugin
 int cContent::GetFieldIndex(const QString qsPlugin, const QString qsColumn)
 {

@@ -53,16 +53,52 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QStackedWidget *qswPanel)
+cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent)
 {
 	qswDir = qswPanel;
-	csmMenu.hwParent = qswPanel->winId();
+	this->qcbDrive = qcbDrive;
+	this->qlDriveInfo = qlDriveInfo;
+	this->qtbTab = qtbTab;
+	this->qlPath = qlPath;
+	this->qlSelected = qlSelected;
+	this->csSettings = csSettings;
+	this->ccContent = ccContent;
+	csmMenu = new cShellMenu(
+#ifdef Q_WS_WIN
+		qswDir->winId()
+#endif
+	);
 } // cPanel
+
+// destructor
+cPanel::~cPanel()
+{
+	delete csmMenu;
+} // ~cPanel
+
+// count objects
+cPanel::sObjects cPanel::GetCount(const QFileInfoList qfilObjects)
+{
+	int iI;
+	sObjects soCount;
+
+	soCount.Directories = 0;
+	soCount.Files = 0;
+	for (iI = 0; iI < qfilObjects.count(); iI++) {
+		if (qfilObjects.at(iI).isDir()) {
+			soCount.Directories++;
+		} else {
+			soCount.Files++;
+		} // if else
+	} // for
+
+	return soCount;
+} // GetCount
 
 // show tree view context menu
 void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
 {
-	csmMenu.Show(GetSelectedItemsStringList(), static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	csmMenu->Show(GetSelectedItemsStringList(), static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_qtwTree_customContextMenuRequested
 
 // double click in tree view

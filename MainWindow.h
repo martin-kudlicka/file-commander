@@ -20,13 +20,14 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	public:
 		cMainWindow();											///< creates main window
 																	/**< load plugins, prepare panels, load settings, setup GUI */
+		~cMainWindow();										///< destructor
 
 	private:
 		static const int iTAB_POS = 1;					///< position of TabBar in layout
 
 		cPanel *cpLeft;										///< left dir panel
 		cPanel *cpRight;										///< right dir panel
-		cPlugins cpPlugins;									///< application's plugins
+		cPlugins *cpPlugins;									///< application's plugins
 		cSettings csSettings;								///< accessing application's settings
 		QTabBar qtbLeft;										///< left's panel tab bar
 		QTabBar qtbRight;										///< right's panel tab bar
