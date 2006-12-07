@@ -22,6 +22,15 @@ class cFileOperation : private QObject
 												/**< \param qmwParent parent window for dialogs
 													  \param qbnlOperations layout for bacground and queued windows */
 
+		static QFileInfoList GetDirectoryContent(QString qsPath, const QDir::Filters fFilters);
+												///< lists directory for it's content
+												/**< \param qsPath path to list
+													  \param fFilters filter for directory listing
+													  \return content of qsPath directory */
+		static QFileInfoList GetFiles(const QFileInfoList qfilFileAndDirList);
+												///< return list of files only (within subdirectories too)
+												/**< \param qfilFileAndDirList list of directories and files
+													  \return file list */
 		void Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination);
 												///< prepare operation
 												/**< \param eoOperation operation type

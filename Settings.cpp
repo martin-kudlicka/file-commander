@@ -74,7 +74,6 @@ void cSettings::CreateTab(const ePosition epPosition, const uint uiIndex, const 
 		qsSettings.beginGroup(QString("%1%2").arg(qsRIGHT_PANEL__TABS__).arg(uiIndex));
 	} // if else
 
-	QString a = qsSettings.group();
 	qsSettings.setValue(qsCOLUMN_SET, qsColumnSet);
 	qsSettings.setValue(qsPATH, qsPath);
 
