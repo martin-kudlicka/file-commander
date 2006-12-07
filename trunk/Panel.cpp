@@ -193,7 +193,10 @@ QFileInfoList cPanel::GetSelectedItemsList()
 
 	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
 	for (iI = 0; iI < qlSelected.count(); iI++) {
-		qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != "..") {
+			// ignore ".." directories
+			qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+		} // if
 	} // for
 
 	return qfilFiles;

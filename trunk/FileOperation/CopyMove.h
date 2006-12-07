@@ -6,7 +6,10 @@
 #include <QHBoxLayout>
 #include "FileOperation.h"
 
-class cCopyMove {
+class cCopyMove : private QObject
+{
+	Q_OBJECT
+
 	public:
 		/// window style
 		enum eWindow {
@@ -27,8 +30,12 @@ class cCopyMove {
 																	  \eStyle foreground or background operation */
 
 	private:
+		bool bCanceled;
 		QHBoxLayout *qhblOperations;
 		QMainWindow *qmwParent;
+
+	private slots:
+		void on_ccm_OperationCanceled();				///< copy or move operation was canceled
 }; // cCopyMove
 
 #endif
