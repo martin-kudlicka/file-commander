@@ -1,3 +1,5 @@
+// TODO "visualize"
+
 #include "ShellContextMenu.h"
 
 IContextMenu2 * g_IContext2 = NULL;

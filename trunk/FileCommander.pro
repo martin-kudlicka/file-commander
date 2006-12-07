@@ -5,6 +5,7 @@ HEADERS = MainWindow.h \
 			 Panel.h \
 			 ShellMenu.h \
 			 Process.h \
+			 FileOperation.h \
 			 Settings.h \
 			 Plugins/Plugins.h \
 			 Plugins/Content.h \
@@ -19,6 +20,7 @@ SOURCES = FileCommander.cpp \
 			 Panel.cpp \
 			 ShellMenu.cpp \
 			 Process.cpp \
+			 FileOperation.cpp \
 			 Settings.cpp \
 			 Plugins/Plugins.cpp \
 			 Plugins/Content.cpp \

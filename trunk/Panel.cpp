@@ -62,7 +62,7 @@ cPanel::cPanel(QStackedWidget *qswPanel)
 // show tree view context menu
 void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
 {
-	csmMenu.Show(GetSelectedItems(), static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	csmMenu.Show(GetSelectedItemsStringList(), static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_qtwTree_customContextMenuRequested
 
 // double click in tree view
@@ -102,7 +102,6 @@ void cPanel::RefreshContent(const int iIndex)
 
 		// omit some entries
 		if (qfilFiles.at(iI).fileName() == ".") {
-			QString a = qfilFiles.at(iI).fileName();
 			continue;
 		} // if
 
@@ -118,7 +117,12 @@ void cPanel::RefreshContent(const int iIndex)
 					qtwiFile->setIcon(iJ, qfipIcon.icon(qfilFiles.at(iI)));
 				} else {
 					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsNAME) {
-						qtwiFile->setText(iJ, qfilFiles.at(iI).completeBaseName());
+						if (qfilFiles.at(iI).isDir() && qfilFiles.at(iI).fileName() == "..") {
+							// special handle for ".." directory to show both points
+							qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
+						} else {
+							qtwiFile->setText(iJ, qfilFiles.at(iI).completeBaseName());
+						} // if
 					} else {
 						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsEXTENSION) {
 							qtwiFile->setText(iJ, qfilFiles.at(iI).suffix());
@@ -139,8 +143,29 @@ void cPanel::RefreshContent(const int iIndex)
 	ActualizeWidgets();
 } // RefreshContent
 
+// get path for current dir
+QString cPanel::GetPath()
+{
+	return qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath;
+} // GetPath
+
+// get file infos of selected items
+QFileInfoList cPanel::GetSelectedItemsList()
+{
+	int iI;
+	QFileInfoList qfilFiles;
+	QList<QTreeWidgetItem *> qlSelected;
+
+	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+	} // for
+
+	return qfilFiles;
+} // GetSelectedItemsList
+
 // get selected files and directories from current dir view
-QStringList cPanel::GetSelectedItems()
+QStringList cPanel::GetSelectedItemsStringList()
 {
 	int iI;
 	QList<QTreeWidgetItem *> qlSelected;
@@ -152,7 +177,7 @@ QStringList cPanel::GetSelectedItems()
 	} // for
 
 	return qslSelected;
-} // GetSelectedItems
+} // GetSelectedItemsStringList
 
 // refresh column's header
 void cPanel::RefreshHeader(const int iIndex)

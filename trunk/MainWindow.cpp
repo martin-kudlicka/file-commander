@@ -15,9 +15,11 @@ cMainWindow::cMainWindow()
 	// add left tab
 	qvblTabBar = static_cast<QVBoxLayout *>(qswLeft->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbLeft);
+	qtbLeft.setFocusPolicy(Qt::NoFocus);
 	// add right tab
 	qvblTabBar = static_cast<QVBoxLayout *>(qswRight->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbRight);
+	qtbRight.setFocusPolicy(Qt::NoFocus);
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
@@ -49,6 +51,16 @@ cMainWindow::cMainWindow()
 	LoadTabs(cSettings::PositionRight);
 } // cMainWindow
 
+// find active panel (left or right)
+QStackedWidget *cMainWindow::GetActivePanel()
+{
+	if (qswLeft->currentWidget()->hasFocus()) {
+		return qswLeft;
+	} else {
+		return qswRight;
+	} // if else
+} // GetActivePanel
+
 // load tabs from qsSettings
 void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
 {
@@ -76,3 +88,24 @@ void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
 		} // if else
 	} // for
 } // LoadTabs
+
+// copy button is clicked on
+void cMainWindow::on_qpbCopy_clicked(bool checked /* = false */)
+{
+	cPanel *cpDestination, *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
+	cfoFileOperation.Copy(cpSource, cpDestination);
+} // on_qpbCopy_clicked
+
+// set focused panel as source, other as destination
+void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
+{
+	if (qswLeft == GetActivePanel()) {
+		*cpSource = cpLeft;
+		*cpDestination = cpRight;
+	} else {
+		*cpSource = cpRight;
+		*cpDestination = cpLeft;
+	} // if else
+} // SetSourceAndDestinationPanel
