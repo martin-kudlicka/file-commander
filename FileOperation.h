@@ -5,27 +5,28 @@
 
 #include <QFileInfoList>
 #include "Panel.h"
+#include <QMainWindow>
 
 class cFileOperation : private QObject
 {
 	public:
-		enum eOperation {					///< type of file operation
-			CopyOperation,					///< copy
-			MoveOperation,					///< move
-			DeleteOperation				///< delete
+		enum eOperation {									///< type of file operation
+			CopyOperation,									///< copy
+			MoveOperation,									///< move
+			DeleteOperation								///< delete
 		};
 
-	void Copy(cPanel *cpSource, cPanel *cpDestination);
-												///< copy files
-												/**< \param cpSource source file panel
-													  \param cpDestination destination file panel */
+		cFileOperation(QMainWindow *qmwParent);	///< constructor, set parent window for dialogs
+																/**< \param qmwParent parent window for dialogs */
+
+		void Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination);
+																///< prepare operation
+																/**< \param eoOperation operation type
+																	  \param cpSource source file panel
+																	  \param cpDestination destination file panel */
 
 	private:
-		void Process(const eOperation eoOperation, const QFileInfoList qfilSource, QString qsDestination);
-												///< process file operation
-												/**< \param eoOperation type of operation
-													  \param qlSource source files
-													  \param qsDestination destination place */
+		QMainWindow *qmwParent;							///< parent window for dialogs
 }; // cFileOperation
 
 #endif

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+
 #include "Common/System.h"
 
 // create of main window
@@ -32,11 +33,15 @@ cMainWindow::cMainWindow()
 	LoadTabs(cSettings::PositionLeft);
 	// right tabs
 	LoadTabs(cSettings::PositionRight);
+
+	// initialize variables
+	cfoFileOperation = new cFileOperation(this);
 } // cMainWindow
 
 // destructor
 cMainWindow::~cMainWindow()
 {
+	delete cfoFileOperation;
 	delete cpLeft;
 	delete cpRight;
 	delete cpPlugins;
@@ -86,8 +91,17 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 	cPanel *cpDestination, *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	cfoFileOperation.Copy(cpSource, cpDestination);
+	cfoFileOperation->Operate(cFileOperation::CopyOperation, cpSource, cpDestination);
 } // on_qpbCopy_clicked
+
+// move button is clicked on
+void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
+{
+	cPanel *cpDestination, *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
+	cfoFileOperation->Operate(cFileOperation::MoveOperation, cpSource, cpDestination);
+} // on_qpbMove_clicked
 
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)

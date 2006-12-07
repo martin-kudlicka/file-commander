@@ -1,6 +1,5 @@
 #include "Content.h"
 
-#include "Settings.h"
 #include <QLibrary>
 #include "Plugins/ContPlug.h"
 #include <QStringList>

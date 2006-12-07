@@ -1,26 +1,24 @@
 #include "FileOperation.h"
 
-#include "CopyMoveDialog.h"
+#include "FileOperationDialog.h"
 
-// copy files
-void cFileOperation::Copy(cPanel *cpSource, cPanel *cpDestination)
+// constructor, set parent window for dialogs
+cFileOperation::cFileOperation(QMainWindow *qmwParent)
 {
+	this->qmwParent = qmwParent;
+} // cFileOperation
+
+// prepare operation
+void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
+{
+	cFileOperationDialog cfodDialog(qmwParent);
+	cPanel::sObjects soObjects;
 	QFileInfoList qfilSource;
-	QString qsDestination;
+	cFileOperationDialog::eUserAction euaAction;
+	QString qsDestination, qsFilter;
 
 	qfilSource = cpSource->GetSelectedItemsList();
 	qsDestination = cpDestination->GetPath();
-
-	Process(CopyOperation, qfilSource, qsDestination);
-} // Copy
-
-// process file operation
-void cFileOperation::Process(const eOperation eoOperation, const QFileInfoList qfilSource, QString qsDestination)
-{
-	cCopyMoveDialog ccmdDialog;
-	cPanel::sObjects soObjects;
-	cCopyMoveDialog::eUserAction euaAction;
-	QString qsFilter;
 
 	if (qfilSource.count() == 0) {
 		// no items selected
@@ -28,14 +26,24 @@ void cFileOperation::Process(const eOperation eoOperation, const QFileInfoList q
 	} // if
 
 	soObjects = cPanel::GetCount(qfilSource);
-	euaAction = ccmdDialog.ShowDialog(tr("Copy"),
-												 QString("%1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
-												 &qsDestination,
-												 &qsFilter);
 
-	if (euaAction == cCopyMoveDialog::CancelAction) {
+	switch (eoOperation) {
+		// TODO Process delete operation
+		case CopyOperation:	euaAction = cfodDialog.ShowDialog(tr("Copy"),
+																				 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
+																				 &qsDestination,
+																				 &qsFilter);
+									break;
+		case MoveOperation:	euaAction = cfodDialog.ShowDialog(tr("Move"),
+																				 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
+																				 &qsDestination,
+																				 &qsFilter);
+									break;
+	} // switch
+
+	if (euaAction == cFileOperationDialog::CancelAction) {
 		return;
 	} // if
 
-	// TODO Process
-} // Process
+	// TODO Operate - some process
+} // Operate
