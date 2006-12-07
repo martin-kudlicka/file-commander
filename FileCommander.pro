@@ -4,6 +4,7 @@ FORMS = MainWindow.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
 			 ShellMenu.h \
+			 Process.h \
 			 Settings.h \
 			 Plugins/Plugins.h \
 			 Plugins/Content.h \
@@ -17,6 +18,7 @@ SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 Panel.cpp \
 			 ShellMenu.cpp \
+			 Process.cpp \
 			 Settings.cpp \
 			 Plugins/Plugins.cpp \
 			 Plugins/Content.cpp \
