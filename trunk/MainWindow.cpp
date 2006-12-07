@@ -35,7 +35,7 @@ cMainWindow::cMainWindow()
 	LoadTabs(cSettings::PositionRight);
 
 	// initialize variables
-	cfoFileOperation = new cFileOperation(this);
+	cfoFileOperation = new cFileOperation(this, static_cast<QHBoxLayout *>(qwFileOperation->parentWidget()->layout()));
 } // cMainWindow
 
 // destructor

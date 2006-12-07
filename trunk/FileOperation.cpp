@@ -1,16 +1,19 @@
 #include "FileOperation.h"
 
-#include "FileOperationDialog.h"
+#include "FileOperation/FileOperationDialog.h"
+#include "FileOperation/CopyMove.h"
 
-// constructor, set parent window for dialogs
-cFileOperation::cFileOperation(QMainWindow *qmwParent)
+// constructor
+cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 {
 	this->qmwParent = qmwParent;
+	this->qhblOperations = qhblOperations;
 } // cFileOperation
 
 // prepare operation
 void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
 {
+	cCopyMove ccmCopyMove(qmwParent, qhblOperations);
 	cFileOperationDialog cfodDialog(qmwParent);
 	cPanel::sObjects soObjects;
 	QFileInfoList qfilSource;
@@ -41,9 +44,11 @@ void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPa
 									break;
 	} // switch
 
-	if (euaAction == cFileOperationDialog::CancelAction) {
-		return;
+	switch (euaAction) {
+		// TODO Operate euaAction
+		case cFileOperationDialog::CancelAction:	return;
+		case cFileOperationDialog::OkAction:		ccmCopyMove.CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
+																break;
+		case cFileOperationDialog::EnqueueAction:	break;
 	} // if
-
-	// TODO Operate - some process
 } // Operate

@@ -1,6 +1,6 @@
 // TODO "visualize"
 
-#include "ShellContextMenu.h"
+#include "Panel/Win32/ShellContextMenu.h"
 
 IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;

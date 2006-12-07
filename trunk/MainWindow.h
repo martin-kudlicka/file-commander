@@ -3,7 +3,7 @@
 
 #include "ui_MainWindow.h"
 
-#include "Plugins/Plugins.h"
+#include "Plugins.h"
 #include "Panel.h"
 #include "Settings.h"
 #include "FileOperation.h"
