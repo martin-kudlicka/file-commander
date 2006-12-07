@@ -62,8 +62,7 @@ cPanel::cPanel(QStackedWidget *qswPanel)
 // show tree view context menu
 void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
 {
-	csmMenu.qslObjects = GetSelectedItems();
-	csmMenu.Show(static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	csmMenu.Show(GetSelectedItems(), static_cast<QTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_qtwTree_customContextMenuRequested
 
 // double click in tree view
