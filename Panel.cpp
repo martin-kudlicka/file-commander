@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QDateTime>
+#include <QProcess>
 
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
@@ -72,9 +73,19 @@ void cPanel::on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 
 	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(item);
 	if (qfiFile.isDir()) {
-		// double click on directory
+		// double click on directory -> go into directory
 		SetPath(qfiFile.filePath());
-	} // if
+	} else {
+		// double click on file -> execute it
+		QString qsProcess;
+
+#ifdef Q_WS_WIN
+		qsProcess = '\"' + qfiFile.filePath() + '\"';
+#else
+		qsProcess = qfiFile.filePath();
+#endif
+		QProcess::startDetached(qsProcess);
+	} // if else
 } // on_qtwTree_itemDoubleClicked
 
 // refresh dir content
@@ -115,7 +126,7 @@ void cPanel::RefreshContent(const int iIndex)
 					qtwiFile->setIcon(iJ, qfipIcon.icon(qfilFiles.at(iI)));
 				} else {
 					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsNAME) {
-						qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
+						qtwiFile->setText(iJ, qfilFiles.at(iI).completeBaseName());
 					} else {
 						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsEXTENSION) {
 							qtwiFile->setText(iJ, qfilFiles.at(iI).suffix());
