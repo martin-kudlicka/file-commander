@@ -119,7 +119,7 @@ void cFileOperation::ProcessQueue()
 		cCopyMove ccmCopyMove(qmwParent, qhblOperations);
 		sOperation soOperation;
 
-		soOperation = qqQperations.dequeue();
+		soOperation = qqQperations.first();
 		switch (soOperation.eoOperation) {
 			// TODO ProcessQueue delete
 			case CopyOperation:
@@ -127,5 +127,6 @@ void cFileOperation::ProcessQueue()
 											break;
 			case DeleteOperation:	break;
 		} // switch
+		qqQperations.dequeue();
 	} // while
 } // ProcessQueue
