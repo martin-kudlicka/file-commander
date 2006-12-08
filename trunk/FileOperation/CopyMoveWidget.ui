@@ -6,13 +6,13 @@
     <x>0</x>
     <y>0</y>
     <width>135</width>
-    <height>76</height>
+    <height>96</height>
    </rect>
   </property>
   <property name="maximumSize" >
    <size>
     <width>16777215</width>
-    <height>76</height>
+    <height>96</height>
    </size>
   </property>
   <property name="windowTitle" >
@@ -44,11 +44,24 @@
     <string>please wait.</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>0</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>x</string>
+   </property>
+  </widget>
   <widget class="QProgressBar" name="qpbTotal" >
    <property name="geometry" >
     <rect>
      <x>10</x>
-     <y>50</y>
+     <y>70</y>
      <width>118</width>
      <height>16</height>
     </rect>
@@ -66,17 +79,20 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton" >
+  <widget class="QProgressBar" name="qpbCurrent" >
    <property name="geometry" >
     <rect>
-     <x>120</x>
-     <y>0</y>
-     <width>16</width>
+     <x>10</x>
+     <y>50</y>
+     <width>118</width>
      <height>16</height>
     </rect>
    </property>
-   <property name="text" >
-    <string>x</string>
+   <property name="maximum" >
+    <number>0</number>
+   </property>
+   <property name="textVisible" >
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

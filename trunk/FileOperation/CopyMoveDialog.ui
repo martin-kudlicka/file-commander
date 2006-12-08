@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>353</width>
-    <height>126</height>
+    <height>150</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -38,11 +38,37 @@
     <string>please wait.</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>190</x>
+     <y>120</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2" >
+   <property name="geometry" >
+    <rect>
+     <x>270</x>
+     <y>120</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Background</string>
+   </property>
+  </widget>
   <widget class="QProgressBar" name="qpbTotal" >
    <property name="geometry" >
     <rect>
      <x>10</x>
-     <y>50</y>
+     <y>80</y>
      <width>331</width>
      <height>23</height>
     </rect>
@@ -60,30 +86,20 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="qpbCancel" >
+  <widget class="QProgressBar" name="qpbCurrent" >
    <property name="geometry" >
     <rect>
-     <x>190</x>
-     <y>90</y>
-     <width>75</width>
+     <x>10</x>
+     <y>50</y>
+     <width>331</width>
      <height>23</height>
     </rect>
    </property>
-   <property name="text" >
-    <string>&amp;Cancel</string>
+   <property name="maximum" >
+    <number>0</number>
    </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2" >
-   <property name="geometry" >
-    <rect>
-     <x>270</x>
-     <y>90</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Background</string>
+   <property name="textVisible" >
+    <bool>false</bool>
    </property>
   </widget>
  </widget>
