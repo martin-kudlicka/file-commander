@@ -87,21 +87,25 @@ void cCopyMove::CopyMove(const cFileOperation::eOperation eoOperation, const QFi
 			ccmdDialog->qlSource->setText(qfilSources.at(iI).filePath());
 			ccmdDialog->qlDestination->setText(qsTarget);
 		} else {
-			ccmwWidget->qlSource->setText(qfilSources.at(iI).filePath());
-			ccmwWidget->qlDestination->setText(qsTarget);
+			ccmwWidget->qlSource->setText(qfilSources.at(iI).fileName());
+			ccmwWidget->qlDestination->setText(QFileInfo(qsTarget).fileName());
 		} // if else
 		
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
-			switch (eoOperation) {
-				if (ccmdDialog) {
+			if (ccmdDialog) {
 					ccmdDialog->qpbCurrent->setValue(0);
 				} else {
 					ccmwWidget->qpbCurrent->setValue(0);
 				} // if else
 
+			switch (eoOperation) {
 				case cFileOperation::CopyOperation:	Copy(qfilSources.at(iI).filePath(), qsTarget);
+																if (bCanceled) {
+																	// delete unfinished file
+																	QFile::remove(qsTarget);
+																} // if
 																break;
 				case cFileOperation::MoveOperation:	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
 																qdDir.rmdir(qfilSources.at(iI).path());
@@ -124,7 +128,7 @@ void cCopyMove::CopyMove(const cFileOperation::eOperation eoOperation, const QFi
 	if (ccmdDialog) {
 		ccmdDialog->deleteLater();
 	} else {
-		ccmwWidget->deleteLater();
+		delete ccmwWidget;
 	} // if else
 } // CopyMove
 
