@@ -1,8 +1,5 @@
 #include "FileOperation/CopyMove.h"
 
-#include "FileOperation/CopyMoveDialog.h"
-#include "FileOperation/CopyMoveWidget.h"
-
 // constructor
 cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 {
@@ -11,11 +8,42 @@ cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 	bCanceled = false;
 } // cCopyMove
 
+// copy file
+void cCopyMove::Copy(const QString qsSource, const QString qsDestination)
+{
+	QByteArray qbaData;
+	QFile qfDestination, qfSource;
+
+	qfSource.setFileName(qsSource);
+	qfDestination.setFileName(qsDestination);
+	qfSource.open(QIODevice::ReadOnly);
+	qfDestination.open(QIODevice::WriteOnly);
+
+	// set progress bar
+	if (ccmdDialog) {
+		ccmdDialog->qpbCurrent->setMaximum(qfSource.size());
+	} else {
+		ccmwWidget->qpbCurrent->setMaximum(qfSource.size());
+	} // if else
+
+	// copy
+	while(!qfSource.atEnd() && !bCanceled) {
+		qbaData = qfSource.read(qi64BUFFER_SIZE);
+		qfDestination.write(qbaData);
+		if (ccmdDialog) {
+			ccmdDialog->qpbCurrent->setValue(ccmdDialog->qpbCurrent->value() + qbaData.size());
+			ccmdDialog->qpbTotal->setValue(ccmdDialog->qpbTotal->value() + qbaData.size());
+		} else {
+			ccmwWidget->qpbCurrent->setValue(ccmwWidget->qpbCurrent->value() + qbaData.size());
+			ccmwWidget->qpbTotal->setValue(ccmwWidget->qpbTotal->value() + qbaData.size());
+		} // if else
+		QApplication::processEvents();
+	} // while
+} // Copy
+
 // start of copy or move operation
 void cCopyMove::CopyMove(const cFileOperation::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const eWindow eStyle)
 {
-	cCopyMoveDialog *ccmdDialog;
-	cCopyMoveWidget *ccmwWidget;
 	int iI;
 	QDir qdDir;
 	QFileInfoList qfilSources;
@@ -54,31 +82,36 @@ void cCopyMove::CopyMove(const cFileOperation::eOperation eoOperation, const QFi
 		QString qsTarget;
 
 		// show file names
+		qsTarget = qsDestination + qfilSources.at(iI).filePath().mid(qsSourcePath.length());
 		if (ccmdDialog) {
 			ccmdDialog->qlSource->setText(qfilSources.at(iI).filePath());
+			ccmdDialog->qlDestination->setText(qsTarget);
 		} else {
 			ccmwWidget->qlSource->setText(qfilSources.at(iI).filePath());
+			ccmwWidget->qlDestination->setText(qsTarget);
 		} // if else
-		QApplication::processEvents();
 		
-		qsTarget = qsDestination + qfilSources.at(iI).filePath().mid(qsSourcePath.length());
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
 			switch (eoOperation) {
-				case cFileOperation::CopyOperation:	QFile::copy(qfilSources.at(iI).filePath(), qsTarget);
+				if (ccmdDialog) {
+					ccmdDialog->qpbCurrent->setValue(0);
+				} else {
+					ccmwWidget->qpbCurrent->setValue(0);
+				} // if else
+
+				case cFileOperation::CopyOperation:	Copy(qfilSources.at(iI).filePath(), qsTarget);
 																break;
 				case cFileOperation::MoveOperation:	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
 																qdDir.rmdir(qfilSources.at(iI).path());
+																if (ccmdDialog) {
+																	ccmdDialog->qpbTotal->setValue(ccmdDialog->qpbTotal->value() + qfilSources.at(iI).size());
+																} else {
+																	ccmwWidget->qpbTotal->setValue(ccmwWidget->qpbTotal->value() + qfilSources.at(iI).size());
+																} // if else
 																break;
 			} // switch
-		} // if else
-
-		// file completed
-		if (ccmdDialog) {
-			ccmdDialog->qpbTotal->setValue(ccmdDialog->qpbTotal->value() + qfilSources.at(iI).size());
-		} else {
-			ccmwWidget->qpbTotal->setValue(ccmwWidget->qpbTotal->value() + qfilSources.at(iI).size());
 		} // if else
 	} // for
 

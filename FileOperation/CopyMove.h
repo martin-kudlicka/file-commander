@@ -5,6 +5,8 @@
 
 #include <QHBoxLayout>
 #include "FileOperation.h"
+#include "FileOperation/CopyMoveDialog.h"
+#include "FileOperation/CopyMoveWidget.h"
 
 class cCopyMove : private QObject
 {
@@ -13,29 +15,38 @@ class cCopyMove : private QObject
 	public:
 		/// window style
 		enum eWindow {
-			ForegroundWindow,								///< modal foreground window
-			BackgroundWindow								///< window in qhblOperations layout
+			ForegroundWindow,									///< modal foreground window
+			BackgroundWindow									///< window in qhblOperations layout
 		};
 
 		cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations);
-																///< constructor
-																/**< \param qmwParent parent window for foreground dialog
-																	  \param qhblOperations layout for background widget */
+																	///< constructor
+																	/**< \param qmwParent parent window for foreground dialog
+																		  \param qhblOperations layout for background widget */
 
 		void CopyMove(const cFileOperation::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const eWindow eStyle);
-																///< start of copy or move operation
-																/**< \param eoOperation copy or move operation
-																	  \param qfilSource source file list
-																	  \param qsDestination destination path
-																	  \param eStyle foreground or background operation */
+																	///< start of copy or move operation
+																	/**< \param eoOperation copy or move operation
+																		  \param qfilSource source file list
+																		  \param qsDestination destination path
+																		  \param eStyle foreground or background operation */
 
 	private:
-		bool bCanceled;									///< true if operation is canceled
-		QHBoxLayout *qhblOperations;					///< layout for background operations
-		QMainWindow *qmwParent;							///< parent window for foreground operation window
+		static const qint64 qi64BUFFER_SIZE = 16384;	///< buffer size for copy
+
+		bool bCanceled;										///< true if operation is canceled
+		cCopyMoveDialog *ccmdDialog;						///< copy dialog
+		cCopyMoveWidget *ccmwWidget;						///< copy widget
+		QHBoxLayout *qhblOperations;						///< layout for background operations
+		QMainWindow *qmwParent;								///< parent window for foreground operation window
+
+		void Copy(const QString qsSource, const QString qsDestination);
+																	///< copy file
+																	/**< \param qsSource source file
+																		  \param qsDestination destination file */
 
 	private slots:
-		void on_ccm_OperationCanceled();				///< copy or move operation was canceled
+		void on_ccm_OperationCanceled();					///< copy or move operation was canceled
 }; // cCopyMove
 
 #endif

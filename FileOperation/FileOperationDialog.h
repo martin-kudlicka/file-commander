@@ -1,7 +1,7 @@
 /// dialog for copy and move accepting
 
-#ifndef COPY_MOVE_DIALOG_H
-#define COPY_MOVE_DIALOG_H
+#ifndef FILE_OPERATION_DIALOG_H
+#define FILE_OPERATION_DIALOG_H
 
 #include "ui_FileOperationDialog.h"
 
