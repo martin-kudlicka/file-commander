@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QDateTime>
 #include "Panel/Process.h"
-#include "FileOperation.h"
+#include "FileOperation/FileRoutine.h"
 
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
@@ -128,7 +128,7 @@ void cPanel::RefreshContent(const int iIndex)
 	qhTabs.value(iIndex).qhFiles->clear();
 
 	// get file list
-	qfilFiles = cFileOperation::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, QDir::Dirs | QDir::Files);
+	qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, QDir::Dirs | QDir::Files);
 
 	// go through files and fill dir panel and add them into file list (qhFiles)
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
