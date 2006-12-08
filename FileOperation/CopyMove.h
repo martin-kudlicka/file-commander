@@ -27,12 +27,12 @@ class cCopyMove : private QObject
 																/**< \param eoOperation copy or move operation
 																	  \param qfilSource source file list
 																	  \param qsDestination destination path
-																	  \eStyle foreground or background operation */
+																	  \param eStyle foreground or background operation */
 
 	private:
-		bool bCanceled;
-		QHBoxLayout *qhblOperations;
-		QMainWindow *qmwParent;
+		bool bCanceled;									///< true if operation is canceled
+		QHBoxLayout *qhblOperations;					///< layout for background operations
+		QMainWindow *qmwParent;							///< parent window for foreground operation window
 
 	private slots:
 		void on_ccm_OperationCanceled();				///< copy or move operation was canceled

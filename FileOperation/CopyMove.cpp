@@ -30,7 +30,7 @@ void cCopyMove::CopyMove(const cFileOperation::eOperation eoOperation, const QFi
 		ccmwWidget = NULL;
 	} else {
 		ccmwWidget = new cCopyMoveWidget();
-		// TODO CopyMove add ccmwWidget to layout
+		qhblOperations->addWidget(ccmwWidget);
 		ccmdDialog = NULL;
 	} // if else
 

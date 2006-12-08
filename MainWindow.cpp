@@ -35,13 +35,17 @@ cMainWindow::cMainWindow()
 	LoadTabs(cSettings::PositionRight);
 
 	// initialize variables
-	cfoFileOperation = new cFileOperation(this, static_cast<QHBoxLayout *>(qwFileOperation->parentWidget()->layout()));
+	// background operations layout
+	qhblBackgroundOperations = new QHBoxLayout();
+	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
+	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations);
 } // cMainWindow
 
 // destructor
 cMainWindow::~cMainWindow()
 {
 	delete cfoFileOperation;
+	delete qhblBackgroundOperations;
 	delete cpLeft;
 	delete cpRight;
 	delete cpPlugins;
