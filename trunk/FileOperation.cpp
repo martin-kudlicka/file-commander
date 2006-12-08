@@ -10,6 +10,23 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	this->qhblOperations = qhblOperations;
 } // cFileOperation
 
+// place operation into queue
+void cFileOperation::Enque(const eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination)
+{
+	sOperation soOperation;
+
+	soOperation.eoOperation = eoOperation;
+	soOperation.qfilSource = qfilSource;
+	soOperation.qsDestination = qsDestination;
+
+	qqQperations.enqueue(soOperation);
+
+	if (qqQperations.count() == 1) {
+		// first operation added
+		ProcessQueue();
+	} // if
+} // Enque
+
 // lists directory for it's content
 QFileInfoList cFileOperation::GetDirectoryContent(const QString qsPath, const QDir::Filters fFilters)
 {
@@ -86,10 +103,29 @@ void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPa
 	} // switch
 
 	switch (euaAction) {
-		// TODO Operate euaAction
+		// TODO Operate delete
 		case cFileOperationDialog::CancelAction:	return;
 		case cFileOperationDialog::OkAction:		ccmCopyMove.CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
 																break;
-		case cFileOperationDialog::EnqueueAction:	break;
+		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination);
+																break;
 	} // if
 } // Operate
+
+// process first queued operation
+void cFileOperation::ProcessQueue()
+{
+	while (!qqQperations.empty()) {
+		cCopyMove ccmCopyMove(qmwParent, qhblOperations);
+		sOperation soOperation;
+
+		soOperation = qqQperations.dequeue();
+		switch (soOperation.eoOperation) {
+			// TODO ProcessQueue delete
+			case CopyOperation:
+			case MoveOperation:		ccmCopyMove.CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
+											break;
+			case DeleteOperation:	break;
+		} // switch
+	} // while
+} // ProcessQueue

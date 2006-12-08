@@ -30,6 +30,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cPanel *cpRight;										///< right dir panel
 		cPlugins *cpPlugins;									///< application's plugins
 		cSettings csSettings;								///< accessing application's settings
+		QHBoxLayout *qhblBackgroundOperations;			///< layout for background operations
 		QTabBar qtbLeft;										///< left's panel tab bar
 		QTabBar qtbRight;										///< right's panel tab bar
 
