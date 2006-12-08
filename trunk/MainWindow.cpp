@@ -95,7 +95,7 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 	cPanel *cpDestination, *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	cfoFileOperation->Operate(cFileOperation::CopyOperation, cpSource, cpDestination);
+	cfoFileOperation->Operate(cFileRoutine::CopyOperation, cpSource, cpDestination);
 } // on_qpbCopy_clicked
 
 // move button is clicked on
@@ -104,7 +104,7 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 	cPanel *cpDestination, *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	cfoFileOperation->Operate(cFileOperation::MoveOperation, cpSource, cpDestination);
+	cfoFileOperation->Operate(cFileRoutine::MoveOperation, cpSource, cpDestination);
 } // on_qpbMove_clicked
 
 // set focused panel as source, other as destination

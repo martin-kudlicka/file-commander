@@ -10,6 +10,7 @@ HEADERS = MainWindow.h \
 			 Panel/Process.h \
 			 FileOperation.h \
 			 FileOperation/FileOperationDialog.h \
+			 FileOperation/FileRoutine.h \
 			 FileOperation/CopyMove.h \
 			 FileOperation/CopyMoveDialog.h \
 			 FileOperation/CopyMoveWidget.h \
@@ -29,6 +30,7 @@ SOURCES = FileCommander.cpp \
 			 Panel/Process.cpp \
 			 FileOperation.cpp \
 			 FileOperation/FileOperationDialog.cpp \
+			 FileOperation/FileRoutine.cpp \
 			 FileOperation/CopyMove.cpp \
 			 FileOperation/CopyMoveDialog.cpp \
 			 FileOperation/CopyMoveWidget.cpp \

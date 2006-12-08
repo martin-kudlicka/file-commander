@@ -1,7 +1,6 @@
 #include "FileOperation.h"
 
 #include "FileOperation/FileOperationDialog.h"
-#include "FileOperation/CopyMove.h"
 
 // constructor
 cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
@@ -11,7 +10,7 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 } // cFileOperation
 
 // place operation into queue
-void cFileOperation::Enque(const eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination)
+void cFileOperation::Enque(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination)
 {
 	sOperation soOperation;
 
@@ -27,51 +26,23 @@ void cFileOperation::Enque(const eOperation eoOperation, const QFileInfoList qfi
 	} // if
 } // Enque
 
-// lists directory for it's content
-QFileInfoList cFileOperation::GetDirectoryContent(const QString qsPath, const QDir::Filters fFilters)
-{
-	QDir qdDir;
-
-	qdDir.setPath(qsPath);
-	qdDir.setFilter(fFilters);
-	return qdDir.entryInfoList();
-} // GetDirectoryContent
-
-// return list of sources (within subdirectories too)
-QFileInfoList cFileOperation::GetSources(const QFileInfoList qfilFileAndDirList)
+// copy / move thread finished
+void cFileOperation::on_cCopyMove_finished()
 {
 	int iI;
-	QFileInfoList qfilDirectories, qfilSources;
 
-	qfilSources = qfilFileAndDirList;
-
-	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
-		if (qfilFileAndDirList.at(iI).isDir()) {
-			qfilDirectories.append(qfilFileAndDirList.at(iI));
+	for (iI = 0; iI < qlCopyMove.count(); iI++) {
+		if (qlCopyMove.at(iI)->isFinished()) {
+			qlCopyMove.at(iI)->deleteLater();
+			qlCopyMove.removeAt(iI);
 		} // if
 	} // for
-
-	while (!qfilDirectories.isEmpty()) {
-		QFileInfo qfiDir;
-		QFileInfoList qfilDirContent;
-
-		qfiDir = qfilDirectories.takeAt(0);
-		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-		qfilSources += qfilDirContent;
-		for (iI = 0; iI < qfilDirContent.count(); iI++) {
-			if (qfilDirContent.at(iI).isDir()) {
-				qfilDirectories.append(qfilDirContent.at(iI));
-			} // if
-		} // for
-	} // while
-
-	return qfilSources;
-} // GetSources
+} // on_cCopyMove_finished
 
 // prepare operation
-void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
+void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
 {
-	cCopyMove ccmCopyMove(qmwParent, qhblOperations);
+	cCopyMove *ccmCopyMove;
 	cFileOperationDialog cfodDialog(qmwParent);
 	cPanel::sObjects soObjects;
 	QFileInfoList qfilSource;
@@ -90,22 +61,25 @@ void cFileOperation::Operate(const eOperation eoOperation, cPanel *cpSource, cPa
 
 	switch (eoOperation) {
 		// TODO Process delete operation
-		case CopyOperation:	euaAction = cfodDialog.ShowDialog(tr("Copy"),
-																				 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
-																				 &qsDestination,
-																				 &qsFilter);
-									break;
-		case MoveOperation:	euaAction = cfodDialog.ShowDialog(tr("Move"),
-																				 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
-																				 &qsDestination,
-																				 &qsFilter);
-									break;
+		case cFileRoutine::CopyOperation:	euaAction = cfodDialog.ShowDialog(tr("Copy"),
+																									 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
+																									 &qsDestination,
+																									 &qsFilter);
+														break;
+		case cFileRoutine::MoveOperation:	euaAction = cfodDialog.ShowDialog(tr("Move"),
+																									 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
+																									 &qsDestination,
+																									 &qsFilter);
+														break;
 	} // switch
 
 	switch (euaAction) {
 		// TODO Operate delete
 		case cFileOperationDialog::CancelAction:	return;
-		case cFileOperationDialog::OkAction:		ccmCopyMove.CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
+		case cFileOperationDialog::OkAction:		ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
+																connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+																qlCopyMove.append(ccmCopyMove);
+																ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
 																break;
 		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination);
 																break;
@@ -122,10 +96,10 @@ void cFileOperation::ProcessQueue()
 		soOperation = qqQperations.first();
 		switch (soOperation.eoOperation) {
 			// TODO ProcessQueue delete
-			case CopyOperation:
-			case MoveOperation:		ccmCopyMove.CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
-											break;
-			case DeleteOperation:	break;
+			case cFileRoutine::CopyOperation:
+			case cFileRoutine::MoveOperation:	ccmCopyMove.CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
+															break;
+			case cFileRoutine::DeleteOperation:	break;
 		} // switch
 		qqQperations.dequeue();
 	} // while
