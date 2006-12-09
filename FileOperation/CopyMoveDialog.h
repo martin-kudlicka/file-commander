@@ -14,6 +14,7 @@ class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
 																						/**< \param qwParent parent widget (window) of this dialog */
 
 	signals:
+		void Background();														///< set operation as background
 		void Cancel();																///< operation canceled
 
 	private slots:
@@ -31,7 +32,9 @@ class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
 																						/**< \param qi64Value overall maximum */
 		void on_cCopyMove_SetTotalValue(const qint64 qi64Value);		///< set overall progress
 																						/**< \param qi64Value overall progress */
-		void on_qpbCancel_clicked(bool checked = false);				///< copy button is clicked on
+		void on_qpbBackground_clicked(bool checked = false);			///< Background button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbCancel_clicked(bool checked = false);				///< Cancel button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 }; // cCopyMoveDialog
 
