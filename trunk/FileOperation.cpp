@@ -7,6 +7,7 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
+	ccmInQueue = NULL;
 } // cFileOperation
 
 // place operation into queue
@@ -19,11 +20,7 @@ void cFileOperation::Enque(const cFileRoutine::eOperation eoOperation, const QFi
 	soOperation.qsDestination = qsDestination;
 
 	qqQperations.enqueue(soOperation);
-
-	if (qqQperations.count() == 1) {
-		// first operation added
-		ProcessQueue();
-	} // if
+	ProcessQueue();
 } // Enque
 
 // copy / move thread finished
@@ -33,6 +30,11 @@ void cFileOperation::on_cCopyMove_finished()
 
 	for (iI = 0; iI < qlCopyMove.count(); iI++) {
 		if (qlCopyMove.at(iI)->isFinished()) {
+			if (ccmInQueue == qlCopyMove.at(iI)) {
+				// queued operation finished
+				ccmInQueue = NULL;
+				ProcessQueue();
+			} // if
 			qlCopyMove.at(iI)->deleteLater();
 			qlCopyMove.removeAt(iI);
 		} // if
@@ -89,18 +91,21 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 // process first queued operation
 void cFileOperation::ProcessQueue()
 {
-	while (!qqQperations.empty()) {
-		cCopyMove ccmCopyMove(qmwParent, qhblOperations);
+	if (ccmInQueue == NULL && !qqQperations.isEmpty()) {
+		cCopyMove *ccmCopyMove;
 		sOperation soOperation;
 
-		soOperation = qqQperations.first();
+		soOperation = qqQperations.dequeue();
 		switch (soOperation.eoOperation) {
 			// TODO ProcessQueue delete
 			case cFileRoutine::CopyOperation:
-			case cFileRoutine::MoveOperation:	ccmCopyMove.CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
+			case cFileRoutine::MoveOperation:	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
+															ccmInQueue = ccmCopyMove;
+															connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+															qlCopyMove.append(ccmCopyMove);
+															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
 															break;
 			case cFileRoutine::DeleteOperation:	break;
 		} // switch
-		qqQperations.dequeue();
 	} // while
 } // ProcessQueue

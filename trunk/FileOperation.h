@@ -33,6 +33,7 @@ class cFileOperation : private QObject
 			QString qsDestination;						///< destination path
 		};
 
+		cCopyMove *ccmInQueue;							///< processed copy / move operation in queue
 		QMainWindow *qmwParent;							///< parent window for dialogs
 		QHBoxLayout *qhblOperations;					///< background and queued operation windows
 		QList<cCopyMove *> qlCopyMove;				///< list of copy / move threads
