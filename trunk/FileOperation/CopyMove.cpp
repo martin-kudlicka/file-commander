@@ -64,6 +64,7 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFile
 		connect(this, SIGNAL(SetSource(const QString)), ccmwWidget, SLOT(on_cCopyMove_SetSource(const QString)));
 		connect(this, SIGNAL(SetTotalMaximum(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetTotalMaximum(const qint64)));
 		connect(this, SIGNAL(SetTotalValue(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetTotalValue(const qint64)));
+		connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_ccm_OperationCanceled()));
 		ccmdDialog = NULL;
 	} // if else
 

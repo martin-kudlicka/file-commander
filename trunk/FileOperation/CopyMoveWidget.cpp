@@ -41,3 +41,9 @@ void cCopyMoveWidget::on_cCopyMove_SetTotalValue(const qint64 qi64Value)
 {
 	qpbTotal->setValue(qi64Value);
 } // on_cCopyMove_SetTotalValue
+
+// copy button is clicked on
+void cCopyMoveWidget::on_qpbCancel_clicked(bool checked /* false */)
+{
+	emit Cancel();
+} // on_qpbCancel_clicked
