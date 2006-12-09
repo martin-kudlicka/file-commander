@@ -18,45 +18,6 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="qlSource" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>90</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Searching for files,</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="qlDestination" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>58</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>please wait.</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>0</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>x</string>
-   </property>
-  </widget>
   <widget class="QProgressBar" name="qpbTotal" >
    <property name="geometry" >
     <rect>
@@ -93,6 +54,48 @@
    </property>
    <property name="textVisible" >
     <bool>false</bool>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlDestination" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>58</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>please wait.</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlSource" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>90</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Searching for files,</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>0</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>x</string>
    </property>
   </widget>
  </widget>

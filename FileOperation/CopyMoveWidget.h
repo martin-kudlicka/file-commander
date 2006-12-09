@@ -10,7 +10,10 @@ class cCopyMoveWidget : public QWidget, private Ui::qwCopyMove
 	Q_OBJECT
 
 	public:
-		cCopyMoveWidget(); ///< constructor
+		cCopyMoveWidget();														///< constructor
+
+	signals:
+		void Cancel();																///< operation canceled
 
 	private slots:
 		void on_cCopyMove_SetCurrentMaximum(const qint64 qi64Value);
@@ -27,6 +30,8 @@ class cCopyMoveWidget : public QWidget, private Ui::qwCopyMove
 																						/**< \param qi64Value overall maximum */
 		void on_cCopyMove_SetTotalValue(const qint64 qi64Value);		///< set overall progress
 																						/**< \param qi64Value overall progress */
+		void on_qpbCancel_clicked(bool checked = false);				///< copy button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 }; // cCopyMoveWidget
 
 #endif
