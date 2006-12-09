@@ -59,12 +59,25 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>0</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>x</string>
+   </property>
+  </widget>
   <widget class="QLabel" name="qlDestination" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>58</width>
+     <width>111</width>
      <height>16</height>
     </rect>
    </property>
@@ -77,25 +90,12 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>90</width>
+     <width>111</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text" >
     <string>Searching for files,</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbCancel" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>0</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>x</string>
    </property>
   </widget>
  </widget>

@@ -43,7 +43,13 @@ void cCopyMoveDialog::on_cCopyMove_SetTotalValue(const qint64 qi64Value)
 	qpbTotal->setValue(qi64Value);
 } // on_cCopyMove_SetTotalValue
 
-// copy button is clicked on
+// Background button is clicked on
+void cCopyMoveDialog::on_qpbBackground_clicked(bool checked /* false */)
+{
+	emit Background();
+} // on_qpbBackground_clicked
+
+// Cancel button is clicked on
 void cCopyMoveDialog::on_qpbCancel_clicked(bool checked /* false */)
 {
 	emit Cancel();
