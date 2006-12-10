@@ -3,7 +3,8 @@ CONFIG += qt warn_on
 FORMS = MainWindow.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
-		  FileOperation/CopyMoveWidget.ui
+		  FileOperation/CopyMoveWidget.ui \
+		  FileOperation/QueueWidget.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
 			 Panel/ShellMenu.h \
@@ -14,6 +15,7 @@ HEADERS = MainWindow.h \
 			 FileOperation/CopyMove.h \
 			 FileOperation/CopyMoveDialog.h \
 			 FileOperation/CopyMoveWidget.h \
+			 FileOperation/QueueWidget.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
@@ -34,6 +36,7 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/CopyMove.cpp \
 			 FileOperation/CopyMoveDialog.cpp \
 			 FileOperation/CopyMoveWidget.cpp \
+			 FileOperation/QueueWidget.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \

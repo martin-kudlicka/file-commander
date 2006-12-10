@@ -1,0 +1,50 @@
+<ui version="4.0" >
+ <class>qwQueueWidget</class>
+ <widget class="QWidget" name="qwQueueWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>150</width>
+    <height>96</height>
+   </rect>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>16777215</width>
+    <height>96</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="qpbRemove" >
+   <property name="geometry" >
+    <rect>
+     <x>130</x>
+     <y>10</y>
+     <width>16</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>-</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="qlwOperations" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="selectionMode" >
+    <enum>QAbstractItemView::ExtendedSelection</enum>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
