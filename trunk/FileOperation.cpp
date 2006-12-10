@@ -5,21 +5,46 @@
 // constructor
 cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 {
+	// set private variables
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	ccmInQueue = NULL;
+
+	// queue widget
+	cqwQueue.hide();
+	qhblOperations->insertWidget(iQUEUE_WIDGET_POS, &cqwQueue);
+
+	// connections
+	connect(this, SIGNAL(AddIntoQueueList(QListWidgetItem *)), &cqwQueue, SLOT(on_cFileOperation_AddIntoQueueList(QListWidgetItem *)));
+	connect(&cqwQueue, SIGNAL(RemoveQueuedItems(QList<QListWidgetItem *>)), SLOT(on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *>)));
 } // cFileOperation
 
 // place operation into queue
 void cFileOperation::Enque(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination)
 {
+	QListWidgetItem *qlwiOperation;
+	QString qsItem;
 	sOperation soOperation;
 
+	switch (eoOperation) {
+		case cFileRoutine::CopyOperation:	qsItem = tr("copy");
+														break;
+		case cFileRoutine::DeleteOperation:	qsItem = tr("del");
+														break;
+		case cFileRoutine::MoveOperation:	qsItem = tr("move");
+														break;
+	} // switch
+	qsItem += ": " + qfilSource.at(0).path() + " -> " + qsDestination;
+
+	// add new item into queue
+	qlwiOperation = new QListWidgetItem(qsItem);
 	soOperation.eoOperation = eoOperation;
 	soOperation.qfilSource = qfilSource;
 	soOperation.qsDestination = qsDestination;
-
+	soOperation.qlwiItem = qlwiOperation;
 	qqQperations.enqueue(soOperation);
+	AddIntoQueueList(qlwiOperation);
+
 	ProcessQueue();
 } // Enque
 
@@ -40,6 +65,27 @@ void cFileOperation::on_cCopyMove_finished()
 		} // if
 	} // for
 } // on_cCopyMove_finished
+
+// remove queued items (operations)
+void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlItems)
+{
+	int iI;
+
+	for (iI = 0; iI < qlItems.count(); iI++) {
+		int iJ;
+
+		for (iJ = 0; iJ < qqQperations.count(); iJ++) {
+			if (qqQperations.at(iJ).qlwiItem == qlItems.at(iI)) {
+				delete qqQperations.at(iJ).qlwiItem;
+				qqQperations.removeAt(iJ);
+				break;
+			} // if
+		} // for
+	} // for
+
+	// actualize visibility
+	ProcessQueue();
+} // on_cqwQueue_RemoveQueuedItems
 
 // prepare operation
 void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
@@ -96,6 +142,8 @@ void cFileOperation::ProcessQueue()
 		sOperation soOperation;
 
 		soOperation = qqQperations.dequeue();
+		delete soOperation.qlwiItem;
+
 		switch (soOperation.eoOperation) {
 			// TODO ProcessQueue delete
 			case cFileRoutine::CopyOperation:
@@ -107,5 +155,11 @@ void cFileOperation::ProcessQueue()
 															break;
 			case cFileRoutine::DeleteOperation:	break;
 		} // switch
-	} // while
+	} // if
+
+	if (!qqQperations.isEmpty()) {
+		cqwQueue.show();
+	} else {
+		cqwQueue.hide();
+	} // if else
 } // ProcessQueue

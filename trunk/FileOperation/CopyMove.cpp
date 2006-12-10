@@ -123,8 +123,15 @@ void cCopyMove::run()
 		// show file names
 		qsSource = qfilSources.at(iI).filePath();
 		qsTarget = qsDestination + qfilSources.at(iI).filePath().mid(qsSourcePath.length());
-		emit SetSource(qsSource);
-		emit SetDestination(qsTarget);
+		if (ccmdDialog) {
+			// name with path in dialog
+			emit SetSource(qsSource);
+			emit SetDestination(qsTarget);
+		} else {
+			// just name in widget
+			emit SetSource(QFileInfo(qsSource).fileName());
+			emit SetDestination(QFileInfo(qsTarget).fileName());
+		} // if else
 		
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
