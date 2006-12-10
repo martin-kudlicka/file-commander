@@ -46,7 +46,9 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const QString
 	setWindowTitle(qsTitle);
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);
+	qcbDestination->setFocus(Qt::ActiveWindowFocusReason);
 	qcbFilter->setEditText(*qsFilter);
+
 	euaAction = static_cast<eUserAction>(exec());
 
 	if (euaAction != CancelAction) {
