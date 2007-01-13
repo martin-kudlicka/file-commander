@@ -8,6 +8,7 @@
 #include "Settings.h"
 #include "FileOperation.h"
 #include <QTimer>
+#include <QShortcut>
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";
@@ -34,6 +35,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cSettings csSettings;										///< accessing application's settings
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;	///< drives in system
 		QHBoxLayout *qhblBackgroundOperations;					///< layout for background operations
+		QShortcut *qsLeftDrive;										///< left drive combo box shortcut
+		QShortcut *qsRightDrive;									///< right drive combo box shortcut
 		QTabBar qtbLeft;												///< left's panel tab bar
 		QTabBar qtbRight;												///< right's panel tab bar
 		QTimer qtTimer;												///< timer for requesting changeable informations
@@ -71,6 +74,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbRightUpDir_clicked(bool checked = false);
 																			///< right up dir button is clicked on
 																			/**< \param checked true if button is checkable and checked */
+		void on_qsLeftDrive_activated();							///< left drive shortcut activated
+		void on_qsRightDrive_activated();						///< right drive shortcut activated
 		void on_qtTimer_timeout();									///< timer's timeout
 }; // cMainWindow
 
