@@ -39,15 +39,35 @@ void cFileOperationDialog::on_qpbOK_clicked(bool checked /* false */)
 } // on_qpbOK_clicked
 
 // shows copy or move dialog
-cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const QString qsTitle, const QString qsCount, QString *qsDestination, QString *qsFilter)
+cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation eoOperation, const QString qsCount, QString *qsDestination, QString *qsFilter)
 {
 	eUserAction euaAction;
 
-	setWindowTitle(qsTitle);
+	// prepare dialog
+	switch (eoOperation) {
+		case cFileRoutine::DeleteOperation:	setWindowTitle(tr("Delete"));
+														break;
+		case cFileRoutine::CopyOperation:	setWindowTitle(tr("Copy"));
+														break;
+		case cFileRoutine::MoveOperation:	setWindowTitle(tr("Move"));
+														break;
+	} // switch
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);
-	qcbDestination->setFocus(Qt::ActiveWindowFocusReason);
 	qcbFilter->setEditText(*qsFilter);
+
+	if (eoOperation == cFileRoutine::DeleteOperation) {
+		qlCount->parentWidget()->setGeometry(qlCount->parentWidget()->geometry().x(),
+																						qlCount->parentWidget()->geometry().y(),
+																						qlCount->parentWidget()->geometry().width(),
+																						qlCount->parentWidget()->geometry().height() - qcbDestination->height());
+		setMaximumHeight(geometry().height() - qcbDestination->height());
+		qcbFilter->setFocus(Qt::ActiveWindowFocusReason);
+		delete qcbDestination;
+		delete qpbBrowse;
+	} else {
+		qcbDestination->setFocus(Qt::ActiveWindowFocusReason);
+	} // if else
 
 	euaAction = static_cast<eUserAction>(exec());
 

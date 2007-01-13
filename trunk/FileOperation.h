@@ -20,7 +20,7 @@ class cFileOperation : private QObject
 																			/**< \param qmwParent parent window for dialogs
 																				  \param qbnlOperations layout for bacground and queued windows */
 
-		void Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination);
+		void Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination = NULL);
 																			///< prepare operation
 																			/**< \param eoOperation operation type
 																				  \param cpSource source file panel

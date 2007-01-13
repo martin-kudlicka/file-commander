@@ -4,7 +4,9 @@ FORMS = MainWindow.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
-		  FileOperation/QueueWidget.ui
+		  FileOperation/QueueWidget.ui \
+		  FileOperation/DeleteDialog.ui \
+		  FileOperation/DeleteWidget.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
 			 Panel/ShellMenu.h \

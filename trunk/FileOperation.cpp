@@ -88,7 +88,7 @@ void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // prepare operation
-void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination)
+void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination /* NULL */)
 {
 	cCopyMove *ccmCopyMove;
 	cFileOperationDialog cfodDialog(qmwParent);
@@ -98,12 +98,13 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 	QString qsDestination, qsFilter;
 
 	qfilSource = cpSource->GetSelectedItemsList();
-	qsDestination = cpDestination->GetPath();
-
 	if (qfilSource.count() == 0) {
 		// no items selected
 		return;
-	} else
+	} // if
+
+	if (eoOperation != cFileRoutine::DeleteOperation) {
+		qsDestination = cpDestination->GetPath();
 		if (qfilSource.count() == 1) {
 			// one file selected
 			qsDestination += '/' + qfilSource.at(0).fileName();
@@ -111,17 +112,22 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 			// many files selected
 			qsDestination += "/*.*";
 		} // if else
+	} // if
 
 	soObjects = cPanel::GetCount(qfilSource);
 
 	switch (eoOperation) {
-		// TODO Process delete operation
-		case cFileRoutine::CopyOperation:	euaAction = cfodDialog.ShowDialog(tr("Copy"),
+		case cFileRoutine::DeleteOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
+																									 tr("&Delete %1 files and %2 directories.").arg(soObjects.Files).arg(soObjects.Directories),
+																									 &qsDestination,
+																									 &qsFilter);
+														break;
+		case cFileRoutine::CopyOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
 																									 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
 																									 &qsDestination,
 																									 &qsFilter);
 														break;
-		case cFileRoutine::MoveOperation:	euaAction = cfodDialog.ShowDialog(tr("Move"),
+		case cFileRoutine::MoveOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
 																									 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
 																									 &qsDestination,
 																									 &qsFilter);
@@ -129,12 +135,17 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 	} // switch
 
 	switch (euaAction) {
-		// TODO Operate delete
 		case cFileOperationDialog::CancelAction:	return;
-		case cFileOperationDialog::OkAction:		ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
-																connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
-																qlCopyMove.append(ccmCopyMove);
-																ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
+		case cFileOperationDialog::OkAction:		if (eoOperation == cFileRoutine::DeleteOperation) {
+																	// delete
+																	// TODO Operate
+																} else {
+																	// copy or move
+																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
+																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+																	qlCopyMove.append(ccmCopyMove);
+																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
+																} // if else
 																break;
 		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination);
 																break;
@@ -152,7 +163,6 @@ void cFileOperation::ProcessQueue()
 		delete soOperation.qlwiItem;
 
 		switch (soOperation.eoOperation) {
-			// TODO ProcessQueue delete
 			case cFileRoutine::CopyOperation:
 			case cFileRoutine::MoveOperation:	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
 															ccmInQueue = ccmCopyMove;
@@ -160,7 +170,8 @@ void cFileOperation::ProcessQueue()
 															qlCopyMove.append(ccmCopyMove);
 															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
 															break;
-			case cFileRoutine::DeleteOperation:	break;
+			case cFileRoutine::DeleteOperation:	// TODO ProcessQueue
+															break;
 		} // switch
 	} // if
 
