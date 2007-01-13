@@ -87,7 +87,7 @@ class cPanel : private QObject
 		void on_qtwTree_customContextMenuRequested(const QPoint &pos);
 																			///< show tree view context menu
 																			/**< \param pos position of context menu */
-		void on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
+		void on_qtwTree_itemActivated(QTreeWidgetItem *item, int column);
 																			///< double click in tree view
 																			/**< \param item item clicked on
 																				  \param column column in item clicked in */

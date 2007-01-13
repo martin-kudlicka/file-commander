@@ -39,7 +39,7 @@ void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
 
 	// connect signals to slots
 	connect(qtwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_qtwTree_customContextMenuRequested(const QPoint &)));
-	connect(qtwTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), SLOT(on_qtwTree_itemDoubleClicked(QTreeWidgetItem *, int)));
+	connect(qtwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_qtwTree_itemActivated(QTreeWidgetItem *, int)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -103,7 +103,7 @@ void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
 } // on_qtwTree_customContextMenuRequested
 
 // double click in tree view
-void cPanel::on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void cPanel::on_qtwTree_itemActivated(QTreeWidgetItem *item, int column)
 {
 	QFileInfo qfiFile;
 
@@ -115,7 +115,7 @@ void cPanel::on_qtwTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
 		// double click on file -> execute it
 		cProcess::Execute(qfiFile.filePath());
 	} // if else
-} // on_qtwTree_itemDoubleClicked
+} // on_qtwTree_itemActivated
 
 // refresh dir content
 void cPanel::RefreshContent(const int iIndex)
