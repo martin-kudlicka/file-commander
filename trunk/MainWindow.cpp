@@ -217,6 +217,15 @@ void cMainWindow::on_qtTimer_timeout()
 	ActualizeDrives();
 } // on_qtTimer_timeout
 
+// size of main window changed
+void cMainWindow::resizeEvent(QResizeEvent *event)
+{
+	qswLeft->parentWidget()->parentWidget()->parentWidget()->setGeometry(qswLeft->parentWidget()->parentWidget()->parentWidget()->x(),
+																								qswLeft->parentWidget()->parentWidget()->parentWidget()->y(),
+																								centralWidget()->width() - 2 * qswLeft->parentWidget()->parentWidget()->parentWidget()->x(),
+																								centralWidget()->height() - qswLeft->parentWidget()->parentWidget()->parentWidget()->y());
+} // resizeEvent
+
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
 {
