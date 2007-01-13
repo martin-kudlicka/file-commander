@@ -10,14 +10,14 @@ class cTreeWidget : public QTreeWidget
 	Q_OBJECT
 
 	public:
-		cTreeWidget();													///< constructor
+		cTreeWidget();															///< constructor
 
 	signals:
-		void itemSelectionChanged(cTreeWidget *ctwTree);	///< selection changed it directory view
-																			/**< \param ctwTree tree that changes selection */
+		void itemSelectionChanged(const cTreeWidget *ctwTree);	///< selection changed it directory view
+																					/**< \param ctwTree tree that changes selection */
 
 	private slots:
-		void on_ctwTree_itemSelectionChanged();				///< selection changed it directory view
+		void on_ctwTree_itemSelectionChanged();						///< selection changed it directory view
 }; // cTreeWidget
 
 #endif

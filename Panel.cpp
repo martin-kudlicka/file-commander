@@ -44,7 +44,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	// connect signals to slots
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
-	connect(ctwTree, SIGNAL(itemSelectionChanged(cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(cTreeWidget *)));
+	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -191,7 +191,7 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 } // on_ctwTree_itemActivated
 
 // changed selected items in directory view
-void cPanel::on_ctwTree_itemSelectionChanged(cTreeWidget *ctwTree)
+void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 {
 	int iDirectories, iDirectoriesTotal, iFiles, iFilesTotal, iI, iSize, iSizeTotal;
 
@@ -227,7 +227,9 @@ void cPanel::on_ctwTree_itemSelectionChanged(cTreeWidget *ctwTree)
 	} // for
 
 	qhiTab.value().swWidgets->qsSelected = tr("%1 / %2 in %3 / %4 files and %5 / %6 directories").arg(iSize).arg(iSizeTotal).arg(iFiles).arg(iFilesTotal).arg(iDirectories).arg(iDirectoriesTotal);
-	ActualizeWidgets();
+	if (static_cast<cTreeWidget *>(qswDir->currentWidget()) == ctwTree) {
+		ActualizeWidgets();
+	} // if
 } // on_ctwTree_itemSelectionChanged
 
 // selected drive changes
@@ -331,8 +333,6 @@ void cPanel::RefreshContent(const int &iIndex)
 		// mark first item
 		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0)->setSelected(true);
 	} // if
-
-	ActualizeWidgets();
 } // RefreshContent
 
 // refresh column's header
