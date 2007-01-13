@@ -1,5 +1,9 @@
 #include "FileOperation/FileRoutine.h"
 
+#ifdef Q_WS_WIN
+#include <Windows.h>
+#endif
+
 // lists directory for it's content
 QFileInfoList cFileRoutine::GetDirectoryContent(const QString &qsPath, const QDir::Filters &fFilters)
 {
@@ -9,6 +13,31 @@ QFileInfoList cFileRoutine::GetDirectoryContent(const QString &qsPath, const QDi
 	qdDir.setFilter(fFilters);
 	return qdDir.entryInfoList();
 } // GetDirectoryContent
+
+// find out disk space information
+cFileRoutine::sDiskSpace cFileRoutine::GetDiskSpace(const QString &qsPath)
+{
+	sDiskSpace sdsInfo;
+
+#ifdef Q_WS_WIN
+	ULARGE_INTEGER uliFree, uliTotal;
+
+	GetDiskFreeSpaceEx(reinterpret_cast<LPCWSTR>(qsPath.unicode()), &uliFree, &uliTotal, NULL);
+	sdsInfo.qi64Free = uliFree.QuadPart;
+	sdsInfo.qi64Total = uliTotal.QuadPart;
+#else
+	/*struct stat stst;
+	struct statfs stfs;
+
+	if ( ::stat(sDirPath.local8Bit(),&stst) == -1 ) return false;
+	if ( ::statfs(sDirPath.local8Bit(),&stfs) == -1 ) return false;
+
+	fFree = stfs.f_bavail * ( stst.st_blksize / fKB );
+	fTotal = stfs.f_blocks * ( stst.st_blksize / fKB );*/
+#endif
+
+	return sdsInfo;
+} // GetDiskSpace
 
 // detect drives in system
 QMap<QString, cFileRoutine::sDriveInfo> cFileRoutine::GetDrives()
