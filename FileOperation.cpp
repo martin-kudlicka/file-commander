@@ -103,7 +103,14 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 	if (qfilSource.count() == 0) {
 		// no items selected
 		return;
-	} // if
+	} else
+		if (qfilSource.count() == 1) {
+			// one file selected
+			qsDestination += '/' + qfilSource.at(0).fileName();
+		} else {
+			// many files selected
+			qsDestination += "/*.*";
+		} // if else
 
 	soObjects = cPanel::GetCount(qfilSource);
 

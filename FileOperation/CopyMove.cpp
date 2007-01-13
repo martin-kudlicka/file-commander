@@ -80,6 +80,67 @@ void cCopyMove::CreateWidget()
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_ccm_OperationCanceled()));
 } // CreateWidget
 
+// return file name modified by wildcard
+QString cCopyMove::GetWildcardedName(const QFileInfo qfiFile, const QString qsSourcePath, const QString qsDestination)
+{
+	int iI;
+	QString qsNewFilename;
+	QStringList qslOutputs, qslPatterns, qslStrings;
+
+	if (!qsDestination.contains('*') && !qsDestination.contains('?')) {
+		// no wildcard in file name
+		QDir qdDir;
+
+		if (qdDir.exists(qsDestination)) {
+			// destination without file name
+			return qsDestination + qfiFile.filePath().mid(qsSourcePath.length());
+		} else {
+			// destination already with file name (copy or move of one file)
+			return qsDestination;
+		} // if else
+	} // if
+
+	// preparation
+	qslPatterns.append(QFileInfo(qsDestination).completeBaseName());
+	qslPatterns.append(QFileInfo(qsDestination).suffix());
+	qslStrings.append(qfiFile.completeBaseName());
+	qslStrings.append(qfiFile.suffix());
+	qslOutputs.append("");
+	qslOutputs.append("");
+
+	// apply patterns on strings
+	for (iI = 0; iI <= 1; iI++) {
+		int iPatternPos, iStringPos;
+
+		iStringPos = 0;
+		for (iPatternPos = 0; iPatternPos < qslPatterns[iI].length(); iPatternPos++) {
+			if (qslPatterns[iI].at(iPatternPos) == '*') {
+				// copy rest of the source name
+				int iJ;
+
+				for (iJ = iStringPos; iJ < qslStrings[iI].length(); iJ++) {
+					qslOutputs[iI] += qslStrings[iI].at(iStringPos);
+					iStringPos++;
+				} // for
+			} else
+				if (qslPatterns[iI].at(iPatternPos) == '?') {
+					// copy one character of the source name
+					if (iStringPos < qslStrings[iI].length()) {
+						qslOutputs[iI] += qslStrings[iI].at(iStringPos);
+						iStringPos++;
+					} // if
+				} else {
+					// copy character from pattern
+					qslOutputs[iI] += qslPatterns[iI].at(iPatternPos);
+					iStringPos++;
+				} // if else
+		} // while
+	} // for
+
+	qsNewFilename = qfiFile.path() + '/' + qslOutputs[0] + '.' + qslOutputs[1];
+	return QFileInfo(qsDestination).path() + qsNewFilename.mid(qsSourcePath.length());
+} // GetWildcardedName
+
 // copy or move operation was canceled
 void cCopyMove::on_ccm_OperationCanceled()
 {
@@ -122,7 +183,7 @@ void cCopyMove::run()
 	for (iI = 0; iI < qfilSources.count() && !bCanceled; iI++) {
 		// show file names
 		qsSource = qfilSources.at(iI).filePath();
-		qsTarget = qsDestination + qfilSources.at(iI).filePath().mid(qsSourcePath.length());
+		qsTarget = GetWildcardedName(qfilSources.at(iI).filePath(), qsSourcePath, qsDestination);
 		if (ccmdDialog) {
 			// name with path in dialog
 			emit SetSource(qsSource);
