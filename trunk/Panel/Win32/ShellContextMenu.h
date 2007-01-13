@@ -14,9 +14,9 @@
 class cShellContextMenu  
 {
 	public:
-		void SetObjects(const QString qsObject);			///< set object for context menu
+		void SetObjects(const QString &qsObject);			///< set object for context menu
 																		/**< \param qsObject object name (filename) */
-		void SetObjects(const QStringList qslObjects);	///< set objects for context menu
+		void SetObjects(const QStringList &qslObjects);	///< set objects for context menu
 																		/**< \param qslObjects string list of object names */
 		UINT ShowContextMenu (HWND pWnd, POINT pt);		///< show context menu
 																		/**< \param pWnd parent window handle

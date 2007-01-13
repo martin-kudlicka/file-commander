@@ -14,14 +14,14 @@ void cDelete::CreateWidget()
 {
 	cdwWidget = new cDeleteWidget();
 	qhblOperations->insertWidget(cFileRoutine::iQUEUED_OPERATION_POSITION, cdwWidget);
-	connect(this, SIGNAL(SetSource(const QString)), cdwWidget, SLOT(on_cDeleteWidget_SetSource(const QString)));
-	connect(this, SIGNAL(SetTotalMaximum(const qint64)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalMaximum(const qint64)));
-	connect(this, SIGNAL(SetTotalValue(const qint64)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalValue(const qint64)));
+	connect(this, SIGNAL(SetSource(const QString &)), cdwWidget, SLOT(on_cDeleteWidget_SetSource(const QString &)));
+	connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalMaximum(const qint64 &)));
+	connect(this, SIGNAL(SetTotalValue(const qint64 &)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalValue(const qint64 &)));
 	connect(cdwWidget, SIGNAL(Cancel()), SLOT(on_cd_OperationCanceled()));
 } // CreateWidget
 
 // start of delete operation
-void cDelete::Delete(const QFileInfoList qfilSource, const cFileRoutine::eWindow eStyle)
+void cDelete::Delete(const QFileInfoList &qfilSource, const cFileRoutine::eWindow &eStyle)
 {
 	this->qfilSource = qfilSource;
 
@@ -29,9 +29,9 @@ void cDelete::Delete(const QFileInfoList qfilSource, const cFileRoutine::eWindow
 		cddDialog = new cDeleteDialog(qmwParent);
 		cddDialog->setModal(true);
 		cddDialog->show();
-		connect(this, SIGNAL(SetSource(const QString)), cddDialog, SLOT(on_cDeleteDialog_SetSource(const QString)));
-		connect(this, SIGNAL(SetTotalMaximum(const qint64)), cddDialog, SLOT(on_cDeleteDialog_SetTotalMaximum(const qint64)));
-		connect(this, SIGNAL(SetTotalValue(const qint64)), cddDialog, SLOT(on_cDeleteDialog_SetTotalValue(const qint64)));
+		connect(this, SIGNAL(SetSource(const QString &)), cddDialog, SLOT(on_cDeleteDialog_SetSource(const QString &)));
+		connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), cddDialog, SLOT(on_cDeleteDialog_SetTotalMaximum(const qint64 &)));
+		connect(this, SIGNAL(SetTotalValue(const qint64 &)), cddDialog, SLOT(on_cDeleteDialog_SetTotalValue(const qint64 &)));
 		connect(cddDialog, SIGNAL(Cancel()), SLOT(on_cd_OperationCanceled()));
 		connect(cddDialog, SIGNAL(Background()), SLOT(on_cdDeleteDialog_Background()));
 		cdwWidget = NULL;

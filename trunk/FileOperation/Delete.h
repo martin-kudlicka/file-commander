@@ -19,7 +19,7 @@ class cDelete : public QThread
 																		///< constructor
 																		/**< \param qmwParent parent window for foreground dialog
 																			  \param qhblOperations layout for background widget */
-		void Delete(const QFileInfoList qfilSource, const cFileRoutine::eWindow eStyle);
+		void Delete(const QFileInfoList &qfilSource, const cFileRoutine::eWindow &eStyle);
 																			///< start of delete operation
 																			/**< \param qfilSource source file list
 																				  \param eStyle foreground or background operation */
@@ -37,11 +37,11 @@ class cDelete : public QThread
 		void run();													///< separate thread process
 
 	signals:
-		void SetSource(const QString qsSource);			///< set source file
+		void SetSource(const QString &qsSource);			///< set source file
 																		/**< \param qsSource source file */
-		void SetTotalMaximum(const qint64 qi64Value);	///< set overall maximum
+		void SetTotalMaximum(const qint64 &qi64Value);	///< set overall maximum
 																		/**< \param qi64Value overall maximum */
-		void SetTotalValue(const qint64 qi64Value);		///< set overall progress
+		void SetTotalValue(const qint64 &qi64Value);		///< set overall progress
 																		/**< \param qi64Value overall progress */
 
 	private slots:

@@ -7,7 +7,7 @@
 #endif
 
 // execute file
-void cProcess::Execute(QString qsProcess)
+void cProcess::Execute(QString &qsProcess)
 {
 #ifdef Q_WS_WIN
 	ShellExecute(NULL, NULL, reinterpret_cast<LPCWSTR>(qsProcess.unicode()), NULL, NULL, SW_SHOWNORMAL);

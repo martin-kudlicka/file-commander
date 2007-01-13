@@ -12,7 +12,7 @@ cContent::cContent(cSettings *csSettings)
 } // cContent
 
 // get index of column in plugin
-int cContent::GetFieldIndex(const QString qsPlugin, const QString qsColumn)
+int cContent::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 {
 	int iI;
 
@@ -26,7 +26,7 @@ int cContent::GetFieldIndex(const QString qsPlugin, const QString qsColumn)
 } // GetFieldIndex
 
 // returns plugin's value for specified column
-QString cContent::GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit)
+QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit)
 {
 	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
@@ -93,13 +93,13 @@ void cContent::Load()
 } // Load
 
 // checks if plugin qsName has been succesfully loaded
-bool cContent::Loaded(const QString qsName)
+bool cContent::Loaded(const QString &qsName)
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
 
 // "converts" plugin's returned value to QString
-QString cContent::ValidateFieldValue(const char *cFieldValue, const int iType)
+QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
 {
 	// TODO ValidateFieldValue other types
 	switch (iType) {

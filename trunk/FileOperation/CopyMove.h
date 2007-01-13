@@ -20,7 +20,7 @@ class cCopyMove : public QThread
 																			/**< \param qmwParent parent window for foreground dialog
 																				  \param qhblOperations layout for background widget */
 
-		void CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const cFileRoutine::eWindow eStyle);
+		void CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const cFileRoutine::eWindow &eStyle);
 																			///< start of copy or move operation
 																			/**< \param eoOperation copy or move operation
 																				  \param qfilSource source file list
@@ -43,13 +43,13 @@ class cCopyMove : public QThread
 		QString qsSource;												///< currently copied/moved source file
 		QString qsTarget;												///< target of currently copied/moved file
 
-		void Copy(const QString qsSource, const QString qsDestination, qint64 *qi64TotalValue);
+		void Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue);
 																			///< copy file
 																			/**< \param qsSource source file
 																				  \param qsDestination destination file
 																				  \param qi64TotalValue total progress */
 		void CreateWidget();											///< create widget for background operation
-		QString GetWildcardedName(const QFileInfo qfiFile, const QString qsSourcePath, const QString qsDestination);
+		QString GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination);
 																			///< return file name modified by wildcard
 																			/**< \param qfiFile source file to copy or move
 																				  \param qsSourcePath path for all sources
@@ -58,17 +58,17 @@ class cCopyMove : public QThread
 		void run();														///< separate thread process
 
 	signals:
-		void SetCurrentMaximum(const qint64 qi64Value);		///< set maximum for current file
+		void SetCurrentMaximum(const qint64 &qi64Value);	///< set maximum for current file
 																			/**< \param qi64Value maximum for current file */
-		void SetCurrentValue(const qint64 qi64Value);		///< set progress for current file
+		void SetCurrentValue(const qint64 &qi64Value);		///< set progress for current file
 																			/**< \param qi64Value progress for current file */
-		void SetDestination(const QString qsDestination);	///< set destination file
+		void SetDestination(const QString &qsDestination);	///< set destination file
 																			/**< \param qsDestination destination file */
-		void SetSource(const QString qsSource);				///< set source file
+		void SetSource(const QString &qsSource);				///< set source file
 																			/**< \param qsSource source file */
-		void SetTotalMaximum(const qint64 qi64Value);		///< set overall maximum
+		void SetTotalMaximum(const qint64 &qi64Value);		///< set overall maximum
 																			/**< \param qi64Value overall maximum */
-		void SetTotalValue(const qint64 qi64Value);			///< set overall progress
+		void SetTotalValue(const qint64 &qi64Value);			///< set overall progress
 																			/**< \param qi64Value overall progress */
 
 	private slots:

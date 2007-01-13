@@ -23,7 +23,7 @@ void cPanel::ActualizeWidgets()
 } // ActualizeWidgets
 
 // add new tab with dir view
-void cPanel::AddTab(const cSettings::sTabInfo stiTabInfo)
+void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 {
 	int iIndex;
 	QTreeWidget *qtwTree;
@@ -78,7 +78,7 @@ cPanel::~cPanel()
 } // ~cPanel
 
 // count objects
-cPanel::sObjects cPanel::GetCount(const QFileInfoList qfilObjects)
+cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
 {
 	int iI;
 	sObjects soCount;
@@ -118,7 +118,7 @@ void cPanel::on_qtwTree_itemActivated(QTreeWidgetItem *item, int column)
 } // on_qtwTree_itemActivated
 
 // refresh dir content
-void cPanel::RefreshContent(const int iIndex)
+void cPanel::RefreshContent(const int &iIndex)
 {
 	int iI;
 	QFileInfoList qfilFiles;
@@ -218,7 +218,7 @@ QStringList cPanel::GetSelectedItemsStringList()
 } // GetSelectedItemsStringList
 
 // refresh column's header
-void cPanel::RefreshHeader(const int iIndex)
+void cPanel::RefreshHeader(const int &iIndex)
 {
 	int iI;
 	QStringList qslColumns;
@@ -255,7 +255,7 @@ void cPanel::RefreshHeader(const int iIndex)
 } // RefreshHeader
 
 // set new path for current dir view
-void cPanel::SetPath(const QString qsPath)
+void cPanel::SetPath(const QString &qsPath)
 {
 	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
 	RefreshContent(qswDir->currentIndex());

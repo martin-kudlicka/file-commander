@@ -20,7 +20,7 @@ const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 
 // create new column set
-void cSettings::CreateColumnSet(const QString qsColumnSet, const QList<sColumn> qlColumns)
+void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn> &qlColumns)
 {
 	int iI;
 
@@ -66,7 +66,7 @@ void cSettings::CreateDefaultColumnSet()
 } // CreateDefaultColumnSet
 
 // create new tab in settings file
-void cSettings::CreateTab(const ePosition epPosition, const uint uiIndex, const QString qsColumnSet, const QString qsPath)
+void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const QString &qsColumnSet, const QString &qsPath)
 {
 	if (epPosition == PositionLeft) {
 		qsSettings.beginGroup(QString("%1%2").arg(qsLEFT_PANEL__TABS__).arg(uiIndex));
@@ -81,7 +81,7 @@ void cSettings::CreateTab(const ePosition epPosition, const uint uiIndex, const 
 } // CreateTab
 
 // get some information about column
-cSettings::sColumn cSettings::GetColumnInfo(const QString qsColumnSet, const QString qsColumn)
+cSettings::sColumn cSettings::GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn)
 {
 	sColumn scColumn;
 
@@ -96,7 +96,7 @@ cSettings::sColumn cSettings::GetColumnInfo(const QString qsColumnSet, const QSt
 } // GetColumnInfo
 
 // get column names in column set
-QStringList cSettings::GetColumnsInSet(const QString qsColumnSet)
+QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 {
 	QStringList qslColumns;
 
@@ -108,7 +108,7 @@ QStringList cSettings::GetColumnsInSet(const QString qsColumnSet)
 } // GetColumnsInSet
 
 ///< get plugin list
-QStringList cSettings::GetPlugins(const ePlugin epPlugin)
+QStringList cSettings::GetPlugins(const ePlugin &epPlugin)
 {
 	QStringList qslPlugins;
 
@@ -123,7 +123,7 @@ QStringList cSettings::GetPlugins(const ePlugin epPlugin)
 } // GetPlugins
 
 ///< get some information about tab
-cSettings::sTabInfo cSettings::GetTabInfo(const ePosition epPosition, const QString qsIndex)
+cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
 	sTabInfo stiTabInfo;
 
@@ -142,7 +142,7 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition epPosition, const QStr
 } // GetTabInfo
 
 // get tab list for left or right panel
-QStringList cSettings::GetTabs(const ePosition epPosition)
+QStringList cSettings::GetTabs(const ePosition &epPosition)
 {
 	QStringList qslTabs;
 

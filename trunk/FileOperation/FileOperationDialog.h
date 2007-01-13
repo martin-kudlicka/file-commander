@@ -20,7 +20,7 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 		cFileOperationDialog(QWidget *qwParent);	///< constructor
 																/**< \param qwParent parent widget (window) of this dialog */
 
-		eUserAction ShowDialog(const cFileRoutine::eOperation eoOperation, const QString qsCount, QString *qsDestination, QString *qsFilter);
+		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter);
 																///< shows copy or move dialog
 																/**< \param eoOperation type of operation
 																	  \param qsCount string with count of files and directories

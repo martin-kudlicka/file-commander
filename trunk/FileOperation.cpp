@@ -21,7 +21,7 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 } // cFileOperation
 
 // place operation into queue
-void cFileOperation::Enque(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination)
+void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination)
 {
 	QListWidgetItem *qlwiOperation;
 	QString qsItem;
@@ -109,7 +109,7 @@ void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // prepare operation
-void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination /* NULL */)
+void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel *cpSource, cPanel *cpDestination /* NULL */)
 {
 	cCopyMove *ccmCopyMove;
 	cDelete *cdDelete;

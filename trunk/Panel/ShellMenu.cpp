@@ -10,9 +10,9 @@ cShellMenu::cShellMenu(HWND hwParent)
 
 // show context menu
 #ifdef Q_WS_WIN
-void cShellMenu::Show(const QStringList qslObjects, const QPoint qpPoint)
+void cShellMenu::Show(const QStringList &qslObjects, const QPoint &qpPoint)
 #else
-void cShellMenu::Show(const QFileInfoList qfilObjects, const QPoint qpPoint)
+void cShellMenu::Show(const QFileInfoList &qfilObjects, const QPoint &qpPoint)
 #endif
 {
 #ifdef Q_WS_WIN
