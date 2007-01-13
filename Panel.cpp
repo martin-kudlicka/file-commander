@@ -284,6 +284,11 @@ void cPanel::RefreshContent(const int &iIndex)
 		} // for
 	} // for
 
+	if (static_cast<QTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
+		// mark first item
+		static_cast<QTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0)->setSelected(true);
+	} // if
+
 	ActualizeWidgets();
 } // RefreshContent
 
