@@ -332,6 +332,8 @@ void cPanel::RefreshContent(const int &iIndex)
 	if (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
 		// mark first item
 		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0)->setSelected(true);
+		// focus to the first item
+		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setCurrentItem(static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0));
 	} // if
 } // RefreshContent
 
