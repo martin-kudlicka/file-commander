@@ -81,6 +81,7 @@ class cPanel : private QObject
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view
 
+		void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */

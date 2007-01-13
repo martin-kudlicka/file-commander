@@ -4,6 +4,15 @@
 #include <QDateTime>
 #include "Panel/Process.h"
 
+// actualize volume information - disk name and space
+void cPanel::ActualizeVolumeInfo()
+{
+	cFileRoutine::sDiskSpace sdsInfo;
+
+	sdsInfo = cFileRoutine::GetDiskSpace(qmDrives->value(qcbDrive->currentText()).qsPath);
+	qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qmDrives->value(qcbDrive->currentText()).qsPath).arg(sdsInfo.qi64Free).arg(sdsInfo.qi64Total));
+} // ActualizeVolumeInfo
+
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
 {
@@ -22,6 +31,7 @@ void cPanel::ActualizeWidgets()
 	qcbDrive->blockSignals(true);
 	qcbDrive->setCurrentIndex(qcbDrive->findText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive));
 	qcbDrive->blockSignals(false);
+	ActualizeVolumeInfo();
 	qlPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	qlSelected->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsSelected);
 } // ActualizeWidgets
