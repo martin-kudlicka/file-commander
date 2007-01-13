@@ -14,6 +14,7 @@
 #include <QFileIconProvider>
 #include "Panel/ShellMenu.h"
 #include <QFileSystemWatcher>
+#include "FileOperation/FileRoutine.h"
 
 class cPanel : private QObject
 {
@@ -26,7 +27,7 @@ class cPanel : private QObject
 			uint Files;													///< number of files
 		};
 
-		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent);
+		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
 																			///< constructor
 																			/**< \param qswPanel panel for QTreeWidget
 																				  \param qcbDrive drive combo box
@@ -35,7 +36,8 @@ class cPanel : private QObject
 																				  \param qlPath current path
 																				  \param qlSelected information about selected directories and files
 																				  \param csSettings application's settings
-																				  \param ccContent application'c content plugins */
+																				  \param ccContent application'c content plugins
+																				  \param qmDrives information about system drives */
 		~cPanel();														///< destructor
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);	///< add new tab with dir view
@@ -74,6 +76,7 @@ class cPanel : private QObject
 		QLabel *qlPath;												///< path
 		QLabel *qlDriveInfo;											///< drive info - label, used/free place
 		QLabel *qlSelected;											///< selected items
+		QMap<QString, cFileRoutine::sDriveInfo> *qmDrives;	///< drives in system
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view
 
@@ -88,6 +91,8 @@ class cPanel : private QObject
 																			/**< \param qsPath new path */
 
 	private slots:
+		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes
+																			/**< \param index index of selected drive in combo box */
 		void on_qfswWatcher_directoryChanged(const QString &path);
 																			///< detect directory modifications
 																			/**< \param path directory to watch */
