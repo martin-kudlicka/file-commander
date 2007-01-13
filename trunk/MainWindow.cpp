@@ -98,6 +98,18 @@ void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
 	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
 } // on_qpbDelete_clicked
 
+// left root dir button is clicked on
+void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */)
+{
+	cpLeft->GoToRootDir();
+} // on_qpbLeftRootDir_clicked
+
+// left up dir button is clicked on
+void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
+{
+	cpLeft->GoToUpDir();
+} // on_qpbLeftUpDir_clicked
+
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {
@@ -115,6 +127,18 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
 	cfoFileOperation->Operate(cFileRoutine::MoveOperation, cpSource, cpDestination);
 } // on_qpbMove_clicked
+
+// right root dir button is clicked on
+void cMainWindow::on_qpbRightRootDir_clicked(bool checked /* false */)
+{
+	cpRight->GoToRootDir();
+} // on_qpbRightRootDir_clicked
+
+// right up dir button is clicked on
+void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
+{
+	cpRight->GoToUpDir();
+} // on_qpbRightUpDir_clicked
 
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)

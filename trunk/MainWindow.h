@@ -45,14 +45,26 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																		  \param cpDestination destination panel */
 
 	private slots:
-		void on_qpbCopy_clicked(bool checked = false);	
+		void on_qpbCopy_clicked(bool checked = false);
 																	///< copy button is clicked on
 																	/**< \param checked true if button is checkable and checked */
-		void on_qpbDelete_clicked(bool checked = false);	
+		void on_qpbDelete_clicked(bool checked = false);
 																	///< delete button is clicked on
 																	/**< \param checked true if button is checkable and checked */
-		void on_qpbMove_clicked(bool checked = false);	
+		void on_qpbLeftRootDir_clicked(bool checked = false);
+																	///< left root dir button is clicked on
+																	/**< \param checked true if button is checkable and checked */
+		void on_qpbLeftUpDir_clicked(bool checked = false);
+																	///< left up dir button is clicked on
+																	/**< \param checked true if button is checkable and checked */
+		void on_qpbMove_clicked(bool checked = false);
 																	///< copy button is clicked on
+																	/**< \param checked true if button is checkable and checked */
+		void on_qpbRightRootDir_clicked(bool checked = false);
+																	///< right root dir button is clicked on
+																	/**< \param checked true if button is checkable and checked */
+		void on_qpbRightUpDir_clicked(bool checked = false);
+																	///< right up dir button is clicked on
 																	/**< \param checked true if button is checkable and checked */
 }; // cMainWindow
 
