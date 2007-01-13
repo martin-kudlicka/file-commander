@@ -18,6 +18,9 @@ void cPanel::ActualizeWidgets()
 		qtbTab->setTabText(qswDir->currentIndex(), qdDir.dirName());
 	} // if else
 	// path
+	qcbDrive->blockSignals(true);
+	qcbDrive->setCurrentIndex(qcbDrive->findText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive));
+	qcbDrive->blockSignals(false);
 	qlPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 } // ActualizeWidgets
 
@@ -44,6 +47,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
 	stTab.qlColumns = new QList<cSettings::sColumn>;
 	stTab.swWidgets = new sWidgets();
+	stTab.swWidgets->qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	qhTabs.insert(iIndex, stTab);
@@ -165,11 +169,24 @@ void cPanel::GoToUpDir()
 // selected drive changes
 void cPanel::on_qcbDrive_currentIndexChanged(int index)
 {
+	if (qswDir->currentIndex() == -1) {
+		// tabs are not yet initialized
+		return;
+	} // if
+
+	qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
+
 	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(*qmDrives);
 	while (qmiDrives.hasNext()) {
 		qmiDrives.next();
 		if (qmiDrives.key() == qcbDrive->currentText()) {
-			SetPath(qmiDrives.value().qsPath);
+			QDir qdDir;
+
+			if (qdDir.exists(qhLastPaths.value(qcbDrive->currentText()))) {
+				SetPath(qhLastPaths.value(qcbDrive->currentText()));
+			} else {
+				SetPath(qmiDrives.value().qsPath);
+			} // if else
 			break;
 		} // if
 	} // while
@@ -315,5 +332,6 @@ void cPanel::SetPath(const QString &qsPath)
 	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
 	// add new path to watcher
 	qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	qhLastPaths.insert(qcbDrive->currentText(), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath));
 	RefreshContent(qswDir->currentIndex());
 } // SetPath

@@ -35,6 +35,7 @@ class cSettings : private QObject
 		/// tab info
 		struct sTabInfo {
 			QString qsColumnSet;										///< column set defined in tab
+			QString qsDrive;											///< drive
 			QString qsPath;											///< path selected in tab
 		};
 

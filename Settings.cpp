@@ -4,6 +4,7 @@
 
 // general
 const QString qsCOLUMN_SET = "ColumnSet";
+const QString qsDRIVE = "Drive";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsUNIT = "Unit";
@@ -134,6 +135,7 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	} // if else
 
 	stiTabInfo.qsColumnSet = qsSettings.value(qsCOLUMN_SET).toString();
+	stiTabInfo.qsDrive = qsSettings.value(qsDRIVE).toString();
 	stiTabInfo.qsPath = qsSettings.value(qsPATH).toString();
 
 	qsSettings.endGroup();
