@@ -89,11 +89,19 @@ cMainWindow::cMainWindow()
 
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
+
+	// shortcuts
+	qsLeftDrive = new QShortcut(QKeySequence("Alt+F1"), this);
+	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
+	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
+	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 } // cMainWindow
 
 // destructor
 cMainWindow::~cMainWindow()
 {
+	delete qsLeftDrive;
+	delete qsRightDrive;
 	delete cfoFileOperation;
 	delete qhblBackgroundOperations;
 	delete cpLeft;
@@ -189,6 +197,18 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 {
 	cpRight->GoToUpDir();
 } // on_qpbRightUpDir_clicked
+
+// left drive shortcut activated
+void cMainWindow::on_qsLeftDrive_activated()
+{
+	qcbLeftDrive->showPopup();
+} // on_qsLeftDrive_activated
+
+// right drive shortcut activated
+void cMainWindow::on_qsRightDrive_activated()
+{
+	qcbRightDrive->showPopup();
+} // on_qsRightDrive_activated
 
 ///< timer's timeout
 void cMainWindow::on_qtTimer_timeout()
