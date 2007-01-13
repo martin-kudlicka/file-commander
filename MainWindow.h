@@ -36,7 +36,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 		QStackedWidget *GetActivePanel();				///< find active panel (left or right)
 																	/**< \return pointer to active panel */
-		void LoadTabs(const cSettings::ePosition epPosition);
+		void LoadTabs(const cSettings::ePosition &epPosition);
 																	///< load tabs from qsSettings
 																	/**< \param epPos means left or right TabBar */
 		void SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination = NULL);

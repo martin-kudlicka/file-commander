@@ -1,7 +1,7 @@
 #include "FileOperation/FileRoutine.h"
 
 // lists directory for it's content
-QFileInfoList cFileRoutine::GetDirectoryContent(const QString qsPath, const QDir::Filters fFilters)
+QFileInfoList cFileRoutine::GetDirectoryContent(const QString &qsPath, const QDir::Filters &fFilters)
 {
 	QDir qdDir;
 
@@ -11,7 +11,7 @@ QFileInfoList cFileRoutine::GetDirectoryContent(const QString qsPath, const QDir
 } // GetDirectoryContent
 
 // return list of sources (within subdirectories too)
-QFileInfoList cFileRoutine::GetSources(const QFileInfoList qfilFileAndDirList)
+QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
 {
 	int iI;
 	QFileInfoList qfilDirectories, qfilSources;

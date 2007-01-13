@@ -4,7 +4,7 @@
 #include <QDir>
 
 // settings path for application
-QString cSystem::GetApplicationSettingsPath(const QString qsApplication)
+QString cSystem::GetApplicationSettingsPath(const QString &qsApplication)
 {
 	QDir qdDir;
 	QString qsPath;

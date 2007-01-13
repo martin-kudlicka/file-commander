@@ -157,7 +157,7 @@ void cShellContextMenu::InvokeCommand (LPCONTEXTMENU pContextMenu, UINT idComman
 }
 
 
-void cShellContextMenu::SetObjects(const QString qsObject)
+void cShellContextMenu::SetObjects(const QString &qsObject)
 {
 	// only one object is passed
 	QStringList qslObjects;
@@ -168,7 +168,7 @@ void cShellContextMenu::SetObjects(const QString qsObject)
 }
 
 
-void cShellContextMenu::SetObjects(const QStringList qslObjects)
+void cShellContextMenu::SetObjects(const QStringList &qslObjects)
 {
 	// free all allocated datas
 	if (m_psfFolder && bDelete)

@@ -37,8 +37,8 @@ class cPanel : private QObject
 																				  \param ccContent application'c content plugins */
 		~cPanel();														///< destructor
 
-		void AddTab(const cSettings::sTabInfo stiTabInfo);	///< add new tab with dir view
-		static sObjects GetCount(const QFileInfoList qfilObjects);
+		void AddTab(const cSettings::sTabInfo &stiTabInfo);	///< add new tab with dir view
+		static sObjects GetCount(const QFileInfoList &qfilObjects);
 																			///< count objects
 																			/**< \param qfilObjects objects to count
 																				  \return count of objects */
@@ -76,11 +76,11 @@ class cPanel : private QObject
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */
-		void RefreshContent(const int iIndex);					///< refresh dir content
+		void RefreshContent(const int &iIndex);					///< refresh dir content
 																			/**< \param iIndex index of dir view */
-		void RefreshHeader(const int iIndex);					///< refresh column's header
+		void RefreshHeader(const int &iIndex);					///< refresh column's header
 																			/**< \param iIndex index of dir view */
-		void SetPath(const QString qsPath);						///< set new path for current dir view
+		void SetPath(const QString &qsPath);						///< set new path for current dir view
 																			/**< \param qsPath new path */
 
 	private slots:

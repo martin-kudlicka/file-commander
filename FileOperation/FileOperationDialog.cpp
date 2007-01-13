@@ -39,7 +39,7 @@ void cFileOperationDialog::on_qpbOK_clicked(bool checked /* false */)
 } // on_qpbOK_clicked
 
 // shows copy or move dialog
-cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation eoOperation, const QString qsCount, QString *qsDestination, QString *qsFilter)
+cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter)
 {
 	eUserAction euaAction;
 

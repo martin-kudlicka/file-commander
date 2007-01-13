@@ -16,12 +16,12 @@ class cShellMenu
 #endif
 
 #ifdef Q_WS_WIN
-		void Show(const QStringList qslObjects, const QPoint qpPoint);
+		void Show(const QStringList &qslObjects, const QPoint &qpPoint);
 													///< show context menu
 													/**< \param qslObjects objects for context menu
 														  \param qpPoint coordinates of context menu */
 #else
-		void Show(const QFileInfoList qfilObjects, const QPoint qpPoint);
+		void Show(const QFileInfoList &qfilObjects, const QPoint &qpPoint);
 													///< show context menu
 													/**< \param qfilObjects objects for context menu
 														  \param qpPoint coordinates of context menu */

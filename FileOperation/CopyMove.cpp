@@ -10,7 +10,7 @@ cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 } // cCopyMove
 
 // copy file
-void cCopyMove::Copy(const QString qsSource, const QString qsDestination, qint64 *qi64TotalValue)
+void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue)
 {
 	QByteArray qbaData;
 	QFile qfDestination, qfSource;
@@ -39,7 +39,7 @@ void cCopyMove::Copy(const QString qsSource, const QString qsDestination, qint64
 } // Copy
 
 // start of copy or move operation
-void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const cFileRoutine::eWindow eStyle)
+void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const cFileRoutine::eWindow &eStyle)
 {
 	this->eoOperation = eoOperation;
 	this->qfilSource = qfilSource;
@@ -49,12 +49,12 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFile
 		ccmdDialog = new cCopyMoveDialog(qmwParent);
 		ccmdDialog->setModal(true);
 		ccmdDialog->show();
-		connect(this, SIGNAL(SetCurrentMaximum(const qint64)), ccmdDialog, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64)));
-		connect(this, SIGNAL(SetCurrentValue(const qint64)), ccmdDialog, SLOT(on_cCopyMove_SetCurrentValue(const qint64)));
-		connect(this, SIGNAL(SetDestination(const QString)), ccmdDialog, SLOT(on_cCopyMove_SetDestination(const QString)));
-		connect(this, SIGNAL(SetSource(const QString)), ccmdDialog, SLOT(on_cCopyMove_SetSource(const QString)));
-		connect(this, SIGNAL(SetTotalMaximum(const qint64)), ccmdDialog, SLOT(on_cCopyMove_SetTotalMaximum(const qint64)));
-		connect(this, SIGNAL(SetTotalValue(const qint64)), ccmdDialog, SLOT(on_cCopyMove_SetTotalValue(const qint64)));
+		connect(this, SIGNAL(SetCurrentMaximum(const qint64 &)), ccmdDialog, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64 &)));
+		connect(this, SIGNAL(SetCurrentValue(const qint64 &)), ccmdDialog, SLOT(on_cCopyMove_SetCurrentValue(const qint64 &)));
+		connect(this, SIGNAL(SetDestination(const QString &)), ccmdDialog, SLOT(on_cCopyMove_SetDestination(const QString &)));
+		connect(this, SIGNAL(SetSource(const QString &)), ccmdDialog, SLOT(on_cCopyMove_SetSource(const QString &)));
+		connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), ccmdDialog, SLOT(on_cCopyMove_SetTotalMaximum(const qint64 &)));
+		connect(this, SIGNAL(SetTotalValue(const qint64 &)), ccmdDialog, SLOT(on_cCopyMove_SetTotalValue(const qint64 &)));
 		connect(ccmdDialog, SIGNAL(Cancel()), SLOT(on_ccm_OperationCanceled()));
 		connect(ccmdDialog, SIGNAL(Background()), SLOT(on_ccmdCopyMoveDialog_Background()));
 		ccmwWidget = NULL;
@@ -71,17 +71,17 @@ void cCopyMove::CreateWidget()
 {
 	ccmwWidget = new cCopyMoveWidget();
 	qhblOperations->insertWidget(cFileRoutine::iQUEUED_OPERATION_POSITION, ccmwWidget);
-	connect(this, SIGNAL(SetCurrentMaximum(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64)));
-	connect(this, SIGNAL(SetCurrentValue(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentValue(const qint64)));
-	connect(this, SIGNAL(SetDestination(const QString)), ccmwWidget, SLOT(on_cCopyMove_SetDestination(const QString)));
-	connect(this, SIGNAL(SetSource(const QString)), ccmwWidget, SLOT(on_cCopyMove_SetSource(const QString)));
-	connect(this, SIGNAL(SetTotalMaximum(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetTotalMaximum(const qint64)));
-	connect(this, SIGNAL(SetTotalValue(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetTotalValue(const qint64)));
+	connect(this, SIGNAL(SetCurrentMaximum(const qint64 &)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64 &)));
+	connect(this, SIGNAL(SetCurrentValue(const qint64 &)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentValue(const qint64 &)));
+	connect(this, SIGNAL(SetDestination(const QString &)), ccmwWidget, SLOT(on_cCopyMove_SetDestination(const QString &)));
+	connect(this, SIGNAL(SetSource(const QString &)), ccmwWidget, SLOT(on_cCopyMove_SetSource(const QString &)));
+	connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), ccmwWidget, SLOT(on_cCopyMove_SetTotalMaximum(const qint64 &)));
+	connect(this, SIGNAL(SetTotalValue(const qint64 &)), ccmwWidget, SLOT(on_cCopyMove_SetTotalValue(const qint64 &)));
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_ccm_OperationCanceled()));
 } // CreateWidget
 
 // return file name modified by wildcard
-QString cCopyMove::GetWildcardedName(const QFileInfo qfiFile, const QString qsSourcePath, const QString qsDestination)
+QString cCopyMove::GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination)
 {
 	int iI;
 	QString qsNewFilename;

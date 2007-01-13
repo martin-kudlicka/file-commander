@@ -62,7 +62,7 @@ QStackedWidget *cMainWindow::GetActivePanel()
 } // GetActivePanel
 
 // load tabs from qsSettings
-void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
+void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 {
 	int iI;
 	QStringList qslTabs;

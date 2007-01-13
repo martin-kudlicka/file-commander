@@ -8,19 +8,19 @@ cDeleteDialog::cDeleteDialog(QWidget *qwParent)
 } // cDeleteDialog
 
 // set source file
-void cDeleteDialog::on_cDeleteDialog_SetSource(const QString qsSource)
+void cDeleteDialog::on_cDeleteDialog_SetSource(const QString &qsSource)
 {
 	qlSource->setText(qsSource);
 } // on_cDeleteDialog_SetSource
 
 // set overall maximum
-void cDeleteDialog::on_cDeleteDialog_SetTotalMaximum(const qint64 qi64Value)
+void cDeleteDialog::on_cDeleteDialog_SetTotalMaximum(const qint64 &qi64Value)
 {
 	qpbTotal->setMaximum(qi64Value);
 } // on_cDeleteDialog_SetTotalMaximum
 
 // set overall progress
-void cDeleteDialog::on_cDeleteDialog_SetTotalValue(const qint64 qi64Value)
+void cDeleteDialog::on_cDeleteDialog_SetTotalValue(const qint64 &qi64Value)
 {
 	qpbTotal->setValue(qi64Value);
 } // on_cDeleteDialog_SetTotalValue

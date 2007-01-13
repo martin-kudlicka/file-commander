@@ -12,7 +12,7 @@ class cContent
 		cContent(cSettings *csSettings);				///< constructor
 																/**< \param csSettings application's settings */
 
-		QString GetPluginValue(const QString qsFilename, const QString qsPlugin, const QString qsColumn, const QString qsUnit);
+		QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit);
 																///< returns plugin's value for specified column
 																/**< \param qsFilename file name to probe
 																	  \param qsPlugin name of column's plugin
@@ -21,7 +21,7 @@ class cContent
 																	  \return plugin's column value for specified file */
 		void Load();										///< loads content plugins
 																/** fills qhPlugins */
-		bool Loaded(const QString qsName);			///< checks if plugin qsName has been succesfully loaded
+		bool Loaded(const QString &qsName);			///< checks if plugin qsName has been succesfully loaded
 																/**< \param qsName plugin name
 																	  \return true if plugin was succesfully loaded and can be used */
 
@@ -61,12 +61,12 @@ class cContent
 		QHash<QString, sPluginInfo> qhPlugins;		///< table of plugins
 																/**< key is plugin name, value contains plugin's info */
 
-		int GetFieldIndex(const QString qsPlugin, const QString qsColumn);
+		int GetFieldIndex(const QString &qsPlugin, const QString &qsColumn);
 																///< get index of column in plugin
 																/**< \param qsPlugin plugin filename
 																	  \param qsColumn plugin's column name
 																	  \return index of column */
-		QString ValidateFieldValue(const char *cFieldValue, const int iType);
+		QString ValidateFieldValue(const char *cFieldValue, const int &iType);
 																///< "converts" plugin's returned value to QString
 																/**< \param cFieldValue value returned by plugin
 																	  \param iType type of value
