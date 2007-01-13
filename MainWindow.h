@@ -47,6 +47,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void LoadTabs(const cSettings::ePosition &epPosition);
 																			///< load tabs from qsSettings
 																			/**< \param epPos means left or right TabBar */
+		void resizeEvent(QResizeEvent *event);					///< size of main window changed
+																			/**< \param event olasize information */
 		void SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination = NULL);
 																			///< set focused panel as source, other as destination
 																			/**< \param cpSource source panel

@@ -102,6 +102,8 @@ class cPanel : private QObject
 		void on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree);
 																			///< changed selected items in directory view
 																			/**< \param ctwTree changed directory view */
+		void on_qcbDrive_activated(int index);					///< drive selected
+																			/**< \param index index of selected drive */
 		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes
 																			/**< \param index index of selected drive in combo box */
 		void on_qfswWatcher_directoryChanged(const QString &path);

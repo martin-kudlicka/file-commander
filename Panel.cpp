@@ -79,6 +79,7 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 		qswDir->winId()
 #endif
 	);
+	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
 } // cPanel
@@ -231,6 +232,12 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 		ActualizeWidgets();
 	} // if
 } // on_ctwTree_itemSelectionChanged
+
+// drive selected
+void cPanel::on_qcbDrive_activated(int index)
+{
+	static_cast<cTreeWidget *>(qswDir->currentWidget())->setFocus();
+} // on_qcbDrive_activated
 
 // selected drive changes
 void cPanel::on_qcbDrive_currentIndexChanged(int index)
