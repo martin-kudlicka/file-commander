@@ -5,34 +5,43 @@
 
 #include <QFileInfoList>
 #include <QDir>
+#include <QMap>
 
 class cFileRoutine
 {
 	public:
 		/// file operation type
-		enum eOperation {						///< type of file operation
-			CopyOperation,						///< copy
-			MoveOperation,						///< move
-			DeleteOperation					///< delete
+		enum eOperation {											///< type of file operation
+			CopyOperation,											///< copy
+			MoveOperation,											///< move
+			DeleteOperation										///< delete
 		};
 		/// window style
 		enum eWindow {
-			ForegroundWindow,					///< modal foreground window
-			BackgroundWindow					///< window in qhblOperations layout
+			ForegroundWindow,										///< modal foreground window
+			BackgroundWindow										///< window in qhblOperations layout
 		};
 
 		static const int iQUEUED_OPERATION_POSITION = 1;
-													///< position of queued background operation in layout
+																		///< position of queued background operation in layout
+
+		/// information about drive
+		struct sDriveInfo {
+			QString qsPath;										///< path for drive (C:/, D:/, /, ...)
+			QString qsType;										///< drive type (HDD, USB, ...)
+		};
 
 		static QFileInfoList GetDirectoryContent(const QString &qsPath, const QDir::Filters &fFilters);
-													///< lists directory for it's content
-													/**< \param qsPath path to list
-														  \param fFilters filter for directory listing
-														  \return content of qsPath directory */
+																		///< lists directory for it's content
+																		/**< \param qsPath path to list
+																			  \param fFilters filter for directory listing
+																			  \return content of qsPath directory */
+		static QMap<QString, sDriveInfo> GetDrives();	///< detect drives in system
+																		/**< \return information about drive in system */
 		static QFileInfoList GetSources(const QFileInfoList &qfilFileAndDirList);
-													///< return list of sources (within subdirectories too)
-													/**< \param qfilFileAndDirList list of directories and files
-														  \return source list */
+																		///< return list of sources (within subdirectories too)
+																		/**< \param qfilFileAndDirList list of directories and files
+																			  \return source list */
 
 }; // cFileRoutine
 

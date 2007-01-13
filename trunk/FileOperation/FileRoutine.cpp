@@ -10,6 +10,26 @@ QFileInfoList cFileRoutine::GetDirectoryContent(const QString &qsPath, const QDi
 	return qdDir.entryInfoList();
 } // GetDirectoryContent
 
+// detect drives in system
+QMap<QString, cFileRoutine::sDriveInfo> cFileRoutine::GetDrives()
+{
+	int iI;
+	QFileInfoList qfilDrives;
+	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
+
+	qfilDrives = QDir::drives();
+
+	for (iI = 0; iI < qfilDrives.count(); iI++) {
+		sDriveInfo sdiDrive;
+
+		sdiDrive.qsPath = qfilDrives.at(iI).path();
+		qmDrives.insert(qfilDrives.at(iI).path().at(0), sdiDrive);
+		// TODO GetDrives - get drive type
+	} // for
+
+	return qmDrives;
+} // GetDrives
+
 // return list of sources (within subdirectories too)
 QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
 {

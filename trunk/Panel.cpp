@@ -3,7 +3,6 @@
 #include <QDir>
 #include <QDateTime>
 #include "Panel/Process.h"
-#include "FileOperation/FileRoutine.h"
 
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
@@ -57,7 +56,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent)
+cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -67,11 +66,13 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	this->qlSelected = qlSelected;
 	this->csSettings = csSettings;
 	this->ccContent = ccContent;
+	this->qmDrives = qmDrives;
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
 		qswDir->winId()
 #endif
 	);
+	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
 } // cPanel
 
@@ -99,6 +100,80 @@ cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
 
 	return soCount;
 } // GetCount
+
+// get path for current dir
+QString cPanel::GetPath()
+{
+	return qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath;
+} // GetPath
+
+// get file infos of selected items
+QFileInfoList cPanel::GetSelectedItemsList()
+{
+	int iI;
+	QFileInfoList qfilFiles;
+	QList<QTreeWidgetItem *> qlSelected;
+
+	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != "..") {
+			// ignore ".." directories
+			qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+		} // if
+	} // for
+
+	return qfilFiles;
+} // GetSelectedItemsList
+
+// get selected files and directories from current dir view
+QStringList cPanel::GetSelectedItemsStringList()
+{
+	int iI;
+	QList<QTreeWidgetItem *> qlSelected;
+	QStringList qslSelected;
+
+	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		qslSelected.append(QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).filePath()));
+	} // for
+
+	return qslSelected;
+} // GetSelectedItemsStringList
+
+// go to root directory
+void cPanel::GoToRootDir()
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	if(!qdDir.isRoot()) {
+		SetPath(qdDir.rootPath());
+	} // if
+} // GoToRootDir
+
+// go up one level (directory)
+void cPanel::GoToUpDir()
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	if(!qdDir.isRoot()) {
+		SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
+	} // if
+} // GoToUpDir
+
+// selected drive changes
+void cPanel::on_qcbDrive_currentIndexChanged(int index)
+{
+	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(*qmDrives);
+	while (qmiDrives.hasNext()) {
+		qmiDrives.next();
+		if (qmiDrives.key() == qcbDrive->currentText()) {
+			SetPath(qmiDrives.value().qsPath);
+			break;
+		} // if
+	} // while
+} // on_qcbDrive_currentIndexChanged
 
 // detect directory modifications
 void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
@@ -194,67 +269,6 @@ void cPanel::RefreshContent(const int &iIndex)
 
 	ActualizeWidgets();
 } // RefreshContent
-
-// get path for current dir
-QString cPanel::GetPath()
-{
-	return qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath;
-} // GetPath
-
-// get file infos of selected items
-QFileInfoList cPanel::GetSelectedItemsList()
-{
-	int iI;
-	QFileInfoList qfilFiles;
-	QList<QTreeWidgetItem *> qlSelected;
-
-	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
-	for (iI = 0; iI < qlSelected.count(); iI++) {
-		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != "..") {
-			// ignore ".." directories
-			qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
-		} // if
-	} // for
-
-	return qfilFiles;
-} // GetSelectedItemsList
-
-// get selected files and directories from current dir view
-QStringList cPanel::GetSelectedItemsStringList()
-{
-	int iI;
-	QList<QTreeWidgetItem *> qlSelected;
-	QStringList qslSelected;
-
-	qlSelected = static_cast<QTreeWidget *>(qswDir->currentWidget())->selectedItems();
-	for (iI = 0; iI < qlSelected.count(); iI++) {
-		qslSelected.append(QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).filePath()));
-	} // for
-
-	return qslSelected;
-} // GetSelectedItemsStringList
-
-// go to root directory
-void cPanel::GoToRootDir()
-{
-	QDir qdDir;
-
-	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-	if(!qdDir.isRoot()) {
-		SetPath(qdDir.rootPath());
-	} // if
-} // GoToRootDir
-
-// go up one level (directory)
-void cPanel::GoToUpDir()
-{
-	QDir qdDir;
-
-	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-	if(!qdDir.isRoot()) {
-		SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
-	} // if
-} // GoToUpDir
 
 // refresh column's header
 void cPanel::RefreshHeader(const int &iIndex)

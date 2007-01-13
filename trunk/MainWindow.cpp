@@ -1,6 +1,52 @@
 #include "MainWindow.h"
 
 #include "Common/System.h"
+#include "FileOperation/FileRoutine.h"
+
+// drive lists actualization
+void cMainWindow::ActualizeDrives()
+{
+	qmDrives = cFileRoutine::GetDrives();
+	if (qcbLeftDrive->count() != qmDrives.count()) {
+		// assume drives have changed
+		QString qsLeftDrive, qsRightDrive;
+
+		qsLeftDrive = qcbLeftDrive->currentText();
+		qsRightDrive = qcbRightDrive->currentText();
+
+		qcbLeftDrive->blockSignals(true);
+		qcbRightDrive->blockSignals(true);
+		qcbLeftDrive->clear();
+		qcbRightDrive->clear();
+
+		QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
+		while (qmiDrives.hasNext()) {
+			qmiDrives.next();
+			qcbLeftDrive->addItem(qmiDrives.key());
+			qcbRightDrive->addItem(qmiDrives.key());
+		} // while
+
+		// check for selected drive change, changes are handled in Panel class
+		if (qcbLeftDrive->findText(qsLeftDrive) != -1) {
+			// selected drive not changed
+			qcbLeftDrive->setCurrentIndex(qcbLeftDrive->findText(qsLeftDrive));
+			qcbLeftDrive->blockSignals(false);
+		} else {
+			qcbLeftDrive->blockSignals(false);
+			qcbLeftDrive->setCurrentIndex(-1);
+			// selected drive changed
+		} // if else
+		if (qcbRightDrive->findText(qsLeftDrive) != -1) {
+			// selected drive not changed
+			qcbRightDrive->setCurrentIndex(qcbRightDrive->findText(qsLeftDrive));
+			qcbRightDrive->blockSignals(false);
+		} else {
+			// selected drive changed
+			qcbRightDrive->blockSignals(false);
+			qcbRightDrive->setCurrentIndex(-1);
+		} // if else
+	} // if
+} // ActualizeDrives
 
 // create of main window
 cMainWindow::cMainWindow()
@@ -25,8 +71,8 @@ cMainWindow::cMainWindow()
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
 	// panels
-	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent);
-	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent);
+	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives);
+	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives);
 
 	// load settings
 	// left tabs
@@ -39,6 +85,9 @@ cMainWindow::cMainWindow()
 	qhblBackgroundOperations = new QHBoxLayout();
 	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
 	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations);
+
+	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
+	qtTimer.start(iTIMER_INTERVAL);
 } // cMainWindow
 
 // destructor
@@ -139,6 +188,13 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 {
 	cpRight->GoToUpDir();
 } // on_qpbRightUpDir_clicked
+
+///< timer's timeout
+void cMainWindow::on_qtTimer_timeout()
+{
+	// check for new or removed drives
+	ActualizeDrives();
+} // on_qtTimer_timeout
 
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
