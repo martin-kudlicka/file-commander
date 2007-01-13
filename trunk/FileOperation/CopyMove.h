@@ -56,6 +56,12 @@ class cCopyMove : public QThread
 																				  \param qsDestination destination file
 																				  \param qi64TotalValue total progress */
 		void CreateWidget();											///< create widget for background operation
+		QString GetWildcardedName(const QFileInfo qfiFile, const QString qsSourcePath, const QString qsDestination);
+																			///< return file name modified by wildcard
+																			/**< \param qfiFile source file to copy or move
+																				  \param qsSourcePath path for all sources
+																				  \param qsDestination destination string
+																				  \return modified file name */
 		void run();														///< separate thread process
 
 	signals:
