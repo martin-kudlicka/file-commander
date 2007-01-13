@@ -72,7 +72,9 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 	euaAction = static_cast<eUserAction>(exec());
 
 	if (euaAction != CancelAction) {
-		*qsDestination = qcbDestination->currentText();
+		if (eoOperation != cFileRoutine::DeleteOperation) {
+			*qsDestination = qcbDestination->currentText();
+		} // if
 		*qsFilter = qcbFilter->currentText();
 	} // if
 

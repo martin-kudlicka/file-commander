@@ -39,13 +39,13 @@ void cCopyMove::Copy(const QString qsSource, const QString qsDestination, qint64
 } // Copy
 
 // start of copy or move operation
-void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const eWindow eStyle)
+void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const cFileRoutine::eWindow eStyle)
 {
 	this->eoOperation = eoOperation;
 	this->qfilSource = qfilSource;
 	this->qsDestination = qsDestination;
 
-	if (eStyle == ForegroundWindow) {
+	if (eStyle == cFileRoutine::ForegroundWindow) {
 		ccmdDialog = new cCopyMoveDialog(qmwParent);
 		ccmdDialog->setModal(true);
 		ccmdDialog->show();
@@ -70,7 +70,7 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation eoOperation, const QFile
 void cCopyMove::CreateWidget()
 {
 	ccmwWidget = new cCopyMoveWidget();
-	qhblOperations->insertWidget(iQUEUED_OPERATION_POSITION, ccmwWidget);
+	qhblOperations->insertWidget(cFileRoutine::iQUEUED_OPERATION_POSITION, ccmwWidget);
 	connect(this, SIGNAL(SetCurrentMaximum(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64)));
 	connect(this, SIGNAL(SetCurrentValue(const qint64)), ccmwWidget, SLOT(on_cCopyMove_SetCurrentValue(const qint64)));
 	connect(this, SIGNAL(SetDestination(const QString)), ccmwWidget, SLOT(on_cCopyMove_SetDestination(const QString)));
@@ -190,7 +190,7 @@ void cCopyMove::run()
 			emit SetDestination(qsTarget);
 		} else {
 			// just name in widget
-			emit SetSource(QFileInfo(qsSource).fileName());
+			emit SetSource(qfilSources.at(iI).fileName());
 			emit SetDestination(QFileInfo(qsTarget).fileName());
 		} // if else
 		

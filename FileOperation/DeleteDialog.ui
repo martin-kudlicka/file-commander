@@ -5,14 +5,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>176</width>
-    <height>104</height>
+    <width>174</width>
+    <height>103</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="qlFile" >
+  <widget class="QLabel" name="qlSource" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -25,7 +25,20 @@
     <string>Searching for files, please wait.</string>
    </property>
   </widget>
-  <widget class="QProgressBar" name="progressBar" >
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="qpbTotal" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -40,8 +53,11 @@
    <property name="textVisible" >
     <bool>false</bool>
    </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
   </widget>
-  <widget class="QPushButton" name="qpbCancel" >
+  <widget class="QPushButton" name="qpbBackground" >
    <property name="geometry" >
     <rect>
      <x>90</x>
@@ -51,20 +67,7 @@
     </rect>
    </property>
    <property name="text" >
-    <string>&amp;Cancel</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbOK" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>70</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;OK</string>
+    <string>&amp;Background</string>
    </property>
   </widget>
  </widget>
