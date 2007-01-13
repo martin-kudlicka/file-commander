@@ -18,6 +18,9 @@ HEADERS = MainWindow.h \
 			 FileOperation/CopyMoveDialog.h \
 			 FileOperation/CopyMoveWidget.h \
 			 FileOperation/QueueWidget.h \
+			 FileOperation/Delete.h \
+			 FileOperation/DeleteDialog.h \
+			 FileOperation/DeleteWidget.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
@@ -39,6 +42,9 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/CopyMoveDialog.cpp \
 			 FileOperation/CopyMoveWidget.cpp \
 			 FileOperation/QueueWidget.cpp \
+			 FileOperation/Delete.cpp \
+			 FileOperation/DeleteDialog.cpp \
+			 FileOperation/DeleteWidget.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \

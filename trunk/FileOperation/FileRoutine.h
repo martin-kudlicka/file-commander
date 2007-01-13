@@ -15,6 +15,14 @@ class cFileRoutine
 			MoveOperation,						///< move
 			DeleteOperation					///< delete
 		};
+		/// window style
+		enum eWindow {
+			ForegroundWindow,					///< modal foreground window
+			BackgroundWindow					///< window in qhblOperations layout
+		};
+
+		static const int iQUEUED_OPERATION_POSITION = 1;
+													///< position of queued background operation in layout
 
 		static QFileInfoList GetDirectoryContent(const QString qsPath, const QDir::Filters fFilters);
 													///< lists directory for it's content

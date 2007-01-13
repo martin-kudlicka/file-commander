@@ -15,18 +15,12 @@ class cCopyMove : public QThread
 	Q_OBJECT
 
 	public:
-		/// window style
-		enum eWindow {
-			ForegroundWindow,											///< modal foreground window
-			BackgroundWindow											///< window in qhblOperations layout
-		};
-
 		cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations);
 																			///< constructor
 																			/**< \param qmwParent parent window for foreground dialog
 																				  \param qhblOperations layout for background widget */
 
-		void CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const eWindow eStyle);
+		void CopyMove(const cFileRoutine::eOperation eoOperation, const QFileInfoList qfilSource, const QString qsDestination, const cFileRoutine::eWindow eStyle);
 																			///< start of copy or move operation
 																			/**< \param eoOperation copy or move operation
 																				  \param qfilSource source file list
@@ -34,7 +28,6 @@ class cCopyMove : public QThread
 																				  \param eStyle foreground or background operation */
 
 	private:
-		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 		static const qint64 qi64BUFFER_SIZE = 16384;			///< buffer size for copy
 
 		bool bCanceled;												///< true if operation is canceled

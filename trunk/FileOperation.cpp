@@ -9,6 +9,7 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	ccmInQueue = NULL;
+	cdInQueue = NULL;
 
 	// queue widget
 	cqwQueue.hide();
@@ -62,9 +63,29 @@ void cFileOperation::on_cCopyMove_finished()
 			} // if
 			qlCopyMove.at(iI)->deleteLater();
 			qlCopyMove.removeAt(iI);
+			return;
 		} // if
 	} // for
 } // on_cCopyMove_finished
+
+// delete thread finished
+void cFileOperation::on_cDelete_finished()
+{
+	int iI;
+
+	for (iI = 0; iI < qlDelete.count(); iI++) {
+		if (qlDelete.at(iI)->isFinished()) {
+			if (cdInQueue == qlDelete.at(iI)) {
+				// queued operation finished
+				cdInQueue = NULL;
+				ProcessQueue();
+			} // if
+			qlDelete.at(iI)->deleteLater();
+			qlDelete.removeAt(iI);
+			return;
+		} // if
+	} // for
+} // on_cDelete_finished
 
 // remove queued items (operations)
 void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlItems)
@@ -91,6 +112,7 @@ void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlIt
 void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel *cpSource, cPanel *cpDestination /* NULL */)
 {
 	cCopyMove *ccmCopyMove;
+	cDelete *cdDelete;
 	cFileOperationDialog cfodDialog(qmwParent);
 	cPanel::sObjects soObjects;
 	QFileInfoList qfilSource;
@@ -138,13 +160,16 @@ void cFileOperation::Operate(const cFileRoutine::eOperation eoOperation, cPanel 
 		case cFileOperationDialog::CancelAction:	return;
 		case cFileOperationDialog::OkAction:		if (eoOperation == cFileRoutine::DeleteOperation) {
 																	// delete
-																	// TODO Operate
+																	cdDelete = new cDelete(qmwParent, qhblOperations);
+																	connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
+																	qlDelete.append(cdDelete);
+																	cdDelete->Delete(qfilSource, cFileRoutine::ForegroundWindow);
 																} else {
 																	// copy or move
 																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
 																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 																	qlCopyMove.append(ccmCopyMove);
-																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cCopyMove::ForegroundWindow);
+																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cFileRoutine::ForegroundWindow);
 																} // if else
 																break;
 		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination);
@@ -157,6 +182,7 @@ void cFileOperation::ProcessQueue()
 {
 	if (ccmInQueue == NULL && !qqQperations.isEmpty()) {
 		cCopyMove *ccmCopyMove;
+		cDelete *cdDelete;
 		sOperation soOperation;
 
 		soOperation = qqQperations.dequeue();
@@ -168,9 +194,13 @@ void cFileOperation::ProcessQueue()
 															ccmInQueue = ccmCopyMove;
 															connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 															qlCopyMove.append(ccmCopyMove);
-															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cCopyMove::BackgroundWindow);
+															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cFileRoutine::BackgroundWindow);
 															break;
-			case cFileRoutine::DeleteOperation:	// TODO ProcessQueue
+			case cFileRoutine::DeleteOperation:	cdDelete = new cDelete(qmwParent, qhblOperations);
+															cdInQueue = cdDelete;
+															connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
+															qlDelete.append(cdDelete);
+															cdDelete->Delete(soOperation.qfilSource, cFileRoutine::BackgroundWindow);
 															break;
 		} // switch
 	} // if
