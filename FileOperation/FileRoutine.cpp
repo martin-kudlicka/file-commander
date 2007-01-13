@@ -89,3 +89,15 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
 
 	return qfilSources;
 } // GetSources
+
+#ifdef Q_WS_WIN
+// find out name of the disk
+QString cFileRoutine::GetVolumeName(const QString &qsRootPath)
+{
+	QString qsName;
+
+	qsName.fill(32, uiVOLUME_NAME * 2);
+	GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName.data()), qsName.size() / 2, NULL, NULL, NULL, NULL, NULL);
+	return qsName.left(qsName.trimmed().size() - 1);
+} // GetVolumeName
+#endif

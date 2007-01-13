@@ -15,6 +15,7 @@
 #include <QFileSystemWatcher>
 #include "FileOperation/FileRoutine.h"
 #include "Panel/TreeWidget.h"
+#include <QTimer>
 
 class cPanel : private QObject
 {
@@ -52,6 +53,8 @@ class cPanel : private QObject
 		void GoToUpDir();												///< go up one level (directory)
 
 	private:
+		static const int iTIMER_INTERVAL = 1000;				///< timer interval
+
 		/// strings for widgets
 		struct sWidgets {
 			QString qsDrive;											///< selected drive
@@ -80,6 +83,7 @@ class cPanel : private QObject
 		QMap<QString, cFileRoutine::sDriveInfo> *qmDrives;	///< drives in system
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view
+		QTimer qtTimer;												///< timer for requesting changeable informations
 
 		void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
@@ -110,6 +114,7 @@ class cPanel : private QObject
 		void on_qfswWatcher_directoryChanged(const QString &path);
 																			///< detect directory modifications
 																			/**< \param path directory to watch */
+		void on_qtTimer_timeout();									///< timer's timeout
 }; // cPanel
 
 #endif

@@ -8,9 +8,15 @@
 void cPanel::ActualizeVolumeInfo()
 {
 	cFileRoutine::sDiskSpace sdsInfo;
+	QString qsName;
 
+#ifdef Q_WS_WIN
+	qsName = cFileRoutine::GetVolumeName(qmDrives->value(qcbDrive->currentText()).qsPath);
+#else
+	qsName = qcbDrive->currentText();
+#endif
 	sdsInfo = cFileRoutine::GetDiskSpace(qmDrives->value(qcbDrive->currentText()).qsPath);
-	qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qmDrives->value(qcbDrive->currentText()).qsPath).arg(sdsInfo.qi64Free).arg(sdsInfo.qi64Total));
+	qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(sdsInfo.qi64Free).arg(sdsInfo.qi64Total));
 } // ActualizeVolumeInfo
 
 // actualize widgets with info about current directory view
@@ -92,6 +98,9 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
+
+	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
+	qtTimer.start(iTIMER_INTERVAL);
 } // cPanel
 
 // destructor
@@ -287,6 +296,12 @@ void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
 		} // if
 	} // for
 } // on_qfswWatcher_directoryChanged
+
+// timer's timeout
+void cPanel::on_qtTimer_timeout()
+{
+	ActualizeVolumeInfo();
+} // on_qtTimer_timeout
 
 // refresh dir content
 void cPanel::RefreshContent(const int &iIndex)
