@@ -74,6 +74,7 @@ cMainWindow::cMainWindow()
 	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives);
 	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives);
 
+	ActualizeDrives();
 	// load settings
 	// left tabs
 	LoadTabs(cSettings::PositionLeft);

@@ -73,6 +73,7 @@ class cPanel : private QObject
 		QFileIconProvider qfipIcon;								///< icons
 		QFileSystemWatcher qfswWatcher;							///< watching directory changes
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
+		QHash<QString, QString> qhLastPaths;					///< last visited paths for drives
 		QLabel *qlPath;												///< path
 		QLabel *qlDriveInfo;											///< drive info - label, used/free place
 		QLabel *qlSelected;											///< selected items
