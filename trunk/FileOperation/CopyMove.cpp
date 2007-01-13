@@ -138,6 +138,8 @@ void cCopyMove::run()
 		} else {
 			emit SetCurrentValue(0);
 
+			// create destination path
+			qdDir.mkpath(QFileInfo(qsTarget).path());
 			switch (eoOperation) {
 				case cFileRoutine::CopyOperation:	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
 																if (bCanceled) {
