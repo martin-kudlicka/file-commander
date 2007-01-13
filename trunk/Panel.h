@@ -9,12 +9,12 @@
 #include "Settings.h"
 #include <QHash>
 #include "Plugins/Content.h"
-#include <QTreeWidget>
 #include <QFileInfo>
 #include <QFileIconProvider>
 #include "Panel/ShellMenu.h"
 #include <QFileSystemWatcher>
 #include "FileOperation/FileRoutine.h"
+#include "Panel/TreeWidget.h"
 
 class cPanel : private QObject
 {
@@ -29,7 +29,7 @@ class cPanel : private QObject
 
 		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
 																			///< constructor
-																			/**< \param qswPanel panel for QTreeWidget
+																			/**< \param qswPanel panel for cTreeWidget
 																				  \param qcbDrive drive combo box
 																				  \param qlDriveInfo drive name and it's space information
 																				  \param qtbTab panel's tab bar
@@ -92,18 +92,21 @@ class cPanel : private QObject
 																			/**< \param qsPath new path */
 
 	private slots:
+		void on_ctwTree_customContextMenuRequested(const QPoint &pos);
+																			///< show tree view context menu
+																			/**< \param pos position of context menu */
+		void on_ctwTree_itemActivated(QTreeWidgetItem *item, int column);
+																			///< double click in tree view
+																			/**< \param item item clicked on
+																				  \param column column in item clicked in */
+		void on_ctwTree_itemSelectionChanged(cTreeWidget *ctwTree);
+																			///< changed selected items in directory view
+																			/**< \param ctwTree changed directory view */
 		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes
 																			/**< \param index index of selected drive in combo box */
 		void on_qfswWatcher_directoryChanged(const QString &path);
 																			///< detect directory modifications
 																			/**< \param path directory to watch */
-		void on_qtwTree_customContextMenuRequested(const QPoint &pos);
-																			///< show tree view context menu
-																			/**< \param pos position of context menu */
-		void on_qtwTree_itemActivated(QTreeWidgetItem *item, int column);
-																			///< double click in tree view
-																			/**< \param item item clicked on
-																				  \param column column in item clicked in */
 }; // cPanel
 
 #endif

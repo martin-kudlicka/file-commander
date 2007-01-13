@@ -9,6 +9,7 @@ FORMS = MainWindow.ui \
 		  FileOperation/DeleteWidget.ui
 HEADERS = MainWindow.h \
 			 Panel.h \
+			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
 			 Panel/Process.h \
 			 FileOperation.h \
@@ -33,6 +34,7 @@ win32 {
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 Panel.cpp \
+			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \
 			 Panel/Process.cpp \
 			 FileOperation.cpp \
