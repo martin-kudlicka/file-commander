@@ -99,7 +99,7 @@ class cPanel : private QObject
 																			///< double click in tree view
 																			/**< \param item item clicked on
 																				  \param column column in item clicked in */
-		void on_ctwTree_itemSelectionChanged(cTreeWidget *ctwTree);
+		void on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree);
 																			///< changed selected items in directory view
 																			/**< \param ctwTree changed directory view */
 		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes
