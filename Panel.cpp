@@ -49,6 +49,9 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	qhTabs.insert(iIndex, stTab);
 
+	// add path to watcher
+	qfswWatcher.addPath(stiTabInfo.qsPath);
+
 	// set header
 	RefreshHeader(iIndex);
 } // AddTab
@@ -69,6 +72,7 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 		qswDir->winId()
 #endif
 	);
+	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
 } // cPanel
 
 // destructor
@@ -95,6 +99,19 @@ cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
 
 	return soCount;
 } // GetCount
+
+// detect directory modifications
+void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
+{
+	int iI;
+
+	// refresh content in tabs with set directory to path
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		if (qhTabs.value(iI).swWidgets->qsPath == path) {
+			RefreshContent(iI);
+		} // if
+	} // for
+} // on_qfswWatcher_directoryChanged
 
 // show tree view context menu
 void cPanel::on_qtwTree_customContextMenuRequested(const QPoint &pos)
@@ -224,8 +241,7 @@ void cPanel::GoToRootDir()
 
 	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	if(!qdDir.isRoot()) {
-		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = qdDir.rootPath();
-		RefreshContent(qswDir->currentIndex());
+		SetPath(qdDir.rootPath());
 	} // if
 } // GoToRootDir
 
@@ -236,8 +252,7 @@ void cPanel::GoToUpDir()
 
 	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	if(!qdDir.isRoot()) {
-		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
-		RefreshContent(qswDir->currentIndex());
+		SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
 	} // if
 } // GoToUpDir
 
@@ -281,6 +296,10 @@ void cPanel::RefreshHeader(const int &iIndex)
 // set new path for current dir view
 void cPanel::SetPath(const QString &qsPath)
 {
+	// remove old path from watcher
+	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
+	// add new path to watcher
+	qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	RefreshContent(qswDir->currentIndex());
 } // SetPath
