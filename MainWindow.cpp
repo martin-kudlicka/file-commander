@@ -89,6 +89,15 @@ void cMainWindow::LoadTabs(const cSettings::ePosition epPosition)
 	} // for
 } // LoadTabs
 
+// delete button is clicked on
+void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
+} // on_qpbDelete_clicked
+
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {
@@ -112,9 +121,13 @@ void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDes
 {
 	if (qswLeft == GetActivePanel()) {
 		*cpSource = cpLeft;
-		*cpDestination = cpRight;
+		if (cpDestination) {
+			*cpDestination = cpRight;
+		} // if
 	} else {
 		*cpSource = cpRight;
-		*cpDestination = cpLeft;
+		if (cpDestination) {
+			*cpDestination = cpLeft;
+		} // if
 	} // if else
 } // SetSourceAndDestinationPanel

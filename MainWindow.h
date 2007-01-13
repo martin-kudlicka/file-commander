@@ -48,6 +48,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbCopy_clicked(bool checked = false);	
 																	///< copy button is clicked on
 																	/**< \param checked true if button is checkable and checked */
+		void on_qpbDelete_clicked(bool checked = false);	
+																	///< delete button is clicked on
+																	/**< \param checked true if button is checkable and checked */
 		void on_qpbMove_clicked(bool checked = false);	
 																	///< copy button is clicked on
 																	/**< \param checked true if button is checkable and checked */
