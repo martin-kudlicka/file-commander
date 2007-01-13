@@ -45,6 +45,8 @@ class cPanel : private QObject
 		QString GetPath();											///< get path for current dir
 																			/**< \return current dir view path */
 		QFileInfoList GetSelectedItemsList();					///< get file infos of selected items
+		void GoToRootDir();											///< go to root directory
+		void GoToUpDir();												///< go up one level (directory)
 
 	private:
 		/// strings for widgets

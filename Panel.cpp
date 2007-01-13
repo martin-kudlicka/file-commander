@@ -217,6 +217,30 @@ QStringList cPanel::GetSelectedItemsStringList()
 	return qslSelected;
 } // GetSelectedItemsStringList
 
+// go to root directory
+void cPanel::GoToRootDir()
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	if(!qdDir.isRoot()) {
+		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = qdDir.rootPath();
+		RefreshContent(qswDir->currentIndex());
+	} // if
+} // GoToRootDir
+
+// go up one level (directory)
+void cPanel::GoToUpDir()
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	if(!qdDir.isRoot()) {
+		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
+		RefreshContent(qswDir->currentIndex());
+	} // if
+} // GoToUpDir
+
 // refresh column's header
 void cPanel::RefreshHeader(const int &iIndex)
 {

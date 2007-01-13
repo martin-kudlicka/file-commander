@@ -71,7 +71,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_8" >
+            <widget class="QPushButton" name="qpbLeftRootDir" >
              <property name="maximumSize" >
               <size>
                <width>20</width>
@@ -87,7 +87,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_10" >
+            <widget class="QPushButton" name="qpbLeftUpDir" >
              <property name="maximumSize" >
               <size>
                <width>20</width>
@@ -175,7 +175,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_9" >
+            <widget class="QPushButton" name="qpbRightRootDir" >
              <property name="maximumSize" >
               <size>
                <width>20</width>
@@ -191,7 +191,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_11" >
+            <widget class="QPushButton" name="qpbRightUpDir" >
              <property name="maximumSize" >
               <size>
                <width>20</width>
