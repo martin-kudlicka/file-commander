@@ -13,6 +13,7 @@
 #include <QFileInfo>
 #include <QFileIconProvider>
 #include "Panel/ShellMenu.h"
+#include <QFileSystemWatcher>
 
 class cPanel : private QObject
 {
@@ -68,6 +69,7 @@ class cPanel : private QObject
 		cShellMenu *csmMenu;											///< right click "native" shell menu
 		QComboBox *qcbDrive;											///< drive
 		QFileIconProvider qfipIcon;								///< icons
+		QFileSystemWatcher qfswWatcher;							///< watching directory changes
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 		QLabel *qlPath;												///< path
 		QLabel *qlDriveInfo;											///< drive info - label, used/free place
@@ -86,6 +88,9 @@ class cPanel : private QObject
 																			/**< \param qsPath new path */
 
 	private slots:
+		void on_qfswWatcher_directoryChanged(const QString &path);
+																			///< detect directory modifications
+																			/**< \param path directory to watch */
 		void on_qtwTree_customContextMenuRequested(const QPoint &pos);
 																			///< show tree view context menu
 																			/**< \param pos position of context menu */
