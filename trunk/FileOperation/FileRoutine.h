@@ -49,7 +49,14 @@ class cFileRoutine
 																					///< return list of sources (within subdirectories too)
 																					/**< \param qfilFileAndDirList list of directories and files
 																						  \return source list */
+#ifdef Q_WS_WIN
+		static QString GetVolumeName(const QString &qsRootPath);	///< find out name of the disk
+																					/**< \param qsRootPath root path on disk to detect name
+																						  \return volume name */
 
+	private:
+		static const uint uiVOLUME_NAME = 32;							///< volume name buffer size
+#endif
 }; // cFileRoutine
 
 #endif
