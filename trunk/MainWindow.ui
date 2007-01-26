@@ -347,12 +347,12 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4" >
+        <widget class="QPushButton" name="qpbNewDirectory" >
          <property name="focusPolicy" >
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="text" >
-          <string>F7 New Folder</string>
+          <string>F7 New Directory</string>
          </property>
          <property name="shortcut" >
           <string>F7</string>

@@ -1,6 +1,7 @@
 CONFIG += qt warn_on
 //RC_FILE = FileCommander.rc
 FORMS = MainWindow.ui \
+		  NewDirectoryDialog.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
@@ -8,6 +9,7 @@ FORMS = MainWindow.ui \
 		  FileOperation/DeleteDialog.ui \
 		  FileOperation/DeleteWidget.ui
 HEADERS = MainWindow.h \
+			 NewDirectoryDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
@@ -33,6 +35,7 @@ win32 {
 }
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
+			 NewDirectoryDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \
