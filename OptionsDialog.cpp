@@ -1,13 +1,28 @@
 #include "OptionsDialog.h"
 
-#include <QTreeWidgetItem>
-#include <QHeaderView>
+#include <QFileDialog>
 
 const QString qsCONTENT = "Content";
 const QString qsPLUGINS = "Plugins";
 
-// build settings tree with choices
-void cOptionsDialog::BuildTree()
+// add another plugin into tree
+void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree)
+{
+	QTreeWidgetItem *qtwiItem;
+
+	// name
+	qtwiItem = new QTreeWidgetItem(qtwTree);
+	qtwiItem->setText(0, spPlugin.qsName);
+	// enable/disable flag
+	if (spPlugin.bEnabled) {
+		qtwiItem->setCheckState(1, Qt::Checked);
+	} else {
+		qtwiItem->setCheckState(1, Qt::Unchecked);
+	} // if else
+} // AddPluginIntoTree
+
+// build choices tree
+void cOptionsDialog::CreateChoices()
 {
 	QTreeWidgetItem *qtwiChoice, *qtwiSubChoice;
 
@@ -16,7 +31,7 @@ void cOptionsDialog::BuildTree()
 	qtwiChoice->setText(0, qsPLUGINS);
 	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
 	qtwiSubChoice->setText(0, qsCONTENT);
-} // BuildTree
+} // CreateChoices
 
 // constructor
 cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings)
@@ -27,58 +42,63 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings)
 	this->csSettings = csSettings;
 
 	qtwChoices->headerItem()->setHidden(true);
-	BuildTree();
+	CreateChoices();
 	qtwChoices->expandAll();
 
-	FillSettings();
+	FillOptions();
 
 	// select first item
 	qtwChoices->setCurrentItem(qtwChoices->topLevelItem(0));
 } // cConfigurationDialog
 
-// fills plugin information into table
-void cOptionsDialog::FillPluginsTable(const QList<cSettings::sPlugin> &qlPlugins, QTableWidget *qtwTable)
+// fills plugin information into tree
+void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree)
 {
 	int iI;
 	QStringList qslHeader;
 
-	qtwTable->setRowCount(qlPlugins.count());
-	qtwTable->setColumnCount(2);
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		QTableWidgetItem *qtwiItem;
-
-		// name
-		qtwiItem = new QTableWidgetItem(qlPlugins.at(iI).qsName);
-		qtwiItem->setFlags(Qt::ItemIsEnabled);
-		qtwTable->setItem(iI, 0, qtwiItem);
-		// enable/disable flag
-		qtwiItem = new QTableWidgetItem();
-		qtwiItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-		if (qlPlugins.at(iI).bEnabled) {
-			qtwiItem->setCheckState(Qt::Checked);
-		} else {
-			qtwiItem->setCheckState(Qt::Unchecked);
-		} // if else
-		qtwTable->setItem(iI, 1, qtwiItem);
+		AddPluginIntoTree(qlPlugins.at(iI), qtwTree);
 	} // for
 
 	qslHeader.append(tr("File path"));
 	qslHeader.append(tr("Enabled"));
-	qtwTable->setHorizontalHeaderLabels(qslHeader);
-	qtwTable->verticalHeader()->hide();
-	qtwTable->resizeColumnsToContents();
-} // FillPluginsTable
+	qtwTree->setHeaderLabels(qslHeader);
+	qtwTree->resizeColumnToContents(0);
+} // FillPluginsTree
 
 // fill options with set settings
-void cOptionsDialog::FillSettings()
+void cOptionsDialog::FillOptions()
 {
 	QList<cSettings::sPlugin> qlPlugins;
 
 	// plugins
 	// content
 	qlPlugins = csSettings->GetPlugins(cSettings::ContentPlugins);
-	FillPluginsTable(qlPlugins, qtwContentPlugins);
-} // FillSettings
+	FillPluginsTree(qlPlugins, qtwContentPlugins);
+} // FillOptions
+
+// add button is clicked on in content plugins
+void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
+{
+	QString qsFile;
+
+	qsFile = QFileDialog::getOpenFileName(this, tr("Select content plugin"), "/", "*.wdx");
+
+	if (qsFile != "") {
+		cSettings::sPlugin spPlugin;
+
+		spPlugin.qsName = qsFile;
+		spPlugin.bEnabled = true;
+		AddPluginIntoTree(spPlugin, qtwContentPlugins);
+	} // if
+} // on_qpbAddContentPlugin_clicked
+
+// remove content plugin button is clicked on
+void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
+{
+	delete qtwContentPlugins->selectedItems().at(0);
+} // on_qpbRemoveContentPlugin_clicked
 
 // choice change
 void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
@@ -91,3 +111,13 @@ void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, 
 			qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
 		} // if else
 } // on_qtwChoices_currentItemChanged
+
+// selected content plugin changed
+void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
+{
+	if (qtwContentPlugins->selectedItems().count() > 0) {
+		qpbRemoveContentPlugin->setEnabled(true);
+	} else {
+		qpbRemoveContentPlugin->setEnabled(false);
+	} // if else
+} // on_qtwContentPlugins_itemSelectionChanged
