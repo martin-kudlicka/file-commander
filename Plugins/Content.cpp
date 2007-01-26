@@ -25,6 +25,12 @@ int cContent::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 	return -1;	// error
 } // GetFieldIndex
 
+// retreive content plugin info
+QHash<QString, cContent::sPluginInfo> cContent::GetPluginsInfo()
+{
+	return qhPlugins;
+} // GetPluginsInfo
+
 // returns plugin's value for specified column
 QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit)
 {

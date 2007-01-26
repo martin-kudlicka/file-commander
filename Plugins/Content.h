@@ -9,9 +9,34 @@
 class cContent
 {
 	public:
+		typedef int (__stdcall *tContentGetValue)(char *cFilename, int iFieldIndex, int iUnitIndex, void *vFieldValue, int iMaxLen, int iFlags);
+																///< plugin's ContentGetValue function
+																/**< \param cFilename file name to analyze
+																	  \param iFieldIndex column index to fill
+																	  \param iUnitIndex unit to use
+																	  \param vFieldValue returned column value
+																	  \param iMaxLen max size for returned parameters
+																	  \param iFlags
+																	  \return value for specified field*/
+
+		/// column info
+		struct sField {
+			QString qsName;								///< displayed column name
+			QString qsUnits;								///< units for column
+			int iType;										///< type of field
+		};
+		/// plugin info
+		struct sPluginInfo {
+			QList<sField> qlFields;						///< plugin's columns
+			tContentGetValue tcgvContentGetValue;	///< pointer to plugin's ContentGetValue function
+		};
+
 		cContent(cSettings *csSettings);				///< constructor
 																/**< \param csSettings application's settings */
 
+		QHash<QString, sPluginInfo> GetPluginsInfo();
+																///< retreive content plugin info
+																/**< \return table of plugin info */
 		QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit);
 																///< returns plugin's value for specified column
 																/**< \param qsFilename file name to probe
@@ -33,29 +58,8 @@ class cContent
 																	  \param cUnits units for column
 																	  \param iMaxLen max size for returned parameters
 																	  \return type of column */
-		typedef int (__stdcall *tContentGetValue)(char *cFilename, int iFieldIndex, int iUnitIndex, void *vFieldValue, int iMaxLen, int iFlags);
-																///< plugin's ContentGetValue function
-																/**< \param cFilename file name to analyze
-																	  \param iFieldIndex column index to fill
-																	  \param iUnitIndex unit to use
-																	  \param vFieldValue returned column value
-																	  \param iMaxLen max size for returned parameters
-																	  \param iFlags
-																	  \return */
 
 		static const uint uiMAX_CHAR = 272;			///< maximum length of char field for plugins
-
-		/// column info
-		struct sField {
-			QString qsName;								///< displayed column name
-			QString qsUnits;								///< units for column
-			int iType;										///< type of field
-		};
-		/// plugin info
-		struct sPluginInfo {
-			QList<sField> qlFields;						///< plugin's columns
-			tContentGetValue tcgvContentGetValue;	///< pointer to plugin's ContentGetValue function
-		};
 
 		cSettings *csSettings;							///< main settings "file"
 		QHash<QString, sPluginInfo> qhPlugins;		///< table of plugins

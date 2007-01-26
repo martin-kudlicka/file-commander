@@ -173,7 +173,7 @@ void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
 // options are selected
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
-	cOptionsDialog codOptions(this, &csSettings);
+	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccContent);
 
 	codOptions.exec();
 } // on_qaOptions_triggered
