@@ -1,6 +1,7 @@
 #include "Settings.h"
 
 #include <QStringList>
+#include "FileOperation/FileRoutine.h"
 
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
@@ -11,6 +12,7 @@ const QString qsENABLED = "Enabled";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsUNIT = "Unit";
+// settings file
 // LeftPanel
 // LeftPanel/Tabs/
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
@@ -72,17 +74,45 @@ void cSettings::CreateDefaultColumnSet()
 // create new tab in settings file
 void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const QString &qsColumnSet, const QString &qsPath)
 {
+	int iI;
+	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
+
 	if (epPosition == PositionLeft) {
 		qsSettings.beginGroup(QString("%1%2").arg(qsLEFT_PANEL__TABS__).arg(uiIndex));
 	} else {
 		qsSettings.beginGroup(QString("%1%2").arg(qsRIGHT_PANEL__TABS__).arg(uiIndex));
 	} // if else
 
+	qmDrives = cFileRoutine::GetDrives();
+
 	qsSettings.setValue(qsCOLUMN_SET, qsColumnSet);
 	qsSettings.setValue(qsPATH, qsPath);
+	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
+	while (qmiDrives.hasNext()) {
+		qmiDrives.next();
+		if (qsPath.startsWith(qmiDrives.key())) {
+			qsSettings.setValue(qsDRIVE, qmiDrives.key());
+			break;
+		} // if
+	} // while
 
 	qsSettings.endGroup();
 } // CreateTab
+
+// get all application's settings
+QMap <QString, QString> cSettings::GetAllSettings()
+{
+	int iI;
+	QMap <QString, QString> qlSettings;
+	QStringList qslKeys;
+
+	qslKeys = qsSettings.allKeys();
+	for (iI = 0; iI < qslKeys.count(); iI++) {
+		qlSettings.insert(qslKeys.at(iI), qsSettings.value(qslKeys.at(iI)).toString());
+	} // for
+
+	return qlSettings;
+} // GetAllSettings
 
 // get some information about column
 cSettings::sColumn cSettings::GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn)
@@ -190,6 +220,18 @@ QStringList cSettings::GetTabs(const ePosition &epPosition)
 
 	return qslTabs;
 } // GetTabs
+
+// restore old application's settings
+void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
+{
+	qsSettings.clear();
+
+	QMapIterator<QString, QString> qmiSettings(qmSettings);
+	while (qmiSettings.hasNext()) {
+		qmiSettings.next();
+		qsSettings.setValue(qmiSettings.key(), qmiSettings.value());
+	} // while
+} // RestoreSettings
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)

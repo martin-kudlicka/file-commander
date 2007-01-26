@@ -26,13 +26,15 @@ void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTree
 
 	// name
 	qtwiItem = new QTreeWidgetItem(qtwTree);
-	qtwiItem->setText(0, spPlugin.qsName);
+	qtwiItem->setText(iPLUGIN_NAME_COLUMN, spPlugin.qsName);
 	// enable/disable flag
 	if (spPlugin.bEnabled) {
-		qtwiItem->setCheckState(1, Qt::Checked);
+		qtwiItem->setCheckState(iPLUGIN_ENABLED_COLUMN, Qt::Checked);
 	} else {
-		qtwiItem->setCheckState(1, Qt::Unchecked);
+		qtwiItem->setCheckState(iPLUGIN_ENABLED_COLUMN, Qt::Unchecked);
 	} // if else
+
+	qtwTree->resizeColumnToContents(iPLUGIN_NAME_COLUMN);
 } // AddPluginIntoTree
 
 // build choices tree
@@ -61,18 +63,26 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 
 	this->csSettings = csSettings;
 	this->ccContent = ccContent;
+
+	// remember original options
+	qlOldOptions = csSettings->GetAllSettings();
+
 	PrepareColumnsMenu();
 
+	// left menu
 	qtwChoices->headerItem()->setHidden(true);
 	CreateChoices();
 	qtwChoices->expandAll();
 
+	// submenus
 	qtwColumns->verticalHeader()->hide();
-
 	FillOptions();
 
 	// select first item
 	qtwChoices->setCurrentItem(qtwChoices->topLevelItem(0));
+
+	// connections
+	connect(&qmColumns, SIGNAL(triggered(QAction *)), SLOT(on_qmColumns_triggered(QAction *)));
 } // cConfigurationDialog
 
 // fills plugin information into tree
@@ -88,7 +98,6 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 	qslHeader.append(tr("File path"));
 	qslHeader.append(tr("Enabled"));
 	qtwTree->setHeaderLabels(qslHeader);
-	qtwTree->resizeColumnToContents(0);
 } // FillPluginsTree
 
 // fill options with set settings
@@ -132,16 +141,16 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 		} else {
 			qtwiItem = new QTableWidgetItem(scColumn.qsPlugin);
 		} // if else
-		qtwColumns->setItem(iI, 0, qtwiItem);
+		qtwColumns->setItem(iI, iTYPE_COLUMN, qtwiItem);
 		// name
 		qtwiItem = new QTableWidgetItem(scColumn.qsIdentifier);
-		qtwColumns->setItem(iI, 1, qtwiItem);
+		qtwColumns->setItem(iI, iNAME_COLUMN, qtwiItem);
 		// unit
 		qtwiItem = new QTableWidgetItem(scColumn.qsUnit);
-		qtwColumns->setItem(iI, 2, qtwiItem);
+		qtwColumns->setItem(iI, iUNIT_COLUMN, qtwiItem);
 		// show
 		qtwiItem = new QTableWidgetItem(scColumn.qsName);
-		qtwColumns->setItem(iI, 3, qtwiItem);
+		qtwColumns->setItem(iI, iSHOW_COLUMN, qtwiItem);
 
 		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
 	} // for
@@ -161,6 +170,60 @@ void cOptionsDialog::on_qdbbRespond_accepted()
 	SaveOptions();
 	accept();
 } // on_qdbbRespond_accepted
+
+void cOptionsDialog::on_qdbbRespond_rejected()
+{
+	csSettings->RestoreSettings(qlOldOptions);
+	reject();
+} // on_qdbbRespond_rejected
+
+// column selected into column set
+void cOptionsDialog::on_qmColumns_triggered(QAction *action)
+{
+	QStringList qslSelection;
+
+	qslSelection = action->data().toString().split('|');
+	qtwColumns->setRowCount(qtwColumns->rowCount() + 1);
+
+	if (qslSelection.at(0) == qsNATIVE2) {
+		// native column
+		QTableWidgetItem *qtwiItem;
+
+		// type
+		qtwiItem = new QTableWidgetItem(qsNATIVE);
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iTYPE_COLUMN, qtwiItem);
+		// name
+		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iNAME_COLUMN, qtwiItem);
+		// unit
+		// show
+		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iSHOW_COLUMN, qtwiItem);
+	} else {
+		// plugin column
+		QTableWidgetItem *qtwiItem;
+
+		// type
+		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iTYPE_COLUMN, qtwiItem);
+		// name
+		qtwiItem = new QTableWidgetItem(qslSelection.at(2));
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iNAME_COLUMN, qtwiItem);
+		// unit
+		if (qslSelection.count() > 3) {
+			qtwiItem = new QTableWidgetItem(qslSelection.at(3));
+			qtwColumns->setItem(qtwColumns->rowCount() - 1, iUNIT_COLUMN, qtwiItem);
+		} // if
+		// show
+		qtwiItem = new QTableWidgetItem(qslSelection.at(2));
+		qtwColumns->setItem(qtwColumns->rowCount() - 1, iSHOW_COLUMN, qtwiItem);
+	} // if else
+
+	qtwColumns->setRowHeight(qtwColumns->rowCount() - 1, qtwColumns->font().pointSize() + iROW_SPACE);
+	qtwColumns->resizeColumnsToContents();
+
+	SaveOption(Columns);
+} // on_qmColumns_triggered
 
 // add button is clicked on in content plugins
 void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
@@ -205,7 +268,7 @@ void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, 
 // prepare context plugin menu
 void cOptionsDialog::PrepareColumnsMenu()
 {
-	QAction *qaNative, *qaPlugins;
+	QAction *qaAction, *qaNative, *qaPlugins;
 	QHash<QString, cContent::sPluginInfo> qhPlugins;
 
 	// main menu
@@ -214,10 +277,14 @@ void cOptionsDialog::PrepareColumnsMenu()
 
 	// native sub menu
 	qmNative = new QMenu(&qmColumns);
-	qmNative->addAction(qsICON);
-	qmNative->addAction(qsNAME);
-	qmNative->addAction(qsEXTENSION);
-	qmNative->addAction(qsDATE);
+	qaAction = qmNative->addAction(qsICON);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsICON));
+	qaAction = qmNative->addAction(qsNAME);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsNAME));
+	qaAction = qmNative->addAction(qsEXTENSION);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsEXTENSION));
+	qaAction = qmNative->addAction(qsDATE);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsDATE));
 	qaNative->setMenu(qmNative);
 
 	// plugins sub menu
@@ -249,11 +316,16 @@ void cOptionsDialog::PrepareColumnsMenu()
 
 				qmUnits = new QMenu(qmFields);
 				for (iJ = 0; iJ < qslUnits.count(); iJ++) {
-					qmUnits->addAction(qslUnits.at(iJ));
+					QAction *qaUnit;
+
+					qaUnit = qmUnits->addAction(qslUnits.at(iJ));
+					qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName).arg(qslUnits.at(iJ)));
 				} // for
 
 				qaField->setMenu(qmUnits);
-			} // if
+			} else {
+				qaField->setData(QString("%1|%2|%3").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName));
+			} // if else
 		} // for
 		qaPlugin->setMenu(qmFields);
 	} // while
@@ -270,6 +342,39 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 	} // if else
 } // on_qtwContentPlugins_itemSelectionChanged
 
+// save specific changes into settings file
+void cOptionsDialog::SaveOption(const eOption &eoType)
+{
+	int iI;
+	QList<cSettings::sColumn> qlColumns;
+
+	switch (eoType) {
+		case Columns:	for (iI = 0; iI < qtwColumns->rowCount(); iI++) {
+								cSettings::sColumn scColumn;
+
+								// type
+								if (qtwColumns->item(iI, iTYPE_COLUMN)->text() == qsNATIVE) {
+									scColumn.qsPlugin = qsNO;
+								} else {
+									scColumn.qsPlugin = qtwColumns->item(iI, iTYPE_COLUMN)->text();
+								} // if else
+								// name
+								scColumn.qsIdentifier = qtwColumns->item(iI, iNAME_COLUMN)->text();
+								// unit
+								if (qtwColumns->item(iI, iUNIT_COLUMN)) {
+									scColumn.qsUnit = qtwColumns->item(iI, iUNIT_COLUMN)->text();
+								} // if
+								// show
+								scColumn.qsName = qtwColumns->item(iI, iSHOW_COLUMN)->text();
+
+								qlColumns.append(scColumn);
+							} // for
+
+							csSettings->CreateColumnSet(qcbColumnSet->currentText(), qlColumns);
+							break;
+	} // switch
+} // SaveOption
+
 // save changes into application's settings file
 void cOptionsDialog::SaveOptions()
 {
@@ -281,8 +386,8 @@ void cOptionsDialog::SaveOptions()
 	for (iI = 0; iI < qtwContentPlugins->topLevelItemCount(); iI++) {
 		cSettings::sPlugin spPlugin;
 
-		spPlugin.qsName = qtwContentPlugins->topLevelItem(iI)->text(0);
-		if (qtwContentPlugins->topLevelItem(iI)->checkState(1) == Qt::Checked) {
+		spPlugin.qsName = qtwContentPlugins->topLevelItem(iI)->text(iPLUGIN_NAME_COLUMN);
+		if (qtwContentPlugins->topLevelItem(iI)->checkState(iPLUGIN_ENABLED_COLUMN) == Qt::Checked) {
 			spPlugin.bEnabled = true;
 		} else {
 			spPlugin.bEnabled = false;

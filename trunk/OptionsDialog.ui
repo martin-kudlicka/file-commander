@@ -182,22 +182,5 @@
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>qdbbRespond</sender>
-   <signal>rejected()</signal>
-   <receiver>qdOptions</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
