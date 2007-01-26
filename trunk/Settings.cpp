@@ -99,6 +99,18 @@ cSettings::sColumn cSettings::GetColumnInfo(const QString &qsColumnSet, const QS
 	return scColumn;
 } // GetColumnInfo
 
+// get column sets
+QStringList cSettings::GetColumnSets()
+{
+	QStringList qsColumnSets;
+
+	qsSettings.beginGroup(qsCOLUMN_SET__);
+	qsColumnSets = qsSettings.childGroups();
+	qsSettings.endGroup();
+
+	return qsColumnSets;
+} // GetColumnSets
+
 // get column names in column set
 QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 {

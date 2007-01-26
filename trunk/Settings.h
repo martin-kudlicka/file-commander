@@ -56,6 +56,8 @@ class cSettings : private QObject
 																				/**< \param qsColumnSet column's column set
 																					  \param qsColumn column index
 																					  \return column information */
+		QStringList GetColumnSets();									///< get column sets
+																				/**< \return list of column sets */
 		QStringList GetColumnsInSet(const QString &qsColumnSet);
 																				///< get column names in column set
 																				/**< \param qsColumnSet name of column set
