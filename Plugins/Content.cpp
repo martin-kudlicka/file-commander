@@ -46,49 +46,51 @@ QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlu
 void cContent::Load()
 {
 	int iI;
-	QStringList qslPlugins;
+	QList<cSettings::sPlugin> qlPlugins;
 
 	// get plugin file list
-	qslPlugins = csSettings->GetPlugins(cSettings::ContentPlugins);
+	qlPlugins = csSettings->GetPlugins(cSettings::ContentPlugins);
 
 	// enumerate plugins
-	for (iI = 0; iI < qslPlugins.count(); iI++) {
-		int iField;
-		QFileInfo qfiFile;
-		QLibrary qlLibrary;
-		sPluginInfo spiPluginInfo;
-		tContentGetSupportedField tcgsfContentGetSupportedField;
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		if (qlPlugins.at(iI).bEnabled) {
+			int iField;
+			QFileInfo qfiFile;
+			QLibrary qlLibrary;
+			sPluginInfo spiPluginInfo;
+			tContentGetSupportedField tcgsfContentGetSupportedField;
 
-		// load plugin
-		qlLibrary.setFileName(qslPlugins.at(iI));
-		qlLibrary.load();
-		tcgsfContentGetSupportedField = (tContentGetSupportedField)qlLibrary.resolve("ContentGetSupportedField");
+			// load plugin
+			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
+			qlLibrary.load();
+			tcgsfContentGetSupportedField = (tContentGetSupportedField)qlLibrary.resolve("ContentGetSupportedField");
 
-		// fill plugin properties
-		spiPluginInfo.tcgvContentGetValue = (tContentGetValue)qlLibrary.resolve("ContentGetValue");
-		// get fields
-		iField = 0;
-		while(true) {
-			char cFieldName[uiMAX_CHAR], cUnits[uiMAX_CHAR];
-			int iResult;
+			// fill plugin properties
+			spiPluginInfo.tcgvContentGetValue = (tContentGetValue)qlLibrary.resolve("ContentGetValue");
+			// get fields
+			iField = 0;
+			while(true) {
+				char cFieldName[uiMAX_CHAR], cUnits[uiMAX_CHAR];
+				int iResult;
 
-			iResult = tcgsfContentGetSupportedField(iField, cFieldName, cUnits, uiMAX_CHAR);
-			if (iResult == ft_nomorefields) {
-				break;
-			} else {
-				sField sfField;
+				iResult = tcgsfContentGetSupportedField(iField, cFieldName, cUnits, uiMAX_CHAR);
+				if (iResult == ft_nomorefields) {
+					break;
+				} else {
+					sField sfField;
 
-				sfField.qsName = cFieldName;
-				sfField.qsUnits = cUnits;
-				sfField.iType = iResult;
-				spiPluginInfo.qlFields.append(sfField);
-			} // if else
+					sfField.qsName = cFieldName;
+					sfField.qsUnits = cUnits;
+					sfField.iType = iResult;
+					spiPluginInfo.qlFields.append(sfField);
+				} // if else
 
-			iField++;
-		} // while
-		// add new plugin
-		qfiFile.setFile(qslPlugins.at(iI));
-		qhPlugins.insert(qfiFile.fileName(), spiPluginInfo);
+				iField++;
+			} // while
+			// add new plugin
+			qfiFile.setFile(qlPlugins.at(iI).qsName);
+			qhPlugins.insert(qfiFile.fileName(), spiPluginInfo);
+		} // if
 	} // for
 } // Load
 

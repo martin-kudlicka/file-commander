@@ -3,6 +3,7 @@
 #include "Common/System.h"
 #include "FileOperation/FileRoutine.h"
 #include "NewDirectoryDialog.h"
+#include "OptionsDialog.h"
 
 // drive lists actualization
 void cMainWindow::ActualizeDrives()
@@ -168,6 +169,15 @@ void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
 {
 	cpLeft->GoToUpDir();
 } // on_qpbLeftUpDir_clicked
+
+// options are selected
+void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
+{
+	cOptionsDialog codOptions(this, &csSettings);
+
+	if (codOptions.exec() == QDialog::Accepted) {
+	} // if
+} // on_qaOptions_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)

@@ -55,6 +55,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																				  \param cpDestination destination panel */
 
 	private slots:
+		void on_qaOptions_triggered(bool checked = false);	///< options are selected
+																			/**< \param checked true if menu item is checkable and checked */
 		void on_qpbCopy_clicked(bool checked = false);
 																			///< copy button is clicked on
 																			/**< \param checked true if button is checkable and checked */

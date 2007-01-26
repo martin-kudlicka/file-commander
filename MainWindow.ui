@@ -390,9 +390,16 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
-    <addaction name="actionExit" />
+    <addaction name="qaExit" />
+   </widget>
+   <widget class="QMenu" name="menuConfiguration" >
+    <property name="title" >
+     <string>&amp;Configuration</string>
+    </property>
+    <addaction name="qaOptions" />
    </widget>
    <addaction name="menuFile" />
+   <addaction name="menuConfiguration" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
@@ -403,16 +410,21 @@
     <number>4</number>
    </attribute>
   </widget>
-  <action name="actionExit" >
+  <action name="qaExit" >
    <property name="text" >
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="qaOptions" >
+   <property name="text" >
+    <string>&amp;Options</string>
    </property>
   </action>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>actionExit</sender>
+   <sender>qaExit</sender>
    <signal>triggered()</signal>
    <receiver>qmwMainWindow</receiver>
    <slot>close()</slot>
