@@ -2,6 +2,7 @@
 
 #include "Common/System.h"
 #include "FileOperation/FileRoutine.h"
+#include "NewDirectoryDialog.h"
 
 // drive lists actualization
 void cMainWindow::ActualizeDrives()
@@ -185,6 +186,25 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
 	cfoFileOperation->Operate(cFileRoutine::MoveOperation, cpSource, cpDestination);
 } // on_qpbMove_clicked
+
+// new directory button is clicked on
+void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
+{
+	cNewDirectoryDialog cnddNewDirectory(this);
+
+	if (cnddNewDirectory.exec() == QDialog::Accepted) {
+		QDir qdDir;
+		QString qsNewDirectory;
+
+		if (GetActivePanel() == qswLeft) {
+			qsNewDirectory = cpLeft->GetPath();
+		} else {
+			qsNewDirectory = cpRight->GetPath();
+		} // if else
+		qsNewDirectory += '/' + cnddNewDirectory.qleDirectory->text();
+		qdDir.mkpath(qsNewDirectory);
+	} // if
+} // on_qpbNewDirectory_clicked
 
 // right root dir button is clicked on
 void cMainWindow::on_qpbRightRootDir_clicked(bool checked /* false */)

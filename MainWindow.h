@@ -70,6 +70,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbMove_clicked(bool checked = false);
 																			///< copy button is clicked on
 																			/**< \param checked true if button is checkable and checked */
+		void on_qpbNewDirectory_clicked(bool checked = false);
+																			///< new directory button is clicked on
+																			/**< \param checked true if button is checkable and checked */
 		void on_qpbRightRootDir_clicked(bool checked = false);
 																			///< right root dir button is clicked on
 																			/**< \param checked true if button is checkable and checked */

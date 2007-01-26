@@ -62,11 +62,11 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 																						qlCount->parentWidget()->geometry().width(),
 																						qlCount->parentWidget()->geometry().height() - qcbDestination->height());
 		setMaximumHeight(geometry().height() - qcbDestination->height());
-		qcbFilter->setFocus(Qt::ActiveWindowFocusReason);
+		qcbFilter->setFocus();
 		delete qcbDestination;
 		delete qpbBrowse;
 	} else {
-		qcbDestination->setFocus(Qt::ActiveWindowFocusReason);
+		qcbDestination->setFocus();
 	} // if else
 
 	euaAction = static_cast<eUserAction>(exec());
