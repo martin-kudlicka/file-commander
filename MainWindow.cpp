@@ -175,8 +175,7 @@ void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
 	cOptionsDialog codOptions(this, &csSettings);
 
-	if (codOptions.exec() == QDialog::Accepted) {
-	} // if
+	codOptions.exec();
 } // on_qaOptions_triggered
 
 // copy button is clicked on

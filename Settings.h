@@ -71,6 +71,10 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
+		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
+																				///< write plugins into settings file
+																				/**< \param epPlugin plugins type
+																					  \param qlPlugins plugin list */
 
 	private:
 		QSettings qsSettings;											///< application's settings

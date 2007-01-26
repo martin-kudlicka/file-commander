@@ -2,8 +2,8 @@
 
 #include <QFileDialog>
 
-const QString qsCONTENT = "Content";
-const QString qsPLUGINS = "Plugins";
+const QString qsCONTENT = QT_TR_NOOP("Content");
+const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 
 // add another plugin into tree
 void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree)
@@ -78,6 +78,13 @@ void cOptionsDialog::FillOptions()
 	FillPluginsTree(qlPlugins, qtwContentPlugins);
 } // FillOptions
 
+// changes accepted
+void cOptionsDialog::on_qdbbRespond_accepted()
+{
+	SaveOptions();
+	accept();
+} // on_qdbbRespond_accepted
+
 // add button is clicked on in content plugins
 void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 {
@@ -121,3 +128,26 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 		qpbRemoveContentPlugin->setEnabled(false);
 	} // if else
 } // on_qtwContentPlugins_itemSelectionChanged
+
+// save changes into application's settings file
+void cOptionsDialog::SaveOptions()
+{
+	int iI;
+	QList<cSettings::sPlugin> qlPlugins;
+
+	// plugins
+	// content
+	for (iI = 0; iI < qtwContentPlugins->topLevelItemCount(); iI++) {
+		cSettings::sPlugin spPlugin;
+
+		spPlugin.qsName = qtwContentPlugins->topLevelItem(iI)->text(0);
+		if (qtwContentPlugins->topLevelItem(iI)->checkState(1) == Qt::Checked) {
+			spPlugin.bEnabled = true;
+		} else {
+			spPlugin.bEnabled = false;
+		} // if else
+
+		qlPlugins.append(spPlugin);
+	} // for
+	csSettings->SetPlugins(cSettings::ContentPlugins, qlPlugins);
+} // SaveOptions

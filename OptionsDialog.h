@@ -32,8 +32,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param qlPlugins plugin list
 																							  \param qtwTree tree to fill */
 		void FillOptions();														///< fill options with set settings
+		void SaveOptions();														///< save changes into application's settings file
 
 	private slots:
+		void on_qdbbRespond_accepted();										///< changes accepted
 		void on_qpbAddContentPlugin_clicked(bool checked = false);
 																						///< add button is clicked on in content plugins
 																						/**< \param checked true if button is checkable and checked */
