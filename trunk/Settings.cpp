@@ -5,6 +5,7 @@
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsCOLUMN_SET = "ColumnSet";
+const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsPATH = "Path";
@@ -177,3 +178,33 @@ QStringList cSettings::GetTabs(const ePosition &epPosition)
 
 	return qslTabs;
 } // GetTabs
+
+// write plugins into settings file
+void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)
+{
+	int iI;
+
+	switch (epPlugin) {
+		// TODO GetPlugins - other plugin types
+		case ContentPlugins:	qsSettings.beginGroup(qsPLUGINS__CONTENT);
+									break;
+	} // switch
+
+	qsSettings.remove("");
+
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		QString qsKey, qsValue;
+
+		qsKey = qlPlugins.at(iI).qsName;
+		qsKey.replace('/', qcPATH_SEPARATOR);
+		if (qlPlugins.at(iI).bEnabled) {
+			qsValue = qsENABLED;
+		} else {
+			qsValue = qsDISABLED;
+		} // if else
+
+		qsSettings.setValue(qsKey, qsValue);
+	} // for
+
+	qsSettings.endGroup();
+} // SetPlugins
