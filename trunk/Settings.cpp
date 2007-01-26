@@ -3,8 +3,10 @@
 #include <QStringList>
 
 // general
+const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsDRIVE = "Drive";
+const QString qsENABLED = "Enabled";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsUNIT = "Unit";
@@ -109,18 +111,35 @@ QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 } // GetColumnsInSet
 
 ///< get plugin list
-QStringList cSettings::GetPlugins(const ePlugin &epPlugin)
+QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 {
+	int iI;
+	QList<sPlugin> qlPlugins;
 	QStringList qslPlugins;
 
 	switch (epPlugin) {
+		// TODO GetPlugins - other plugin types
 		case ContentPlugins:	qsSettings.beginGroup(qsPLUGINS__CONTENT);
 									break;
 	} // switch
 	qslPlugins = qsSettings.childKeys();
+
+	for (iI = 0; iI < qslPlugins.count(); iI++) {
+		sPlugin spPlugin;
+
+		spPlugin.qsName = qslPlugins.at(iI);
+		spPlugin.qsName.replace(qcPATH_SEPARATOR, '/');
+		if (qsSettings.value(qslPlugins.at(iI)).toString() == qsENABLED) {
+			spPlugin.bEnabled = true;
+		} else {
+			spPlugin.bEnabled = false;
+		} // if
+
+		qlPlugins.append(spPlugin);
+	} // for
 	qsSettings.endGroup();
 
-	return qslPlugins;
+	return qlPlugins;
 } // GetPlugins
 
 ///< get some information about tab
