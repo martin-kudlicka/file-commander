@@ -4,6 +4,7 @@
 #include <QAction>
 #include "Plugins/ContPlug.h"
 #include "Options/NewColumnSetDialog.h"
+#include <QHeaderView>
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONTENT = QT_TR_NOOP("Content");
@@ -12,7 +13,6 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
-const QString qsUNSELECTED_ROW = "   ";
 
 // destructor
 cOptionsDialog::~cOptionsDialog()
@@ -51,9 +51,6 @@ int cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn)
 	// show
 	qtwiItem = new QTableWidgetItem(scColumn.qsName);
 	qtwColumns->setItem(iToRow, iSHOW_COLUMN, qtwiItem);
-
-	qtwiItem = new QTableWidgetItem(qsUNSELECTED_ROW);
-	qtwColumns->setVerticalHeaderItem(iToRow, qtwiItem);
 
 	for (iI = iToRow; iI < qtwColumns->rowCount(); iI++) {
 		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
@@ -163,12 +160,13 @@ void cOptionsDialog::FillOptions()
 		qcbShowHiddenFiles->setChecked(true);
 	} // if
 	// column sets
-	qtwColumns->setColumnCount(4);
+	qtwColumns->setColumnCount(iCOLUMNS);
 	qslHeader.append(tr("Type"));
 	qslHeader.append(tr("Name"));
 	qslHeader.append(tr("Unit"));
 	qslHeader.append(tr("Show"));
 	qtwColumns->setHorizontalHeaderLabels(qslHeader);
+	qtwColumns->verticalHeader()->hide();
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
 
 	// plugins
@@ -201,38 +199,6 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 		qpbColumnSetRemove->setEnabled(true);
 	} // if else
 } // on_qcbColumnSet_currentIndexChanged
-
-// column add button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
-{
-	qmColumns.popup(QCursor::pos());
-} // on_qpbColumnAdd_clicked
-
-// column remove button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
-{
-	qtwColumns->removeRow(qtwColumns->currentRow());
-	SaveOption(Columns);
-} // on_qpbColumnRemove_clicked
-
-// column set add button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
-{
-	cNewColumnSetDialog cncsdDialog(this);
-
-	if (cncsdDialog.exec() == QDialog::Accepted) {
-		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
-		qcbColumnSet->addItem(cncsdDialog.qleColumnSet->text());
-		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
-	} // if
-} // on_qpbColumnSetAdd_clicked
-
-// column set remove button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
-{
-	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
-	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
-} // on_qpbColumnSetRemove_clicked
 
 // changes accepted
 void cOptionsDialog::on_qdbbRespond_accepted()
@@ -298,6 +264,72 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 		AddPluginIntoTree(spPlugin, qtwContentPlugins);
 	} // if
 } // on_qpbAddContentPlugin_clicked
+
+// column add button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
+{
+	qmColumns.popup(QCursor::pos());
+} // on_qpbColumnAdd_clicked
+
+// column down button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
+{
+	int iI;
+
+	for (iI = 0; iI < iCOLUMNS; iI++) {
+		QTableWidgetItem *qtwiCurrent, *qtwiLower;
+
+		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
+		qtwiLower = qtwColumns->takeItem(qtwColumns->currentRow() + 1, iI);
+		qtwColumns->setItem(qtwColumns->currentRow() + 1, iI, qtwiCurrent);
+		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiLower);
+	} // for
+
+	qtwColumns->setCurrentCell(qtwColumns->currentRow() + 1, 0);
+} // on_qpbColumnDown_clicked
+
+// column remove button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
+{
+	qtwColumns->removeRow(qtwColumns->currentRow());
+	SaveOption(Columns);
+} // on_qpbColumnRemove_clicked
+
+// column set add button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
+{
+	cNewColumnSetDialog cncsdDialog(this);
+
+	if (cncsdDialog.exec() == QDialog::Accepted) {
+		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
+		qcbColumnSet->addItem(cncsdDialog.qleColumnSet->text());
+		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
+	} // if
+} // on_qpbColumnSetAdd_clicked
+
+// column set remove button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
+{
+	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
+	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
+} // on_qpbColumnSetRemove_clicked
+
+// column up button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
+{
+	int iI;
+
+	for (iI = 0; iI < iCOLUMNS; iI++) {
+		QTableWidgetItem *qtwiCurrent, *qtwiUpper;
+
+		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
+		qtwiUpper = qtwColumns->takeItem(qtwColumns->currentRow() - 1, iI);
+		qtwColumns->setItem(qtwColumns->currentRow() - 1, iI, qtwiCurrent);
+		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiUpper);
+	} // for
+
+	qtwColumns->setCurrentCell(qtwColumns->currentRow() - 1, 0);
+} // on_qpbColumnUp_clicked
 
 // remove content plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
@@ -394,17 +426,20 @@ void cOptionsDialog::PrepareColumnsMenu()
 	qaPlugins->setMenu(qmPlugins);
 } // PrepareColumnsMenu
 
-// signalizing current row
-void cOptionsDialog::on_qtwColumns_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+// selected cell changed
+void cOptionsDialog::on_qtwColumns_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
-	QTableWidgetItem *qtwiItem;
-
-	qtwiItem = new QTableWidgetItem(qsUNSELECTED_ROW);
-	qtwColumns->setVerticalHeaderItem(previousRow, qtwiItem);
-
-	qtwiItem = new QTableWidgetItem(">");
-	qtwColumns->setVerticalHeaderItem(currentRow, qtwiItem);
-} // on_qtwColumns_currentCellChanged
+	if (current && current->row() > 0) {
+			qpbColumnUp->setEnabled(true);
+	} else {
+		qpbColumnUp->setEnabled(false);
+	} // if else
+	if (current && current->row() < qtwColumns->rowCount() - 1) {
+		qpbColumnDown->setEnabled(true);
+	} else {
+		qpbColumnDown->setEnabled(false);
+	} // if else
+} // on_qtwColumns_currentItemChanged
 
 // selected column changed
 void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
