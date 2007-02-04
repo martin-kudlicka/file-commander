@@ -31,6 +31,7 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 	int iI;
 
 	qsSettings.beginGroup(qsCOLUMN_SET + "/" + qsColumnSet);
+	qsSettings.remove("");
 	for (iI = 0; iI < qlColumns.count(); iI++) {
 		qsSettings.beginGroup(QString("%1").arg(iI));
 		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
