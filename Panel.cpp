@@ -5,8 +5,7 @@
 #include "Panel/Process.h"
 #include <QHeaderView>
 
-// TODO - put ssSort in class somehow
-cPanel::sSort ssSort;	///< sort information
+cPanel::sSort cPanel::ssSort;	///< sort information (static class variable)
 
 // actualize volume information - disk name and space
 void cPanel::ActualizeVolumeInfo()

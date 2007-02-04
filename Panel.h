@@ -27,11 +27,6 @@ class cPanel : private QObject
 			uint Directories;											///< number of directories
 			uint Files;													///< number of files
 		};
-		/// sort information
-		struct sSort {
-			int iSortedColumn;										///< column to sort by
-			Qt::SortOrder soSortOrder;								///< sort order
-		};
 
 		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
 																			///< constructor
@@ -60,6 +55,11 @@ class cPanel : private QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;				///< timer interval
 
+		/// sort information
+		struct sSort {
+			int iSortedColumn;										///< column to sort by
+			Qt::SortOrder soSortOrder;								///< sort order
+		};
 		/// strings for widgets
 		struct sWidgets {
 			QString qsDrive;											///< selected drive
@@ -89,6 +89,7 @@ class cPanel : private QObject
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view
 		QTimer qtTimer;												///< timer for requesting changeable informations
+		static sSort ssSort;											///< sort information
 
 		void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
