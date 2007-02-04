@@ -1,7 +1,6 @@
 #include "OptionsDialog.h"
 
 #include <QFileDialog>
-#include <QHeaderView>
 #include <QAction>
 #include "Plugins/ContPlug.h"
 
@@ -11,6 +10,7 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
+const QString qsUNSELECTED_ROW = "   ";
 
 // destructor
 cOptionsDialog::~cOptionsDialog()
@@ -18,6 +18,49 @@ cOptionsDialog::~cOptionsDialog()
 	qmNative->deleteLater();
 	qmPlugins->deleteLater();
 } // ~cOptionsDialog
+
+// add new column to current column set
+int cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn)
+{
+	int iI, iToRow;
+	QTableWidgetItem *qtwiItem;
+
+	if (qtwColumns->currentRow() != -1) {
+		iToRow = qtwColumns->currentRow();
+		qtwColumns->insertRow(qtwColumns->currentRow());
+	} else {
+		qtwColumns->setRowCount(qtwColumns->rowCount() + 1);
+		iToRow = qtwColumns->rowCount() - 1;
+	} // if else
+
+	// type
+	if (scColumn.qsPlugin == qsNO) {
+		qtwiItem = new QTableWidgetItem(qsNATIVE);
+	} else {
+		qtwiItem = new QTableWidgetItem(scColumn.qsPlugin);
+	} // if else
+	qtwColumns->setItem(iToRow, iTYPE_COLUMN, qtwiItem);
+	// name
+	qtwiItem = new QTableWidgetItem(scColumn.qsIdentifier);
+	qtwColumns->setItem(iToRow, iNAME_COLUMN, qtwiItem);
+	// unit
+	qtwiItem = new QTableWidgetItem(scColumn.qsUnit);
+	qtwColumns->setItem(iToRow, iUNIT_COLUMN, qtwiItem);
+	// show
+	qtwiItem = new QTableWidgetItem(scColumn.qsName);
+	qtwColumns->setItem(iToRow, iSHOW_COLUMN, qtwiItem);
+
+	qtwiItem = new QTableWidgetItem(qsUNSELECTED_ROW);
+	qtwColumns->setVerticalHeaderItem(iToRow, qtwiItem);
+
+	for (iI = iToRow; iI < qtwColumns->rowCount(); iI++) {
+		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
+	} // for
+
+	qtwColumns->resizeColumnsToContents();
+
+	return iToRow;
+} // AddColumnToColumns
 
 // add another plugin into tree
 void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree)
@@ -75,7 +118,6 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 	qtwChoices->expandAll();
 
 	// submenus
-	qtwColumns->verticalHeader()->hide();
 	FillOptions();
 
 	// select first item
@@ -91,13 +133,13 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 	int iI;
 	QStringList qslHeader;
 
-	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		AddPluginIntoTree(qlPlugins.at(iI), qtwTree);
-	} // for
-
 	qslHeader.append(tr("File path"));
 	qslHeader.append(tr("Enabled"));
 	qtwTree->setHeaderLabels(qslHeader);
+
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		AddPluginIntoTree(qlPlugins.at(iI), qtwTree);
+	} // for
 } // FillPluginsTree
 
 // fill options with set settings
@@ -127,35 +169,13 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 	QStringList qslColumns;
 
 	qslColumns = csSettings->GetColumnsInSet(text);
-	qtwColumns->setRowCount(qslColumns.count());
 
 	for (iI = 0; iI < qslColumns.count(); iI++) {
 		cSettings::sColumn scColumn;
-		QTableWidgetItem *qtwiItem;
 
 		scColumn = csSettings->GetColumnInfo(text, qslColumns.at(iI));
-
-		// type
-		if (scColumn.qsPlugin == qsNO) {
-			qtwiItem = new QTableWidgetItem(qsNATIVE);
-		} else {
-			qtwiItem = new QTableWidgetItem(scColumn.qsPlugin);
-		} // if else
-		qtwColumns->setItem(iI, iTYPE_COLUMN, qtwiItem);
-		// name
-		qtwiItem = new QTableWidgetItem(scColumn.qsIdentifier);
-		qtwColumns->setItem(iI, iNAME_COLUMN, qtwiItem);
-		// unit
-		qtwiItem = new QTableWidgetItem(scColumn.qsUnit);
-		qtwColumns->setItem(iI, iUNIT_COLUMN, qtwiItem);
-		// show
-		qtwiItem = new QTableWidgetItem(scColumn.qsName);
-		qtwColumns->setItem(iI, iSHOW_COLUMN, qtwiItem);
-
-		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
+		AddColumnToColumns(scColumn);
 	} // for
-
-	qtwColumns->resizeColumnsToContents();
 } // on_qcbColumnSet_currentIndexChanged
 
 // column add button is clicked on in columns view
@@ -180,47 +200,35 @@ void cOptionsDialog::on_qdbbRespond_rejected()
 // column selected into column set
 void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 {
+	cSettings::sColumn scColumn;
 	QStringList qslSelection;
 
 	qslSelection = action->data().toString().split('|');
-	qtwColumns->setRowCount(qtwColumns->rowCount() + 1);
 
 	if (qslSelection.at(0) == qsNATIVE2) {
 		// native column
-		QTableWidgetItem *qtwiItem;
-
 		// type
-		qtwiItem = new QTableWidgetItem(qsNATIVE);
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iTYPE_COLUMN, qtwiItem);
+		scColumn.qsPlugin == qsNO;
 		// name
-		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iNAME_COLUMN, qtwiItem);
+		scColumn.qsIdentifier = qslSelection.at(1);
 		// unit
 		// show
-		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iSHOW_COLUMN, qtwiItem);
+		scColumn.qsName = qslSelection.at(1);
 	} else {
 		// plugin column
-		QTableWidgetItem *qtwiItem;
-
 		// type
-		qtwiItem = new QTableWidgetItem(qslSelection.at(1));
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iTYPE_COLUMN, qtwiItem);
+		scColumn.qsPlugin = qslSelection.at(1);
 		// name
-		qtwiItem = new QTableWidgetItem(qslSelection.at(2));
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iNAME_COLUMN, qtwiItem);
+		scColumn.qsIdentifier = qslSelection.at(2);
 		// unit
 		if (qslSelection.count() > 3) {
-			qtwiItem = new QTableWidgetItem(qslSelection.at(3));
-			qtwColumns->setItem(qtwColumns->rowCount() - 1, iUNIT_COLUMN, qtwiItem);
+			scColumn.qsUnit = qslSelection.at(3);
 		} // if
 		// show
-		qtwiItem = new QTableWidgetItem(qslSelection.at(2));
-		qtwColumns->setItem(qtwColumns->rowCount() - 1, iSHOW_COLUMN, qtwiItem);
+		scColumn.qsName = qslSelection.at(2);
 	} // if else
 
-	qtwColumns->setRowHeight(qtwColumns->rowCount() - 1, qtwColumns->font().pointSize() + iROW_SPACE);
-	qtwColumns->resizeColumnsToContents();
+	qtwColumns->setCurrentCell(AddColumnToColumns(scColumn), 0);
 
 	SaveOption(Columns);
 } // on_qmColumns_triggered
@@ -331,6 +339,28 @@ void cOptionsDialog::PrepareColumnsMenu()
 	} // while
 	qaPlugins->setMenu(qmPlugins);
 } // PrepareColumnsMenu
+
+// signalizing current row
+void cOptionsDialog::on_qtwColumns_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+{
+	QTableWidgetItem *qtwiItem;
+
+	qtwiItem = new QTableWidgetItem(qsUNSELECTED_ROW);
+	qtwColumns->setVerticalHeaderItem(previousRow, qtwiItem);
+
+	qtwiItem = new QTableWidgetItem(">");
+	qtwColumns->setVerticalHeaderItem(currentRow, qtwiItem);
+} // on_qtwColumns_currentCellChanged
+
+// selected column changed
+void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
+{
+	if (qtwColumns->selectedItems().count() > 0) {
+		qpbColumnRemove->setEnabled(true);
+	} else {
+		qpbColumnRemove->setEnabled(false);
+	} // if else
+} // on_qtwColumns_itemSelectionChanged
 
 // selected content plugin changed
 void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
