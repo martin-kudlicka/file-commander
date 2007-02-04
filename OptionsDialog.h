@@ -35,7 +35,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iUNIT_COLUMN = 2;									///< column's unit
 		static const int iSHOW_COLUMN = 3;									///< user's name of column
 
-		static const int iROW_SPACE = 5;										///< addition space in table rows
+		static const int iROW_SPACE = 8;										///< addition space in table rows
 
 		/// specific options to save
 		enum eOption {
@@ -49,6 +49,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QMenu *qmNative;															///< native part of columns menu
 		QMenu *qmPlugins;															///< plugins part of columns menu
 
+		int AddColumnToColumns(const cSettings::sColumn &scColumn);
+																						///< add new column to current column set
+																						/**< \param scColumn new column to add
+																							  \return added row number */
 		void AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree);
 																						///< add another plugin into tree
 																						/**< \param spPlugin plugin to add
@@ -85,6 +89,13 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< choice change
 																						/**< \param current new choice
 																							  \param previous last choice */
+		void on_qtwColumns_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+																						///< signalizing current row
+																						/**< \param currentRow actual row number
+																							  \param currentColumn actual column number
+																							  \param previousRow previous row number
+																							  \param previousColumn previous column number */
+		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
 }; // cOptionsDialog
 
