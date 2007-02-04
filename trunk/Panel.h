@@ -27,6 +27,11 @@ class cPanel : private QObject
 			uint Directories;											///< number of directories
 			uint Files;													///< number of files
 		};
+		/// sort information
+		struct sSort {
+			int iSortedColumn;										///< column to sort by
+			Qt::SortOrder soSortOrder;								///< sort order
+		};
 
 		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
 																			///< constructor
@@ -89,12 +94,18 @@ class cPanel : private QObject
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */
-		void RefreshContent(const int &iIndex);					///< refresh dir content
+		void RefreshContent(const int &iIndex);				///< refresh dir content
 																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int &iIndex);					///< refresh column's header
 																			/**< \param iIndex index of dir view */
-		void SetPath(const QString &qsPath);						///< set new path for current dir view
+		void SetPath(const QString &qsPath);					///< set new path for current dir view
 																			/**< \param qsPath new path */
+		void Sort(const int &iIndex);								///< sort dir content
+																			/**< \param iIndex index of dir view */
+		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																			///< compare items by text
+																			/**< \param qtwiItem1 1st item
+																				  \param qtwiItem2 2nd item */
 
 	private slots:
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);
@@ -114,6 +125,9 @@ class cPanel : private QObject
 		void on_qfswWatcher_directoryChanged(const QString &path);
 																			///< detect directory modifications
 																			/**< \param path directory to watch */
+		void on_qhvTreeHeader_sectionClicked(int logicalIndex);
+																			///< click on header in tree (dir) view
+																			/**< \param logicalIndex column index clicked on */
 		void on_qtTimer_timeout();									///< timer's timeout
 }; // cPanel
 
