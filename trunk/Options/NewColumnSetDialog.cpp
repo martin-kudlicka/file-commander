@@ -6,4 +6,4 @@ cNewColumnSetDialog::cNewColumnSetDialog(QDialog *qdParent)
 	setParent(qdParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 	qleColumnSet->setFocus();
-} // cNewDirectoryDialog
+} // cNewColumnSetDialog

@@ -13,14 +13,17 @@ const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsUNIT = "Unit";
 // settings file
+// ColumnSet/
+const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
+// Display
+const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
+const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // LeftPanel
 // LeftPanel/Tabs/
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 // RightPanel
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
-// ColumnSet/
-const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Plugins
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
@@ -215,6 +218,21 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	return stiTabInfo;
 } // GetTabInfo
 
+// find out value for specified key
+QString cSettings::GetValue(const eKey &ekKey)
+{
+	QString qsResult;
+
+	switch (ekKey) {
+		case ShowHiddenFiles:	qsResult = qsSettings.value(qsDISPLAY__SHOW_HIDDEN_FILES, qsFALSE).toString();
+										break;
+		case ShowSystemFiles:	qsResult = qsSettings.value(qsDISPLAY__SHOW_SYSTEM_FILES, qsFALSE).toString();
+										break;
+	} // switch
+
+	return qsResult;
+} // GetValue
+
 // get tab list for left or right panel
 QStringList cSettings::GetTabs(const ePosition &epPosition)
 {
@@ -278,3 +296,14 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 
 	qsSettings.endGroup();
 } // SetPlugins
+
+// set key - value pair
+void cSettings::SetValue(const eKey &ekKey, const QString &qsValue)
+{
+	switch (ekKey) {
+		case ShowHiddenFiles:	qsSettings.setValue(qsDISPLAY__SHOW_HIDDEN_FILES, qsValue);
+										break;
+		case ShowSystemFiles:	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, qsValue);
+										break;
+	} // switch
+} // SetValue

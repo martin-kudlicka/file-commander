@@ -5,7 +5,6 @@
 
 #include "ui_NewColumnSetDialog.h"
 
-
 class cNewColumnSetDialog : public QDialog, public Ui::qdNewColumnSet
 {
 	Q_OBJECT
