@@ -5,6 +5,9 @@
 #include "Panel/Process.h"
 #include <QHeaderView>
 
+// TODO - put ssSort in class somehow
+cPanel::sSort ssSort;	///< sort information
+
 // actualize volume information - disk name and space
 void cPanel::ActualizeVolumeInfo()
 {
@@ -62,6 +65,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
+	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -298,6 +302,12 @@ void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
 	} // for
 } // on_qfswWatcher_directoryChanged
 
+// click on header in tree (dir) view
+void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
+{
+	Sort(qswDir->currentIndex());
+} // on_qhvTreeHeader_sectionClicked
+
 // timer's timeout
 void cPanel::on_qtTimer_timeout()
 {
@@ -312,7 +322,6 @@ void cPanel::RefreshContent(const int &iIndex)
 	QFileInfoList qfilFiles;
 
 	// clear previous file contents
-	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->clear();
 	qhTabs.value(iIndex).qhFiles->clear();
 
 	// get file list
@@ -336,7 +345,7 @@ void cPanel::RefreshContent(const int &iIndex)
 		} // if
 
 		// add to internal file list
-		qtwiFile = new QTreeWidgetItem(static_cast<cTreeWidget *>(qswDir->widget(iIndex)));
+		qtwiFile = new QTreeWidgetItem();
 		qhTabs.value(iIndex).qhFiles->insert(qtwiFile, qfilFiles.at(iI));
 
 		// fill columns
@@ -369,6 +378,9 @@ void cPanel::RefreshContent(const int &iIndex)
 			} // if else
 		} // for
 	} // for
+
+	// sort and show files
+	Sort(iIndex);
 
 	if (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
 		// mark first item
@@ -414,7 +426,6 @@ void cPanel::RefreshHeader(const int &iIndex)
 	bAutoStretch = false;
 	// set columns width
 	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
-		//static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setColumnWidth(iI, qhTabs.value(iIndex).qlColumns->at(iI).iWidth);
 		if (qhTabs.value(iIndex).qlColumns->at(iI).iWidth == 0) {
 			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setResizeMode(iI, QHeaderView::Stretch);
 			bAutoStretch = true;
@@ -425,6 +436,10 @@ void cPanel::RefreshHeader(const int &iIndex)
 	if (bAutoStretch) {
 		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setStretchLastSection(false);
 	} // if
+	// show sort order
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setSortIndicatorShown(true);
+	// clickable flag
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setClickable(true);
 
 	// refresh dir content according to new header
 	RefreshContent(iIndex);
@@ -441,3 +456,55 @@ void cPanel::SetPath(const QString &qsPath)
 	qhLastPaths.insert(qcbDrive->currentText(), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath));
 	RefreshContent(qswDir->currentIndex());
 } // SetPath
+
+// sort dir content and show
+void cPanel::Sort(const int &iIndex)
+{
+	QList<QTreeWidgetItem *> qlDirectories, qlFiles;
+
+	// clear tree (can't use QTreeWidget::clear because it deletes objects too)
+	while (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
+		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->takeTopLevelItem(0);
+	} // while
+
+	// split directories and files
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(*qhTabs.value(iIndex).qhFiles);
+	while (qhiFiles.hasNext()) {
+		qhiFiles.next();
+		if (qhiFiles.value().isDir()) {
+			qlDirectories.append(qhiFiles.key());
+		} else {
+			qlFiles.append(qhiFiles.key());
+		} // if else
+	} // while
+
+	// set sort informations for sorting functions
+	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
+	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
+	if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
+		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
+	} // if
+
+	// show the result
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlDirectories);
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlFiles);
+} // Sort
+
+// compare items by text
+bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
+{
+	if (qtwiItem1->text(ssSort.iSortedColumn) < qtwiItem2->text(ssSort.iSortedColumn)) {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return true;
+		} else {
+			return false;
+		} // if else
+	} else {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return false;
+		} else {
+			return true;
+		} // if else
+	} // if else
+} // TreeSortByString
