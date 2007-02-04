@@ -166,19 +166,27 @@ void cOptionsDialog::FillOptions()
 // column set changed
 void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 {
-	int iI;
 	QStringList qslColumns;
 
 	qslColumns = csSettings->GetColumnsInSet(text);
 
 	qtwColumns->clearContents();
 	qtwColumns->setRowCount(0);
-	for (iI = 0; iI < qslColumns.count(); iI++) {
-		cSettings::sColumn scColumn;
 
-		scColumn = csSettings->GetColumnInfo(text, qslColumns.at(iI));
-		AddColumnToColumns(scColumn);
-	} // for
+	if (text == "") {
+		qpbColumnSetRemove->setEnabled(false);
+	} else {
+		int iI;
+
+		for (iI = 0; iI < qslColumns.count(); iI++) {
+			cSettings::sColumn scColumn;
+
+			scColumn = csSettings->GetColumnInfo(text, qslColumns.at(iI));
+			AddColumnToColumns(scColumn);
+		} // for
+
+		qpbColumnSetRemove->setEnabled(true);
+	} // if else
 } // on_qcbColumnSet_currentIndexChanged
 
 // column add button is clicked on in columns view
@@ -187,25 +195,31 @@ void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
 	qmColumns.popup(QCursor::pos());
 } // on_qpbColumnAdd_clicked
 
-// column add button is clicked on in columns view
+// column remove button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 {
 	qtwColumns->removeRow(qtwColumns->currentRow());
 	SaveOption(Columns);
 } // on_qpbColumnRemove_clicked
 
-// column add button is clicked on in columns view
+// column set add button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 {
 	cNewColumnSetDialog cncsdDialog(this);
 
 	if (cncsdDialog.exec() == QDialog::Accepted) {
 		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
+		qcbColumnSet->addItem(cncsdDialog.qleColumnSet->text());
+		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
 	} // if
-	qcbColumnSet->clear();
-	qcbColumnSet->addItems(csSettings->GetColumnSets());
-	qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
 } // on_qpbColumnSetAdd_clicked
+
+// column set remove button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
+{
+	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
+	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
+} // on_qpbColumnSetRemove_clicked
 
 // changes accepted
 void cOptionsDialog::on_qdbbRespond_accepted()
