@@ -184,6 +184,13 @@ void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
 	qmColumns.popup(QCursor::pos());
 } // on_qpbColumnAdd_clicked
 
+// column add button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
+{
+	qtwColumns->removeRow(qtwColumns->currentRow());
+	SaveOption(Columns);
+} // on_qpbColumnRemove_clicked
+
 // changes accepted
 void cOptionsDialog::on_qdbbRespond_accepted()
 {

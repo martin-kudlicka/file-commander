@@ -76,11 +76,11 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qdbbRespond_rejected();										///< changes rejected
 		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
 																						/**< \param action selected column (or column's unit) */
-		void on_qpbAddContentPlugin_clicked(bool checked = false);
-																						///< add button is clicked on in content plugins
+		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnAdd_clicked(bool checked = false);
-																						///< column add button is clicked on in columns view
+		void on_qpbColumnAdd_clicked(bool checked = false);			///< column add button is clicked on in columns view
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbColumnRemove_clicked(bool checked = false);		///< column add button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
