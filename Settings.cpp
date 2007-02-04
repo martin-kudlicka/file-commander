@@ -28,7 +28,7 @@ const QString qsPLUGINS__CONTENT = "Plugins/Content";
 // create new empty column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet)
 {
-	qsSettings.beginGroup(qsCOLUMN_SET + "/" + qsColumnSet);
+	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
 	// write something to create group
 	// TODO CreateColumnSet find out default windows key name
 	qsSettings.setValue("@","");
@@ -40,7 +40,7 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 {
 	int iI;
 
-	qsSettings.beginGroup(qsCOLUMN_SET + "/" + qsColumnSet);
+	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
 	qsSettings.remove("");
 	for (iI = 0; iI < qlColumns.count(); iI++) {
 		qsSettings.beginGroup(QString("%1").arg(iI));
@@ -230,6 +230,12 @@ QStringList cSettings::GetTabs(const ePosition &epPosition)
 
 	return qslTabs;
 } // GetTabs
+
+// remove column set
+void cSettings::RemoveColumnSet(const QString &qsColumnSet)
+{
+	qsSettings.remove(qsCOLUMN_SET__ + qsColumnSet);
+} // RemoveColumnSet
 
 // restore old application's settings
 void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)

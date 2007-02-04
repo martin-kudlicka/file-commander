@@ -81,6 +81,8 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
+		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
+																				/**< \param qsColumnSet column set to remove */
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
