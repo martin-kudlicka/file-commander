@@ -12,7 +12,6 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
-const QString qsTRUE = "true";
 const QString qsUNSELECTED_ROW = "   ";
 
 // destructor

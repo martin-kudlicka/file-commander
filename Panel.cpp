@@ -307,6 +307,7 @@ void cPanel::on_qtTimer_timeout()
 void cPanel::RefreshContent(const int &iIndex)
 {
 	int iI;
+	QDir::Filters fFilters;
 	QFileInfoList qfilFiles;
 
 	// clear previous file contents
@@ -314,7 +315,14 @@ void cPanel::RefreshContent(const int &iIndex)
 	qhTabs.value(iIndex).qhFiles->clear();
 
 	// get file list
-	qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, QDir::Dirs | QDir::Files);
+	fFilters = QDir::Dirs | QDir::Files;
+	if (csSettings->GetValue(cSettings::ShowSystemFiles) == qsTRUE) {
+		fFilters |= QDir::System;
+	} // if
+	if (csSettings->GetValue(cSettings::ShowHiddenFiles) == qsTRUE) {
+		fFilters |= QDir::Hidden;
+	} // if
+	qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);
 
 	// go through files and fill dir panel and add them into file list (qhFiles)
 	for (iI = 0; iI < qfilFiles.count(); iI++) {

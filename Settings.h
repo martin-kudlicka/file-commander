@@ -13,6 +13,7 @@ const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
+const QString qsTRUE = "true";
 
 class cSettings : private QObject
 {
