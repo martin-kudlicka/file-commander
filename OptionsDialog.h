@@ -22,6 +22,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		~cOptionsDialog();														///< destructor
 
 	private:
+		static const int iCOLUMNS = 4;										///< columns count in column view
+
 		static const int iPANELS_PAGE = 0;									///< main panel's page
 		static const int iDISPLAY_PAGE = 1;									///< panel's display page
 		static const int iCOLUMN_SETS_PAGE = 2;							///< column's sets page
@@ -81,11 +83,15 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnAdd_clicked(bool checked = false);			///< column add button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbColumnDown_clicked(bool checked = false);			///< column down button is clicked on in columns view
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnRemove_clicked(bool checked = false);		///< column remove button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnSetAdd_clicked(bool checked = false);		///< column set add button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnSetRemove_clicked(bool checked = false);	///< column set remove button is clicked on in columns view
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbColumnUp_clicked(bool checked = false);				///< column up button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
@@ -94,12 +100,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< choice change
 																						/**< \param current new choice
 																							  \param previous last choice */
-		void on_qtwColumns_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-																						///< signalizing current row
-																						/**< \param currentRow actual row number
-																							  \param currentColumn actual column number
-																							  \param previousRow previous row number
-																							  \param previousColumn previous column number */
+		void on_qtwColumns_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+																						///< selected cell changed
+																						/**< \param current actually selected item
+																							  \param previously selected item */
 		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
 }; // cOptionsDialog
