@@ -202,6 +202,9 @@ void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 	if (cncsdDialog.exec() == QDialog::Accepted) {
 		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
 	} // if
+	qcbColumnSet->clear();
+	qcbColumnSet->addItems(csSettings->GetColumnSets());
+	qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
 } // on_qpbColumnSetAdd_clicked
 
 // changes accepted
