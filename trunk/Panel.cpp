@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QDateTime>
 #include "Panel/Process.h"
+#include <QHeaderView>
 
 // actualize volume information - disk name and space
 void cPanel::ActualizeVolumeInfo()
@@ -380,6 +381,7 @@ void cPanel::RefreshContent(const int &iIndex)
 // refresh column's header
 void cPanel::RefreshHeader(const int &iIndex)
 {
+	bool bAutoStretch;
 	int iI;
 	QStringList qslColumns;
 	QTreeWidgetItem *qtwiHeader;
@@ -409,6 +411,20 @@ void cPanel::RefreshHeader(const int &iIndex)
 		qtwiHeader->setText(iI, qhTabs.value(iIndex).qlColumns->at(iI).qsName);
 	} // for
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setHeaderItem(qtwiHeader);
+	bAutoStretch = false;
+	// set columns width
+	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
+		//static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setColumnWidth(iI, qhTabs.value(iIndex).qlColumns->at(iI).iWidth);
+		if (qhTabs.value(iIndex).qlColumns->at(iI).iWidth == 0) {
+			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setResizeMode(iI, QHeaderView::Stretch);
+			bAutoStretch = true;
+		} else {
+			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->resizeSection(iI, qhTabs.value(iIndex).qlColumns->at(iI).iWidth);
+		} // if else
+	} // for
+	if (bAutoStretch) {
+		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setStretchLastSection(false);
+	} // if
 
 	// refresh dir content according to new header
 	RefreshContent(iIndex);

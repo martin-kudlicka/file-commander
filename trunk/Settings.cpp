@@ -12,6 +12,7 @@ const QString qsENABLED = "Enabled";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsUNIT = "Unit";
+const QString qsWIDTH = "Width";
 // settings file
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
@@ -50,6 +51,7 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
 		qsSettings.setValue(qsNAME, qlColumns.at(iI).qsName);
 		qsSettings.setValue(qsPLUGIN, qlColumns.at(iI).qsPlugin);
+		qsSettings.setValue(qsWIDTH, qlColumns.at(iI).iWidth);
 		qsSettings.endGroup();
 	} // for
 	qsSettings.endGroup();
@@ -65,21 +67,25 @@ void cSettings::CreateDefaultColumnSet()
 	scColumn.qsIdentifier = qsICON;
 	scColumn.qsName = tr("Icon");
 	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 20;
 	qlColumns.append(scColumn);
 	// name
 	scColumn.qsIdentifier = qsNAME;
 	scColumn.qsName = tr("Name");
 	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 0;
 	qlColumns.append(scColumn);
 	// extension
 	scColumn.qsIdentifier = qsEXTENSION;
 	scColumn.qsName = tr("Extension");
 	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 30;
 	qlColumns.append(scColumn);
 	// date
 	scColumn.qsIdentifier = qsDATE;
 	scColumn.qsName = tr("Date");
 	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 50;
 	qlColumns.append(scColumn);
 
 	CreateColumnSet(qsFULL, qlColumns);
@@ -137,6 +143,7 @@ cSettings::sColumn cSettings::GetColumnInfo(const QString &qsColumnSet, const QS
 	scColumn.qsName = qsSettings.value(qsNAME).toString();
 	scColumn.qsPlugin = qsSettings.value(qsPLUGIN).toString();
 	scColumn.qsUnit = qsSettings.value(qsUNIT).toString();
+	scColumn.iWidth = qsSettings.value(qsWIDTH).toInt();
 	qsSettings.endGroup();
 
 	return scColumn;

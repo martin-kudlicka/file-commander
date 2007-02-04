@@ -38,6 +38,7 @@ class cSettings : private QObject
 			QString qsName;												///< column name to show
 			QString qsPlugin;												///< plugin filename or "no" if native
 			QString qsUnit;												///< selected unit for column
+			int iWidth;														///< column width
 		};
 		/// plugin
 		struct sPlugin {

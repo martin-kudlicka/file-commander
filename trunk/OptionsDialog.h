@@ -22,7 +22,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		~cOptionsDialog();														///< destructor
 
 	private:
-		static const int iCOLUMNS = 4;										///< columns count in column view
+		static const int iCOLUMNS = 5;										///< columns count in column view
 
 		static const int iPANELS_PAGE = 0;									///< main panel's page
 		static const int iDISPLAY_PAGE = 1;									///< panel's display page
@@ -37,6 +37,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iNAME_COLUMN = 1;									///< internal name of column
 		static const int iUNIT_COLUMN = 2;									///< column's unit
 		static const int iSHOW_COLUMN = 3;									///< user's name of column
+		static const int iWIDTH_COLUMN = 4;
 
 		static const int iROW_SPACE = 8;										///< addition space in table rows
 
@@ -96,6 +97,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qsbWidth_valueChanged(int val);							///< changed width of column
+																						/**< \param val new column width */
 		void on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< choice change
 																						/**< \param current new choice
