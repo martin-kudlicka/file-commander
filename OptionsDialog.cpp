@@ -5,6 +5,7 @@
 #include "Plugins/ContPlug.h"
 #include "Options/NewColumnSetDialog.h"
 #include <QHeaderView>
+#include <QSpinBox>
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONTENT = QT_TR_NOOP("Content");
@@ -25,6 +26,7 @@ cOptionsDialog::~cOptionsDialog()
 int cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn)
 {
 	int iI, iToRow;
+	QSpinBox *qsbWidth;
 	QTableWidgetItem *qtwiItem;
 
 	if (qtwColumns->currentRow() != -1) {
@@ -51,6 +53,11 @@ int cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn)
 	// show
 	qtwiItem = new QTableWidgetItem(scColumn.qsName);
 	qtwColumns->setItem(iToRow, iSHOW_COLUMN, qtwiItem);
+	// width
+	qsbWidth = new QSpinBox();
+	qsbWidth->setValue(scColumn.iWidth);
+	qtwColumns->setCellWidget(iToRow, iWIDTH_COLUMN, qsbWidth);
+	connect(qsbWidth, SIGNAL(valueChanged(int)), SLOT(on_qsbWidth_valueChanged(int)));
 
 	for (iI = iToRow; iI < qtwColumns->rowCount(); iI++) {
 		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
@@ -165,6 +172,7 @@ void cOptionsDialog::FillOptions()
 	qslHeader.append(tr("Name"));
 	qslHeader.append(tr("Unit"));
 	qslHeader.append(tr("Show"));
+	qslHeader.append(tr("Width"));
 	qtwColumns->setHorizontalHeaderLabels(qslHeader);
 	qtwColumns->verticalHeader()->hide();
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
@@ -426,6 +434,12 @@ void cOptionsDialog::PrepareColumnsMenu()
 	qaPlugins->setMenu(qmPlugins);
 } // PrepareColumnsMenu
 
+// changed width of column
+void cOptionsDialog::on_qsbWidth_valueChanged(int val)
+{
+	SaveOption(Columns);
+} // on_qsbWidth_valueChanged
+
 // selected cell changed
 void cOptionsDialog::on_qtwColumns_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
@@ -485,6 +499,8 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 								} // if
 								// show
 								scColumn.qsName = qtwColumns->item(iI, iSHOW_COLUMN)->text();
+								// width
+								scColumn.iWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(iI, iWIDTH_COLUMN))->value();
 
 								qlColumns.append(scColumn);
 							} // for
