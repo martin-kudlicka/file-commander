@@ -44,6 +44,8 @@ class cSettings : private QObject
 			QString qsPath;												///< path selected in tab
 		};
 
+		void CreateColumnSet(const QString &qsColumnSet);		///< create new empty column set
+																				/**< \param qsColumnSet column set to create */
 		void CreateColumnSet(const QString &qsColumnSet, const QList<sColumn> &qlColumns);
 																				///< create new column set
 																				/**< \param qsColumnSet column set to create

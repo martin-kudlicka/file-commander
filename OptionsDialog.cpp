@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QAction>
 #include "Plugins/ContPlug.h"
+#include "Options/NewColumnSetDialog.h"
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONTENT = QT_TR_NOOP("Content");
@@ -170,6 +171,8 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 
 	qslColumns = csSettings->GetColumnsInSet(text);
 
+	qtwColumns->clearContents();
+	qtwColumns->setRowCount(0);
 	for (iI = 0; iI < qslColumns.count(); iI++) {
 		cSettings::sColumn scColumn;
 
@@ -190,6 +193,16 @@ void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 	qtwColumns->removeRow(qtwColumns->currentRow());
 	SaveOption(Columns);
 } // on_qpbColumnRemove_clicked
+
+// column add button is clicked on in columns view
+void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
+{
+	cNewColumnSetDialog cncsdDialog(this);
+
+	if (cncsdDialog.exec() == QDialog::Accepted) {
+		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
+	} // if
+} // on_qpbColumnSetAdd_clicked
 
 // changes accepted
 void cOptionsDialog::on_qdbbRespond_accepted()

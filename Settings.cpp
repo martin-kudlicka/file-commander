@@ -25,6 +25,16 @@ const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 
+// create new empty column set
+void cSettings::CreateColumnSet(const QString &qsColumnSet)
+{
+	qsSettings.beginGroup(qsCOLUMN_SET + "/" + qsColumnSet);
+	// write something to create group
+	// TODO CreateColumnSet find out default windows key name
+	qsSettings.setValue("@","");
+	qsSettings.endGroup();
+} // CreateColumnSet
+
 // create new column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn> &qlColumns)
 {
@@ -75,7 +85,6 @@ void cSettings::CreateDefaultColumnSet()
 // create new tab in settings file
 void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const QString &qsColumnSet, const QString &qsPath)
 {
-	int iI;
 	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
 
 	if (epPosition == PositionLeft) {

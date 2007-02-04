@@ -122,6 +122,32 @@
        <string>Remove</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="qpbColumnSetAdd" >
+      <property name="geometry" >
+       <rect>
+        <x>80</x>
+        <y>30</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Add</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbColumnSetRemove" >
+      <property name="geometry" >
+       <rect>
+        <x>160</x>
+        <y>30</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Remove</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="page_2" />
     <widget class="QWidget" name="page" >
