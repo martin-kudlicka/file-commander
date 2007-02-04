@@ -7,6 +7,7 @@
 
 const QString qsDATE = "Date";
 const QString qsEXTENSION = "Extension";
+const QString qsFALSE = "false";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
@@ -16,6 +17,11 @@ const QString qsNO = "no";
 class cSettings : private QObject
 {
 	public:
+		/// keys for values
+		enum eKey {
+			ShowHiddenFiles,												///< visibility of hidden files in panels
+			ShowSystemFiles												///< visibility of system files in panels
+		};
 		/// plugin type
 		enum ePlugin {
 			ContentPlugins													///< content plugin type
@@ -81,6 +87,9 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
+		QString GetValue(const eKey &ekKey);						///< find out value for specified key
+																				/**< \param ekKey key to find value for
+																					  \return value for the key */
 		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
 																				/**< \param qsColumnSet column set to remove */
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
@@ -90,6 +99,10 @@ class cSettings : private QObject
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type
 																					  \param qlPlugins plugin list */
+		void SetValue(const eKey &ekKey, const QString &qsValue);
+																				///< set key - value pair
+																				/**< \param ekKey key
+																					  \param qsValue value */
 
 	private:
 		QSettings qsSettings;											///< application's settings

@@ -7,10 +7,12 @@
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONTENT = QT_TR_NOOP("Content");
+const QString qsDISPLAY = QT_TR_NOOP("Display");
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
+const QString qsTRUE = "true";
 const QString qsUNSELECTED_ROW = "   ";
 
 // destructor
@@ -89,7 +91,9 @@ void cOptionsDialog::CreateChoices()
 	// panels
 	qtwiChoice = new QTreeWidgetItem(qtwChoices);
 	qtwiChoice->setText(0, qsPANELS);
-	qtwiSubChoice  = new QTreeWidgetItem(qtwiChoice);
+	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
+	qtwiSubChoice->setText(0, qsDISPLAY);
+	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
 	qtwiSubChoice->setText(0, qsCOLUMN_SETS);
 
 	// plugins
@@ -146,9 +150,19 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 // fill options with set settings
 void cOptionsDialog::FillOptions()
 {
+	QString qsValue;
 	QStringList qslHeader;
 
 	// panels
+	// display
+	qsValue = csSettings->GetValue(cSettings::ShowSystemFiles);
+	if (qsValue == qsTRUE) {
+		qcbShowSystemFiles->setChecked(true);
+	} // if
+	qsValue = csSettings->GetValue(cSettings::ShowHiddenFiles);
+	if (qsValue == qsTRUE) {
+		qcbShowHiddenFiles->setChecked(true);
+	} // if
 	// column sets
 	qtwColumns->setColumnCount(4);
 	qslHeader.append(tr("Type"));
@@ -299,15 +313,19 @@ void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, 
 	if (current->text(0) == qsPANELS) {
 		qswChoices->setCurrentIndex(iPANELS_PAGE);
 	} else
-		if (current->text(0) == qsCOLUMN_SETS) {
-			qswChoices->setCurrentIndex(iCOLUMN_SETS_PAGE);
+		if (current->text(0) == qsDISPLAY) {
+			qswChoices->setCurrentIndex(iDISPLAY_PAGE);
 		} else
-			if (current->text(0) == qsPLUGINS) {
-				qswChoices->setCurrentIndex(iPLUGINS_PAGE);
+			if (current->text(0) == qsCOLUMN_SETS) {
+				qswChoices->setCurrentIndex(iCOLUMN_SETS_PAGE);
 			} else
-				if (current->text(0) == qsCONTENT) {
-					qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
-				} // if else
+				// plugins
+				if (current->text(0) == qsPLUGINS) {
+					qswChoices->setCurrentIndex(iPLUGINS_PAGE);
+				} else
+					if (current->text(0) == qsCONTENT) {
+						qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
+					} // if else
 } // on_qtwChoices_currentItemChanged
 
 // prepare context plugin menu
@@ -447,6 +465,22 @@ void cOptionsDialog::SaveOptions()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
+	QString qsValue;
+
+	// panels
+	// display
+	if (qcbShowSystemFiles->isChecked()) {
+		qsValue = qsTRUE;
+	} else {
+		qsValue = qsFALSE;
+	} // if else
+	csSettings->SetValue(cSettings::ShowSystemFiles, qsValue);
+	if (qcbShowHiddenFiles->isChecked()) {
+		qsValue = qsTRUE;
+	} else {
+		qsValue = qsFALSE;
+	} // if else
+	csSettings->SetValue(cSettings::ShowHiddenFiles, qsValue);
 
 	// plugins
 	// content

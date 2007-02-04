@@ -50,6 +50,47 @@
      <number>1</number>
     </property>
     <widget class="QWidget" name="page_4" />
+    <widget class="QWidget" name="page_5" >
+     <widget class="QGroupBox" name="groupBox" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>120</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <property name="title" >
+       <string>Files</string>
+      </property>
+      <widget class="QCheckBox" name="qcbShowSystemFiles" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>111</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Show system files</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="qcbShowHiddenFiles" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>111</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Show hidden files</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
     <widget class="QWidget" name="page_3" >
      <widget class="QComboBox" name="qcbColumnSet" >
       <property name="geometry" >
