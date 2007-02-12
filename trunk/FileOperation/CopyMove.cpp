@@ -24,7 +24,11 @@ void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 	qfSource.setFileName(qsSource);
 	qfDestination.setFileName(qsDestination);
 	qfSource.open(QIODevice::ReadOnly);
-	qfDestination.open(QIODevice::WriteOnly);
+	if (ecCurrent == cCopyMoveConflictDialog::Append) {
+		qfDestination.open(QIODevice::Append);
+	} else {
+		qfDestination.open(QIODevice::WriteOnly);
+	} // if else
 
 	// set progress bar
 	qi64CurrentMaximum = qfSource.size();
@@ -294,10 +298,15 @@ void cCopyMove::run()
 #endif
 																} // if else
 																break;
-				case cFileRoutine::MoveOperation:	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
+				case cFileRoutine::MoveOperation:	if (ecCurrent == cCopyMoveConflictDialog::Append) {
+																	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
+																	QFile::remove(qfilSources.at(iI).filePath());
+																} else {
+																	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
+																	qi64TotalValue += qfilSources.at(iI).size();
+																	emit SetTotalValue(qi64TotalValue);
+																} // if else
 																qdDir.rmdir(qfilSources.at(iI).path());
-																qi64TotalValue += qfilSources.at(iI).size();
-																emit SetTotalValue(qi64TotalValue);
 																break;
 			} // switch
 		} // if else
