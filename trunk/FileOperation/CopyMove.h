@@ -76,9 +76,10 @@ class cCopyMove : public QThread
 																			/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value);			///< set overall progress
 																			/**< \param qi64Value overall progress */
-		void ShowConflictDialog(const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+		void ShowConflictDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
 																			///< show conflict dialog
-																			/**< \param qfiSource source file information
+																			/**< \param qsOperation type of operation - copy or move
+																				  \param qfiSource source file information
 																				  \param qfiDestination destination file information */
 
 	private slots:

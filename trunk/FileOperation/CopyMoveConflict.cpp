@@ -2,13 +2,13 @@
 
 #include <QDateTime>
 
-///< destructor
+// destructor
 cCopyMoveConflict::~cCopyMoveConflict()
 {
 	ccmcdDialog->deleteLater();
 } // ~cCopyMoveConflict
 
-///< constructor
+// constructor
 cCopyMoveConflict::cCopyMoveConflict(QMainWindow *qmwParent)
 {
 	ccmcdDialog = new cCopyMoveConflictDialog(qmwParent);
@@ -16,12 +16,13 @@ cCopyMoveConflict::cCopyMoveConflict(QMainWindow *qmwParent)
 	qRegisterMetaType<QFileInfo>("QFileInfo");
 } // cCopyMoveConflict
 
-///< show conflict dialog
-void cCopyMoveConflict::Show(const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
+// show conflict dialog
+void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
 {
 	cCopyMoveConflictDialog::eChoice ecResponse;
 
 	// set labels
+	ccmcdDialog->setWindowTitle(qsOperation);
 	ccmcdDialog->qlSourceFilename->setText(qfiSource.fileName());
 	ccmcdDialog->qlSourceInfo->setText(tr("%1 byte, %2").arg(qfiSource.size()).arg(qfiSource.lastModified().toString()));
 	ccmcdDialog->qlDestinationFilename->setText(qfiDestination.fileName());
