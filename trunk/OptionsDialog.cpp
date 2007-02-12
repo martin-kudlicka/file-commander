@@ -282,9 +282,10 @@ void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
 // column down button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 {
-	int iI;
+	int iCurrentWidth, iI, iLowerWidth;
 
-	for (iI = 0; iI < iCOLUMNS; iI++) {
+	// text
+	for (iI = 0; iI < iCOLUMNS - 1; iI++) {
 		QTableWidgetItem *qtwiCurrent, *qtwiLower;
 
 		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
@@ -292,6 +293,11 @@ void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 		qtwColumns->setItem(qtwColumns->currentRow() + 1, iI, qtwiCurrent);
 		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiLower);
 	} // for
+	// widget
+	iCurrentWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->value();
+	iLowerWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() + 1, iI))->value();
+	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() + 1, iI))->setValue(iCurrentWidth);
+	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->setValue(iLowerWidth);
 
 	qtwColumns->setCurrentCell(qtwColumns->currentRow() + 1, 0);
 } // on_qpbColumnDown_clicked
@@ -325,9 +331,10 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 // column up button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 {
-	int iI;
+	int iCurrentWidth, iI, iLowerWidth;
 
-	for (iI = 0; iI < iCOLUMNS; iI++) {
+	// text
+	for (iI = 0; iI < iCOLUMNS - 1; iI++) {
 		QTableWidgetItem *qtwiCurrent, *qtwiUpper;
 
 		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
@@ -335,6 +342,11 @@ void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 		qtwColumns->setItem(qtwColumns->currentRow() - 1, iI, qtwiCurrent);
 		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiUpper);
 	} // for
+	// widget
+	iCurrentWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->value();
+	iLowerWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() - 1, iI))->value();
+	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() - 1, iI))->setValue(iCurrentWidth);
+	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->setValue(iLowerWidth);
 
 	qtwColumns->setCurrentCell(qtwColumns->currentRow() - 1, 0);
 } // on_qpbColumnUp_clicked
