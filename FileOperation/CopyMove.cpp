@@ -306,14 +306,16 @@ void cCopyMove::run()
 																	qi64TotalValue += qfilSources.at(iI).size();
 																	emit SetTotalValue(qi64TotalValue);
 																} // if else
-																qdDir.rmdir(qfilSources.at(iI).path());
+																if (qsSourcePath != qfilSources.at(iI).path()) {
+																	qdDir.rmdir(qfilSources.at(iI).path());
+																} // if
 																break;
 			} // switch
 		} // if else
 	} // for
 
 	// remove source directory when moving files
-	if (cFileRoutine::MoveOperation) {
+	if (eoOperation == cFileRoutine::MoveOperation) {
 		qdDir.rmdir(qfilSource.at(0).filePath());
 	} // if
 
