@@ -132,7 +132,21 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 
 	if (qslTabs.count() == 0) {
 		// no tabs created yet -> create one default in settings file
-		csSettings.CreateTab(epPosition, 0, qsFULL, cSystem::GetFirstDrive());
+		cSettings::sTabInfo stiTab;
+
+		stiTab.qsColumnSet = qsFULL;
+		stiTab.qsPath = cSystem::GetFirstDrive();
+		QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
+		while (qmiDrives.hasNext()) {
+			qmiDrives.next();
+			if (stiTab.qsPath.startsWith(qmiDrives.key())) {
+				stiTab.qsDrive = qmiDrives.key();
+				break;
+			} // if
+		} // while
+		stiTab.ssSort.iSortedColumn = 1;
+		stiTab.ssSort.soSortOrder = Qt::AscendingOrder;
+		csSettings.CreateTab(epPosition, 0, stiTab);
 		qslTabs.append("0");	// add created tab
 	} // if
 
