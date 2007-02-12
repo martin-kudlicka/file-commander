@@ -93,9 +93,7 @@ QString cCopyMove::GetWildcardedName(const QFileInfo &qfiFile, const QString &qs
 
 	if (!qsDestination.contains('*') && !qsDestination.contains('?')) {
 		// no wildcard in file name
-		QDir qdDir;
-
-		if (qdDir.exists(qsDestination)) {
+		if (qfiFile.path() == qfiFile.filePath()) {
 			// destination without file name
 			return qsDestination + qfiFile.filePath().mid(qsSourcePath.length());
 		} else {
@@ -197,7 +195,7 @@ void cCopyMove::run()
 			emit SetSource(qfilSources.at(iI).fileName());
 			emit SetDestination(QFileInfo(qsTarget).fileName());
 		} // if else
-		
+
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
