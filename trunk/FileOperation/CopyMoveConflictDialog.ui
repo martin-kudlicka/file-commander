@@ -1,0 +1,200 @@
+<ui version="4.0" >
+ <class>qdCopyMoveConflict</class>
+ <widget class="QDialog" name="qdCopyMoveConflict" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>338</width>
+    <height>191</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>48</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlSourceFilename" >
+   <property name="geometry" >
+    <rect>
+     <x>60</x>
+     <y>10</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlSourceInfo" >
+   <property name="geometry" >
+    <rect>
+     <x>60</x>
+     <y>30</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>With</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlDestinationFilename" >
+   <property name="geometry" >
+    <rect>
+     <x>40</x>
+     <y>50</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlDestinationInfo" >
+   <property name="geometry" >
+    <rect>
+     <x>40</x>
+     <y>70</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbAppend" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>160</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Append</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOverwrite" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOverwriteAll" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite all</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOverwriteAllOlder" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite all older</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbRename" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>160</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Rename</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbSkip" >
+   <property name="geometry" >
+    <rect>
+     <x>230</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Skip</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbSkipAll" >
+   <property name="geometry" >
+    <rect>
+     <x>230</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Skip all</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Cancel</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
