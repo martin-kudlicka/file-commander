@@ -45,11 +45,17 @@ class cSettings : private QObject
 			QString qsName;												///< plugin's file name
 			bool bEnabled;													///< enable/disable flag
 		};
+		/// sort information
+		struct sSort {
+			int iSortedColumn;											///< column to sort by
+			Qt::SortOrder soSortOrder;									///< sort order
+		};
 		/// tab info
 		struct sTabInfo {
 			QString qsColumnSet;											///< column set defined in tab
 			QString qsDrive;												///< drive
 			QString qsPath;												///< path selected in tab
+			sSort ssSort;													///< sort information
 		};
 
 		void CreateColumnSet(const QString &qsColumnSet);		///< create new empty column set
@@ -59,12 +65,11 @@ class cSettings : private QObject
 																				/**< \param qsColumnSet column set to create
 																					  \param qlColumns columns in column set */
 		void CreateDefaultColumnSet();								///< create default (Full) column set
-		void CreateTab(const ePosition &epPosition, const uint &uiIndex, const QString &qsColumnSet, const QString &qsPath);
+		void CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab);
 																				///< create new tab in settings file
 																				/**< \param epPosition left or right panel
 																					  \param uiIndex index of tab in tab bar
-																					  \param qsColumnSet name of column set for dir panel
-																					  \param qsPath path to show */
+																					  \param stiTab tab information */
 		QMap <QString, QString> GetAllSettings();				///< get all application's settings
 																				/**< \return list of whole settings file */
 		sColumn GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn);

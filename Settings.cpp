@@ -5,12 +5,16 @@
 
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
+const QString qsASCENDING = "ascending";
 const QString qsCOLUMN_SET = "ColumnSet";
+const QString qsDESCENDING = "descending";
 const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
+const QString qsSORT_ORDER = "SortOrder";
+const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsUNIT = "Unit";
 const QString qsWIDTH = "Width";
 // settings file
@@ -92,7 +96,7 @@ void cSettings::CreateDefaultColumnSet()
 } // CreateDefaultColumnSet
 
 // create new tab in settings file
-void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const QString &qsColumnSet, const QString &qsPath)
+void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab)
 {
 	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
 
@@ -104,16 +108,11 @@ void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, cons
 
 	qmDrives = cFileRoutine::GetDrives();
 
-	qsSettings.setValue(qsCOLUMN_SET, qsColumnSet);
-	qsSettings.setValue(qsPATH, qsPath);
-	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
-	while (qmiDrives.hasNext()) {
-		qmiDrives.next();
-		if (qsPath.startsWith(qmiDrives.key())) {
-			qsSettings.setValue(qsDRIVE, qmiDrives.key());
-			break;
-		} // if
-	} // while
+	qsSettings.setValue(qsCOLUMN_SET, stiTab.qsColumnSet);
+	qsSettings.setValue(qsDRIVE, stiTab.qsDrive);
+	qsSettings.setValue(qsPATH, stiTab.qsPath);
+	qsSettings.setValue(qsSORTED_COLUMN, stiTab.ssSort.iSortedColumn);
+	qsSettings.setValue(qsSORT_ORDER, stiTab.ssSort.soSortOrder == Qt::AscendingOrder ? qsASCENDING : qsDESCENDING);
 
 	qsSettings.endGroup();
 } // CreateTab
@@ -219,6 +218,8 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	stiTabInfo.qsColumnSet = qsSettings.value(qsCOLUMN_SET).toString();
 	stiTabInfo.qsDrive = qsSettings.value(qsDRIVE).toString();
 	stiTabInfo.qsPath = qsSettings.value(qsPATH).toString();
+	stiTabInfo.ssSort.iSortedColumn = qsSettings.value(qsSORTED_COLUMN).toInt();
+	stiTabInfo.ssSort.soSortOrder = qsSettings.value(qsSORT_ORDER).toString() == qsASCENDING ? Qt::AscendingOrder : Qt::DescendingOrder;
 
 	qsSettings.endGroup();
 

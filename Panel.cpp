@@ -5,7 +5,7 @@
 #include "Panel/Process.h"
 #include <QHeaderView>
 
-cPanel::sSort cPanel::ssSort;	///< sort information (static class variable)
+cSettings::sSort cPanel::ssSort;	///< sort information (static class variable)
 
 // actualize volume information - disk name and space
 void cPanel::ActualizeVolumeInfo()
@@ -64,7 +64,6 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
-	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -80,6 +79,12 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 
 	// set header
 	RefreshHeader(iIndex);
+
+	// set sorting
+	ctwTree->header()->setSortIndicator(stiTabInfo.ssSort.iSortedColumn, stiTabInfo.ssSort.soSortOrder);
+
+	// connect signals to slots
+	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 } // AddTab
 
 // constructor
@@ -492,7 +497,7 @@ void cPanel::Sort(const int &iIndex)
 	// set sort informations for sorting functions
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
 	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
-	if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
+	if ((qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder) || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
 		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
 		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
 	} // if
