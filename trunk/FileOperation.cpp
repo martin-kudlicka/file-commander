@@ -129,7 +129,9 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel
 		qsDestination = cpDestination->GetPath();
 		if (qfilSource.count() == 1) {
 			// one file selected
-			qsDestination += '/' + qfilSource.at(0).fileName();
+			if (qfilSource.at(0).isFile()) {
+				qsDestination += '/' + qfilSource.at(0).fileName();
+			} // if
 		} else {
 			// many files selected
 			qsDestination += "/*.*";
@@ -166,6 +168,13 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel
 																	cdDelete->Delete(qfilSource, cFileRoutine::ForegroundWindow);
 																} else {
 																	// copy or move
+																	QDir qdDir;
+
+																	qdDir.setPath(qsDestination);
+																	if (qdDir.exists(qsDestination)) {
+																		// add *.* to target path
+																		qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
+																	} // if
 																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
 																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 																	qlCopyMove.append(ccmCopyMove);
