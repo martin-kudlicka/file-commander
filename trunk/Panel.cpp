@@ -498,7 +498,12 @@ void cPanel::Sort(const int &iIndex)
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
 	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
 	if ((qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder) || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
-		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		// let ".." be the first if possible
+		if (qhTabs.value(iIndex).qhFiles->value(qlDirectories.front()).fileName() == "..") {
+			qStableSort(++qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		} else {
+			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		} // if else
 		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
 	} // if
 
