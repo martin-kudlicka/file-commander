@@ -68,6 +68,8 @@ void cDelete::run()
 	qfilSources = cFileRoutine::GetSources(qfilSource);
 	qi64TotalMaximum = qfilSources.count();
 
+	emit SetTotalMaximum(qi64TotalMaximum);
+
 	// main process
 	for (iI = qfilSources.count() - 1; iI >= 0; iI--) {
 		QDir qdSource;
@@ -82,11 +84,12 @@ void cDelete::run()
 
 		// TODO run - question for readonly
 		if (qfilSources.at(iI).isDir()) {
-			QString a = qfilSources.at(iI).filePath();
 			qdSource.rmdir(qfilSources.at(iI).filePath());
 		} else {
 			qdSource.remove(qfilSources.at(iI).filePath());
 		} // if else
+
+		emit SetTotalValue(qi64TotalMaximum - iI);
 	} // for
 
 	// close dialog or widget

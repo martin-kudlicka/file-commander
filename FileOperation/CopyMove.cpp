@@ -3,6 +3,7 @@
 #ifdef Q_WS_WIN
 #include <Windows.h>
 #endif
+#include <QDateTime>
 
 // constructor
 cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
@@ -52,6 +53,12 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	// information windows
 	if (eStyle == cFileRoutine::ForegroundWindow) {
 		ccmdDialog = new cCopyMoveDialog(qmwParent);
+		switch (eoOperation) {
+			case cFileRoutine::CopyOperation:	ccmdDialog->setWindowTitle(tr("Copy"));
+															break;
+			case cFileRoutine::MoveOperation:	ccmdDialog->setWindowTitle(tr("Move"));
+															break;
+		} // switch
 		ccmdDialog->setModal(true);
 		ccmdDialog->show();
 		connect(this, SIGNAL(SetCurrentMaximum(const qint64 &)), ccmdDialog, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64 &)));
@@ -70,7 +77,7 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 
 	// conclict dialog
 	ccmcConflict = new cCopyMoveConflict(qmwParent);
-	connect(this, SIGNAL(ShowConflictDialog(const QFileInfo &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QFileInfo &, const QFileInfo &)));
+	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
 	connect(ccmcConflict, SIGNAL(Finished(const cCopyMoveConflictDialog::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &)));
 
 	start();
@@ -216,11 +223,56 @@ void cCopyMove::run()
 			emit SetCurrentValue(0);
 
 			// conflict solving
-			if (QFile::exists(qsTarget) && ecConflict == cCopyMoveConflictDialog::Nothing) {
-				emit ShowConflictDialog(QFileInfo(qsSource).fileName(), QFileInfo(qsTarget).fileName());
-				// wait for answer
-				qsConflict.acquire();
-				// solve conflict
+			ecCurrent = cCopyMoveConflictDialog::Nothing;
+			if (QFile::exists(qsTarget)) {
+				if (ecConflict == cCopyMoveConflictDialog::Nothing) {
+					// no permanent conflict answer yet
+					QString qsOperation;
+
+					if (eoOperation == cFileRoutine::CopyOperation) {
+						qsOperation = tr("Copy");
+					} else {
+						qsOperation = tr("Move");
+					} // if else
+					emit ShowConflictDialog(qsOperation, QFileInfo(qsSource), QFileInfo(qsTarget));
+					// wait for answer
+					qsConflict.acquire();
+					// solve conflict
+					// cancel
+					if (ecCurrent == cCopyMoveConflictDialog::Cancel) {
+						break;
+					} // if
+					// other permanent answers
+					switch (ecCurrent) {
+						case cCopyMoveConflictDialog::SkipAll:					ecConflict = cCopyMoveConflictDialog::SkipAll;
+																							break;
+						case cCopyMoveConflictDialog::OverwriteAll:			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
+																							break;
+						case cCopyMoveConflictDialog::OverwriteAllOlder:	ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
+																							break;
+					} // switch
+				} // if
+
+				if (ecConflict == cCopyMoveConflictDialog::SkipAll || ecCurrent == cCopyMoveConflictDialog::Skip) {
+					// skip or skip all -> move onto next file
+					continue;
+				} else {
+					if (ecConflict == cCopyMoveConflictDialog::OverwriteAll || ecCurrent == cCopyMoveConflictDialog::Overwrite) {
+						// overwrite, overwrite all -> delete target file
+						QFile::remove(qsTarget);
+					} else {
+						if (ecConflict == cCopyMoveConflictDialog::OverwriteAllOlder) {
+							// overwrite all older
+							if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
+								// target file is older -> delete it
+								QFile::remove(qsTarget);
+							} else {
+								// target file is newer -> move onto next file
+								continue;
+							} // if else
+						} // if
+					} // if else
+				} // if else
 			} // if
 
 			// create destination path

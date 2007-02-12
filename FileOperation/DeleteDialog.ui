@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>Delete</string>
   </property>
   <widget class="QLabel" name="qlSource" >
    <property name="geometry" >

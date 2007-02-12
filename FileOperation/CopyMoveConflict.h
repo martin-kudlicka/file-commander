@@ -24,9 +24,10 @@ class cCopyMoveConflict : public QObject
 																	///< dialog closed with user response
 																	/**< \param ecResponse user's response */
 	private slots:
-		void Show(const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+		void Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
 																	///< show conflict dialog
-																	/**< \param qfiSource source file information
+																	/**< \param qsOperation type of operation - copy or move
+																		  \param qfiSource source file information
 																		  \param qfiDestination destination file information */
 }; // cCopyMoveConflict
 
