@@ -6,7 +6,7 @@
 #include "ui_CopyMoveConflictDialog.h"
 #include <QMainWindow>
 
-class cCopyMoveConflictDialog : public QDialog, private Ui::qdCopyMoveConflict
+class cCopyMoveConflictDialog : public QDialog, public Ui::qdCopyMoveConflict
 {
 	Q_OBJECT
 
