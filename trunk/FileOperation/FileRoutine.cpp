@@ -78,7 +78,7 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
 		QFileInfoList qfilDirContent;
 
 		qfiDir = qfilDirectories.takeAt(0);
-		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden);
+		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
 		qfilSources += qfilDirContent;
 		for (iI = 0; iI < qfilDirContent.count(); iI++) {
 			if (qfilDirContent.at(iI).isDir()) {

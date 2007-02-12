@@ -1,5 +1,9 @@
 #include "FileOperation/CopyMove.h"
 
+#ifdef Q_WS_WIN
+#include <Windows.h>
+#endif
+
 // constructor
 cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
 {
@@ -206,7 +210,17 @@ void cCopyMove::run()
 																if (bCanceled) {
 																	// delete unfinished file
 																	QFile::remove(qsTarget);
-																} // if
+																} else {
+																	// set target permissions as source permissions
+#ifdef Q_WS_WIN
+																	DWORD dwAttributes;
+
+																	dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode()));
+																	SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
+#else
+																	QFile::setPermissions(qsTarget, QFile::permissions(qfilSources.at(iI).filePath()));
+#endif
+																} // if else
 																break;
 				case cFileRoutine::MoveOperation:	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
 																qdDir.rmdir(qfilSources.at(iI).path());
