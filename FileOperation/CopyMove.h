@@ -9,6 +9,8 @@
 #include <QThread>
 #include "FileOperation/FileRoutine.h"
 #include <QMainWindow>
+#include "FileOperation/CopyMoveConflict.h"
+#include <QSemaphore>
 
 class cCopyMove : public QThread
 {
@@ -31,6 +33,9 @@ class cCopyMove : public QThread
 		static const qint64 qi64BUFFER_SIZE = 16384;			///< buffer size for copy
 
 		bool bCanceled;												///< true if operation is canceled
+		cCopyMoveConflict *ccmcConflict;							///< conflict dialog
+		cCopyMoveConflictDialog::eChoice ecConflict;			///< global conflict user's response
+		cCopyMoveConflictDialog::eChoice ecCurrent;			///< current conflict user's response
 		cCopyMoveDialog *ccmdDialog;								///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;								///< copy/move widget
 		cFileRoutine::eOperation eoOperation;					///< copy or move operation
@@ -39,6 +44,7 @@ class cCopyMove : public QThread
 		qint64 qi64CurrentMaximum;									///< size of currently copied/moved file
 		qint64 qi64TotalMaximum;									///< total size of all files
 		QMainWindow *qmwParent;										///< parent window for foreground operation window
+		QSemaphore qsConflict;										///< to wait for answer on conflict dialog
 		QString qsDestination;										///< destination path
 		QString qsSource;												///< currently copied/moved source file
 		QString qsTarget;												///< target of currently copied/moved file
@@ -70,9 +76,16 @@ class cCopyMove : public QThread
 																			/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value);			///< set overall progress
 																			/**< \param qi64Value overall progress */
+		void ShowConflictDialog(const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+																			///< show conflict dialog
+																			/**< \param qfiSource source file information
+																				  \param qfiDestination destination file information */
 
 	private slots:
 		void on_ccm_OperationCanceled();							///< copy or move operation was canceled
+		void on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse);
+																			///< dialog closed with user response
+																			/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();				///< move operation to background
 }; // cCopyMove
 

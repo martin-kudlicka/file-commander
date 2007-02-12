@@ -49,6 +49,7 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	this->qfilSource = qfilSource;
 	this->qsDestination = qsDestination;
 
+	// information windows
 	if (eStyle == cFileRoutine::ForegroundWindow) {
 		ccmdDialog = new cCopyMoveDialog(qmwParent);
 		ccmdDialog->setModal(true);
@@ -66,6 +67,11 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 		CreateWidget();
 		ccmdDialog = NULL;
 	} // if else
+
+	// conclict dialog
+	ccmcConflict = new cCopyMoveConflict(qmwParent);
+	connect(this, SIGNAL(ShowConflictDialog(const QFileInfo &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QFileInfo &, const QFileInfo &)));
+	connect(ccmcConflict, SIGNAL(Finished(const cCopyMoveConflictDialog::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &)));
 
 	start();
 } // CopyMove
@@ -149,6 +155,13 @@ void cCopyMove::on_ccm_OperationCanceled()
 	bCanceled = true;
 } // on_ccm_OperationCanceled
 
+// dialog closed with user response
+void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse)
+{
+	ecCurrent = ecResponse;
+	qsConflict.release();
+} // on_ccmcConflict_Finished
+
 // move operation to background
 void cCopyMove::on_ccmdCopyMoveDialog_Background()
 {
@@ -181,6 +194,7 @@ void cCopyMove::run()
 	emit SetTotalMaximum(qi64TotalMaximum);
 
 	// main process
+	ecConflict = cCopyMoveConflictDialog::Nothing;
 	qi64TotalValue = 0;
 	for (iI = 0; iI < qfilSources.count() && !bCanceled; iI++) {
 		// show file names
@@ -200,6 +214,14 @@ void cCopyMove::run()
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
 			emit SetCurrentValue(0);
+
+			// conflict solving
+			if (QFile::exists(qsTarget) && ecConflict == cCopyMoveConflictDialog::Nothing) {
+				emit ShowConflictDialog(QFileInfo(qsSource).fileName(), QFileInfo(qsTarget).fileName());
+				// wait for answer
+				qsConflict.acquire();
+				// solve conflict
+			} // if
 
 			// create destination path
 			qdDir.mkpath(QFileInfo(qsTarget).path());
@@ -240,4 +262,5 @@ void cCopyMove::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
+	ccmcConflict->deleteLater();
 } // run
