@@ -1,5 +1,7 @@
 #include "FileOperation/CopyMoveConflict.h"
 
+#include <QDateTime>
+
 ///< destructor
 cCopyMoveConflict::~cCopyMoveConflict()
 {
@@ -18,6 +20,12 @@ cCopyMoveConflict::cCopyMoveConflict(QMainWindow *qmwParent)
 void cCopyMoveConflict::Show(const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
 {
 	cCopyMoveConflictDialog::eChoice ecResponse;
+
+	// set labels
+	ccmcdDialog->qlSourceFilename->setText(qfiSource.fileName());
+	ccmcdDialog->qlSourceInfo->setText(tr("%1 byte, %2").arg(qfiSource.size()).arg(qfiSource.lastModified().toString()));
+	ccmcdDialog->qlDestinationFilename->setText(qfiDestination.fileName());
+	ccmcdDialog->qlDestinationInfo->setText(tr("%1 byte, %2").arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()));
 
 	ecResponse = static_cast<cCopyMoveConflictDialog::eChoice>(ccmcdDialog->exec());
 	emit Finished(ecResponse);
