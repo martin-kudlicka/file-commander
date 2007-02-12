@@ -459,6 +459,7 @@ void cPanel::SetPath(const QString &qsPath)
 // sort dir content and show
 void cPanel::Sort(const int &iIndex)
 {
+	int iI;
 	QList<QTreeWidgetItem *> qlDirectories, qlFiles;
 
 	// clear tree (can't use QTreeWidget::clear because it deletes objects too)
@@ -477,10 +478,21 @@ void cPanel::Sort(const int &iIndex)
 		} // if else
 	} // while
 
+	// sort at first by name if possible (to have sorted the rest by filename as second condition)
+	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
+		if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME) {
+			ssSort.iSortedColumn = iI;
+			ssSort.soSortOrder = Qt::AscendingOrder;
+			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+			qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
+			break;
+		} // if
+	} // for
+
 	// set sort informations for sorting functions
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
 	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
-	if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
+	if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
 		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
 		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
 	} // if
@@ -493,7 +505,7 @@ void cPanel::Sort(const int &iIndex)
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
 {
-	if (qtwiItem1->text(ssSort.iSortedColumn) < qtwiItem2->text(ssSort.iSortedColumn)) {
+	if ((qtwiItem1->text(ssSort.iSortedColumn) < qtwiItem2->text(ssSort.iSortedColumn) && ssSort.soSortOrder == Qt::AscendingOrder) || (qtwiItem1->text(ssSort.iSortedColumn) <= qtwiItem2->text(ssSort.iSortedColumn) && ssSort.soSortOrder == Qt::DescendingOrder)) {
 		if (ssSort.soSortOrder == Qt::AscendingOrder) {
 			return true;
 		} else {
