@@ -206,6 +206,9 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 
 		qpbColumnSetRemove->setEnabled(true);
 	} // if else
+
+	// set width of name column
+	qtwColumns->setColumnWidth(iNAME_COLUMN, qtwColumns->width() - qtwColumns->columnWidth(iTYPE_COLUMN) - qtwColumns->columnWidth(iUNIT_COLUMN) - qtwColumns->columnWidth(iSHOW_COLUMN) - qtwColumns->columnWidth(iWIDTH_COLUMN) - 2);
 } // on_qcbColumnSet_currentIndexChanged
 
 // changes accepted
