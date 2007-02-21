@@ -5,6 +5,7 @@
 
 #include <QSettings>
 
+const QString qsASK = "Ask";
 const QString qsDATE = "Date";
 const QString qsEXTENSION = "Extension";
 const QString qsFALSE = "false";
@@ -13,6 +14,9 @@ const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
+const QString qsOVERWRITE_ALL = "OverwriteAll";
+const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
+const QString qsSKIP_ALL = "SkipAll";
 const QString qsTRUE = "true";
 
 class cSettings : private QObject
@@ -83,6 +87,8 @@ class cSettings : private QObject
 																				///< get column names in column set
 																				/**< \param qsColumnSet name of column set
 																					  \return list of columns in column set */
+		QString GetFileOverwrite();									///< find out file overwrite mode
+																				/**< \return default file overwrite mode */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
@@ -102,6 +108,8 @@ class cSettings : private QObject
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
+		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
+																				/**< \param qsMode overwrite mode */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type

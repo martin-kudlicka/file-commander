@@ -13,7 +13,7 @@ class cCopyMoveConflictDialog : public QDialog, public Ui::qdCopyMoveConflict
 	public:
 		/// user response
 		enum eChoice {
-			Nothing,																	///< no response yet
+			Ask,																		///< no response yet
 			Overwrite,																///< overwrite once
 			Cancel,																	///< cancel
 			OverwriteAll,															///< overwrite all

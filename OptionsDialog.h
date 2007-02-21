@@ -29,6 +29,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iCOLUMN_SETS_PAGE = 2;							///< column's sets page
 		static const int iPLUGINS_PAGE = 3;									///< main plugin's page
 		static const int iCONTENT_PLUGINS_PAGE = 4;						///< content plugin's page
+		static const int iOTHERS_PAGE = 5;									///< others page
+		static const int iCONFIRMATION_PAGE = 6;							///< confirmation page
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled

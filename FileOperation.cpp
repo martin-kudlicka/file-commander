@@ -3,11 +3,12 @@
 #include "FileOperation/FileOperationDialog.h"
 
 // constructor
-cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
+cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
 	// set private variables
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
+	this->csSettings = csSettings;
 	ccmInQueue = NULL;
 	cdInQueue = NULL;
 
@@ -174,7 +175,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel
 																	if (qdDir.exists()) {
 																		qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
 																	} // if
-																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
+																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
 																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 																	qlCopyMove.append(ccmCopyMove);
 																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cFileRoutine::ForegroundWindow);
@@ -198,7 +199,7 @@ void cFileOperation::ProcessQueue()
 
 		switch (soOperation.eoOperation) {
 			case cFileRoutine::CopyOperation:
-			case cFileRoutine::MoveOperation:	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
+			case cFileRoutine::MoveOperation:	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
 															ccmInQueue = ccmCopyMove;
 															connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 															qlCopyMove.append(ccmCopyMove);
