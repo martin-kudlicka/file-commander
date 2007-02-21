@@ -281,19 +281,6 @@
       <property name="title" >
        <string>File overwrite</string>
       </property>
-      <widget class="QRadioButton" name="qrbOverwriteAsk" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>83</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="text" >
-        <string>Ask</string>
-       </property>
-      </widget>
       <widget class="QRadioButton" name="qrbOverwriteAll" >
        <property name="geometry" >
         <rect>
@@ -331,6 +318,71 @@
        </property>
        <property name="text" >
         <string>Skip all</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbOverwriteAsk" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Ask</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_3" >
+      <property name="geometry" >
+       <rect>
+        <x>150</x>
+        <y>10</y>
+        <width>130</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="title" >
+       <string>Readonly file overwrite</string>
+      </property>
+      <widget class="QRadioButton" name="qrbReadonlyOverwriteAsk" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Ask</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbReadonlyOverwriteYesToAll" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Yes to all</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbReadonlyOverwriteNoToAll" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>No to all</string>
        </property>
       </widget>
      </widget>

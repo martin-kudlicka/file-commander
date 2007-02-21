@@ -14,6 +14,7 @@ const QString qsENABLED = "Enabled";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
+const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsUNIT = "Unit";
@@ -213,6 +214,12 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 	return qlPlugins;
 } // GetPlugins
 
+// find out readonly file overwrite mode
+QString cSettings::GetReadonlyFileOverwrite()
+{
+	return qsSettings.value(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsASK).toString();
+} // GetReadonlyFileOverwrite
+
 ///< get some information about tab
 cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
@@ -319,6 +326,12 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 
 	qsSettings.endGroup();
 } // SetPlugins
+
+// set default readonly overwrite behaviour
+void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
+{
+	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
+} // SetReadonlyFileOverwrite
 
 // set key - value pair
 void cSettings::SetValue(const eKey &ekKey, const QString &qsValue)

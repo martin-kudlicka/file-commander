@@ -25,7 +25,7 @@ void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 	qfSource.setFileName(qsSource);
 	qfDestination.setFileName(qsDestination);
 	qfSource.open(QIODevice::ReadOnly);
-	if (ecCurrent == cCopyMoveConflictDialog::Append) {
+	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
 		qfDestination.open(QIODevice::Append);
 	} else {
 		qfDestination.open(QIODevice::WriteOnly);
@@ -89,6 +89,11 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	crRename = new cRename(qmwParent);
 	connect(this, SIGNAL(ShowRenameDialog(const QString &)), crRename, SLOT(Show(const QString &)));
 	connect(crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
+
+	// permission dialog
+	cpPermission = new cPermission(qmwParent);
+	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), cpPermission, SLOT(Show(const QString &, const QString &)));
+	connect(cpPermission, SIGNAL(Finished(const cPermissionDialog::eChoice &)), SLOT(on_cpPermission_Finished(const cPermissionDialog::eChoice &)));
 
 	start();
 } // CopyMove
@@ -169,7 +174,7 @@ void cCopyMove::on_ccm_OperationCanceled()
 // dialog closed with user response
 void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse)
 {
-	ecCurrent = ecResponse;
+	ecConflictCurrent = ecResponse;
 	qsPause.release();
 } // on_ccmcConflict_Finished
 
@@ -184,6 +189,13 @@ void cCopyMove::on_ccmdCopyMoveDialog_Background()
 	ccmdDialog->deleteLater();
 	ccmdDialog = NULL;
 } // on_ccmdCopyMoveDialog_Background
+
+// permission dialog closed with user response
+void cCopyMove::on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse)
+{
+	ecPermissionCurrent = ecResponse;
+	qsPause.release();
+} // on_cpPermission_Finished
 
 // rename dialog closed with user's reponse
 void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
@@ -227,6 +239,18 @@ void cCopyMove::run()
 		} // if else
 	} // if else
 
+	// get default readonly overwrite permission
+	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
+	if (qsOverwrite == qsASK) {
+		ecPermission = cPermissionDialog::Ask;
+	} else {
+		if (qsOverwrite == qsYES_TO_ALL) {
+			ecPermission = cPermissionDialog::YesToAll;
+		} else {
+			ecPermission = cPermissionDialog::NoToAll;
+		} // if else
+	} // if else
+
 	// main process
 	qdDir.setCurrent(qsSourcePath);
 	qi64TotalValue = 0;
@@ -247,10 +271,15 @@ void cCopyMove::run()
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
+#ifdef Q_WS_WIN
+			DWORD dwAttributes;
+#else
+			QFile::Permissions pPermissions;
+#endif
 			emit SetCurrentValue(0);
 
 			// conflict solving
-			ecCurrent = cCopyMoveConflictDialog::Ask;
+			ecConflictCurrent = cCopyMoveConflictDialog::Ask;
 			if (QFile::exists(qsTarget)) {
 				if (ecConflict == cCopyMoveConflictDialog::Ask) {
 					while (true) {
@@ -267,7 +296,7 @@ void cCopyMove::run()
 						// wait for answer
 						qsPause.acquire();
 						// solve conflict
-						switch (ecCurrent) {
+						switch (ecConflictCurrent) {
 							case cCopyMoveConflictDialog::SkipAll:					ecConflict = cCopyMoveConflictDialog::SkipAll;
 																								break;
 							case cCopyMoveConflictDialog::OverwriteAll:			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
@@ -277,7 +306,7 @@ void cCopyMove::run()
 						} // switch
 
 						// rename dialog
-						if (ecCurrent == cCopyMoveConflictDialog::Rename) {
+						if (ecConflictCurrent == cCopyMoveConflictDialog::Rename) {
 							// rename
 							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
 							// wait for answer
@@ -291,7 +320,7 @@ void cCopyMove::run()
 								} // if
 							} else {
 								// cancel
-								ecCurrent = cCopyMoveConflictDialog::Cancel;
+								ecConflictCurrent = cCopyMoveConflictDialog::Cancel;
 								break;
 							} // if else
 						} else {
@@ -299,17 +328,17 @@ void cCopyMove::run()
 							break;
 						} // if else
 					} // while
-					if (ecCurrent == cCopyMoveConflictDialog::Cancel) {
+					if (ecConflictCurrent == cCopyMoveConflictDialog::Cancel) {
 						// cancel
 						break;
 					} // if
 				} // if
 
-				if (ecConflict == cCopyMoveConflictDialog::SkipAll || ecCurrent == cCopyMoveConflictDialog::Skip) {
+				if (ecConflict == cCopyMoveConflictDialog::SkipAll || ecConflictCurrent == cCopyMoveConflictDialog::Skip) {
 					// skip or skip all -> move onto next file
 					continue;
 				} else {
-					if (ecConflict == cCopyMoveConflictDialog::OverwriteAll || ecCurrent == cCopyMoveConflictDialog::Overwrite) {
+					if (ecConflict == cCopyMoveConflictDialog::OverwriteAll || ecConflictCurrent == cCopyMoveConflictDialog::Overwrite) {
 						// overwrite, overwrite all -> delete target file
 						QFile::remove(qsTarget);
 					} else {
@@ -329,6 +358,46 @@ void cCopyMove::run()
 
 			// create destination path
 			qdDir.mkpath(QFileInfo(qsTarget).path());
+
+			// memorize source file attributes
+#ifdef Q_WS_WIN
+			dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode()));
+#else
+			pPermissions = QFile::permissions(qfilSources.at(iI).filePath());
+#endif
+
+			// check readonly permission
+			ecPermissionCurrent = cPermissionDialog::Ask;
+			if ((QFile::permissions(qsTarget) & QFile::ReadOther)) {
+				if (ecPermission == cPermissionDialog::Ask) {
+					emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
+					// wait for answer
+					qsPause.acquire();
+
+					switch (ecPermissionCurrent) {
+						case cPermissionDialog::YesToAll:	ecPermission = cPermissionDialog::YesToAll;
+																		break;
+						case cPermissionDialog::NoToAll:		ecPermission = cPermissionDialog::NoToAll;
+																		break;
+					} // switch
+
+					if (ecPermissionCurrent == cPermissionDialog::Cancel) {
+						break;
+					} // if
+				} // if
+				if (ecPermission == cPermissionDialog::NoToAll || ecPermissionCurrent == cPermissionDialog::No) {
+					continue;
+				} else {
+					// remove target file permission
+#ifdef Q_WS_WIN
+					SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes & ~FILE_ATTRIBUTE_READONLY);
+#else
+					QFile::setPermissions(qsTarget, pPermissions & ~QFile::ReadOther);
+#endif
+				} // if else
+			} // if
+
+			// copy/move file
 			switch (eoOperation) {
 				case cFileRoutine::CopyOperation:	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
 																if (bCanceled) {
@@ -337,16 +406,13 @@ void cCopyMove::run()
 																} else {
 																	// set target permissions as source permissions
 #ifdef Q_WS_WIN
-																	DWORD dwAttributes;
-
-																	dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode()));
 																	SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
 #else
-																	QFile::setPermissions(qsTarget, QFile::permissions(qfilSources.at(iI).filePath()));
+																	QFile::setPermissions(qsTarget, pPermissions);
 #endif
 																} // if else
 																break;
-				case cFileRoutine::MoveOperation:	if (ecCurrent == cCopyMoveConflictDialog::Append) {
+				case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
 																	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
 																	QFile::remove(qfilSources.at(iI).filePath());
 																} else {
