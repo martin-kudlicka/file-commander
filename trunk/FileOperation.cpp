@@ -171,8 +171,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel
 																	QDir qdDir;
 
 																	qdDir.setPath(qsDestination);
-																	if (qdDir.exists(qsDestination)) {
-																		// add *.* to target path
+																	if (qdDir.exists()) {
 																		qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
 																	} // if
 																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations);
