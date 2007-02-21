@@ -102,19 +102,6 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>10</y>
-        <width>57</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Column set:</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="qpbColumnAdd" >
       <property name="geometry" >
        <rect>
@@ -203,6 +190,22 @@
       </property>
       <property name="text" >
        <string>PushButton</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>57</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>&amp;Column set:</string>
+      </property>
+      <property name="buddy" >
+       <cstring>qcbColumnSet</cstring>
       </property>
      </widget>
      <widget class="QTreeWidget" name="qtwColumns" >

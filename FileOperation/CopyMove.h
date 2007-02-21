@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include "FileOperation/CopyMoveConflict.h"
 #include <QSemaphore>
+#include "FileOperation/Rename.h"
 
 class cCopyMove : public QThread
 {
@@ -39,13 +40,15 @@ class cCopyMove : public QThread
 		cCopyMoveDialog *ccmdDialog;								///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;								///< copy/move widget
 		cFileRoutine::eOperation eoOperation;					///< copy or move operation
+		cRename *crRename;											///< rename dialog
 		QHBoxLayout *qhblOperations;								///< layout for background operations
 		QFileInfoList qfilSource;									///< source file list
 		qint64 qi64CurrentMaximum;									///< size of currently copied/moved file
 		qint64 qi64TotalMaximum;									///< total size of all files
 		QMainWindow *qmwParent;										///< parent window for foreground operation window
-		QSemaphore qsConflict;										///< to wait for answer on conflict dialog
+		QSemaphore qsPause;											///< to wait for answer on dialog
 		QString qsDestination;										///< destination path
+		QString qsNewFilename;										///< new filename after rename
 		QString qsSource;												///< currently copied/moved source file
 		QString qsTarget;												///< target of currently copied/moved file
 
@@ -81,6 +84,9 @@ class cCopyMove : public QThread
 																			/**< \param qsOperation type of operation - copy or move
 																				  \param qfiSource source file information
 																				  \param qfiDestination destination file information */
+		void ShowRenameDialog(const QString &qsOldFilename);
+																			///< show rename dialog
+																			/**< \param qsOldFilename file to rename */
 
 	private slots:
 		void on_ccm_OperationCanceled();							///< copy or move operation was canceled
@@ -88,6 +94,9 @@ class cCopyMove : public QThread
 																			///< dialog closed with user response
 																			/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();				///< move operation to background
+		void on_crRename_Finished(const QString &qsNewFilename);
+																			///< rename dialog closed with user's reponse
+																			/**< \param NewFilename new file name */
 }; // cCopyMove
 
 #endif

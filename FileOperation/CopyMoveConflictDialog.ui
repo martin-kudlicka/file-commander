@@ -25,110 +25,6 @@
     <string>With</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="qpbAppend" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>160</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Append</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbOverwrite" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>100</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Overwrite</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbOverwriteAll" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>100</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Overwrite all</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbOverwriteAllOlder" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>130</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Overwrite all older</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbRename" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>160</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Rename</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbSkip" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>100</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Skip</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbSkipAll" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>130</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Skip all</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbCancel" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>130</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Cancel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label" >
    <property name="geometry" >
     <rect>
@@ -148,19 +44,6 @@
      <x>40</x>
      <y>50</y>
      <width>241</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="qlSourceInfo" >
-   <property name="geometry" >
-    <rect>
-     <x>40</x>
-     <y>70</y>
-     <width>171</width>
      <height>16</height>
     </rect>
    </property>
@@ -194,7 +77,134 @@
     <string>TextLabel</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="qpbOverwrite" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Overwrite</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbRename" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>160</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Rename</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbAppend" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>160</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Append</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOverwriteAll" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite &amp;all</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOverwriteAllOlder" >
+   <property name="geometry" >
+    <rect>
+     <x>120</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Overwrite all o&amp;lder</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbSkipAll" >
+   <property name="geometry" >
+    <rect>
+     <x>230</x>
+     <y>130</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>S&amp;kip all</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbSkip" >
+   <property name="geometry" >
+    <rect>
+     <x>230</x>
+     <y>100</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Skip</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlSourceInfo" >
+   <property name="geometry" >
+    <rect>
+     <x>40</x>
+     <y>70</y>
+     <width>171</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>qpbOverwrite</tabstop>
+  <tabstop>qpbCancel</tabstop>
+  <tabstop>qpbOverwriteAll</tabstop>
+  <tabstop>qpbOverwriteAllOlder</tabstop>
+  <tabstop>qpbSkip</tabstop>
+  <tabstop>qpbSkipAll</tabstop>
+  <tabstop>qpbRename</tabstop>
+  <tabstop>qpbAppend</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
