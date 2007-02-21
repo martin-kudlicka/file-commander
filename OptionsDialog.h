@@ -39,8 +39,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iSHOW_COLUMN = 3;									///< user's name of column
 		static const int iWIDTH_COLUMN = 4;
 
-		static const int iROW_SPACE = 8;										///< addition space in table rows
-
 		/// specific options to save
 		enum eOption {
 			Columns																	///< columns from column set
@@ -53,10 +51,11 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QMenu *qmNative;															///< native part of columns menu
 		QMenu *qmPlugins;															///< plugins part of columns menu
 
-		int AddColumnToColumns(const cSettings::sColumn &scColumn);
+		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX);
 																						///< add new column to current column set
 																						/**< \param scColumn new column to add
-																							  \return added row number */
+																							  \param iPos position to insert new column
+																							  \return added row */
 		void AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree);
 																						///< add another plugin into tree
 																						/**< \param spPlugin plugin to add
@@ -67,6 +66,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param qlPlugins plugin list
 																							  \param qtwTree tree to fill */
 		void FillOptions();														///< fill options with set settings
+		cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem);
+																						///< get information about column from column set
+																						/**< \param qtwiItem column set column
+																							  \return column information */
 		void PrepareColumnsMenu();												///< prepare context columns menu
 		void SaveOption(const eOption &eoType);							///< save specific changes into settings file
 																						/**< \param eoType type of changes */
@@ -103,7 +106,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< choice change
 																						/**< \param current new choice
 																							  \param previous last choice */
-		void on_qtwColumns_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+		void on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< selected cell changed
 																						/**< \param current actually selected item
 																							  \param previously selected item */

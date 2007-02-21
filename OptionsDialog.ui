@@ -205,7 +205,7 @@
        <string>PushButton</string>
       </property>
      </widget>
-     <widget class="QTableWidget" name="qtwColumns" >
+     <widget class="QTreeWidget" name="qtwColumns" >
       <property name="geometry" >
        <rect>
         <x>0</x>
@@ -214,16 +214,7 @@
         <height>91</height>
        </rect>
       </property>
-      <property name="selectionMode" >
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
-      <property name="selectionBehavior" >
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-      <property name="horizontalScrollMode" >
-       <enum>QAbstractItemView::ScrollPerPixel</enum>
-      </property>
-      <property name="showGrid" >
+      <property name="rootIsDecorated" >
        <bool>false</bool>
       </property>
      </widget>

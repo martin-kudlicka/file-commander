@@ -4,8 +4,8 @@
 #include <QAction>
 #include "Plugins/ContPlug.h"
 #include "Options/NewColumnSetDialog.h"
-#include <QHeaderView>
 #include <QSpinBox>
+#include <QHeaderView>
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONTENT = QT_TR_NOOP("Content");
@@ -23,49 +23,41 @@ cOptionsDialog::~cOptionsDialog()
 } // ~cOptionsDialog
 
 // add new column to current column set
-int cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn)
+QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos /* INT_MAX */)
 {
-	int iI, iToRow;
 	QSpinBox *qsbWidth;
-	QTableWidgetItem *qtwiItem;
+	QTreeWidgetItem *qtwiItem;
 
-	if (qtwColumns->currentRow() != -1) {
-		iToRow = qtwColumns->currentRow();
-		qtwColumns->insertRow(qtwColumns->currentRow());
+	if (iPos == INT_MAX) {
+		qtwiItem = new QTreeWidgetItem(qtwColumns);
 	} else {
-		qtwColumns->setRowCount(qtwColumns->rowCount() + 1);
-		iToRow = qtwColumns->rowCount() - 1;
+		qtwiItem = new QTreeWidgetItem();
+		qtwColumns->insertTopLevelItem(iPos, qtwiItem);
 	} // if else
 
 	// type
 	if (scColumn.qsPlugin == qsNO) {
-		qtwiItem = new QTableWidgetItem(qsNATIVE);
+		qtwiItem->setText(iTYPE_COLUMN, qsNATIVE);
 	} else {
-		qtwiItem = new QTableWidgetItem(scColumn.qsPlugin);
+		qtwiItem->setText(iTYPE_COLUMN, scColumn.qsPlugin);
 	} // if else
-	qtwColumns->setItem(iToRow, iTYPE_COLUMN, qtwiItem);
 	// name
-	qtwiItem = new QTableWidgetItem(scColumn.qsIdentifier);
-	qtwColumns->setItem(iToRow, iNAME_COLUMN, qtwiItem);
+	qtwiItem->setText(iNAME_COLUMN, scColumn.qsIdentifier);
 	// unit
-	qtwiItem = new QTableWidgetItem(scColumn.qsUnit);
-	qtwColumns->setItem(iToRow, iUNIT_COLUMN, qtwiItem);
+	qtwiItem->setText(iUNIT_COLUMN, scColumn.qsUnit);
 	// show
-	qtwiItem = new QTableWidgetItem(scColumn.qsName);
-	qtwColumns->setItem(iToRow, iSHOW_COLUMN, qtwiItem);
+	qtwiItem->setText(iSHOW_COLUMN, scColumn.qsName);
 	// width
 	qsbWidth = new QSpinBox();
 	qsbWidth->setValue(scColumn.iWidth);
-	qtwColumns->setCellWidget(iToRow, iWIDTH_COLUMN, qsbWidth);
+	qtwColumns->setItemWidget(qtwiItem, iWIDTH_COLUMN, qsbWidth);
 	connect(qsbWidth, SIGNAL(valueChanged(int)), SLOT(on_qsbWidth_valueChanged(int)));
 
-	for (iI = iToRow; iI < qtwColumns->rowCount(); iI++) {
-		qtwColumns->setRowHeight(iI, qtwColumns->font().pointSize() + iROW_SPACE);
-	} // for
+	qtwColumns->resizeColumnToContents(iTYPE_COLUMN);
+	qtwColumns->resizeColumnToContents(iUNIT_COLUMN);
+	qtwColumns->resizeColumnToContents(iWIDTH_COLUMN);
 
-	qtwColumns->resizeColumnsToContents();
-
-	return iToRow;
+	return qtwiItem;
 } // AddColumnToColumns
 
 // add another plugin into tree
@@ -173,14 +165,39 @@ void cOptionsDialog::FillOptions()
 	qslHeader.append(tr("Unit"));
 	qslHeader.append(tr("Show"));
 	qslHeader.append(tr("Width"));
-	qtwColumns->setHorizontalHeaderLabels(qslHeader);
-	qtwColumns->verticalHeader()->hide();
+	qtwColumns->setHeaderLabels(qslHeader);
+	qtwColumns->header()->setResizeMode(iNAME_COLUMN, QHeaderView::Stretch);
+	qtwColumns->header()->setResizeMode(iSHOW_COLUMN, QHeaderView::Stretch);
+	qtwColumns->header()->setStretchLastSection(false);
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
 
 	// plugins
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
 } // FillOptions
+
+// get information about column from column set
+cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
+{
+	cSettings::sColumn scColumn;
+
+	// type
+	if (qtwiItem->text(iTYPE_COLUMN) == qsNATIVE) {
+		scColumn.qsPlugin = qsNO;
+	} else {
+		scColumn.qsPlugin = qtwiItem->text(iTYPE_COLUMN);
+	} // if else
+	// name
+	scColumn.qsIdentifier = qtwiItem->text(iNAME_COLUMN);
+	// unit
+	scColumn.qsUnit = qtwiItem->text(iUNIT_COLUMN);
+	// show
+	scColumn.qsName = qtwiItem->text(iSHOW_COLUMN);
+	// width
+	scColumn.iWidth = static_cast<QSpinBox *>(qtwColumns->itemWidget(qtwiItem, iWIDTH_COLUMN))->value();
+
+	return scColumn;
+} // GetColumnInfo
 
 // column set changed
 void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
@@ -189,8 +206,7 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 
 	qslColumns = csSettings->GetColumnsInSet(text);
 
-	qtwColumns->clearContents();
-	qtwColumns->setRowCount(0);
+	qtwColumns->clear();
 
 	if (text == "") {
 		qpbColumnSetRemove->setEnabled(false);
@@ -206,9 +222,6 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 
 		qpbColumnSetRemove->setEnabled(true);
 	} // if else
-
-	// set width of name column
-	qtwColumns->setColumnWidth(iNAME_COLUMN, qtwColumns->width() - qtwColumns->columnWidth(iTYPE_COLUMN) - qtwColumns->columnWidth(iUNIT_COLUMN) - qtwColumns->columnWidth(iSHOW_COLUMN) - qtwColumns->columnWidth(iWIDTH_COLUMN) - 2);
 } // on_qcbColumnSet_currentIndexChanged
 
 // changes accepted
@@ -229,13 +242,14 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 {
 	cSettings::sColumn scColumn;
 	QStringList qslSelection;
+	QTreeWidgetItem *qtwiNewColumn;
 
 	qslSelection = action->data().toString().split('|');
 
 	if (qslSelection.at(0) == qsNATIVE2) {
 		// native column
 		// type
-		scColumn.qsPlugin == qsNO;
+		scColumn.qsPlugin = qsNO;
 		// name
 		scColumn.qsIdentifier = qslSelection.at(1);
 		// unit
@@ -255,7 +269,12 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 		scColumn.qsName = qslSelection.at(2);
 	} // if else
 
-	qtwColumns->setCurrentCell(AddColumnToColumns(scColumn), 0);
+	if (qtwColumns->currentItem()) {
+		qtwiNewColumn = AddColumnToColumns(scColumn, qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()));
+	} else {
+		qtwiNewColumn = AddColumnToColumns(scColumn);
+	} // if else
+	qtwColumns->setCurrentItem(qtwiNewColumn);
 
 	SaveOption(Columns);
 } // on_qmColumns_triggered
@@ -285,30 +304,21 @@ void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
 // column down button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 {
-	int iCurrentWidth, iI, iLowerWidth;
+	int iIndex;
+	cSettings::sColumn scColumn;
 
-	// text
-	for (iI = 0; iI < iCOLUMNS - 1; iI++) {
-		QTableWidgetItem *qtwiCurrent, *qtwiLower;
+	scColumn = GetColumnInfo(qtwColumns->currentItem());
+	iIndex = qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem());
+	delete qtwColumns->currentItem();
+	qtwColumns->setCurrentItem(AddColumnToColumns(scColumn, iIndex + 1));
 
-		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
-		qtwiLower = qtwColumns->takeItem(qtwColumns->currentRow() + 1, iI);
-		qtwColumns->setItem(qtwColumns->currentRow() + 1, iI, qtwiCurrent);
-		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiLower);
-	} // for
-	// widget
-	iCurrentWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->value();
-	iLowerWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() + 1, iI))->value();
-	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() + 1, iI))->setValue(iCurrentWidth);
-	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->setValue(iLowerWidth);
-
-	qtwColumns->setCurrentCell(qtwColumns->currentRow() + 1, 0);
+	SaveOption(Columns);
 } // on_qpbColumnDown_clicked
 
 // column remove button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 {
-	qtwColumns->removeRow(qtwColumns->currentRow());
+	delete qtwColumns->currentItem();
 	SaveOption(Columns);
 } // on_qpbColumnRemove_clicked
 
@@ -334,24 +344,15 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 // column up button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 {
-	int iCurrentWidth, iI, iLowerWidth;
+	int iIndex;
+	cSettings::sColumn scColumn;
 
-	// text
-	for (iI = 0; iI < iCOLUMNS - 1; iI++) {
-		QTableWidgetItem *qtwiCurrent, *qtwiUpper;
+	scColumn = GetColumnInfo(qtwColumns->currentItem());
+	iIndex = qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem());
+	delete qtwColumns->currentItem();
+	qtwColumns->setCurrentItem(AddColumnToColumns(scColumn, iIndex - 1));
 
-		qtwiCurrent = qtwColumns->takeItem(qtwColumns->currentRow(), iI);
-		qtwiUpper = qtwColumns->takeItem(qtwColumns->currentRow() - 1, iI);
-		qtwColumns->setItem(qtwColumns->currentRow() - 1, iI, qtwiCurrent);
-		qtwColumns->setItem(qtwColumns->currentRow(), iI, qtwiUpper);
-	} // for
-	// widget
-	iCurrentWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->value();
-	iLowerWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() - 1, iI))->value();
-	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow() - 1, iI))->setValue(iCurrentWidth);
-	static_cast<QSpinBox *>(qtwColumns->cellWidget(qtwColumns->currentRow(), iI))->setValue(iLowerWidth);
-
-	qtwColumns->setCurrentCell(qtwColumns->currentRow() - 1, 0);
+	SaveOption(Columns);
 } // on_qpbColumnUp_clicked
 
 // remove content plugin button is clicked on
@@ -456,14 +457,14 @@ void cOptionsDialog::on_qsbWidth_valueChanged(int val)
 } // on_qsbWidth_valueChanged
 
 // selected cell changed
-void cOptionsDialog::on_qtwColumns_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
+void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
-	if (current && current->row() > 0) {
+	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) > 0) {
 			qpbColumnUp->setEnabled(true);
 	} else {
 		qpbColumnUp->setEnabled(false);
 	} // if else
-	if (current && current->row() < qtwColumns->rowCount() - 1) {
+	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) < qtwColumns->topLevelItemCount() - 1) {
 		qpbColumnDown->setEnabled(true);
 	} else {
 		qpbColumnDown->setEnabled(false);
@@ -497,26 +498,10 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 	QList<cSettings::sColumn> qlColumns;
 
 	switch (eoType) {
-		case Columns:	for (iI = 0; iI < qtwColumns->rowCount(); iI++) {
+		case Columns:	for (iI = 0; iI < qtwColumns->topLevelItemCount(); iI++) {
 								cSettings::sColumn scColumn;
 
-								// type
-								if (qtwColumns->item(iI, iTYPE_COLUMN)->text() == qsNATIVE) {
-									scColumn.qsPlugin = qsNO;
-								} else {
-									scColumn.qsPlugin = qtwColumns->item(iI, iTYPE_COLUMN)->text();
-								} // if else
-								// name
-								scColumn.qsIdentifier = qtwColumns->item(iI, iNAME_COLUMN)->text();
-								// unit
-								if (qtwColumns->item(iI, iUNIT_COLUMN)) {
-									scColumn.qsUnit = qtwColumns->item(iI, iUNIT_COLUMN)->text();
-								} // if
-								// show
-								scColumn.qsName = qtwColumns->item(iI, iSHOW_COLUMN)->text();
-								// width
-								scColumn.iWidth = static_cast<QSpinBox *>(qtwColumns->cellWidget(iI, iWIDTH_COLUMN))->value();
-
+								scColumn = GetColumnInfo(qtwColumns->topLevelItem(iI));
 								qlColumns.append(scColumn);
 							} // for
 
