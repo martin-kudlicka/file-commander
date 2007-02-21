@@ -12,16 +12,18 @@
 #include "FileOperation/CopyMoveConflict.h"
 #include <QSemaphore>
 #include "FileOperation/Rename.h"
+#include "Settings.h"
 
 class cCopyMove : public QThread
 {
 	Q_OBJECT
 
 	public:
-		cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations);
+		cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																			///< constructor
 																			/**< \param qmwParent parent window for foreground dialog
-																				  \param qhblOperations layout for background widget */
+																				  \param qhblOperations layout for background widget
+																				  \param csSettings application's configuration */
 
 		void CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const cFileRoutine::eWindow &eStyle);
 																			///< start of copy or move operation
@@ -41,6 +43,7 @@ class cCopyMove : public QThread
 		cCopyMoveWidget *ccmwWidget;								///< copy/move widget
 		cFileRoutine::eOperation eoOperation;					///< copy or move operation
 		cRename *crRename;											///< rename dialog
+		cSettings *csSettings;										///< application's configuration
 		QHBoxLayout *qhblOperations;								///< layout for background operations
 		QFileInfoList qfilSource;									///< source file list
 		qint64 qi64CurrentMaximum;									///< size of currently copied/moved file

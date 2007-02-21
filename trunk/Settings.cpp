@@ -11,6 +11,7 @@ const QString qsDESCENDING = "descending";
 const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
+const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsSORT_ORDER = "SortOrder";
@@ -32,14 +33,16 @@ const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 // Plugins
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
+// Others/
+const QString qsOTHERS__ = "Others/";
 
 // create new empty column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet)
 {
 	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
 	// write something to create group
-	// TODO CreateColumnSet find out default windows key name
-	qsSettings.setValue("@","");
+	qsSettings.setValue(".","");
+	qsSettings.remove(".");
 	qsSettings.endGroup();
 } // CreateColumnSet
 
@@ -172,6 +175,12 @@ QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 	return qslColumns;
 } // GetColumnsInSet
 
+// find out file overwrite mode
+QString cSettings::GetFileOverwrite()
+{
+	return qsSettings.value(qsOTHERS__ + qsFILE_OVERWRITE, qsASK).toString();
+} // GetFileOverwrite
+
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 {
@@ -274,6 +283,12 @@ void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
 		qsSettings.setValue(qmiSettings.key(), qmiSettings.value());
 	} // while
 } // RestoreSettings
+
+// set default overwrite behaviour
+void cSettings::SetFileOverwrite(const QString &qsMode)
+{
+	qsSettings.setValue(qsOTHERS__ + qsFILE_OVERWRITE, qsMode);
+} // SetFileOverwrite
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)

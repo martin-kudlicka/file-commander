@@ -6,10 +6,11 @@
 #include <QDateTime>
 
 // constructor
-cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations)
+cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
+	this->csSettings = csSettings;
 	bCanceled = false;
 	qi64TotalMaximum = 0;
 } // cCopyMove
@@ -198,7 +199,7 @@ void cCopyMove::run()
 	QDir qdDir;
 	QFileInfoList qfilSources;
 	qint64 qi64TotalValue;
-	QString qsSourcePath;
+	QString qsOverwrite, qsSourcePath;
 
 	// gather source files and source path
 	qfilSources = cFileRoutine::GetSources(qfilSource);
@@ -210,8 +211,24 @@ void cCopyMove::run()
 	} // for
 	emit SetTotalMaximum(qi64TotalMaximum);
 
+	// get default overwrite mode
+	qsOverwrite = csSettings->GetFileOverwrite();
+	if (qsOverwrite == qsASK) {
+		ecConflict = cCopyMoveConflictDialog::Ask;
+	} else {
+		if (qsOverwrite == qsOVERWRITE_ALL) {
+			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
+		} else {
+			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
+				ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
+			} else {
+				ecConflict = cCopyMoveConflictDialog::SkipAll;
+			} // if else
+		} // if else
+	} // if else
+
 	// main process
-	ecConflict = cCopyMoveConflictDialog::Nothing;
+	qdDir.setCurrent(qsSourcePath);
 	qi64TotalValue = 0;
 	for (iI = 0; iI < qfilSources.count() && !bCanceled; iI++) {
 		// show file names
@@ -233,9 +250,9 @@ void cCopyMove::run()
 			emit SetCurrentValue(0);
 
 			// conflict solving
-			ecCurrent = cCopyMoveConflictDialog::Nothing;
+			ecCurrent = cCopyMoveConflictDialog::Ask;
 			if (QFile::exists(qsTarget)) {
-				if (ecConflict == cCopyMoveConflictDialog::Nothing) {
+				if (ecConflict == cCopyMoveConflictDialog::Ask) {
 					while (true) {
 						// no permanent conflict answer yet
 						QString qsOperation;

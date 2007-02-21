@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="currentIndex" >
-     <number>2</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="page_4" />
     <widget class="QWidget" name="page_5" >
@@ -265,6 +265,74 @@
       <property name="rootIsDecorated" >
        <bool>false</bool>
       </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_6" />
+    <widget class="QWidget" name="page_7" >
+     <widget class="QGroupBox" name="groupBox_2" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>131</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="title" >
+       <string>File overwrite</string>
+      </property>
+      <widget class="QRadioButton" name="qrbOverwriteAsk" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Ask</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbOverwriteAll" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Overwrite all</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbOverwriteAllOlder" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>111</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Overwrite all older</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbOverwriteSkipAll" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Skip all</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>

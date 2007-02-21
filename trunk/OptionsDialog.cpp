@@ -8,10 +8,12 @@
 #include <QHeaderView>
 
 const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
+const QString qsCONFIRMATION = QT_TR_NOOP("Confirmation");
 const QString qsCONTENT = QT_TR_NOOP("Content");
 const QString qsDISPLAY = QT_TR_NOOP("Display");
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
+const QString qsOTHERS = QT_TR_NOOP("Others");
 const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 
@@ -96,6 +98,12 @@ void cOptionsDialog::CreateChoices()
 	qtwiChoice->setText(0, qsPLUGINS);
 	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
 	qtwiSubChoice->setText(0, qsCONTENT);
+
+	// others
+	qtwiChoice = new QTreeWidgetItem(qtwChoices);
+	qtwiChoice->setText(0, qsOTHERS);
+	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
+	qtwiSubChoice->setText(0, qsCONFIRMATION);
 } // CreateChoices
 
 // constructor
@@ -174,6 +182,22 @@ void cOptionsDialog::FillOptions()
 	// plugins
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
+
+	// others
+	qsValue = csSettings->GetFileOverwrite();
+	if (qsValue == qsASK) {
+		qrbOverwriteAsk->setChecked(true);
+	} else {
+		if (qsValue == qsOVERWRITE_ALL) {
+			qrbOverwriteAll->setChecked(true);
+		} else {
+			if (qsValue == qsOVERWRITE_ALL_OLDER) {
+				qrbOverwriteAllOlder->setChecked(true);
+			} else {
+				qrbOverwriteSkipAll->setChecked(true);
+			} // if else
+		} // if else
+	} // if else
 } // FillOptions
 
 // get information about column from column set
@@ -367,20 +391,33 @@ void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, 
 	// panels
 	if (current->text(0) == qsPANELS) {
 		qswChoices->setCurrentIndex(iPANELS_PAGE);
-	} else
+	} else {
 		if (current->text(0) == qsDISPLAY) {
 			qswChoices->setCurrentIndex(iDISPLAY_PAGE);
-		} else
+		} else {
 			if (current->text(0) == qsCOLUMN_SETS) {
 				qswChoices->setCurrentIndex(iCOLUMN_SETS_PAGE);
-			} else
+			} else {
 				// plugins
 				if (current->text(0) == qsPLUGINS) {
 					qswChoices->setCurrentIndex(iPLUGINS_PAGE);
-				} else
+				} else {
 					if (current->text(0) == qsCONTENT) {
 						qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
+					} else {
+						// others
+						if (current->text(0) == qsOTHERS) {
+							qswChoices->setCurrentIndex(iOTHERS_PAGE);
+						} else {
+							if (current->text(0) == qsCONFIRMATION) {
+								qswChoices->setCurrentIndex(iCONFIRMATION_PAGE);
+							} // if
+						} // if else
 					} // if else
+				} // if else
+			} // if else
+		} // if else
+	} // if else
 } // on_qtwChoices_currentItemChanged
 
 // prepare context plugin menu
@@ -547,4 +584,20 @@ void cOptionsDialog::SaveOptions()
 		qlPlugins.append(spPlugin);
 	} // for
 	csSettings->SetPlugins(cSettings::ContentPlugins, qlPlugins);
+
+	// others
+	if (qrbOverwriteAsk->isChecked()) {
+		qsValue = qsASK;
+	} else {
+		if (qrbOverwriteAll->isChecked()) {
+			qsValue = qsOVERWRITE_ALL;
+		} else {
+			if (qrbOverwriteAllOlder->isChecked()) {
+				qsValue = qsOVERWRITE_ALL_OLDER;
+			} else {
+				qsValue = qsSKIP_ALL;
+			} // if else
+		} // if else
+	} // if else
+	csSettings->SetFileOverwrite(qsValue);
 } // SaveOptions

@@ -87,7 +87,7 @@ cMainWindow::cMainWindow()
 	// background operations layout
 	qhblBackgroundOperations = new QHBoxLayout();
 	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
-	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations);
+	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);

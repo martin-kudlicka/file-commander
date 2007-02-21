@@ -16,10 +16,11 @@ class cFileOperation : private QObject
 	Q_OBJECT
 
 	public:
-		cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations);
+		cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																			///< constructor
 																			/**< \param qmwParent parent window for dialogs
-																				  \param qbnlOperations layout for bacground and queued windows */
+																				  \param qbnlOperations layout for bacground and queued windows
+																				  \param csSettings application's configuration */
 
 		void Operate(const cFileRoutine::eOperation &eoOperation, cPanel *cpSource, cPanel *cpDestination = NULL);
 																			///< prepare operation
@@ -39,6 +40,7 @@ class cFileOperation : private QObject
 		static const int iQUEUE_WIDGET_POS = 0;				///< position of queue widget on top layout
 
 		cCopyMove *ccmInQueue;										///< processed copy / move operation in queue
+		cSettings *csSettings;										///< application's configuration
 		cDelete *cdInQueue;											///< processed delete operation in queue
 		cQueueWidget cqwQueue;										///< list of queued operations
 		QMainWindow *qmwParent;										///< parent window for dialogs
