@@ -79,10 +79,15 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 		ccmdDialog = NULL;
 	} // if else
 
-	// conclict dialog
+	// conflict dialog
 	ccmcConflict = new cCopyMoveConflict(qmwParent);
 	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
 	connect(ccmcConflict, SIGNAL(Finished(const cCopyMoveConflictDialog::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &)));
+
+	// rename dialog
+	crRename = new cRename(qmwParent);
+	connect(this, SIGNAL(ShowRenameDialog(const QString &)), crRename, SLOT(Show(const QString &)));
+	connect(crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
 
 	start();
 } // CopyMove
@@ -164,7 +169,7 @@ void cCopyMove::on_ccm_OperationCanceled()
 void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse)
 {
 	ecCurrent = ecResponse;
-	qsConflict.release();
+	qsPause.release();
 } // on_ccmcConflict_Finished
 
 // move operation to background
@@ -178,6 +183,13 @@ void cCopyMove::on_ccmdCopyMoveDialog_Background()
 	ccmdDialog->deleteLater();
 	ccmdDialog = NULL;
 } // on_ccmdCopyMoveDialog_Background
+
+// rename dialog closed with user's reponse
+void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
+{
+	this->qsNewFilename = qsNewFilename;
+	qsPause.release();
+} // on_crRename_Finished
 
 // thread code
 void cCopyMove::run()
@@ -224,31 +236,56 @@ void cCopyMove::run()
 			ecCurrent = cCopyMoveConflictDialog::Nothing;
 			if (QFile::exists(qsTarget)) {
 				if (ecConflict == cCopyMoveConflictDialog::Nothing) {
-					// no permanent conflict answer yet
-					QString qsOperation;
+					while (true) {
+						// no permanent conflict answer yet
+						QString qsOperation;
 
-					if (eoOperation == cFileRoutine::CopyOperation) {
-						qsOperation = tr("Copy");
-					} else {
-						qsOperation = tr("Move");
-					} // if else
-					emit ShowConflictDialog(qsOperation, QFileInfo(qsSource), QFileInfo(qsTarget));
-					// wait for answer
-					qsConflict.acquire();
-					// solve conflict
-					// cancel
+						// conflict dialog
+						if (eoOperation == cFileRoutine::CopyOperation) {
+							qsOperation = tr("Copy");
+						} else {
+							qsOperation = tr("Move");
+						} // if else
+						emit ShowConflictDialog(qsOperation, QFileInfo(qsSource), QFileInfo(qsTarget));
+						// wait for answer
+						qsPause.acquire();
+						// solve conflict
+						switch (ecCurrent) {
+							case cCopyMoveConflictDialog::SkipAll:					ecConflict = cCopyMoveConflictDialog::SkipAll;
+																								break;
+							case cCopyMoveConflictDialog::OverwriteAll:			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
+																								break;
+							case cCopyMoveConflictDialog::OverwriteAllOlder:	ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
+																								break;
+						} // switch
+
+						// rename dialog
+						if (ecCurrent == cCopyMoveConflictDialog::Rename) {
+							// rename
+							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
+							// wait for answer
+							qsPause.acquire();
+							if (qsNewFilename != "") {
+								// new file name typed
+								qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
+								if (!QFile::exists(qsTarget)) {
+									// rename ok, continue
+									break;
+								} // if
+							} else {
+								// cancel
+								ecCurrent = cCopyMoveConflictDialog::Cancel;
+								break;
+							} // if else
+						} else {
+							// no rename
+							break;
+						} // if else
+					} // while
 					if (ecCurrent == cCopyMoveConflictDialog::Cancel) {
+						// cancel
 						break;
 					} // if
-					// other permanent answers
-					switch (ecCurrent) {
-						case cCopyMoveConflictDialog::SkipAll:					ecConflict = cCopyMoveConflictDialog::SkipAll;
-																							break;
-						case cCopyMoveConflictDialog::OverwriteAll:			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
-																							break;
-						case cCopyMoveConflictDialog::OverwriteAllOlder:	ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
-																							break;
-					} // switch
 				} // if
 
 				if (ecConflict == cCopyMoveConflictDialog::SkipAll || ecCurrent == cCopyMoveConflictDialog::Skip) {

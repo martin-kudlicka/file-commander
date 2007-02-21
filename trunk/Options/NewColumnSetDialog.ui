@@ -12,6 +12,16 @@
   <property name="windowTitle" >
    <string>New column set</string>
   </property>
+  <widget class="QLineEdit" name="qleColumnSet" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>161</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label" >
    <property name="geometry" >
     <rect>
@@ -22,7 +32,10 @@
     </rect>
    </property>
    <property name="text" >
-    <string>New column set name:</string>
+    <string>New &amp;column set name:</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qleColumnSet</cstring>
    </property>
   </widget>
   <widget class="QDialogButtonBox" name="buttonBox" >
@@ -39,16 +52,6 @@
    </property>
    <property name="standardButtons" >
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="qleColumnSet" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
    </property>
   </widget>
  </widget>

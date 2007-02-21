@@ -1,23 +1,49 @@
 <ui version="4.0" >
- <class>qdNewDirectory</class>
- <widget class="QDialog" name="qdNewDirectory" >
+ <class>qdRename</class>
+ <widget class="QDialog" name="qdRename" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>180</width>
-    <height>99</height>
+    <width>182</width>
+    <height>98</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>New Folder</string>
+   <string>Rename</string>
   </property>
-  <widget class="QDialogButtonBox" name="qdbbRespond" >
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>78</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>New &amp;filename:</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qleFilename</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="qleFilename" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>161</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="qdbbResponse" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>60</y>
-     <width>160</width>
+     <width>161</width>
      <height>32</height>
     </rect>
    </property>
@@ -28,43 +54,13 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="qleDirectory" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>161</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Enter name of a new &amp;directory:</string>
-   </property>
-   <property name="buddy" >
-    <cstring>qleDirectory</cstring>
-   </property>
-  </widget>
  </widget>
- <tabstops>
-  <tabstop>qdbbRespond</tabstop>
-  <tabstop>qleDirectory</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>qdbbRespond</sender>
+   <sender>qdbbResponse</sender>
    <signal>accepted()</signal>
-   <receiver>qdNewDirectory</receiver>
+   <receiver>qdRename</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -78,9 +74,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>qdbbRespond</sender>
+   <sender>qdbbResponse</sender>
    <signal>rejected()</signal>
-   <receiver>qdNewDirectory</receiver>
+   <receiver>qdRename</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
