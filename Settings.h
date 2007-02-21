@@ -14,10 +14,12 @@ const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
+const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsTRUE = "true";
+const QString qsYES_TO_ALL = "YesToAll";
 
 class cSettings : private QObject
 {
@@ -92,6 +94,8 @@ class cSettings : private QObject
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
+		QString GetReadonlyFileOverwrite();							///< find out readonly file overwrite mode
+																				/**< \return default readonly file overwrite mode */
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
 																				///< get some information about tab
 																				/**< \param epPosition left or right panel
@@ -114,6 +118,8 @@ class cSettings : private QObject
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type
 																					  \param qlPlugins plugin list */
+		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
+																				/**< \param qsMode readonly overwrite mode */
 		void SetValue(const eKey &ekKey, const QString &qsValue);
 																				///< set key - value pair
 																				/**< \param ekKey key

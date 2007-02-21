@@ -10,7 +10,7 @@ cRename::~cRename()
 cRename::cRename(QMainWindow *qmwParent)
 {
 	crdDialog = new cRenameDialog(qmwParent);
-} // cCopyMoveConflict
+} // cRename
 
 // show conflict dialog
 void cRename::Show(const QString &qsOldFilename)

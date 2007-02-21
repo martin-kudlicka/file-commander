@@ -198,6 +198,16 @@ void cOptionsDialog::FillOptions()
 			} // if else
 		} // if else
 	} // if else
+	qsValue = csSettings->GetReadonlyFileOverwrite();
+	if (qsValue == qsASK) {
+		qrbReadonlyOverwriteAsk->setChecked(true);
+	} else {
+		if (qsValue == qsYES_TO_ALL) {
+			qrbReadonlyOverwriteYesToAll->setChecked(true);
+		} else {
+			qrbReadonlyOverwriteNoToAll->setChecked(true);
+		} // if else
+	} // if else
 } // FillOptions
 
 // get information about column from column set
@@ -600,4 +610,14 @@ void cOptionsDialog::SaveOptions()
 		} // if else
 	} // if else
 	csSettings->SetFileOverwrite(qsValue);
+	if (qrbReadonlyOverwriteAsk->isChecked()) {
+		qsValue = qsASK;
+	} else {
+		if (qrbReadonlyOverwriteYesToAll->isChecked()) {
+			qsValue = qsYES_TO_ALL;
+		} else {
+			qsValue = qsNO_TO_ALL;
+		} // if else
+	} // if else
+	csSettings->SetReadonlyFileOverwrite(qsValue);
 } // SaveOptions

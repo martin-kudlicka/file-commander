@@ -1,0 +1,129 @@
+<ui version="4.0" >
+ <class>qdPermission</class>
+ <widget class="QDialog" name="qdPermission" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>252</width>
+    <height>124</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Permission</string>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>46</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>File</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>170</x>
+     <y>60</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlFilename" >
+   <property name="geometry" >
+    <rect>
+     <x>30</x>
+     <y>10</y>
+     <width>241</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbNo" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;No</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbYesToAll" >
+   <property name="geometry" >
+    <rect>
+     <x>90</x>
+     <y>60</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Yes to &amp;all</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbNoToAll" >
+   <property name="geometry" >
+    <rect>
+     <x>90</x>
+     <y>90</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>No to a&amp;ll</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbYes" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Yes</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="qlInformation" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>TextLabel</string>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>qpbYes</tabstop>
+  <tabstop>qpbNo</tabstop>
+  <tabstop>qpbYesToAll</tabstop>
+  <tabstop>qpbNoToAll</tabstop>
+  <tabstop>qpbCancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
