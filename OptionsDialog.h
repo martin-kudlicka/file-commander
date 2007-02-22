@@ -87,8 +87,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param action selected column (or column's unit) */
 		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnAdd_clicked(bool checked = false);			///< column add button is clicked on in columns view
-																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnDown_clicked(bool checked = false);			///< column down button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnRemove_clicked(bool checked = false);		///< column remove button is clicked on in columns view

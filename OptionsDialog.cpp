@@ -115,6 +115,8 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 	this->csSettings = csSettings;
 	this->ccContent = ccContent;
 
+	qpbColumnAdd->setMenu(&qmColumns);
+
 	// remember original options
 	qlOldOptions = csSettings->GetAllSettings();
 
@@ -328,12 +330,6 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 		AddPluginIntoTree(spPlugin, qtwContentPlugins);
 	} // if
 } // on_qpbAddContentPlugin_clicked
-
-// column add button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnAdd_clicked(bool checked /* false */)
-{
-	qmColumns.popup(QCursor::pos());
-} // on_qpbColumnAdd_clicked
 
 // column down button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)

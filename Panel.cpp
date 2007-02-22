@@ -101,7 +101,7 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	this->qmDrives = qmDrives;
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
-		qswDir->winId()
+	qswDir->winId()
 #endif
 	);
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
