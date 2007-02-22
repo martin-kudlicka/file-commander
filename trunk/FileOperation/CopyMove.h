@@ -13,7 +13,9 @@
 #include <QSemaphore>
 #include "FileOperation/Rename.h"
 #include "Settings.h"
+#ifdef Q_WS_WIN
 #include "FileOperation/Permission.h"
+#endif
 
 class cCopyMove : public QThread
 {
@@ -43,9 +45,11 @@ class cCopyMove : public QThread
 		cCopyMoveDialog *ccmdDialog;									///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;									///< copy/move widget
 		cFileRoutine::eOperation eoOperation;						///< copy or move operation
+#ifdef Q_WS_WIN
 		cPermission *cpPermission;										///< permission dialog
 		cPermissionDialog::eChoice ecPermission;					///< global permission dialog user's response
 		cPermissionDialog::eChoice ecPermissionCurrent;			///< current permission dialog user's response
+#endif
 		cRename *crRename;												///< rename dialog
 		cSettings *csSettings;											///< application's configuration
 		QHBoxLayout *qhblOperations;									///< layout for background operations
@@ -91,10 +95,12 @@ class cCopyMove : public QThread
 																				/**< \param qsOperation type of operation - copy or move
 																					  \param qfiSource source file information
 																					  \param qfiDestination destination file information */
+#ifdef Q_WS_WIN
 		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation);
 																				///< show permission dialog
 																				/**< \param qsFilename concerned file
 																					  \param qsInformation question about file */
+#endif
 		void ShowRenameDialog(const QString &qsOldFilename);
 																				///< show rename dialog
 																				/**< \param qsOldFilename file to rename */
@@ -105,9 +111,11 @@ class cCopyMove : public QThread
 																				///< dialog closed with user response
 																				/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();					///< move operation to background
+#ifdef Q_WS_WIN
 		void on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse);
 																				///< permission dialog closed with user response
 																				/**< \param ecResponse dialog result */
+#endif
 		void on_crRename_Finished(const QString &qsNewFilename);
 																				///< rename dialog closed with user's reponse
 																				/**< \param NewFilename new file name */
