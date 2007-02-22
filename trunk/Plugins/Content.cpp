@@ -111,7 +111,14 @@ QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
 {
 	// TODO ValidateFieldValue other types
 	switch (iType) {
-		case ft_numeric_32:	return QVariant(static_cast<int>(*cFieldValue)).toString();
-		default:					return "";
+		case ft_numeric_32:		return QVariant(static_cast<int>(*cFieldValue)).toString();
+		case ft_boolean:			if (*cFieldValue) {
+											return QT_TR_NOOP("Yes");
+										} else {
+											return QT_TR_NOOP("No");
+										} // if else
+		case ft_multiplechoice:
+		case ft_string:			return cFieldValue;
+		default:						return "";
 	} // switch
 } // ValidateFieldValue
