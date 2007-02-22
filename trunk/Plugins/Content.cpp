@@ -111,7 +111,7 @@ QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
 {
 	// TODO ValidateFieldValue other types
 	switch (iType) {
-		case ft_numeric_32:	return QString("%1").arg(static_cast<int>(*cFieldValue));
+		case ft_numeric_32:	return QVariant(static_cast<int>(*cFieldValue)).toString();
 		default:					return "";
 	} // switch
 } // ValidateFieldValue

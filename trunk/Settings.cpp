@@ -55,7 +55,7 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
 	qsSettings.remove("");
 	for (iI = 0; iI < qlColumns.count(); iI++) {
-		qsSettings.beginGroup(QString("%1").arg(iI));
+		qsSettings.beginGroup(QVariant(iI).toString());
 		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
 		qsSettings.setValue(qsNAME, qlColumns.at(iI).qsName);
 		qsSettings.setValue(qsPLUGIN, qlColumns.at(iI).qsPlugin);
@@ -88,6 +88,12 @@ void cSettings::CreateDefaultColumnSet()
 	scColumn.qsName = tr("Extension");
 	scColumn.qsPlugin = qsNO;
 	scColumn.iWidth = 30;
+	qlColumns.append(scColumn);
+	// size
+	scColumn.qsIdentifier = qsSIZE;
+	scColumn.qsName = tr("Size");
+	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 50;
 	qlColumns.append(scColumn);
 	// date
 	scColumn.qsIdentifier = qsDATE;
