@@ -461,7 +461,7 @@ void cOptionsDialog::PrepareColumnsMenu()
 		qaPlugin = qmPlugins->addAction(qhiPlugins.key());
 
 		qmFields = new QMenu(qmPlugins);
-		for (iI = 0; iI < qhiPlugins.value().qlFields.count(); iI++) {
+		for (iI = 0; iI < qhiPlugins.value().qlFields.count() && qhiPlugins.value().qlFields.at(iI).iType != ft_fulltext; iI++) {
 			// plugin's fields (columns)
 			QAction *qaField;
 
