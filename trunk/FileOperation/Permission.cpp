@@ -21,5 +21,9 @@ void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
 	cpdDialog->qlInformation->setText(qsInformation + tr(" Continue?"));
 
 	ecResponse = static_cast<cPermissionDialog::eChoice>(cpdDialog->exec());
+	if (ecResponse == cPermissionDialog::Ask) {
+		ecResponse = cPermissionDialog::Cancel;
+	} // if
+
 	emit Finished(ecResponse);
 } // Show

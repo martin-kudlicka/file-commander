@@ -29,5 +29,9 @@ void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSou
 	ccmcdDialog->qlDestinationInfo->setText(tr("%1 byte, %2").arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()));
 
 	ecResponse = static_cast<cCopyMoveConflictDialog::eChoice>(ccmcdDialog->exec());
+	if (ecResponse == cCopyMoveConflictDialog::Ask) {
+		ecResponse = cCopyMoveConflictDialog::Cancel;
+	} // if
+
 	emit Finished(ecResponse);
 } // Show
