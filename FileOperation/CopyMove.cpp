@@ -90,10 +90,12 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	connect(this, SIGNAL(ShowRenameDialog(const QString &)), crRename, SLOT(Show(const QString &)));
 	connect(crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
 
+#ifdef Q_WS_WIN
 	// permission dialog
 	cpPermission = new cPermission(qmwParent);
 	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(cpPermission, SIGNAL(Finished(const cPermissionDialog::eChoice &)), SLOT(on_cpPermission_Finished(const cPermissionDialog::eChoice &)));
+#endif
 
 	start();
 } // CopyMove
@@ -190,12 +192,14 @@ void cCopyMove::on_ccmdCopyMoveDialog_Background()
 	ccmdDialog = NULL;
 } // on_ccmdCopyMoveDialog_Background
 
+#ifdef Q_WS_WIN
 // permission dialog closed with user response
 void cCopyMove::on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse)
 {
 	ecPermissionCurrent = ecResponse;
 	qsPause.release();
 } // on_cpPermission_Finished
+#endif
 
 // rename dialog closed with user's reponse
 void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
@@ -239,6 +243,7 @@ void cCopyMove::run()
 		} // if else
 	} // if else
 
+#ifdef Q_WS_WIN
 	// get default readonly overwrite permission
 	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
 	if (qsOverwrite == qsASK) {
@@ -250,6 +255,7 @@ void cCopyMove::run()
 			ecPermission = cPermissionDialog::NoToAll;
 		} // if else
 	} // if else
+#endif
 
 	// main process
 	qdDir.setCurrent(qsSourcePath);
@@ -366,9 +372,10 @@ void cCopyMove::run()
 			pPermissions = QFile::permissions(qfilSources.at(iI).filePath());
 #endif
 
+#ifdef Q_WS_WIN
 			// check readonly permission
 			ecPermissionCurrent = cPermissionDialog::Ask;
-			if ((QFile::permissions(qsTarget) & QFile::ReadOther)) {
+			if (QFile::permissions(qsTarget) & QFile::ReadOther) {
 				if (ecPermission == cPermissionDialog::Ask) {
 					emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
 					// wait for answer
@@ -388,14 +395,11 @@ void cCopyMove::run()
 				if (ecPermission == cPermissionDialog::NoToAll || ecPermissionCurrent == cPermissionDialog::No) {
 					continue;
 				} else {
-					// remove target file permission
-#ifdef Q_WS_WIN
+					// remove target file readonly permission
 					SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes & ~FILE_ATTRIBUTE_READONLY);
-#else
-					QFile::setPermissions(qsTarget, pPermissions & ~QFile::ReadOther);
-#endif
 				} // if else
 			} // if
+#endif
 
 			// copy/move file
 			switch (eoOperation) {
