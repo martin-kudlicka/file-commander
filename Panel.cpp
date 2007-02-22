@@ -357,9 +357,11 @@ void cPanel::RefreshContent(const int &iIndex)
 			if (qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin == qsNO) {
 				// native
 				if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsICON) {
+					// icon
 					qtwiFile->setIcon(iJ, qfipIcon.icon(qfilFiles.at(iI)));
 				} else {
 					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsNAME) {
+						// name
 						if (qfilFiles.at(iI).isDir() && qfilFiles.at(iI).fileName() == "..") {
 							// special handle for ".." directory to show both points
 							qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
@@ -368,11 +370,20 @@ void cPanel::RefreshContent(const int &iIndex)
 						} // if
 					} else {
 						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsEXTENSION) {
+							// extension
 							qtwiFile->setText(iJ, qfilFiles.at(iI).suffix());
 						} else {
-							if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsDATE) {
+							if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsSIZE) {
+								// size
+								if (qfilFiles.at(iI).isDir()) {
+									qtwiFile->setText(iJ, tr("<DIR>"));
+								} else {
+									qtwiFile->setText(iJ, QVariant(qfilFiles.at(iI).size()).toString());
+								} // if else
+							} else {
+								// date
 								qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
-							} // if
+							} // if else
 						} // if else
 					} // if else
 				} // if else

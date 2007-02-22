@@ -17,6 +17,7 @@ const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
+const QString qsSIZE = "Size";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsTRUE = "true";
 const QString qsYES_TO_ALL = "YesToAll";
