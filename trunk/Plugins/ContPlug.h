@@ -1,6 +1,12 @@
 /// \file Total Commander content plugin's interface
+#ifndef CONT_PLUG_H
+#define CONT_PLUG_H
 
+#ifdef Q_WS_WIN
+#include <windows.h>
+#else
 #include "Plugins/TotalCommanderInterface.h"
+#endif
 
 // Contents of file contplug.h
 
@@ -53,3 +59,5 @@ void __stdcall ContentSetDefaultParams(ContentDefaultParamStruct* dps);
 
 void __stdcall ContentStopGetValue(char* FileName);
 int __stdcall ContentGetDefaultSortOrder(int FieldIndex);
+
+#endif
