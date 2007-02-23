@@ -104,18 +104,26 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	qswDir->winId()
 #endif
 	);
+	// signals for controls
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
 
+	// timer
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
+
+	// delayed column update
+	ccdContentDelayed = new cContentDelayed(ccContent);
+	connect(ccdContentDelayed, SIGNAL(GotColumnValue(const cContentDelayed::sOutput &)), SLOT(on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &)));
+	connect(this, SIGNAL(InterruptContentDelayed()), ccdContentDelayed, SLOT(on_InterruptContentDelayed()));
 } // cPanel
 
 // destructor
 cPanel::~cPanel()
 {
 	delete csmMenu;
+	ccdContentDelayed->deleteLater();
 } // ~cPanel
 
 // count objects
@@ -197,6 +205,12 @@ void cPanel::GoToUpDir()
 		SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
 	} // if
 } // GoToUpDir
+
+// got golumn value from plugin
+void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
+{
+	soOutput.qtwiItem->setText(soOutput.iColumn, soOutput.qsValue);
+} // on_ccdContentDelayed_GotColumnValue
 
 // show tree view context menu
 void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
@@ -324,6 +338,10 @@ void cPanel::RefreshContent(const int &iIndex)
 	int iI;
 	QDir::Filters fFilters;
 	QFileInfoList qfilFiles;
+	QList<cContentDelayed::sParameters> qlParameters;
+
+	// interrupt delayed content processing
+	emit InterruptContentDelayed();
 
 	// clear previous file contents
 	qhTabs.value(iIndex).qhFiles->clear();
@@ -389,7 +407,24 @@ void cPanel::RefreshContent(const int &iIndex)
 				} // if else
 			} else {
 				// plugin
-				qtwiFile->setText(iJ, ccContent->GetPluginValue(qfilFiles.at(iI).filePath(), qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit));
+				int iFlag;
+
+				qtwiFile->setText(iJ, ccContent->GetPluginValue(qfilFiles.at(iI).filePath(), qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit, &iFlag));
+				if (iFlag == ft_delayed) {
+					cContentDelayed::sParameters spParameters;
+
+					// thread input
+					spParameters.siInput.qsFilename = qfilFiles.at(iI).filePath();
+					spParameters.siInput.qsPlugin = qhTabs.value(iIndex).qlColumns->at(iJ).qsPlugin;
+					spParameters.siInput.qsColumn = qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier;
+					spParameters.siInput.qsUnit = qhTabs.value(iIndex).qlColumns->at(iJ).qsUnit;
+
+					// thread output
+					spParameters.soOutput.qtwiItem = qtwiFile;
+					spParameters.soOutput.iColumn = iJ;
+
+					qlParameters.append(spParameters);
+				} // if
 			} // if else
 		} // for
 	} // for
@@ -402,6 +437,11 @@ void cPanel::RefreshContent(const int &iIndex)
 		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0)->setSelected(true);
 		// focus to the first item
 		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setCurrentItem(static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0));
+	} // if
+
+	if (qlParameters.count() > 0) {
+		// start thread to query content plugins values
+		ccdContentDelayed->Start(qlParameters);
 	} // if
 } // RefreshContent
 

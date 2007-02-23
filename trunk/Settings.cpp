@@ -60,6 +60,7 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
 		qsSettings.setValue(qsNAME, qlColumns.at(iI).qsName);
 		qsSettings.setValue(qsPLUGIN, qlColumns.at(iI).qsPlugin);
+		qsSettings.setValue(qsUNIT, qlColumns.at(iI).qsUnit);
 		qsSettings.setValue(qsWIDTH, qlColumns.at(iI).iWidth);
 		qsSettings.endGroup();
 	} // for
