@@ -50,21 +50,41 @@ QHash<QString, cContent::sPluginInfo> cContent::GetPluginsInfo()
 } // GetPluginsInfo
 
 // returns plugin's value for specified column
-QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit)
+QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
 {
 	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
 	QString qsFieldValue;
 
 	iFieldIndex = GetFieldIndex(qsPlugin, qsColumn);
-	iUnitIndex = qhPlugins.value(qsPlugin).qlFields.at(iFieldIndex).qsUnits.toInt();
+	iUnitIndex = GetUnitIndex(qsUnit, qhPlugins.value(qsPlugin).qlFields.at(iFieldIndex).qsUnits);
 
 	// get value
-	iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toAscii().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+	if (iFlag == NULL) {
+		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toAscii().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+	} else {
+		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toAscii().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, CONTENT_DELAYIFSLOW);
+		if (iType == ft_delayed) {
+			iType = ft_string;
+			*iFlag = ft_delayed;
+		} else {
+			// doesn't care what's here in iFlag
+			*iFlag = ft_ondemand;
+		} // if else
+	} // if else
 	qsFieldValue = ValidateFieldValue(cFieldValue, iType);
 
 	return qsFieldValue;
 } // GetPluginValue
+
+// find index of unit
+int cContent::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
+{
+	QStringList qslUnits;
+
+	qslUnits = qsUnits.split('|');
+	return qslUnits.indexOf(qsUnit);
+} // GetUnitIndex
 
 // loads content plugins
 void cContent::Load()
@@ -105,6 +125,8 @@ void cContent::Load()
 			} // if
 			spiPluginInfo.tcgvContentGetValue = (tContentGetValue)qlLibrary.resolve("ContentGetValue");
 			spiPluginInfo.tcpuContentPluginUnloading = (tContentPluginUnloading)qlLibrary.resolve("ContentPluginUnloading");
+			spiPluginInfo.tcsgvContentStopGetValue = (tContentStopGetValue)qlLibrary.resolve("ContentStopGetValue");
+
 			// get fields
 			iField = 0;
 			while(true) {

@@ -16,6 +16,7 @@
 #include "FileOperation/FileRoutine.h"
 #include "Panel/TreeWidget.h"
 #include <QTimer>
+#include "Plugins/ContentDelayed.h"
 
 class cPanel : private QObject
 {
@@ -70,6 +71,7 @@ class cPanel : private QObject
 		};
 
 		cContent *ccContent;											///< access to content plugins
+		cContentDelayed *ccdContentDelayed;						///< thread to get delayed content plugins values
 		cSettings *csSettings;										///< main settings
 		cShellMenu *csmMenu;											///< right click "native" shell menu
 		QComboBox *qcbDrive;											///< drive
@@ -103,7 +105,13 @@ class cPanel : private QObject
 																			/**< \param qtwiItem1 1st item
 																				  \param qtwiItem2 2nd item */
 
+	signals:
+		void InterruptContentDelayed();							///< interrupt delayed content processing before refresh dir view content
+
 	private slots:
+		void on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput);
+																			///< got golumn value from plugin
+																			/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);
 																			///< show tree view context menu
 																			/**< \param pos position of context menu */

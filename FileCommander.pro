@@ -40,6 +40,7 @@ HEADERS = MainWindow.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
+			 Plugins/ContentDelayed.h \
 			 Plugins/ContPlug.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h
@@ -74,6 +75,7 @@ SOURCES = FileCommander.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \
+			 Plugins/ContentDelayed.cpp \
 			 Common/System.cpp
 win32 {
 	 SOURCES += Panel/Win32/ShellContextMenu.cpp
