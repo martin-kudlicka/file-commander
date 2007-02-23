@@ -1,9 +1,12 @@
 #include "Content.h"
 
 #include <QLibrary>
-#include "Plugins/ContPlug.h"
 #include <QStringList>
 #include <QFileInfo>
+#include <QDir>
+
+const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
+const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 4;
 
 // destructor
 cContent::~cContent()
@@ -87,6 +90,19 @@ void cContent::Load()
 			tcgsfContentGetSupportedField = (tContentGetSupportedField)qlLibrary.resolve("ContentGetSupportedField");
 
 			// fill plugin properties
+			spiPluginInfo.tcsdpContentSetDefaultParams = (tContentSetDefaultParams)qlLibrary.resolve("ContentSetDefaultParams");
+			if (spiPluginInfo.tcsdpContentSetDefaultParams) {
+				ContentDefaultParamStruct cdpsParam;
+				QString qsIniFile;
+
+				qsIniFile = QFileInfo(qlPlugins.at(iI).qsName).path() + '/' + QFileInfo(qlPlugins.at(iI).qsName).completeBaseName() + ".ini";
+				cdpsParam.size = sizeof(cdpsParam);
+				cdpsParam.PluginInterfaceVersionLow = dwPLUGIN_INTERFACE_VERSION_LOW;
+				cdpsParam.PluginInterfaceVersionHi = dwPLUGIN_INTERFACE_VERSION_HI;
+				strcpy(cdpsParam.DefaultIniName, QDir::toNativeSeparators(qsIniFile).toAscii().constData());
+
+				spiPluginInfo.tcsdpContentSetDefaultParams(&cdpsParam);
+			} // if
 			spiPluginInfo.tcgvContentGetValue = (tContentGetValue)qlLibrary.resolve("ContentGetValue");
 			spiPluginInfo.tcpuContentPluginUnloading = (tContentPluginUnloading)qlLibrary.resolve("ContentPluginUnloading");
 			// get fields

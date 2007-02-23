@@ -5,6 +5,7 @@
 
 #include <QHash>
 #include "Settings.h"
+#include "Plugins/ContPlug.h"
 
 class cContent
 {
@@ -18,8 +19,8 @@ class cContent
 																						  \param iMaxLen max size for returned parameters
 																						  \param iFlags
 																						  \return value for specified field*/
-		typedef void (__stdcall *tContentPluginUnloading)(void);
-																					///< unload content plugin before exit
+		typedef void (__stdcall *tContentPluginUnloading)(void);	///< unload content plugin before exit
+		typedef void (__stdcall *tContentSetDefaultParams)(ContentDefaultParamStruct* dps);
 
 		/// column info
 		struct sField {
@@ -32,6 +33,7 @@ class cContent
 			QList<sField> qlFields;											///< plugin's columns
 			tContentGetValue tcgvContentGetValue;						///< pointer to plugin's ContentGetValue function
 			tContentPluginUnloading tcpuContentPluginUnloading;	///< pointer to plugin's ContentGetValue function
+			tContentSetDefaultParams tcsdpContentSetDefaultParams;	///< pointer to plugin's ContentGetValue function
 		};
 
 		~cContent();															///< destructor
