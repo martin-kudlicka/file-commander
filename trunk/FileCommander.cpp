@@ -5,6 +5,7 @@
 int main(int argc, char **argv)
 {
 	cMainWindow *cmwMainWindow;
+	int iResult;
 	QApplication qaApplication(argc, argv);
 	
 	qaApplication.addLibraryPath(cSystem::GetIsshouCommonPath());
@@ -21,5 +22,8 @@ int main(int argc, char **argv)
 	cmwMainWindow = new cMainWindow();
 	cmwMainWindow->show();
 
-	return qaApplication.exec();
+	iResult = qaApplication.exec();
+	delete cmwMainWindow;
+
+	return iResult;
 } // main

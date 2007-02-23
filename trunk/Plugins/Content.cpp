@@ -5,6 +5,21 @@
 #include <QStringList>
 #include <QFileInfo>
 
+// destructor
+cContent::~cContent()
+{
+	// unload plugins
+	QHashIterator<QString, sPluginInfo> qhiPlugins(qhPlugins);
+
+	while (qhiPlugins.hasNext()) {
+		qhiPlugins.next();
+
+		if (qhiPlugins.value().tcpuContentPluginUnloading) {
+			qhiPlugins.value().tcpuContentPluginUnloading();
+		} // if
+	} // while
+} // ~cContent
+
 // constructor
 cContent::cContent(cSettings *csSettings)
 {
@@ -73,6 +88,7 @@ void cContent::Load()
 
 			// fill plugin properties
 			spiPluginInfo.tcgvContentGetValue = (tContentGetValue)qlLibrary.resolve("ContentGetValue");
+			spiPluginInfo.tcpuContentPluginUnloading = (tContentPluginUnloading)qlLibrary.resolve("ContentPluginUnloading");
 			// get fields
 			iField = 0;
 			while(true) {
