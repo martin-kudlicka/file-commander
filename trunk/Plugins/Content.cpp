@@ -146,6 +146,7 @@ QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
 
 	switch (iType) {
 		case ft_numeric_32:		return QVariant(*reinterpret_cast<int *>(const_cast<char *>(cFieldValue))).toString();
+		case ft_numeric_64:		return QVariant(*reinterpret_cast<__int64 *>(const_cast<char *>(cFieldValue))).toString();
 		case ft_time:				qsValue = csSettings->GetPluginTimeDisplay();
 										qsValue.replace("%h", QString("%1").arg(reinterpret_cast<ptimeformat>(const_cast<char *>(cFieldValue))->wHour, 2, 10, QChar('0')));
 										qsValue.replace("%m", QString("%1").arg(reinterpret_cast<ptimeformat>(const_cast<char *>(cFieldValue))->wMinute, 2, 10, QChar('0')));
