@@ -6,12 +6,16 @@
 #include <QSettings>
 
 const QString qsASK = "Ask";
+const QString qsBYTES = "Bytes";
 const QString qsDATE = "Date";
+const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
 const QString qsFALSE = "false";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
+const QString qsKILOBYTES = "Kilobytes";
+const QString qsMEGABYTES = "Megabytes";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
@@ -92,6 +96,8 @@ class cSettings : private QObject
 																					  \return list of columns in column set */
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
+		QString GetFileSizeIn();										///< unit for files size
+																				/**< \return file size unit */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
@@ -117,6 +123,8 @@ class cSettings : private QObject
 																				/**< \param qmSettings settings to restore */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
 																				/**< \param qsMode overwrite mode */
+		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
+																				/**< \param qsSize file size to show */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type

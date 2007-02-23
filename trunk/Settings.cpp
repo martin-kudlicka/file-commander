@@ -23,6 +23,7 @@ const QString qsWIDTH = "Width";
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Display
+const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // LeftPanel
@@ -190,6 +191,12 @@ QString cSettings::GetFileOverwrite()
 	return qsSettings.value(qsOTHERS__ + qsFILE_OVERWRITE, qsASK).toString();
 } // GetFileOverwrite
 
+// unit for files size
+QString cSettings::GetFileSizeIn()
+{
+	return qsSettings.value(qsDISPLAY__FILE_SIZE_IN, qsDYNAMIC).toString();
+} // GetFileSizeIn
+
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 {
@@ -310,6 +317,12 @@ void cSettings::SetFileOverwrite(const QString &qsMode)
 {
 	qsSettings.setValue(qsOTHERS__ + qsFILE_OVERWRITE, qsMode);
 } // SetFileOverwrite
+
+// set file size mode
+void cSettings::SetFileSizeIn(const QString &qsSize)
+{
+	qsSettings.setValue(qsDISPLAY__FILE_SIZE_IN, qsSize);
+} // SetFileSizeIn
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)

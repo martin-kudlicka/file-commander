@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="currentIndex" >
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_4" />
     <widget class="QWidget" name="page_5" >
@@ -57,7 +57,7 @@
         <x>10</x>
         <y>10</y>
         <width>120</width>
-        <height>80</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="title" >
@@ -87,6 +87,71 @@
        </property>
        <property name="text" >
         <string>Show hidden files</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5" >
+      <property name="geometry" >
+       <rect>
+        <x>140</x>
+        <y>10</y>
+        <width>120</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="title" >
+       <string>Files size in</string>
+      </property>
+      <widget class="QRadioButton" name="qrbSizeBytes" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Bytes</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbSizeKilobytes" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Kilobytes</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbSizeMegabytes" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Megabytes</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbSizeDynamic" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Dynamic</string>
        </property>
       </widget>
      </widget>
