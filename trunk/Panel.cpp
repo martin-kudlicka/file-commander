@@ -537,9 +537,17 @@ void cPanel::Sort(const int &iIndex)
 	// sort at first by name if possible (to have sorted the rest by filename as second condition)
 	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
 		if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME) {
+			int iJ;
+
 			ssSort.iSortedColumn = iI;
 			ssSort.soSortOrder = Qt::AscendingOrder;
 			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+			for (iJ = 0; iJ < qlDirectories.count(); iJ++) {
+				if (qlDirectories.at(iJ)->text(ssSort.iSortedColumn) == "..") {
+					qlDirectories.move(iJ, 0);
+					break;
+				} // if
+			} // for
 			qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
 			break;
 		} // if
