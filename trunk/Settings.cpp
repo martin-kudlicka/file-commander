@@ -32,6 +32,7 @@ const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 // Plugins
+const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 // Others/
@@ -220,6 +221,12 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 	return qlPlugins;
 } // GetPlugins
 
+// plugin time display format
+QString cSettings::GetPluginTimeDisplay()
+{
+	return qsSettings.value(qsPLUGINS__TIME_DISPLAY, "%h:%m:%s").toString();
+} // GetPluginTimeDisplay
+
 // find out readonly file overwrite mode
 QString cSettings::GetReadonlyFileOverwrite()
 {
@@ -332,6 +339,12 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 
 	qsSettings.endGroup();
 } // SetPlugins
+
+///< plugin time display format
+void cSettings::SetPluginTimeDisplay(const QString &qsTime)
+{
+	qsSettings.setValue(qsPLUGINS__TIME_DISPLAY, qsTime);
+} // SetPluginTimeDisplay
 
 // set default readonly overwrite behaviour
 void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
