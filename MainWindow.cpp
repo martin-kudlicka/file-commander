@@ -5,6 +5,18 @@
 #include "NewDirectoryDialog.h"
 #include "OptionsDialog.h"
 
+// destructor
+cMainWindow::~cMainWindow()
+{
+	delete qsLeftDrive;
+	delete qsRightDrive;
+	delete cfoFileOperation;
+	delete qhblBackgroundOperations;
+	delete cpLeft;
+	delete cpRight;
+	delete cpPlugins;
+} // cMainWindow
+
 // drive lists actualization
 void cMainWindow::ActualizeDrives()
 {
@@ -97,18 +109,6 @@ cMainWindow::cMainWindow()
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
-} // cMainWindow
-
-// destructor
-cMainWindow::~cMainWindow()
-{
-	delete qsLeftDrive;
-	delete qsRightDrive;
-	delete cfoFileOperation;
-	delete qhblBackgroundOperations;
-	delete cpLeft;
-	delete cpRight;
-	delete cpPlugins;
 } // cMainWindow
 
 // find active panel (left or right)
