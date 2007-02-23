@@ -19,7 +19,7 @@ void cPanel::ActualizeVolumeInfo()
 	qsName = qcbDrive->currentText();
 #endif
 	sdsInfo = cFileRoutine::GetDiskSpace(qmDrives->value(qcbDrive->currentText()).qsPath);
-	qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(sdsInfo.qi64Free).arg(sdsInfo.qi64Total));
+	qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(GetSizeString(sdsInfo.qi64Free)).arg(GetSizeString(sdsInfo.qi64Total)));
 } // ActualizeVolumeInfo
 
 // actualize widgets with info about current directory view
@@ -184,6 +184,36 @@ QStringList cPanel::GetSelectedItemsStringList()
 	return qslSelected;
 } // GetSelectedItemsStringList
 
+// "convert" size to string according to setting in options
+QString cPanel::GetSizeString(const qint64 &qi64Size)
+{
+	QString qsFileSizeIn;
+
+	qsFileSizeIn = csSettings->GetFileSizeIn();
+
+	if (qsFileSizeIn == qsDYNAMIC) {
+		if (qi64Size < qi64_1KILOBYTE) {
+			qsFileSizeIn = qsBYTES;
+		} else {
+			if (qi64Size < qi64_1MEGABYTE) {
+				qsFileSizeIn = qsKILOBYTES;
+			} else {
+				qsFileSizeIn = qsMEGABYTES;
+			} // if else
+		} // if else
+	} // if
+
+	if (qsFileSizeIn == qsBYTES) {
+		return QVariant(qi64Size).toString() + tr(" B");
+	} else {
+		if (qsFileSizeIn == qsKILOBYTES) {
+			return QVariant(qi64Size / qi64_1KILOBYTE).toString() + tr(" k");
+		} else {
+			return QVariant(qi64Size / qi64_1MEGABYTE).toString() + tr(" M");
+		} // if else
+	} // if else
+} // GetSizeString
+
 // go to root directory
 void cPanel::GoToRootDir()
 {
@@ -236,7 +266,8 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 // changed selected items in directory view
 void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 {
-	int iDirectories, iDirectoriesTotal, iFiles, iFilesTotal, iI, iSize, iSizeTotal;
+	int iDirectories, iDirectoriesTotal, iFiles, iFilesTotal, iI;
+	qint64 qi64Size, qi64TotalSize;
 
 	// find tab for tree widget
 	QHashIterator<uint, sTab> qhiTab(qhTabs);
@@ -251,8 +282,8 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 	iDirectoriesTotal = 0;
 	iFiles = 0;
 	iFilesTotal = 0;
-	iSize = 0;
-	iSizeTotal = 0;
+	qi64Size = 0;
+	qi64TotalSize = 0;
 	for (iI = 0; iI < ctwTree->topLevelItemCount(); iI++) {
 		if (qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).isDir()) {
 			iDirectoriesTotal++;
@@ -261,15 +292,15 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 			} // if
 		} else {
 			iFilesTotal++;
-			iSizeTotal += qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).size();
+			qi64TotalSize += qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).size();
 			if (ctwTree->topLevelItem(iI)->isSelected()) {
 				iFiles++;
-				iSize += qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).size();
+				qi64Size += qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).size();
 			} // if
 		} // if else
 	} // for
 
-	qhiTab.value().swWidgets->qsSelected = tr("%1 / %2 in %3 / %4 files and %5 / %6 directories").arg(iSize).arg(iSizeTotal).arg(iFiles).arg(iFilesTotal).arg(iDirectories).arg(iDirectoriesTotal);
+	qhiTab.value().swWidgets->qsSelected = tr("%1 / %2 in %3 / %4 files and %5 / %6 directories").arg(GetSizeString(qi64Size)).arg(GetSizeString(qi64TotalSize)).arg(iFiles).arg(iFilesTotal).arg(iDirectories).arg(iDirectoriesTotal);
 	if (static_cast<cTreeWidget *>(qswDir->currentWidget()) == ctwTree) {
 		ActualizeWidgets();
 	} // if
@@ -396,7 +427,7 @@ void cPanel::RefreshContent(const int &iIndex)
 								if (qfilFiles.at(iI).isDir()) {
 									qtwiFile->setText(iJ, tr("<DIR>"));
 								} else {
-									qtwiFile->setText(iJ, QVariant(qfilFiles.at(iI).size()).toString());
+									qtwiFile->setText(iJ, GetSizeString(qfilFiles.at(iI).size()));
 								} // if else
 							} else {
 								// date

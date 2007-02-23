@@ -160,6 +160,7 @@ void cOptionsDialog::FillOptions()
 
 	// panels
 	// display
+	// files
 	qsValue = csSettings->GetValue(cSettings::ShowSystemFiles);
 	if (qsValue == qsTRUE) {
 		qcbShowSystemFiles->setChecked(true);
@@ -168,6 +169,21 @@ void cOptionsDialog::FillOptions()
 	if (qsValue == qsTRUE) {
 		qcbShowHiddenFiles->setChecked(true);
 	} // if
+	// files size in
+	qsValue = csSettings->GetFileSizeIn();
+	if (qsValue == qsBYTES) {
+		qrbSizeBytes->setChecked(true);
+	} else {
+		if (qsValue == qsKILOBYTES) {
+			qrbSizeKilobytes->setChecked(true);
+		} else {
+			if (qsValue == qsMEGABYTES) {
+				qrbSizeMegabytes->setChecked(true);
+			} else {
+				qrbSizeDynamic->setChecked(true);
+			} // if else
+		} // if else
+	} // if else
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qslHeader.append(tr("Type"));
@@ -575,6 +591,20 @@ void cOptionsDialog::SaveOptions()
 		qsValue = qsFALSE;
 	} // if else
 	csSettings->SetValue(cSettings::ShowHiddenFiles, qsValue);
+	if (qrbSizeBytes->isChecked()) {
+		qsValue = qsBYTES;
+	} else {
+		if (qrbSizeKilobytes->isChecked()) {
+			qsValue = qsKILOBYTES;
+		} else {
+			if (qrbSizeMegabytes->isChecked()) {
+				qsValue = qsMEGABYTES;
+			} else {
+				qsValue = qsDYNAMIC;
+			} // if else
+		} // if else
+	} // if else
+	csSettings->SetFileSizeIn(qsValue);
 
 	// plugins
 	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());

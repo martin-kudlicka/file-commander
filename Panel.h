@@ -54,6 +54,9 @@ class cPanel : private QObject
 		void GoToUpDir();												///< go up one level (directory)
 
 	private:
+		static const qint64 qi64_1KILOBYTE = 1024;			///< 1 kilobyte in bytes
+		static const qint64 qi64_1MEGABYTE = 1048576;		///< 1 megabyte in bytes
+
 		static const int iTIMER_INTERVAL = 1000;				///< timer interval
 
 		/// strings for widgets
@@ -92,6 +95,9 @@ class cPanel : private QObject
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */
+		QString GetSizeString(const qint64 &qi64Size);		///< "convert" size to string according to setting in options
+																			/**< \param qi64Size size
+																				  \return file size in string with suffix */
 		void RefreshContent(const int &iIndex);				///< refresh dir content
 																			/**< \param iIndex index of dir view */
 		void RefreshHeader(const int &iIndex);					///< refresh column's header
