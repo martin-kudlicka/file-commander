@@ -182,6 +182,7 @@ void cOptionsDialog::FillOptions()
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
 
 	// plugins
+	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
 
@@ -576,6 +577,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetValue(cSettings::ShowHiddenFiles, qsValue);
 
 	// plugins
+	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	// content
 	for (iI = 0; iI < qtwContentPlugins->topLevelItemCount(); iI++) {
 		cSettings::sPlugin spPlugin;

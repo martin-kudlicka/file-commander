@@ -95,6 +95,8 @@ class cSettings : private QObject
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
+		QString GetPluginTimeDisplay();								///< plugin time display format
+																				/**< \return plugin time display format */
 		QString GetReadonlyFileOverwrite();							///< find out readonly file overwrite mode
 																				/**< \return default readonly file overwrite mode */
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
@@ -119,6 +121,8 @@ class cSettings : private QObject
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type
 																					  \param qlPlugins plugin list */
+		void SetPluginTimeDisplay(const QString &qsTime);		///< plugin time display format
+																				/**< \param qsTime user defined time display format */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
 		void SetValue(const eKey &ekKey, const QString &qsValue);
