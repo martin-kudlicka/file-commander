@@ -347,6 +347,13 @@ void cPanel::on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem)
 
 	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
 
+	// refresh content plugin values
+	for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
+		if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
+			qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+		} // if
+	} // for
+
 	if (qfiFile.isFile()) {
 		// selected item is file
 		return;
