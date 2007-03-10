@@ -35,6 +35,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cSettings csSettings;										///< accessing application's settings
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;	///< drives in system
 		QHBoxLayout *qhblBackgroundOperations;					///< layout for background operations
+		QShortcut *qsFullScreen;									///< full screen window mode switch
 		QShortcut *qsLeftDrive;										///< left drive combo box shortcut
 		QShortcut *qsRightDrive;									///< right drive combo box shortcut
 		QTabBar qtbLeft;												///< left's panel tab bar
@@ -83,6 +84,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbRightUpDir_clicked(bool checked = false);
 																			///< right up dir button is clicked on
 																			/**< \param checked true if button is checkable and checked */
+		void on_qsFullScreen_activated();						///< full screen mode switched
 		void on_qsLeftDrive_activated();							///< left drive shortcut activated
 		void on_qsRightDrive_activated();						///< right drive shortcut activated
 		void on_qtTimer_timeout();									///< timer's timeout
