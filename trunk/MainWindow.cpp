@@ -172,6 +172,15 @@ void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
 	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
 } // on_qpbDelete_clicked
 
+// edit button is clicked on
+void cMainWindow::on_qpbEdit_clicked(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->EditFile();
+} // on_qpbEdit_clicked
+
 // left root dir button is clicked on
 void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */)
 {

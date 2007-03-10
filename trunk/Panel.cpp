@@ -4,8 +4,16 @@
 #include <QDateTime>
 #include "Panel/Process.h"
 #include <QHeaderView>
+#include <QProcess>
 
 cSettings::sSort cPanel::ssSort;	///< sort information (static class variable)
+
+// destructor
+cPanel::~cPanel()
+{
+	delete csmMenu;
+	ccdContentDelayed->deleteLater();
+} // ~cPanel
 
 // actualize volume information - disk name and space
 void cPanel::ActualizeVolumeInfo()
@@ -119,12 +127,20 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	connect(this, SIGNAL(InterruptContentDelayed()), ccdContentDelayed, SLOT(on_InterruptContentDelayed()));
 } // cPanel
 
-// destructor
-cPanel::~cPanel()
+// edit selected file in editor
+void cPanel::EditFile()
 {
-	delete csmMenu;
-	ccdContentDelayed->deleteLater();
-} // ~cPanel
+	QFileInfo qfiFile;
+
+	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem());
+
+	if (qfiFile.isFile()) {
+		// TODO EditFile other OS than Windows
+#ifdef Q_WS_WIN
+		QProcess::startDetached("notepad.exe", QStringList() << qfiFile.filePath());
+#endif
+	} // if
+} // EditFile
 
 // count objects
 cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)

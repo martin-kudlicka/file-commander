@@ -57,11 +57,11 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private slots:
 		void on_qaOptions_triggered(bool checked = false);	///< options are selected
 																			/**< \param checked true if menu item is checkable and checked */
-		void on_qpbCopy_clicked(bool checked = false);
-																			///< copy button is clicked on
+		void on_qpbCopy_clicked(bool checked = false);		///< copy button is clicked on
 																			/**< \param checked true if button is checkable and checked */
-		void on_qpbDelete_clicked(bool checked = false);
-																			///< delete button is clicked on
+		void on_qpbDelete_clicked(bool checked = false);	///< delete button is clicked on
+																			/**< \param checked true if button is checkable and checked */
+		void on_qpbEdit_clicked(bool checked = false);		///< edit button is clicked on
 																			/**< \param checked true if button is checkable and checked */
 		void on_qpbLeftRootDir_clicked(bool checked = false);
 																			///< left root dir button is clicked on
@@ -69,8 +69,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbLeftUpDir_clicked(bool checked = false);
 																			///< left up dir button is clicked on
 																			/**< \param checked true if button is checkable and checked */
-		void on_qpbMove_clicked(bool checked = false);
-																			///< copy button is clicked on
+		void on_qpbMove_clicked(bool checked = false);		///< copy button is clicked on
 																			/**< \param checked true if button is checkable and checked */
 		void on_qpbNewDirectory_clicked(bool checked = false);
 																			///< new directory button is clicked on
