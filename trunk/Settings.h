@@ -5,6 +5,8 @@
 
 #include <QSettings>
 
+const QString qsANSI = "ANSI";
+const QString qsASCII = "ASCII";
 const QString qsASK = "Ask";
 const QString qsBYTES = "Bytes";
 const QString qsDATE = "Date";
@@ -27,6 +29,7 @@ const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSIZE = "Size";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsTRUE = "true";
+const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 const QString qsYES_TO_ALL = "YesToAll";
 
 class cSettings : private QObject
@@ -54,6 +57,12 @@ class cSettings : private QObject
 			QString qsPlugin;												///< plugin filename or "no" if native
 			QString qsUnit;												///< selected unit for column
 			int iWidth;														///< column width
+		};
+		/// lister settings
+		struct sLister {
+			QString qsCharSet;											///< selected char set
+			QString qsWrapText;											///< word wrapping flag
+			QString qsFitImageToWindow;								///< image auto resize flag
 		};
 		/// plugin
 		struct sPlugin {
@@ -107,6 +116,8 @@ class cSettings : private QObject
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
+		sLister GetListerSettings();									///< lister settings
+																				/**< \return lister settings */
 																				/**< \return file size unit */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
@@ -137,6 +148,8 @@ class cSettings : private QObject
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
 																				/**< \param qsSize file size to show */
+		void SetListerSettings(const sLister &slLister);		///< set default lister settings
+																				/**< \param slLister lister settings */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type

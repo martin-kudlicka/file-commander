@@ -43,7 +43,7 @@ int cContent::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 	return -1;	// error
 } // GetFieldIndex
 
-// retreive content plugin info
+// retrieve content plugin info
 QHash<QString, cContent::sPluginInfo> cContent::GetPluginsInfo()
 {
 	return qhPlugins;

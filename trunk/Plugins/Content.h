@@ -47,7 +47,7 @@ class cContent
 																						/**< \param csSettings application's settings */
 
 		QHash<QString, sPluginInfo> GetPluginsInfo();
-																						///< retreive content plugin info
+																						///< retrieve content plugin info
 																						/**< \return table of plugin info */
 		QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag = NULL);
 																						///< returns plugin's value for specified column
