@@ -118,6 +118,8 @@ cMainWindow::cMainWindow()
 	qtTimer.start(iTIMER_INTERVAL);
 
 	// shortcuts
+	qsFullScreen = new QShortcut(QKeySequence("F11"), this);
+	connect(qsFullScreen, SIGNAL(activated()), SLOT(on_qsFullScreen_activated()));
 	qsLeftDrive = new QShortcut(QKeySequence("Alt+F1"), this);
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
@@ -283,6 +285,12 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 {
 	cpRight->GoToUpDir();
 } // on_qpbRightUpDir_clicked
+
+// full screen mode switched
+void cMainWindow::on_qsFullScreen_activated()
+{
+	setWindowState(windowState() ^ Qt::WindowFullScreen);
+} // on_qsFullScreen_activated
 
 // left drive shortcut activated
 void cMainWindow::on_qsLeftDrive_activated()
