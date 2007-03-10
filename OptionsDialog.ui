@@ -6,19 +6,35 @@
     <x>0</x>
     <y>0</y>
     <width>613</width>
-    <height>250</height>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Options</string>
   </property>
+  <widget class="QDialogButtonBox" name="qdbbRespond" >
+   <property name="geometry" >
+    <rect>
+     <x>440</x>
+     <y>220</y>
+     <width>160</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons" >
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
   <widget class="QFrame" name="frame" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>10</y>
      <width>591</width>
-     <height>191</height>
+     <height>201</height>
     </rect>
    </property>
    <property name="frameShape" >
@@ -27,27 +43,17 @@
    <property name="frameShadow" >
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QTreeWidget" name="qtwChoices" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>120</width>
-      <height>171</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QStackedWidget" name="qswChoices" >
     <property name="geometry" >
      <rect>
       <x>140</x>
       <y>0</y>
       <width>441</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="currentIndex" >
-     <number>1</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="page_4" />
     <widget class="QWidget" name="page_5" >
@@ -167,35 +173,6 @@
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="qpbColumnAdd" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>160</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Add</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="qpbColumnRemove" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>80</x>
-        <y>160</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Remove</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="qpbColumnSetAdd" >
       <property name="geometry" >
        <rect>
@@ -279,11 +256,40 @@
         <x>0</x>
         <y>60</y>
         <width>411</width>
-        <height>91</height>
+        <height>101</height>
        </rect>
       </property>
       <property name="rootIsDecorated" >
        <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbColumnAdd" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>170</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Add</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbColumnRemove" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>80</x>
+        <y>170</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Remove</string>
       </property>
      </widget>
     </widget>
@@ -339,27 +345,24 @@
      </widget>
     </widget>
     <widget class="QWidget" name="page" >
-     <widget class="QPushButton" name="qpbRemoveContentPlugin" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
+     <widget class="QTreeWidget" name="qtwContentPlugins" >
       <property name="geometry" >
        <rect>
-        <x>360</x>
-        <y>120</y>
-        <width>75</width>
-        <height>23</height>
+        <x>0</x>
+        <y>10</y>
+        <width>441</width>
+        <height>151</height>
        </rect>
       </property>
-      <property name="text" >
-       <string>Remove</string>
+      <property name="rootIsDecorated" >
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="qpbAddContentPlugin" >
       <property name="geometry" >
        <rect>
         <x>280</x>
-        <y>120</y>
+        <y>170</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -368,13 +371,60 @@
        <string>Add</string>
       </property>
      </widget>
-     <widget class="QTreeWidget" name="qtwContentPlugins" >
+     <widget class="QPushButton" name="qpbRemoveContentPlugin" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>360</x>
+        <y>170</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Remove</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_8" >
+     <widget class="QPushButton" name="qpbRemoveListerPlugin" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>360</x>
+        <y>170</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Remove</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbAddListerPlugin" >
+      <property name="geometry" >
+       <rect>
+        <x>280</x>
+        <y>170</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Add</string>
+      </property>
+     </widget>
+     <widget class="QTreeWidget" name="qtwListerPlugins" >
       <property name="geometry" >
        <rect>
         <x>0</x>
         <y>10</y>
         <width>441</width>
-        <height>101</height>
+        <height>151</height>
        </rect>
       </property>
       <property name="rootIsDecorated" >
@@ -503,22 +553,16 @@
      </widget>
     </widget>
    </widget>
-  </widget>
-  <widget class="QDialogButtonBox" name="qdbbRespond" >
-   <property name="geometry" >
-    <rect>
-     <x>440</x>
-     <y>210</y>
-     <width>160</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons" >
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-   </property>
+   <widget class="QTreeWidget" name="qtwChoices" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>120</width>
+      <height>181</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

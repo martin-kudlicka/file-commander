@@ -29,8 +29,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iCOLUMN_SETS_PAGE = 2;							///< column's sets page
 		static const int iPLUGINS_PAGE = 3;									///< main plugin's page
 		static const int iCONTENT_PLUGINS_PAGE = 4;						///< content plugin's page
-		static const int iOTHERS_PAGE = 5;									///< others page
-		static const int iCONFIRMATION_PAGE = 6;							///< confirmation page
+		static const int iLISTER_PLUGINS_PAGE = 5;						///< lister plugin's page
+		static const int iOTHERS_PAGE = 6;									///< others page
+		static const int iCONFIRMATION_PAGE = 7;							///< confirmation page
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled
@@ -63,6 +64,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param spPlugin plugin to add
 																							  \param qtwTree tree to put plugin into */
 		void CreateChoices();													///< build choices tree
+		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
+																						///< get info about specified plugins
+																						/**< \param qtwPlugins plugins to get info
+																							  \return plugin info list */
 		void FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree);
 																						///< fills plugin information into tree
 																						/**< \param qlPlugins plugin list
@@ -87,6 +92,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param action selected column (or column's unit) */
 		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbAddListerPlugin_clicked(bool checked = false);	///< add button is clicked on in lister plugins
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnDown_clicked(bool checked = false);			///< column down button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnRemove_clicked(bool checked = false);		///< column remove button is clicked on in columns view
@@ -100,6 +107,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbRemoveListerPlugin_clicked(bool checked = false);
+																						///< remove lister plugin button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qsbWidth_valueChanged(int val);							///< changed width of column
 																						/**< \param val new column width */
 		void on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
@@ -112,6 +122,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																							  \param previously selected item */
 		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
+		void on_qtwListerPlugins_itemSelectionChanged();				///< selected lister plugin changed
 }; // cOptionsDialog
 
 #endif
