@@ -72,6 +72,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
+	connect(ctwTree, SIGNAL(SpacePressed(QTreeWidgetItem *)), SLOT(on_ctwTree_SpacePressed(QTreeWidgetItem *)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -160,6 +161,20 @@ cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
 
 	return soCount;
 } // GetCount
+
+// find index of native column
+int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.value(iTabIndex).qlColumns->count(); iI++) {
+		if (qhTabs.value(iTabIndex).qlColumns->at(iI).qsIdentifier == qsColumn) {
+			return iI;
+		}
+	} // for
+
+	return -1;
+} // GetNativeColumnIndex
 
 // get path for current dir
 QString cPanel::GetPath()
@@ -321,6 +336,36 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 		ActualizeWidgets();
 	} // if
 } // on_ctwTree_itemSelectionChanged
+
+// space pressed in dir view
+void cPanel::on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem)
+{
+	int iColumnExtension, iI;
+	QFileInfo qfiFile;
+	QFileInfoList qfilFiles;
+	qint64 qi64Size;
+
+	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
+
+	if (qfiFile.isFile()) {
+		// selected item is file
+		return;
+	} // if
+
+	iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
+	if (iColumnExtension == -1) {
+		// no place to show occupied space
+		return;
+	} // if
+
+	qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+	qi64Size = 0;
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		qi64Size += qfilFiles.at(iI).size();
+	} // for
+
+	qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+} // on_ctwTree_SpacePressed
 
 // drive selected
 void cPanel::on_qcbDrive_activated(int index)
@@ -562,7 +607,7 @@ void cPanel::SetPath(const QString &qsPath)
 // sort dir content and show
 void cPanel::Sort(const int &iIndex)
 {
-	int iI;
+	int iColumnName, iI;
 	QList<QTreeWidgetItem *> qlDirectories, qlFiles;
 
 	// clear tree (can't use QTreeWidget::clear because it deletes objects too)
@@ -582,23 +627,19 @@ void cPanel::Sort(const int &iIndex)
 	} // while
 
 	// sort at first by name if possible (to have sorted the rest by filename as second condition)
-	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
-		if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME) {
-			int iJ;
-
-			ssSort.iSortedColumn = iI;
-			ssSort.soSortOrder = Qt::AscendingOrder;
-			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
-			for (iJ = 0; iJ < qlDirectories.count(); iJ++) {
-				if (qlDirectories.at(iJ)->text(ssSort.iSortedColumn) == "..") {
-					qlDirectories.move(iJ, 0);
-					break;
-				} // if
-			} // for
-			qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
-			break;
-		} // if
-	} // for
+	iColumnName = GetNativeColumnIndex(qsNAME, iIndex);
+	if (iColumnName != -1) {
+		ssSort.iSortedColumn = iColumnName;
+		ssSort.soSortOrder = Qt::AscendingOrder;
+		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		for (iI = 0; iI < qlDirectories.count(); iI++) {
+			if (qlDirectories.at(iI)->text(ssSort.iSortedColumn) == "..") {
+				qlDirectories.move(iI, 0);
+				break;
+			} // if
+		} // for
+		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
+	} // if
 
 	// set sort informations for sorting functions
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
