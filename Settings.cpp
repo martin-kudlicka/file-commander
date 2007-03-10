@@ -12,6 +12,7 @@ const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
+const QString qsHEIGHT = "Height";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
@@ -19,6 +20,7 @@ const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsUNIT = "Unit";
 const QString qsWIDTH = "Width";
+const QString qsWINDOW_STATE = "WindowState";
 // settings file
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
@@ -29,6 +31,10 @@ const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // LeftPanel
 // LeftPanel/Tabs/
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
+// MainWindow/
+const QString qsMAIN_WINDOW = "MainWindow";
+// Others/
+const QString qsOTHERS__ = "Others/";
 // RightPanel
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
@@ -36,8 +42,6 @@ const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
-// Others/
-const QString qsOTHERS__ = "Others/";
 
 // create new empty column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet)
@@ -278,6 +282,20 @@ QString cSettings::GetValue(const eKey &ekKey)
 	return qsResult;
 } // GetValue
 
+// retrieve startup main window parameters
+cSettings::sMainWindowState cSettings::GetWindowState()
+{
+	sMainWindowState smwsState;
+
+	qsSettings.beginGroup(qsMAIN_WINDOW);
+	smwsState.iHeight = qsSettings.value(qsHEIGHT, 0).toInt();
+	smwsState.iWidth = qsSettings.value(qsWIDTH, 0).toInt();
+	smwsState.qsWindowState = qsSettings.value(qsWINDOW_STATE, qsNORMAL).toString();
+	qsSettings.endGroup();
+
+	return smwsState;
+} // GetWindowState
+
 // get tab list for left or right panel
 QStringList cSettings::GetTabs(const ePosition &epPosition)
 {
@@ -376,3 +394,15 @@ void cSettings::SetValue(const eKey &ekKey, const QString &qsValue)
 										break;
 	} // switch
 } // SetValue
+
+// set startup main window state
+void cSettings::SetWindowState(const sMainWindowState &smwsState)
+{
+	qsSettings.beginGroup(qsMAIN_WINDOW);
+	if (smwsState.qsWindowState == qsNORMAL) {
+		qsSettings.setValue(qsHEIGHT, smwsState.iHeight);
+		qsSettings.setValue(qsWIDTH, smwsState.iWidth);
+	} // if
+	qsSettings.setValue(qsWINDOW_STATE, smwsState.qsWindowState);
+	qsSettings.endGroup();
+} // SetWindowState

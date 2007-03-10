@@ -12,13 +12,16 @@ const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
 const QString qsFALSE = "false";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
+const QString qsFULL_SCREEN = "FullScreen";
 const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsKILOBYTES = "Kilobytes";
+const QString qsMAXIMIZED = "Maximized";
 const QString qsMEGABYTES = "Megabytes";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
+const QString qsNORMAL = "Normal";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSIZE = "Size";
@@ -68,6 +71,12 @@ class cSettings : private QObject
 			QString qsPath;												///< path selected in tab
 			sSort ssSort;													///< sort information
 		};
+		/// main window state
+		struct sMainWindowState {
+			int iHeight;													///< height of main window
+			int iWidth;														///< width of main window
+			QString qsWindowState;										///< state of main window
+		};
 
 		void CreateColumnSet(const QString &qsColumnSet);		///< create new empty column set
 																				/**< \param qsColumnSet column set to create */
@@ -116,6 +125,8 @@ class cSettings : private QObject
 		QString GetValue(const eKey &ekKey);						///< find out value for specified key
 																				/**< \param ekKey key to find value for
 																					  \return value for the key */
+		sMainWindowState GetWindowState();							///< retrieve startup main window parameters
+																				/**< \return startup main window parameters */
 		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
 																				/**< \param qsColumnSet column set to remove */
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
@@ -137,6 +148,9 @@ class cSettings : private QObject
 																				///< set key - value pair
 																				/**< \param ekKey key
 																					  \param qsValue value */
+		void SetWindowState(const sMainWindowState &smwsState);
+																				///< set startup main window state
+																				/**< \param smwsState window state information */
 
 	private:
 		QSettings qsSettings;											///< application's settings

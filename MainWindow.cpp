@@ -65,6 +65,7 @@ void cMainWindow::ActualizeDrives()
 // create of main window
 cMainWindow::cMainWindow()
 {
+	cSettings::sMainWindowState smwsState;
 	QVBoxLayout *qvblTabBar;
 
 	// load plugins
@@ -73,6 +74,18 @@ cMainWindow::cMainWindow()
 
 	// setup GUI
 	setupUi(this);
+	// main window parameters
+	smwsState = csSettings.GetWindowState();
+	if (smwsState.iHeight != 0) {
+		setGeometry(geometry().x(), geometry().y(), smwsState.iWidth, smwsState.iHeight);
+	} // if
+	if (smwsState.qsWindowState == qsMAXIMIZED) {
+		setWindowState(Qt::WindowMaximized);
+	} else {
+		if (smwsState.qsWindowState == qsFULL_SCREEN) {
+			setWindowState(Qt::WindowFullScreen);
+		} // if
+	} // if else
 	// add left tab
 	qvblTabBar = static_cast<QVBoxLayout *>(qswLeft->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbLeft);
@@ -200,6 +213,27 @@ void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 
 	codOptions.exec();
 } // on_qaOptions_triggered
+
+// save position is selected
+void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
+{
+	cSettings::sMainWindowState smwsState;
+
+	smwsState.iHeight = height();
+	smwsState.iWidth = width();
+
+	if (!windowState()) {
+		smwsState.qsWindowState = qsNORMAL;
+	} else {
+		if (windowState() & Qt::WindowMaximized) {
+			smwsState.qsWindowState = qsMAXIMIZED;
+		} else {
+			smwsState.qsWindowState = qsFULL_SCREEN;
+		} // if else
+	} // if else
+
+	csSettings.SetWindowState(smwsState);
+} // on_qaSavePosition_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
