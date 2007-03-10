@@ -1,4 +1,4 @@
-/// \file Total Commander content plugin's interface
+/// \file Total Commander content's plugin interface
 #ifndef CONT_PLUG_H
 #define CONT_PLUG_H
 

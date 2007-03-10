@@ -1,4 +1,4 @@
-#include "Content.h"
+#include "Plugins/Content.h"
 
 #include <QLibrary>
 #include <QStringList>
@@ -99,7 +99,6 @@ void cContent::Load()
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
 		if (qlPlugins.at(iI).bEnabled) {
 			int iField;
-			QFileInfo qfiFile;
 			QLibrary qlLibrary;
 			sPluginInfo spiPluginInfo;
 			tContentGetSupportedField tcgsfContentGetSupportedField;
@@ -148,8 +147,7 @@ void cContent::Load()
 				iField++;
 			} // while
 			// add new plugin
-			qfiFile.setFile(qlPlugins.at(iI).qsName);
-			qhPlugins.insert(qfiFile.fileName(), spiPluginInfo);
+			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);
 		} // if
 	} // for
 } // Load
