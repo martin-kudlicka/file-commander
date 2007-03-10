@@ -42,6 +42,7 @@ const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
+const QString qsPLUGINS__LISTER = "Plugins/Lister";
 
 // create new empty column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet)
@@ -212,6 +213,7 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 		// TODO GetPlugins - other plugin types
 		case ContentPlugins:	qsSettings.beginGroup(qsPLUGINS__CONTENT);
 									break;
+		case ListerPlugins:	qsSettings.beginGroup(qsPLUGINS__LISTER);
 	} // switch
 	qslPlugins = qsSettings.childKeys();
 
@@ -351,6 +353,7 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 		// TODO GetPlugins - other plugin types
 		case ContentPlugins:	qsSettings.beginGroup(qsPLUGINS__CONTENT);
 									break;
+		case ListerPlugins:	qsSettings.beginGroup(qsPLUGINS__LISTER);
 	} // switch
 
 	qsSettings.remove("");

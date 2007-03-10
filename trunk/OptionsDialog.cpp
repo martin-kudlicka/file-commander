@@ -11,6 +11,7 @@ const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
 const QString qsCONFIRMATION = QT_TR_NOOP("Confirmation");
 const QString qsCONTENT = QT_TR_NOOP("Content");
 const QString qsDISPLAY = QT_TR_NOOP("Display");
+const QString qsLISTER = QT_TR_NOOP("Lister");
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsOTHERS = QT_TR_NOOP("Others");
@@ -98,6 +99,8 @@ void cOptionsDialog::CreateChoices()
 	qtwiChoice->setText(0, qsPLUGINS);
 	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
 	qtwiSubChoice->setText(0, qsCONTENT);
+	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
+	qtwiSubChoice->setText(0, qsLISTER);
 
 	// others
 	qtwiChoice = new QTreeWidgetItem(qtwChoices);
@@ -201,6 +204,7 @@ void cOptionsDialog::FillOptions()
 	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
+	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
 
 	// others
 	qsValue = csSettings->GetFileOverwrite();
@@ -251,6 +255,28 @@ cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
 
 	return scColumn;
 } // GetColumnInfo
+
+// get info about specified plugins
+QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins)
+{
+	int iI;
+	QList<cSettings::sPlugin> qlPlugins;
+
+	for (iI = 0; iI < qtwPlugins->topLevelItemCount(); iI++) {
+		cSettings::sPlugin spPlugin;
+
+		spPlugin.qsName = qtwPlugins->topLevelItem(iI)->text(iPLUGIN_NAME_COLUMN);
+		if (qtwPlugins->topLevelItem(iI)->checkState(iPLUGIN_ENABLED_COLUMN) == Qt::Checked) {
+			spPlugin.bEnabled = true;
+		} else {
+			spPlugin.bEnabled = false;
+		} // if else
+
+		qlPlugins.append(spPlugin);
+	} // for
+
+	return qlPlugins;
+} // GetPluginList
 
 // column set changed
 void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
@@ -348,6 +374,22 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 	} // if
 } // on_qpbAddContentPlugin_clicked
 
+// add button is clicked on in lister plugins
+void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
+{
+	QString qsFile;
+
+	qsFile = QFileDialog::getOpenFileName(this, tr("Select lister plugin"), "/", "*.wlx");
+
+	if (qsFile != "") {
+		cSettings::sPlugin spPlugin;
+
+		spPlugin.qsName = qsFile;
+		spPlugin.bEnabled = true;
+		AddPluginIntoTree(spPlugin, qtwListerPlugins);
+	} // if
+} // on_qpbAddListerPlugin_clicked
+
 // column down button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 {
@@ -408,6 +450,12 @@ void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 	delete qtwContentPlugins->selectedItems().at(0);
 } // on_qpbRemoveContentPlugin_clicked
 
+// remove lister plugin button is clicked on
+void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
+{
+	delete qtwListerPlugins->selectedItems().at(0);
+} // on_qpbRemoveListerPlugin_clicked
+
 // choice change
 void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
@@ -428,13 +476,17 @@ void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, 
 					if (current->text(0) == qsCONTENT) {
 						qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
 					} else {
-						// others
-						if (current->text(0) == qsOTHERS) {
-							qswChoices->setCurrentIndex(iOTHERS_PAGE);
+						if (current->text(0) == qsLISTER) {
+							qswChoices->setCurrentIndex(iLISTER_PLUGINS_PAGE);
 						} else {
-							if (current->text(0) == qsCONFIRMATION) {
-								qswChoices->setCurrentIndex(iCONFIRMATION_PAGE);
-							} // if
+							// others
+							if (current->text(0) == qsOTHERS) {
+								qswChoices->setCurrentIndex(iOTHERS_PAGE);
+							} else {
+								if (current->text(0) == qsCONFIRMATION) {
+									qswChoices->setCurrentIndex(iCONFIRMATION_PAGE);
+								} // if
+							} // if else
 						} // if else
 					} // if else
 				} // if else
@@ -551,6 +603,16 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 	} // if else
 } // on_qtwContentPlugins_itemSelectionChanged
 
+// selected lister plugin changed
+void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
+{
+	if (qtwListerPlugins->selectedItems().count() > 0) {
+		qpbRemoveListerPlugin->setEnabled(true);
+	} else {
+		qpbRemoveListerPlugin->setEnabled(false);
+	} // if else
+} // on_qtwListerPlugins_itemSelectionChanged
+
 // save specific changes into settings file
 void cOptionsDialog::SaveOption(const eOption &eoType)
 {
@@ -573,8 +635,6 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 // save changes into application's settings file
 void cOptionsDialog::SaveOptions()
 {
-	int iI;
-	QList<cSettings::sPlugin> qlPlugins;
 	QString qsValue;
 
 	// panels
@@ -609,19 +669,9 @@ void cOptionsDialog::SaveOptions()
 	// plugins
 	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	// content
-	for (iI = 0; iI < qtwContentPlugins->topLevelItemCount(); iI++) {
-		cSettings::sPlugin spPlugin;
-
-		spPlugin.qsName = qtwContentPlugins->topLevelItem(iI)->text(iPLUGIN_NAME_COLUMN);
-		if (qtwContentPlugins->topLevelItem(iI)->checkState(iPLUGIN_ENABLED_COLUMN) == Qt::Checked) {
-			spPlugin.bEnabled = true;
-		} else {
-			spPlugin.bEnabled = false;
-		} // if else
-
-		qlPlugins.append(spPlugin);
-	} // for
-	csSettings->SetPlugins(cSettings::ContentPlugins, qlPlugins);
+	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
+	// lister
+	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
 
 	// others
 	if (qrbOverwriteAsk->isChecked()) {

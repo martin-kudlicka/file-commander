@@ -39,7 +39,8 @@ class cSettings : private QObject
 		};
 		/// plugin type
 		enum ePlugin {
-			ContentPlugins													///< content plugin type
+			ContentPlugins,												///< content plugin type
+			ListerPlugins													///< lister plugin type
 		};
 		/// choose of panel
 		enum ePosition {
