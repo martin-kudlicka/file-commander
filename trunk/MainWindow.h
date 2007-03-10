@@ -84,6 +84,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qpbRightUpDir_clicked(bool checked = false);
 																			///< right up dir button is clicked on
 																			/**< \param checked true if button is checkable and checked */
+		void on_qpbView_clicked(bool checked = false);		///< view button is clicked on
+																			/**< \param checked true if button is checkable and checked */
 		void on_qsFullScreen_activated();						///< full screen mode switched
 		void on_qsLeftDrive_activated();							///< left drive shortcut activated
 		void on_qsRightDrive_activated();						///< right drive shortcut activated

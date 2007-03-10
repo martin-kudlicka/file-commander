@@ -4,6 +4,7 @@ FORMS = MainWindow.ui \
 		  OptionsDialog.ui \
 		  Options/NewColumnSetDialog.ui \
 		  NewDirectoryDialog.ui \
+		  ListerMainWindow.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
@@ -17,6 +18,7 @@ HEADERS = MainWindow.h \
 		    OptionsDialog.h \
 		    Options/NewColumnSetDialog.h \
 			 NewDirectoryDialog.h \
+			 ListerMainWindow.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
@@ -42,6 +44,7 @@ HEADERS = MainWindow.h \
 			 Plugins/Content.h \
 			 Plugins/ContentDelayed.h \
 			 Plugins/ContPlug.h \
+			 Plugins/Lister.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h
 win32 {
@@ -52,6 +55,7 @@ SOURCES = FileCommander.cpp \
 			 OptionsDialog.cpp \
 			 Options/NewColumnSetDialog.cpp \
 			 NewDirectoryDialog.cpp \
+			 ListerMainWindow.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \
@@ -76,6 +80,7 @@ SOURCES = FileCommander.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \
 			 Plugins/ContentDelayed.cpp \
+			 Plugins/Lister.cpp \
 			 Common/System.cpp
 win32 {
 	 SOURCES += Panel/Win32/ShellContextMenu.cpp

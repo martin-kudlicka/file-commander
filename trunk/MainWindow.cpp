@@ -4,6 +4,7 @@
 #include "FileOperation/FileRoutine.h"
 #include "NewDirectoryDialog.h"
 #include "OptionsDialog.h"
+#include "ListerMainWindow.h"
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -285,6 +286,27 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 {
 	cpRight->GoToUpDir();
 } // on_qpbRightUpDir_clicked
+
+// view button is clicked on
+void cMainWindow::on_qpbView_clicked(bool checked /* false */)
+{
+	cPanel *cSource;
+	int iI;
+	QFileInfoList qfilFiles;
+
+	SetSourceAndDestinationPanel(&cSource);
+	qfilFiles = cSource->GetSelectedItemsList();
+
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		if (qfilFiles.at(iI).isFile()) {
+			cListerMainWindow *clmwLister;
+
+			clmwLister = new cListerMainWindow(&csSettings, cpPlugins->clLister, qfilFiles.at(iI).filePath());
+
+			clmwLister->show();
+		} // if
+	} // for
+} // on_qpbView_clicked
 
 // full screen mode switched
 void cMainWindow::on_qsFullScreen_activated()
