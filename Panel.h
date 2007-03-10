@@ -95,6 +95,11 @@ class cPanel : private QObject
 
 		void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
+		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
+																			///< find index of native column
+																			/**< \param qsColumn native column name
+																				  \param iTabIndex tab index
+																				  \return index of native column */
 		QStringList GetSelectedItemsStringList();				///< get selected files and directories from current dir view
 																			/**< \return names of selected items in string list */
 		QString GetSizeString(const qint64 &qi64Size);		///< "convert" size to string according to setting in options
@@ -130,6 +135,9 @@ class cPanel : private QObject
 		void on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree);
 																			///< changed selected items in directory view
 																			/**< \param ctwTree changed directory view */
+		void on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem);
+																			///< space pressed in dir view
+																			/**< \param qtwiItem item space pressed on */
 		void on_qcbDrive_activated(int index);					///< drive selected
 																			/**< \param index index of selected drive */
 		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes
