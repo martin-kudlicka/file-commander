@@ -42,7 +42,9 @@ class cPanel : private QObject
 																				  \param qmDrives information about system drives */
 		~cPanel();														///< destructor
 
-		void AddTab(const cSettings::sTabInfo &stiTabInfo);	///< add new tab with dir view
+		void AddTab(const cSettings::sTabInfo &stiTabInfo);
+																			///< add new tab with dir view
+		void EditFile();												///< edit selected file in editor
 		static sObjects GetCount(const QFileInfoList &qfilObjects);
 																			///< count objects
 																			/**< \param qfilObjects objects to count
