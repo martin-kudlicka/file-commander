@@ -57,6 +57,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private slots:
 		void on_qaOptions_triggered(bool checked = false);	///< options are selected
 																			/**< \param checked true if menu item is checkable and checked */
+		void on_qaSavePosition_triggered(bool checked = false);
+																			///< save position is selected
+																			/**< \param checked true if menu item is checkable and checked */
 		void on_qpbCopy_clicked(bool checked = false);		///< copy button is clicked on
 																			/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);	///< delete button is clicked on
