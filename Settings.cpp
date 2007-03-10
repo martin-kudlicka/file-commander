@@ -6,12 +6,14 @@
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsASCENDING = "ascending";
+const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsDESCENDING = "descending";
 const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
+const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsHEIGHT = "Height";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
@@ -21,6 +23,7 @@ const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsUNIT = "Unit";
 const QString qsWIDTH = "Width";
 const QString qsWINDOW_STATE = "WindowState";
+const QString qsWRAP_TEXT = "WrapText";
 // settings file
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
@@ -39,6 +42,7 @@ const QString qsOTHERS__ = "Others/";
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 // Plugins
+const QString qsPLUGINS__LISTER__SETTINGS = "Plugins/Lister/Settings";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
@@ -202,6 +206,20 @@ QString cSettings::GetFileSizeIn()
 	return qsSettings.value(qsDISPLAY__FILE_SIZE_IN, qsDYNAMIC).toString();
 } // GetFileSizeIn
 
+// lister settings
+cSettings::sLister cSettings::GetListerSettings()
+{
+	sLister slLister;
+
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
+	slLister.qsCharSet = qsSettings.value(qsCHAR_SET, qsANSI).toString();
+	slLister.qsWrapText = qsSettings.value(qsWRAP_TEXT, qsTRUE).toString();
+	slLister.qsFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW, qsTRUE).toString();
+	qsSettings.endGroup();
+
+	return slLister;
+} // GetListerSettings
+
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 {
@@ -343,6 +361,16 @@ void cSettings::SetFileSizeIn(const QString &qsSize)
 {
 	qsSettings.setValue(qsDISPLAY__FILE_SIZE_IN, qsSize);
 } // SetFileSizeIn
+
+// set default lister settings
+void cSettings::SetListerSettings(const sLister &slLister)
+{
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
+	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
+	qsSettings.setValue(qsWRAP_TEXT, slLister.qsWrapText);
+	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.qsFitImageToWindow);
+	qsSettings.endGroup();
+} // SetListerSettings
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)

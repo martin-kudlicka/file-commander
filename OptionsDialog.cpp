@@ -158,6 +158,7 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 // fill options with set settings
 void cOptionsDialog::FillOptions()
 {
+	cSettings::sLister slLister;
 	QString qsValue;
 	QStringList qslHeader;
 
@@ -202,6 +203,22 @@ void cOptionsDialog::FillOptions()
 
 	// plugins
 	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
+	slLister = csSettings->GetListerSettings();
+	if (slLister.qsCharSet == qsANSI) {
+		qrbListerANSI->setChecked(true);
+	} else {
+		if (slLister.qsCharSet == qsASCII) {
+			qrbListerASCII->setChecked(true);
+		} else {
+			qrbListerVariableCharWidth->setChecked(true);
+		} // if else
+	} // if else
+	if (slLister.qsWrapText == qsTRUE) {
+		qcbListerWrapText->setChecked(true);
+	} // if
+	if (slLister.qsFitImageToWindow == qsTRUE) {
+		qcbListerFitImageToWindow->setChecked(true);
+	} // if
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
@@ -635,6 +652,7 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 // save changes into application's settings file
 void cOptionsDialog::SaveOptions()
 {
+	cSettings::sLister slLister;
 	QString qsValue;
 
 	// panels
@@ -667,11 +685,32 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetFileSizeIn(qsValue);
 
 	// plugins
-	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	// content
 	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
 	// lister
 	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
+	// general
+	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
+	if (qrbListerANSI->isChecked()) {
+		slLister.qsCharSet = qsANSI;
+	} else {
+		if (qrbListerASCII->isChecked()) {
+			slLister.qsCharSet = qsASCII;
+		} else {
+			slLister.qsCharSet = qsVARIABLE_CHAR_WIDTH;
+		} // if else
+	} // if else
+	if (qcbListerWrapText->isChecked()) {
+		slLister.qsWrapText = qsTRUE;
+	} else {
+		slLister.qsWrapText = qsFALSE;
+	} // if else
+	if (qcbListerFitImageToWindow->isChecked()) {
+		slLister.qsFitImageToWindow = qsTRUE;
+	} else {
+		slLister.qsFitImageToWindow = qsFALSE;
+	} // if else
+	csSettings->SetListerSettings(slLister);
 
 	// others
 	if (qrbOverwriteAsk->isChecked()) {

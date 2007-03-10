@@ -9,6 +9,12 @@ cLister::cLister(cSettings *csSettings)
 	this->csSettings = csSettings;
 } // cLister
 
+// retrieve lister plugin info
+QHash<QString, cLister::sPluginInfo> cLister::GetPluginsInfo()
+{
+	return qhPlugins;
+} // GetPluginsInfo
+
 // loads lister plugins
 void cLister::Load()
 {
@@ -30,6 +36,7 @@ void cLister::Load()
 
 			// fill plugin properties
 			spiPluginInfo.tllListLoad = (tListLoad)qlLibrary.resolve("ListLoad");
+			spiPluginInfo.tlcwListCloseWindow = (tListCloseWindow)qlLibrary.resolve("ListCloseWindow");
 
 			// add new plugin
 			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);

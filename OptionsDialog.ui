@@ -43,6 +43,16 @@
    <property name="frameShadow" >
     <enum>QFrame::Raised</enum>
    </property>
+   <widget class="QTreeWidget" name="qtwChoices" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>120</width>
+      <height>181</height>
+     </rect>
+    </property>
+   </widget>
    <widget class="QStackedWidget" name="qswChoices" >
     <property name="geometry" >
      <rect>
@@ -53,7 +63,7 @@
      </rect>
     </property>
     <property name="currentIndex" >
-     <number>5</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="page_4" />
     <widget class="QWidget" name="page_5" >
@@ -343,6 +353,84 @@
        </property>
       </widget>
      </widget>
+     <widget class="QGroupBox" name="groupBox_6" >
+      <property name="geometry" >
+       <rect>
+        <x>160</x>
+        <y>10</y>
+        <width>161</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="title" >
+       <string>Lister</string>
+      </property>
+      <widget class="QRadioButton" name="qrbListerANSI" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>141</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>ANSI (Windows char set)</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="qcbListerFitImageToWindow" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>110</y>
+         <width>121</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Fit image to window</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbListerVariableCharWidth" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>111</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Variable char width</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="qcbListerWrapText" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>81</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Wrap text</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbListerASCII" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>131</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>ASCII (DOS char set)</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
     <widget class="QWidget" name="page" >
      <widget class="QTreeWidget" name="qtwContentPlugins" >
@@ -552,16 +640,6 @@
       </widget>
      </widget>
     </widget>
-   </widget>
-   <widget class="QTreeWidget" name="qtwChoices" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>120</width>
-      <height>181</height>
-     </rect>
-    </property>
    </widget>
   </widget>
  </widget>

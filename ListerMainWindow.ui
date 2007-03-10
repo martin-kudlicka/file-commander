@@ -12,7 +12,16 @@
   <property name="windowTitle" >
    <string>Lister</string>
   </property>
-  <widget class="QWidget" name="centralwidget" />
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
@@ -38,8 +47,6 @@
     </property>
     <addaction name="actionOpen" />
     <addaction name="actionSave_as" />
-    <addaction name="actionNext_file" />
-    <addaction name="actionPrevious_file" />
     <addaction name="actionPrint_2" />
     <addaction name="actionPrint_setup_2" />
     <addaction name="separator" />
@@ -49,16 +56,22 @@
     <property name="title" >
      <string>Options</string>
     </property>
-    <addaction name="actionText" />
-    <addaction name="actionBinary" />
-    <addaction name="actionHex" />
-    <addaction name="actionMultimedia" />
+    <addaction name="qaText" />
+    <addaction name="qaBinary" />
+    <addaction name="qaHex" />
+    <addaction name="qaMultimedia" />
+    <addaction name="separator" />
+    <addaction name="qaANSI" />
+    <addaction name="qaASCII" />
+    <addaction name="qaVariableCharWidth" />
+    <addaction name="separator" />
+    <addaction name="qaWrapText" />
+    <addaction name="qaFitImageToWindow" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuOptions" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
   <action name="actionOpen" >
    <property name="text" >
     <string>Open</string>
@@ -154,7 +167,10 @@
     <string>F3</string>
    </property>
   </action>
-  <action name="actionText" >
+  <action name="qaText" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Text</string>
    </property>
@@ -162,7 +178,10 @@
     <string>1</string>
    </property>
   </action>
-  <action name="actionBinary" >
+  <action name="qaBinary" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Binary</string>
    </property>
@@ -170,7 +189,10 @@
     <string>2</string>
    </property>
   </action>
-  <action name="actionHex" >
+  <action name="qaHex" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Hex</string>
    </property>
@@ -178,12 +200,73 @@
     <string>3</string>
    </property>
   </action>
-  <action name="actionMultimedia" >
+  <action name="qaMultimedia" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Multimedia</string>
    </property>
    <property name="shortcut" >
     <string>4</string>
+   </property>
+  </action>
+  <action name="qaANSI" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>ANSI (Windows char set)</string>
+   </property>
+   <property name="shortcut" >
+    <string>A</string>
+   </property>
+  </action>
+  <action name="qaASCII" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>ASCII (DOS char set)</string>
+   </property>
+   <property name="shortcut" >
+    <string>S</string>
+   </property>
+  </action>
+  <action name="qaVariableCharWidth" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Variable char width</string>
+   </property>
+   <property name="shortcut" >
+    <string>V</string>
+   </property>
+  </action>
+  <action name="qaWrapText" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Wrap text</string>
+   </property>
+   <property name="shortcut" >
+    <string>W</string>
+   </property>
+  </action>
+  <action name="qaFitImageToWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Fit image to window</string>
+   </property>
+   <property name="shortcut" >
+    <string>F</string>
    </property>
   </action>
  </widget>
