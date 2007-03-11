@@ -39,6 +39,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param bNextPlugin move onto next plugin or not
 																											  \param bForceShow force usage of plugin on file
 																											  \return true if suitable plugin found */
+		int GetSendCommandParameters();														///< parameters for plugin
+																										/**< \return parameters for plugin */
 		void resizeEvent(QResizeEvent *event);												///< resize of lister window occurs
 																										/**< \param event resize parameters */
 		void ShowContent(const bool &bNextPlugin = false, const bool &bForceShow = false);
@@ -53,9 +55,15 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaBinary_triggered(bool checked = false);								///< binary mode selected
 																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaCopyAsText_triggered(bool checked = false);							///< copy as text selected
+																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaFitImageToWindow_triggered(bool checked = false);					///< fit image to window selected
+																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaHex_triggered(bool checked = false);									///< hex mode selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaMultimedia_triggered(bool checked = false);							///< multimedia mode selected
+																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaSelectAll_triggered(bool checked = false);							///< select all selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaText_triggered(bool checked = false);									///< text mode selected
 																										/**< \param checked true if menu item is checkable and checked */

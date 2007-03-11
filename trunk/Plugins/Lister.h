@@ -18,6 +18,12 @@ class cLister
 																							  \param cFileToLoad file content to show
 																							  \param iShowFlags lister's flags
 																							  \return plugin's window handle */
+		typedef int (__stdcall *tListSendCommand)(HWND hwListWin, int iCommand, int iParameter);
+																						///< send command to lister plugin
+																						/**< \param hwListWin plugin's window
+																							  \param iCommand command to send
+																							  \param iParameter command's parameter
+																							  \return error or ok */
 		typedef void (__stdcall *tListSetDefaultParams)(ListDefaultParamStruct* ldpsParams);
 																						///< set default parameters for plugin
 																						/**< \param ldpsParams default parameters */ 
@@ -26,6 +32,7 @@ class cLister
 		struct sPluginInfo {
 			tListCloseWindow tlcwListCloseWindow;							///< ListCloseWindow function
 			tListLoad tllListLoad;												///< ListLoad function
+			tListSendCommand ttlscListSendCommand;							///< ListSendCommand function
 			tListSetDefaultParams tlsdpListSetDefaultParams;			///< ListSetDefaultParams function
 		};
 
