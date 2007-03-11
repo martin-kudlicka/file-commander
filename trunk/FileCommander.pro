@@ -5,6 +5,7 @@ FORMS = MainWindow.ui \
 		  Options/NewColumnSetDialog.ui \
 		  NewDirectoryDialog.ui \
 		  ListerMainWindow.ui \
+		  ListerMainWindow/FindDialog.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
@@ -19,6 +20,7 @@ HEADERS = MainWindow.h \
 		    Options/NewColumnSetDialog.h \
 			 NewDirectoryDialog.h \
 			 ListerMainWindow.h \
+			 ListerMainWindow/FindDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
@@ -56,6 +58,7 @@ SOURCES = FileCommander.cpp \
 			 Options/NewColumnSetDialog.cpp \
 			 NewDirectoryDialog.cpp \
 			 ListerMainWindow.cpp \
+			 ListerMainWindow/FindDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \

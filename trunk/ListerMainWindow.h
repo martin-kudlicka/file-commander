@@ -57,6 +57,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaCopyAsText_triggered(bool checked = false);							///< copy as text selected
 																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaFind_triggered(bool checked = false);									///< find selected
+																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaFitImageToWindow_triggered(bool checked = false);					///< fit image to window selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaHex_triggered(bool checked = false);									///< hex mode selected

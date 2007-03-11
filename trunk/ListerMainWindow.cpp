@@ -2,6 +2,7 @@
 
 #include <QFileInfo>
 #include <QTextCodec>
+#include "ListerMainWindow/FindDialog.h"
 
 // destructor
 cListerMainWindow::~cListerMainWindow()
@@ -169,8 +170,8 @@ void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
 	} // if else
 
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 		} // if
 	} // if
 } // on_qaANSI_triggered
@@ -186,8 +187,8 @@ void cListerMainWindow::on_qaASCII_triggered(bool checked /* false */)
 	} // if else
 
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 		} // if
 	} // if
 } // on_qaASCII_triggered
@@ -207,18 +208,63 @@ void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
 {
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_copy, 0);
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_copy, 0);
 		} // if
 	} // if
 } // on_qaCopyAsText_triggered
+
+// find selected
+void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
+{
+	bool bPlugin;
+	cFindDialog *cfdFind;
+
+	if (qteContent) {
+		// native
+		bPlugin = false;
+	} else {
+		// plugin
+		if (!qhiPlugins->value().tlstListSearchText) {
+			// plugin doesn't support searching
+			return;
+		} else {
+			bPlugin = true;
+		} // if else
+	} // if else
+
+	cfdFind = new cFindDialog(this, bPlugin);
+	if (cfdFind->exec() == QDialog::Accepted) {
+		if (qteContent) {
+			// native
+			// TODO on_qaFind_triggered native
+		} else {
+			// plugin
+			int iFlags;
+
+			iFlags = lcs_findfirst;
+			if (cfdFind->qcbCaseSensitive->isChecked()) {
+				iFlags |= lcs_matchcase;
+			} // if
+			if (cfdFind->qcbWholeWords->isChecked()) {
+				iFlags |= lcs_wholewords;
+			} // if
+			if (cfdFind->qcbSearchBackwards->isChecked()) {
+				iFlags |= lcs_backwards;
+			} // if
+			qhiPlugins->value().tlstListSearchText(hwPlugin, cfdFind->qcbFind->currentText().toLatin1().data(), iFlags);
+		} // if else
+	} // if
+
+	cfdFind->deleteLater();
+} // on_qaFind_triggered
 
 // fit image to window selected
 void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */)
 {
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 		} // if
 	} // if
 } // on_qaFitImageToWindow_triggered
@@ -255,8 +301,8 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 {
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_selectall, 0);
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_selectall, 0);
 		} // if
 	} // if
 } // on_qaSelectAll_triggered
@@ -283,8 +329,8 @@ void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false *
 	} // if else
 
 	if (hwPlugin) {
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 		} // if
 	} // if
 } // on_qaVariableCharWidth_triggered
@@ -311,8 +357,8 @@ void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 		} // if else
 	} else {
 		// plugin
-		if (qhiPlugins->value().ttlscListSendCommand) {
-			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 		} // if
 	} // if else
 } // on_qaWrapText_triggered
@@ -355,8 +401,8 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 			} // if else
 		} else {
 			// send default parameters to plugin
-			if (qhiPlugins->value().ttlscListSendCommand) {
-				qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+			if (qhiPlugins->value().tlscListSendCommand) {
+				qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 			} // if
 		} // if else
 		return;
