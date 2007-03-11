@@ -18,11 +18,15 @@ class cLister
 																							  \param cFileToLoad file content to show
 																							  \param iShowFlags lister's flags
 																							  \return plugin's window handle */
+		typedef void (__stdcall *tListSetDefaultParams)(ListDefaultParamStruct* ldpsParams);
+																						///< set default parameters for plugin
+																						/**< \param ldpsParams default parameters */ 
 
 		/// plugin info
 		struct sPluginInfo {
 			tListCloseWindow tlcwListCloseWindow;							///< ListCloseWindow function
 			tListLoad tllListLoad;												///< ListLoad function
+			tListSetDefaultParams tlsdpListSetDefaultParams;			///< ListSetDefaultParams function
 		};
 
 		cLister(cSettings *csSettings);										///< constructor

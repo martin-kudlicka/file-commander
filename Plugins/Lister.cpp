@@ -2,6 +2,10 @@
 
 #include <QLibrary>
 #include <QFileInfo>
+#include <QDir>
+
+const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
+const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 3;
 
 // constructor
 cLister::cLister(cSettings *csSettings)
@@ -37,6 +41,20 @@ void cLister::Load()
 			// fill plugin properties
 			spiPluginInfo.tllListLoad = (tListLoad)qlLibrary.resolve("ListLoad");
 			spiPluginInfo.tlcwListCloseWindow = (tListCloseWindow)qlLibrary.resolve("ListCloseWindow");
+			spiPluginInfo.tlsdpListSetDefaultParams = (tListSetDefaultParams)qlLibrary.resolve("ListSetDefaultParams");
+
+			// set default parameters
+			if (spiPluginInfo.tlsdpListSetDefaultParams) {
+				ListDefaultParamStruct ldpsParams;
+				QString qsIniFile;
+
+				qsIniFile = QFileInfo(qlPlugins.at(iI).qsName).path() + '/' + QFileInfo(qlPlugins.at(iI).qsName).completeBaseName() + ".ini";
+				ldpsParams.PluginInterfaceVersionLow = dwPLUGIN_INTERFACE_VERSION_LOW;
+				ldpsParams.PluginInterfaceVersionHi = dwPLUGIN_INTERFACE_VERSION_HI;
+				strcpy(ldpsParams.DefaultIniName, QDir::toNativeSeparators(qsIniFile).toAscii().constData());
+
+				spiPluginInfo.tlsdpListSetDefaultParams(&ldpsParams);
+			} // if
 
 			// add new plugin
 			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);

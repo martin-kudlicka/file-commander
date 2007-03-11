@@ -1,6 +1,7 @@
 #include "ListerMainWindow.h"
 
 #include <QFileInfo>
+#include <QTextCodec>
 
 // destructor
 cListerMainWindow::~cListerMainWindow()
@@ -10,6 +11,7 @@ cListerMainWindow::~cListerMainWindow()
 	} // if
 
 	delete qhiPlugins;
+	qteContent->deleteLater();
 
 	deleteLater();
 } // ~cListerMainWindow
@@ -29,6 +31,7 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 	qhPlugins = clLister->GetPluginsInfo();
 	qhiPlugins = new QHashIterator<QString, cLister::sPluginInfo>(qhPlugins);
 	hwPlugin = NULL;
+	qteContent = NULL;
 
 	// settings
 	slLister = csSettings->GetListerSettings();
@@ -65,6 +68,17 @@ void cListerMainWindow::ClosePlugin()
 		hwPlugin = NULL;
 	} // if
 } // ClosePlugin
+
+// create text edit control and set default parameters
+void cListerMainWindow::CreateTextEdit()
+{
+	qteContent = new QTextEdit(this);
+	resizeEvent(NULL);
+	qteContent->show();
+
+	qteContent->setReadOnly(true);
+	on_qaWrapText_triggered(qaWrapText->isChecked());
+} // CreateTextEdit
 
 // find next usable plugin for file
 bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow)
@@ -201,18 +215,55 @@ void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false *
 	} // if else
 } // on_qaVariableCharWidth_triggered
 
+// variable char width selected
+void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
+{
+	if (qteContent) {
+		// native
+		if (qaText->isChecked() || qaBinary->isChecked()) {
+			if (checked) {
+				qteContent->setLineWrapMode(QTextEdit::WidgetWidth);
+			} else {
+				qteContent->setLineWrapMode(QTextEdit::NoWrap);
+			} // if else
+			// TODO on_qaWrapText_triggered QTextOption::WrapAnywhere
+			/*if (qaText->isChecked()) {
+				qteContent->setWordWrapMode(QTextOption::WordWrap);
+			} else {
+				qteContent->setWordWrapMode(QTextOption::WrapAnywhere);
+			} // if else*/
+		} else {
+			// TODO on_qaWrapText_triggered Hex
+		} // if else
+	} else {
+		// plugin
+		// TODO on_qaWrapText_triggered plugin
+	} // if else
+} // on_qaWrapText_triggered
+
 // resize of lister window occurs
 void cListerMainWindow::resizeEvent(QResizeEvent *event)
 {
 #ifdef Q_WS_WIN
-	MoveWindow(hwPlugin, 0, 0, centralwidget->width(), centralwidget->height(), FALSE);
+	if (hwPlugin) {
+		MoveWindow(hwPlugin, 0, 0, centralwidget->width(), centralwidget->height(), FALSE);
+	} // if
 #endif
+	if (qteContent) {
+		qteContent->setGeometry(centralwidget->geometry());
+	} // if
 } // resizeEvent
 
 // show file content
 void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
 {
-	qteContent->deleteLater();
+	QByteArray qbaFile;
+	QFile qfFile;
+
+	if (qteContent) {
+		qteContent->deleteLater();
+		qteContent = NULL;
+	} // if
 	if (hwPlugin) {
 		ClosePlugin();
 	} // if
@@ -226,9 +277,21 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 			} else {
 				on_qaBinary_triggered();
 			} // if else
-			return;
 		} // if
+		return;
 	} // if
 
-	// TODO ShowContent other types
+	CreateTextEdit();
+	qfFile.setFileName(qsFile);
+	qfFile.open(QIODevice::ReadOnly);
+
+	// fill text edit
+	qbaFile = qfFile.readAll();
+	if (qaText->isChecked() || qaBinary->isChecked()) {
+		qteContent->setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
+	} else {
+		// TODO ShowContent Hex
+	} // if else
+
+	qfFile.close();
 } // ShowContent

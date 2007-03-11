@@ -51,7 +51,7 @@ QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &sc
 	// show
 	qtwiItem->setText(iSHOW_COLUMN, scColumn.qsName);
 	// width
-	qsbWidth = new QSpinBox();
+	qsbWidth = new QSpinBox(qtwColumns);
 	qsbWidth->setValue(scColumn.iWidth);
 	qtwColumns->setItemWidget(qtwiItem, iWIDTH_COLUMN, qsbWidth);
 	connect(qsbWidth, SIGNAL(valueChanged(int)), SLOT(on_qsbWidth_valueChanged(int)));
