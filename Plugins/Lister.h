@@ -18,6 +18,12 @@ class cLister
 																							  \param cFileToLoad file content to show
 																							  \param iShowFlags lister's flags
 																							  \return plugin's window handle */
+		typedef int (__stdcall *tListSearchText)(HWND hwListWin, char *cSearchString, int iSearchParameter);
+																						///< search text in plugin
+																						/**< \param hwListWin plugin's window
+																							  \param cSearchString string to be searched
+																							  \param iSearchParameter search flags
+																							  \return ok or error */
 		typedef int (__stdcall *tListSendCommand)(HWND hwListWin, int iCommand, int iParameter);
 																						///< send command to lister plugin
 																						/**< \param hwListWin plugin's window
@@ -32,7 +38,8 @@ class cLister
 		struct sPluginInfo {
 			tListCloseWindow tlcwListCloseWindow;							///< ListCloseWindow function
 			tListLoad tllListLoad;												///< ListLoad function
-			tListSendCommand ttlscListSendCommand;							///< ListSendCommand function
+			tListSearchText tlstListSearchText;								///< ListSearchText function
+			tListSendCommand tlscListSendCommand;							///< ListSendCommand function
 			tListSetDefaultParams tlsdpListSetDefaultParams;			///< ListSetDefaultParams function
 		};
 

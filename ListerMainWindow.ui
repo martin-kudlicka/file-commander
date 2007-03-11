@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>471</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -27,10 +27,20 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>471</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>Edit</string>
+    </property>
+    <addaction name="actionCopy_as_text" />
+    <addaction name="actionSelect_all" />
+    <addaction name="separator" />
+    <addaction name="qaFind" />
+    <addaction name="actionFind_next" />
+   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -57,16 +67,6 @@
     <addaction name="separator" />
     <addaction name="qaWrapText" />
     <addaction name="qaFitImageToWindow" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>Edit</string>
-    </property>
-    <addaction name="qaCopyAsText" />
-    <addaction name="qaSelectAll" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFind_next" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -129,7 +129,7 @@
     <string>Esc</string>
    </property>
   </action>
-  <action name="qaCopyAsText" >
+  <action name="actionCopy_as_text" >
    <property name="text" >
     <string>Copy as text</string>
    </property>
@@ -143,7 +143,7 @@
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="qaSelectAll" >
+  <action name="actionSelect_all" >
    <property name="text" >
     <string>Select all</string>
    </property>
@@ -151,7 +151,7 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionFind" >
+  <action name="qaFind" >
    <property name="text" >
     <string>Find...</string>
    </property>
