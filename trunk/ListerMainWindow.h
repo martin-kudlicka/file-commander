@@ -33,6 +33,7 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		void closeEvent(QCloseEvent *event);												///< lister window close
 																										/**< \param event close description */
 		void ClosePlugin();																		///< destroy of plugin's window
+		void CreateTextEdit();																	///< create text edit control and set default parameters
 		bool FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow);
 																										///< find next usable plugin for file
 																										/**< \param bNextPlugin move onto next plugin or not
@@ -59,6 +60,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		void on_qaText_triggered(bool checked = false);									///< text mode selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaVariableCharWidth_triggered(bool checked = false);				///< variable char width selected
+																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaWrapText_triggered(bool checked = false);							///< variable char width selected
 																										/**< \param checked true if menu item is checkable and checked */
 }; // cListerMainWindow
 
