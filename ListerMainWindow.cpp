@@ -132,6 +132,32 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 	return false;
 } // FindNextPlugin
 
+// parameters for plugin
+int cListerMainWindow::GetSendCommandParameters()
+{
+	int iParameters;
+
+	if (qaANSI->isChecked()) {
+		iParameters = lcp_ansi;
+	} else {
+		iParameters = 0;
+	} // if else
+	if (qaASCII->isChecked()) {
+		iParameters |= lcp_ascii;
+	} // if
+	if (qaVariableCharWidth->isChecked()) {
+		iParameters |= lcp_variable;
+	} // if
+	if (qaWrapText->isChecked()) {
+		iParameters |= lcp_wraptext;
+	} // if
+	if (qaFitImageToWindow->isChecked()) {
+		iParameters |= lcp_fittowindow;
+	} // if
+
+	return iParameters;
+} // GetSendCommandParameters
+
 // ANSI char set selected
 void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
 {
@@ -141,6 +167,12 @@ void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
 	} else {
 		qaANSI->setChecked(true);
 	} // if else
+
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
+	} // if
 } // on_qaANSI_triggered
 
 // ASCII char set selected
@@ -152,6 +184,12 @@ void cListerMainWindow::on_qaASCII_triggered(bool checked /* false */)
 	} else {
 		qaASCII->setChecked(true);
 	} // if else
+
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
+	} // if
 } // on_qaASCII_triggered
 
 // binary mode selected
@@ -164,6 +202,26 @@ void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 
 	ShowContent();
 } // on_qaBinary_triggered
+
+// copy as text selected
+void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
+{
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_copy, 0);
+		} // if
+	} // if
+} // on_qaCopyAsText_triggered
+
+// fit image to window selected
+void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */)
+{
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
+	} // if
+} // on_qaFitImageToWindow_triggered
 
 // hex mode selected
 void cListerMainWindow::on_qaHex_triggered(bool checked /* false */)
@@ -193,6 +251,16 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 	ShowContent(true, true);
 } // on_qaMultimedia_triggered
 
+// select all selected
+void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
+{
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_selectall, 0);
+		} // if
+	} // if
+} // on_qaSelectAll_triggered
+
 // text mode selected
 void cListerMainWindow::on_qaText_triggered(bool checked /* false */)
 {
@@ -213,6 +281,12 @@ void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false *
 	} else {
 		qaVariableCharWidth->setChecked(true);
 	} // if else
+
+	if (hwPlugin) {
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
+	} // if
 } // on_qaVariableCharWidth_triggered
 
 // variable char width selected
@@ -237,7 +311,9 @@ void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 		} // if else
 	} else {
 		// plugin
-		// TODO on_qaWrapText_triggered plugin
+		if (qhiPlugins->value().ttlscListSendCommand) {
+			qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
 	} // if else
 } // on_qaWrapText_triggered
 
@@ -277,7 +353,12 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 			} else {
 				on_qaBinary_triggered();
 			} // if else
-		} // if
+		} else {
+			// send default parameters to plugin
+			if (qhiPlugins->value().ttlscListSendCommand) {
+				qhiPlugins->value().ttlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+			} // if
+		} // if else
 		return;
 	} // if
 

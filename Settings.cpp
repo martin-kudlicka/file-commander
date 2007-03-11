@@ -214,7 +214,7 @@ cSettings::sLister cSettings::GetListerSettings()
 	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
 	slLister.qsCharSet = qsSettings.value(qsCHAR_SET, qsANSI).toString();
 	slLister.qsWrapText = qsSettings.value(qsWRAP_TEXT, qsTRUE).toString();
-	slLister.qsFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW, qsTRUE).toString();
+	slLister.qsFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW, qsFALSE).toString();
 	qsSettings.endGroup();
 
 	return slLister;
