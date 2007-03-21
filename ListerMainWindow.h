@@ -24,9 +24,11 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 	private:
 		cLister *clLister;																		///< lister plugin's class
 		cSettings *csSettings;																	///< application's main settings file
+		int iSearchFlags;																			///< last used flags for search
 		QHash<QString, cLister::sPluginInfo> qhPlugins;									///< table of plugins
 		QHashIterator<QString, cLister::sPluginInfo> *qhiPlugins;					///< currently used plugin
 		QString qsFile;																			///< file content to show
+		QString qsSearchedText;																	///< last searched text
 		QTextEdit *qteContent;																	///< file content in standard widget
 		WId hwPlugin;																				///< plugin's window
 
@@ -58,6 +60,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		void on_qaCopyAsText_triggered(bool checked = false);							///< copy as text selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaFind_triggered(bool checked = false);									///< find selected
+																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaFindNext_triggered(bool checked = false);							///< find next selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaFitImageToWindow_triggered(bool checked = false);					///< fit image to window selected
 																										/**< \param checked true if menu item is checkable and checked */

@@ -235,29 +235,52 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 
 	cfdFind = new cFindDialog(this, bPlugin);
 	if (cfdFind->exec() == QDialog::Accepted) {
+		qsSearchedText = cfdFind->qcbFind->currentText();
+
 		if (qteContent) {
 			// native
 			// TODO on_qaFind_triggered native
 		} else {
 			// plugin
-			int iFlags;
 
-			iFlags = lcs_findfirst;
+			iSearchFlags = lcs_findfirst;
 			if (cfdFind->qcbCaseSensitive->isChecked()) {
-				iFlags |= lcs_matchcase;
+				iSearchFlags |= lcs_matchcase;
 			} // if
 			if (cfdFind->qcbWholeWords->isChecked()) {
-				iFlags |= lcs_wholewords;
+				iSearchFlags |= lcs_wholewords;
 			} // if
 			if (cfdFind->qcbSearchBackwards->isChecked()) {
-				iFlags |= lcs_backwards;
+				iSearchFlags |= lcs_backwards;
 			} // if
-			qhiPlugins->value().tlstListSearchText(hwPlugin, cfdFind->qcbFind->currentText().toLatin1().data(), iFlags);
+			qhiPlugins->value().tlstListSearchText(hwPlugin, qsSearchedText.toLatin1().data(), iSearchFlags);
 		} // if else
 	} // if
 
 	cfdFind->deleteLater();
 } // on_qaFind_triggered
+
+// find next selected
+void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
+{
+	if (hwPlugin) {
+		if (!qhiPlugins->value().tlstListSearchText) {
+			// plugin doesn't support searching
+			return;
+		} // if
+	} // if
+
+	if (qteContent) {
+		// native
+		// TODO on_qaFindNext_triggered native
+	} else {
+		// plugin
+		if (iSearchFlags & lcs_findfirst) {
+			iSearchFlags ^= lcs_findfirst;
+		} // if
+		qhiPlugins->value().tlstListSearchText(hwPlugin, qsSearchedText.toLatin1().data(), iSearchFlags);
+	} // if else
+} // on_qaFindNext_triggered
 
 // fit image to window selected
 void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */)
