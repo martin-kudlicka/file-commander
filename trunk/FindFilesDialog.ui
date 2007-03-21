@@ -185,32 +185,6 @@
        <string>Regular expression</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="qcbSearchIn" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>50</y>
-        <width>181</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="editable" >
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="qpbDrives" >
-      <property name="geometry" >
-       <rect>
-        <x>260</x>
-        <y>50</y>
-        <width>81</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>&amp;Drives</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label" >
       <property name="geometry" >
        <rect>
@@ -254,6 +228,45 @@
       </property>
       <property name="editable" >
        <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="qcbSearchIn" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="editable" >
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbDrives" >
+      <property name="geometry" >
+       <rect>
+        <x>260</x>
+        <y>50</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>&amp;Drives</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbBrowse" >
+      <property name="geometry" >
+       <rect>
+        <x>180</x>
+        <y>50</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>&amp;Browse</string>
       </property>
      </widget>
     </widget>

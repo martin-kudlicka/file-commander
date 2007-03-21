@@ -378,7 +378,7 @@ void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
 {
 	QString qsFile;
 
-	qsFile = QFileDialog::getSaveFileName(this, tr("Uložit jako"), QFileInfo(this->qsFile).path());
+	qsFile = QFileDialog::getSaveFileName(this, tr("Save as"), QFileInfo(this->qsFile).path());
 	if (qsFile != "") {
 		QFile::remove(qsFile);
 		QFile::copy(this->qsFile, qsFile);
