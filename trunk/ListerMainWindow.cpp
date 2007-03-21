@@ -373,6 +373,18 @@ void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
 	qpsdPrint.exec();
 } // on_qaPrintSetup_triggered
 
+// save as selected
+void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
+{
+	QString qsFile;
+
+	qsFile = QFileDialog::getSaveFileName(this, tr("Uložit jako"), QFileInfo(this->qsFile).path());
+	if (qsFile != "") {
+		QFile::remove(qsFile);
+		QFile::copy(this->qsFile, qsFile);
+	} // if
+} // on_qaSaveAs_triggered
+
 // select all selected
 void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 {
