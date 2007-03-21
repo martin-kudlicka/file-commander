@@ -217,11 +217,15 @@ void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 // copy as text selected
 void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
 {
-	if (hwPlugin) {
+	if (qteContent) {
+		// native
+		qteContent->copy();
+	} else  {
+		// plugin
 		if (qhiPlugins->value().tlscListSendCommand) {
 			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_copy, 0);
 		} // if
-	} // if
+	} // if else
 } // on_qaCopyAsText_triggered
 
 // find selected
@@ -359,11 +363,15 @@ void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
 // select all selected
 void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 {
-	if (hwPlugin) {
+	if (qteContent) {
+		// native
+		qteContent->selectAll();
+	} else {
+		// plugin
 		if (qhiPlugins->value().tlscListSendCommand) {
 			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_selectall, 0);
 		} // if
-	} // if
+	} // if else
 } // on_qaSelectAll_triggered
 
 // text mode selected
