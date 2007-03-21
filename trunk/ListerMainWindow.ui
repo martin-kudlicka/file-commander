@@ -45,7 +45,7 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
-    <addaction name="actionOpen" />
+    <addaction name="qaOpen" />
     <addaction name="actionSave_as" />
     <addaction name="qaPrint" />
     <addaction name="qaPrintSetup" />
@@ -72,7 +72,7 @@
    <addaction name="menuEdit" />
    <addaction name="menuOptions" />
   </widget>
-  <action name="actionOpen" >
+  <action name="qaOpen" >
    <property name="text" >
     <string>Open</string>
    </property>

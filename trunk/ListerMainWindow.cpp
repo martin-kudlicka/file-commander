@@ -4,6 +4,7 @@
 #include <QTextCodec>
 #include "ListerMainWindow/FindDialog.h"
 #include <QPageSetupDialog>
+#include <QFileDialog>
 
 // destructor
 cListerMainWindow::~cListerMainWindow()
@@ -332,6 +333,18 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 
 	ShowContent(true, true);
 } // on_qaMultimedia_triggered
+
+// open selected
+void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
+{
+	QString qsFile;
+
+	qsFile = QFileDialog::getOpenFileName(this);
+	if (qsFile != "") {
+		this->qsFile = qsFile;
+		ShowContent();
+	} // if
+} // on_qaOpen_triggered
 
 // print selected
 void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
