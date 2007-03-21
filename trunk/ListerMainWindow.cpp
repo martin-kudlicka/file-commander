@@ -66,8 +66,13 @@ void cListerMainWindow::ClosePlugin()
 {
 	if (qhiPlugins->value().tlcwListCloseWindow) {
 		qhiPlugins->value().tlcwListCloseWindow(hwPlugin);
-		hwPlugin = NULL;
-	} // if
+	}
+#ifdef Q_WS_WIN
+	else {
+		DestroyWindow(hwPlugin);
+	} // if else
+#endif
+	hwPlugin = NULL;
 } // ClosePlugin
 
 // create text edit control and set default parameters
@@ -123,6 +128,7 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 			qhiPlugins->next();
 			hwPlugin = qhiPlugins->value().tllListLoad(centralwidget->winId(), qsFile.toLatin1().data(), iFlags);
 			if (hwPlugin) {
+				resizeEvent(NULL);
 				return true;
 			} // if
 		} // while
@@ -225,12 +231,7 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 		bPlugin = false;
 	} else {
 		// plugin
-		if (!qhiPlugins->value().tlstListSearchText) {
-			// plugin doesn't support searching
-			return;
-		} else {
-			bPlugin = true;
-		} // if else
+		bPlugin = true;
 	} // if else
 
 	cfdFind = new cFindDialog(this, bPlugin);
@@ -263,13 +264,6 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 // find next selected
 void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
 {
-	if (hwPlugin) {
-		if (!qhiPlugins->value().tlstListSearchText) {
-			// plugin doesn't support searching
-			return;
-		} // if
-	} // if
-
 	if (qteContent) {
 		// native
 		// TODO on_qaFindNext_triggered native
@@ -386,6 +380,18 @@ void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 	} // if else
 } // on_qaWrapText_triggered
 
+// enable/disable menu actions
+void cListerMainWindow::PermitMenuActions()
+{
+	if (hwPlugin && !qhiPlugins->value().tlstListSearchText) {
+		qaFind->setEnabled(false);
+		qaFindNext->setEnabled(false);
+	} else {
+		qaFind->setEnabled(true);
+		qaFindNext->setEnabled(true);
+	} // if else
+} // PermitMenuActions
+
 // resize of lister window occurs
 void cListerMainWindow::resizeEvent(QResizeEvent *event)
 {
@@ -402,9 +408,6 @@ void cListerMainWindow::resizeEvent(QResizeEvent *event)
 // show file content
 void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
 {
-	QByteArray qbaFile;
-	QFile qfFile;
-
 	if (qteContent) {
 		qteContent->deleteLater();
 		qteContent = NULL;
@@ -428,20 +431,25 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 				qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
 			} // if
 		} // if else
-		return;
-	} // if
-
-	CreateTextEdit();
-	qfFile.setFileName(qsFile);
-	qfFile.open(QIODevice::ReadOnly);
-
-	// fill text edit
-	qbaFile = qfFile.readAll();
-	if (qaText->isChecked() || qaBinary->isChecked()) {
-		qteContent->setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 	} else {
-		// TODO ShowContent Hex
+		// text, binary, hex
+		QByteArray qbaFile;
+		QFile qfFile;
+
+		CreateTextEdit();
+		qfFile.setFileName(qsFile);
+		qfFile.open(QIODevice::ReadOnly);
+
+		// fill text edit
+		qbaFile = qfFile.readAll();
+		if (qaText->isChecked() || qaBinary->isChecked()) {
+			qteContent->setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
+		} else {
+			// TODO ShowContent Hex
+		} // if else
+
+		qfFile.close();
 	} // if else
 
-	qfFile.close();
+	PermitMenuActions();
 } // ShowContent
