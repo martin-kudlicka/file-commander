@@ -12,6 +12,125 @@
   <property name="windowTitle" >
    <string>Find files</string>
   </property>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>310</x>
+     <y>500</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>381</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Found files:</string>
+   </property>
+   <widget class="QTreeWidget" name="qtwSearch" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>361</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="selectionMode" >
+     <enum>QAbstractItemView::ExtendedSelection</enum>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>130</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;View</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>210</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Go to file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>290</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Feed to panel</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="qpbStart" >
+   <property name="geometry" >
+    <rect>
+     <x>150</x>
+     <y>500</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Start</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbStop" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>230</x>
+     <y>500</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>S&amp;top</string>
+   </property>
+  </widget>
   <widget class="QTabWidget" name="tabWidget" >
    <property name="geometry" >
     <rect>
@@ -488,109 +607,6 @@
       <string>Delete</string>
      </property>
     </widget>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="qpbStart" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>500</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Start</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbCancel" >
-   <property name="geometry" >
-    <rect>
-     <x>310</x>
-     <y>500</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Cancel</string>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>340</y>
-     <width>381</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Found files:</string>
-   </property>
-   <widget class="QTreeWidget" name="qtwSearch" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>361</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="selectionMode" >
-     <enum>QAbstractItemView::ExtendedSelection</enum>
-    </property>
-    <property name="rootIsDecorated" >
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>130</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;View</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>210</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Go to file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_6" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>290</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Feed to panel</string>
-    </property>
    </widget>
   </widget>
  </widget>
