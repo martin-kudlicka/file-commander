@@ -18,9 +18,12 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																							  \param cpPanel panel to work with */
 
 	private:
+		bool bStop;																	///< interrupt finding files
 		cPanel *cpPanel;															///< panel to work with
 		QFileInfoList qfilSearch;												///< search result
 
+		void closeEvent(QCloseEvent *event);								///< catch dialog close
+																						/**< \param event close event description */
 		bool ConditionsSuit(const QFileInfo &qfFile);					///< check search conditions on found file
 																						/**< \param qfFile file to check conditions on
 																							  \return true if conditions ok */
@@ -31,6 +34,8 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		void on_qpbDrives_clicked(bool checked = false);				///< drives button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbStart_clicked(bool checked = false);					///< start button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbStop_clicked(bool checked = false);					///< stop button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 }; // cFindFilesDialog
 

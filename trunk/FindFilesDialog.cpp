@@ -17,6 +17,14 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel)
 	qcbSearchIn->insertItem(0, cpPanel->GetPath());
 } // cFindFilesDialog
 
+// catch dialog close
+void cFindFilesDialog::closeEvent(QCloseEvent *event)
+{
+	if (!bStop) {
+		bStop = true;
+	} // if
+} // closeEvent
+
 // check search conditions on found file
 bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 {
@@ -89,6 +97,10 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	QFileInfoList qfilDirectories;
 	QStringList qslPaths;
 
+	qpbStart->setEnabled(false);
+	bStop = false;
+	qpbStop->setEnabled(true);
+
 	// add source path to directories to search in
 	qslPaths = qcbSearchIn->currentText().split(';');
 	for (iI = 0; iI < qslPaths.count(); iI++) {
@@ -100,7 +112,7 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	qtwSearch->clear();
 
 	// search through directories
-	while (!qfilDirectories.isEmpty()) {
+	while (!qfilDirectories.isEmpty() && !bStop) {
 		QFileInfo qfiDir;
 		QFileInfoList qfilDirContent;
 
@@ -109,7 +121,7 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 		qfilDirContent = cFileRoutine::GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
 
 		// check conditions
-		for (iI = 0; iI < qfilDirContent.count(); iI++) {
+		for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
 			if (ConditionsSuit(qfilDirContent.at(iI))) {
 				// file suit conditions
 				QTreeWidgetItem *qtwiItem;
@@ -117,6 +129,7 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 				qfilSearch += qfilDirContent.at(iI);
 				qtwiItem = new QTreeWidgetItem(qtwSearch);
 				qtwiItem->setText(0, qfilDirContent.at(iI).filePath());
+				QApplication::processEvents(QEventLoop::AllEvents);
 			} // if
 		} // for
 
@@ -127,4 +140,13 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 			} // if
 		} // for
 	} // while
+
+	qpbStop->setEnabled(false);
+	qpbStart->setEnabled(true);
 } // on_qpbStart_clicked
+
+// stop button is clicked on
+void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
+{
+	bStop = true;
+} // on_qpbStop_clicked
