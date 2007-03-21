@@ -47,8 +47,8 @@
     </property>
     <addaction name="actionOpen" />
     <addaction name="actionSave_as" />
-    <addaction name="actionPrint_2" />
-    <addaction name="actionPrint_setup_2" />
+    <addaction name="qaPrint" />
+    <addaction name="qaPrintSetup" />
     <addaction name="separator" />
     <addaction name="qaClose" />
    </widget>
@@ -108,7 +108,7 @@
     <string>Print setup...</string>
    </property>
   </action>
-  <action name="actionPrint_2" >
+  <action name="qaPrint" >
    <property name="text" >
     <string>Print...</string>
    </property>
@@ -116,7 +116,7 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionPrint_setup_2" >
+  <action name="qaPrintSetup" >
    <property name="text" >
     <string>Print setup...</string>
    </property>
