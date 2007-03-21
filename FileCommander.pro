@@ -6,6 +6,8 @@ FORMS = MainWindow.ui \
 		  NewDirectoryDialog.ui \
 		  ListerMainWindow.ui \
 		  ListerMainWindow/FindDialog.ui \
+		  FindFilesDialog.ui \
+		  FindFilesDialog/DrivesDialog.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
@@ -21,6 +23,8 @@ HEADERS = MainWindow.h \
 			 NewDirectoryDialog.h \
 			 ListerMainWindow.h \
 			 ListerMainWindow/FindDialog.h \
+			 FindFilesDialog.h \
+			 FindFilesDialog/DrivesDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
@@ -59,6 +63,8 @@ SOURCES = FileCommander.cpp \
 			 NewDirectoryDialog.cpp \
 			 ListerMainWindow.cpp \
 			 ListerMainWindow/FindDialog.cpp \
+			 FindFilesDialog.cpp \
+			 FindFilesDialog/DrivesDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \

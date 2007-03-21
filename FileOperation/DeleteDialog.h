@@ -5,13 +5,15 @@
 
 #include "ui_DeleteDialog.h"
 
+#include <QMainWindow>
+
 class cDeleteDialog : public QDialog, private Ui::qdDelete
 {
 	Q_OBJECT
 
 	public:
-		cDeleteDialog(QWidget *qwParent);									///< constructor
-																						/**< \param qwParent parent widget (window) of this dialog */
+		cDeleteDialog(QMainWindow *qmwParent);								///< constructor
+																						/**< \param qmwParent parent window of this dialog */
 
 	signals:
 		void Background();														///< set operation as background

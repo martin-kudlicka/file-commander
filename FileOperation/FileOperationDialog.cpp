@@ -3,9 +3,9 @@
 #include <QFileDialog>
 
 // constructor
-cFileOperationDialog::cFileOperationDialog(QWidget *qwParent)
+cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent)
 {
-	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 } // cCopyMoveDialog
 
