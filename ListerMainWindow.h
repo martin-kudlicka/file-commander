@@ -80,6 +80,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaPrintSetup_triggered(bool checked = false);							///< print setup selected
 																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaSaveAs_triggered(bool checked = false);								///< save as selected
+																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaSelectAll_triggered(bool checked = false);							///< select all selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaText_triggered(bool checked = false);									///< text mode selected
