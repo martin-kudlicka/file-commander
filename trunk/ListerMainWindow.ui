@@ -35,8 +35,8 @@
     <property name="title" >
      <string>Edit</string>
     </property>
-    <addaction name="actionCopy_as_text" />
-    <addaction name="actionSelect_all" />
+    <addaction name="qaCopyAsText" />
+    <addaction name="qaSelectAll" />
     <addaction name="separator" />
     <addaction name="qaFind" />
     <addaction name="qaFindNext" />
@@ -129,7 +129,7 @@
     <string>Esc</string>
    </property>
   </action>
-  <action name="actionCopy_as_text" >
+  <action name="qaCopyAsText" >
    <property name="text" >
     <string>Copy as text</string>
    </property>
@@ -143,7 +143,7 @@
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionSelect_all" >
+  <action name="qaSelectAll" >
    <property name="text" >
     <string>Select all</string>
    </property>
