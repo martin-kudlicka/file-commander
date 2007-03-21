@@ -7,6 +7,7 @@
 
 #include "Plugins/Lister.h"
 #include <QTextEdit>
+#include <QPrinter>
 
 class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 {
@@ -27,6 +28,7 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		int iSearchFlags;																			///< last used flags for search
 		QHash<QString, cLister::sPluginInfo> qhPlugins;									///< table of plugins
 		QHashIterator<QString, cLister::sPluginInfo> *qhiPlugins;					///< currently used plugin
+		QPrinter qpPrinter;																		///< printer settings
 		QString qsFile;																			///< file content to show
 		QString qsSearchedText;																	///< last searched text
 		QTextEdit *qteContent;																	///< file content in standard widget
@@ -69,6 +71,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		void on_qaHex_triggered(bool checked = false);									///< hex mode selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaMultimedia_triggered(bool checked = false);							///< multimedia mode selected
+																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaPrintSetup_triggered(bool checked = false);							///< print setup selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaSelectAll_triggered(bool checked = false);							///< select all selected
 																										/**< \param checked true if menu item is checkable and checked */

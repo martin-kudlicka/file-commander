@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QTextCodec>
 #include "ListerMainWindow/FindDialog.h"
+#include <QPageSetupDialog>
 
 // destructor
 cListerMainWindow::~cListerMainWindow()
@@ -314,6 +315,14 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 	ShowContent(true, true);
 } // on_qaMultimedia_triggered
 
+// print setup selected
+void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
+{
+	QPageSetupDialog qpsdPrint(&qpPrinter, this);
+
+	qpsdPrint.exec();
+} // on_qaPrintSetup_triggered
+
 // select all selected
 void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 {
@@ -389,6 +398,14 @@ void cListerMainWindow::PermitMenuActions()
 	} else {
 		qaFind->setEnabled(true);
 		qaFindNext->setEnabled(true);
+	} // if else
+
+	if (hwPlugin && !qhiPlugins->value().tlpListPrint) {
+		qaPrint->setEnabled(false);
+		qaPrintSetup->setEnabled(false);
+	} else {
+		qaPrint->setEnabled(true);
+		qaPrintSetup->setEnabled(true);
 	} // if else
 } // PermitMenuActions
 

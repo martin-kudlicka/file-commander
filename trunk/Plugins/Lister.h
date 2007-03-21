@@ -18,6 +18,14 @@ class cLister
 																							  \param cFileToLoad file content to show
 																							  \param iShowFlags lister's flags
 																							  \return plugin's window handle */
+		typedef int (__stdcall *tListPrint)(HWND hwListWin, char *cFileToPrint, char *cDefPrinter, int iPrintFlags, RECT *rMargins);
+																						///< print file shown in plugin's window
+																						/**< \param hwListWin plugin's window
+																							  \param cFileToPrint file name content to be printed
+																							  \param cDefPrinter default printer to use
+																							  \param iPrintFlags currently not used
+																							  \param rMargins margins of print area
+																							  \return ok or error */
 		typedef int (__stdcall *tListSearchText)(HWND hwListWin, char *cSearchString, int iSearchParameter);
 																						///< search text in plugin
 																						/**< \param hwListWin plugin's window
@@ -38,6 +46,7 @@ class cLister
 		struct sPluginInfo {
 			tListCloseWindow tlcwListCloseWindow;							///< ListCloseWindow function
 			tListLoad tllListLoad;												///< ListLoad function
+			tListPrint tlpListPrint;											///< ListPrint function
 			tListSearchText tlstListSearchText;								///< ListSearchText function
 			tListSendCommand tlscListSendCommand;							///< ListSendCommand function
 			tListSetDefaultParams tlsdpListSetDefaultParams;			///< ListSetDefaultParams function
