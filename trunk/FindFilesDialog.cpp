@@ -3,10 +3,15 @@
 #include "FindFilesDialog/DrivesDialog.h"
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent)
+cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
+
+	this->cpPanel = cpPanel;
+
+	// fill some options
+	qcbSearchIn->insertItem(0, cpPanel->GetPath());
 } // cFindFilesDialog
 
 // drives button is clicked on
@@ -30,6 +35,9 @@ void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 				qsPath += ';';
 			} // if
 		} // for
+
+		qcbSearchIn->insertItem(0, qsPath);
+		qcbSearchIn->setCurrentIndex(0);
 	} // if
 
 	cddDrives->deleteLater();

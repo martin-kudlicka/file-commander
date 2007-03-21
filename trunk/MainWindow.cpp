@@ -242,10 +242,13 @@ void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
 // search selected
 void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 {
-	cFindFilesDialog cffdFind(this);
+	cFindFilesDialog *cffdFind;
+	cPanel *cpSource;
 
-	// TODO on_qaSearch_triggered
-	cffdFind.exec();
+	SetSourceAndDestinationPanel(&cpSource);
+	cffdFind = new cFindFilesDialog(this, cpSource);
+
+	cffdFind->exec();
 } // on_qaSearch_triggered
 
 // copy button is clicked on
