@@ -39,7 +39,7 @@
     <addaction name="actionSelect_all" />
     <addaction name="separator" />
     <addaction name="qaFind" />
-    <addaction name="actionFind_next" />
+    <addaction name="qaFindNext" />
    </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
@@ -159,7 +159,7 @@
     <string>F7</string>
    </property>
   </action>
-  <action name="actionFind_next" >
+  <action name="qaFindNext" >
    <property name="text" >
     <string>Find next</string>
    </property>
