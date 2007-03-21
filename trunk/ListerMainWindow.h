@@ -32,6 +32,7 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		QString qsFile;																			///< file content to show
 		QString qsSearchedText;																	///< last searched text
 		QTextDocument::FindFlags ffFlags;													///< last used flags for native search
+		QTextDocument qtdDocument;																///< text to show in QTextEdit
 		QTextEdit *qteContent;																	///< file content in standard widget
 		WId hwPlugin;																				///< plugin's window
 
