@@ -315,6 +315,25 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 	ShowContent(true, true);
 } // on_qaMultimedia_triggered
 
+// print selected
+void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
+{
+	if (qteContent) {
+		// native
+		// TODO on_qaPrint_triggered native
+	} else {
+		// plugin
+		RECT rMargins;
+
+		rMargins.bottom = qpPrinter.paperRect().bottom() - qpPrinter.pageRect().bottom();
+		rMargins.left = qpPrinter.pageRect().left() - qpPrinter.paperRect().left();
+		rMargins.right = qpPrinter.paperRect().right() - qpPrinter.pageRect().right();
+		rMargins.top = qpPrinter.pageRect().top() - qpPrinter.paperRect().top();
+
+		qhiPlugins->value().tlpListPrint(hwPlugin, qsFile.toLatin1().data(), qpPrinter.printerName().toLatin1().data(), 0, &rMargins);
+	} // if else
+} // on_qaPrint_triggered
+
 // print setup selected
 void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
 {
