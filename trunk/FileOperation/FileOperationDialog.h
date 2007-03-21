@@ -4,7 +4,9 @@
 #define FILE_OPERATION_DIALOG_H
 
 #include "ui_FileOperationDialog.h"
+
 #include "FileOperation/FileRoutine.h"
+#include <QMainWindow>
 
 class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 {
@@ -17,8 +19,9 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 			EnqueueAction									///< enqueue button selected
 		};
 
-		cFileOperationDialog(QWidget *qwParent);	///< constructor
-																/**< \param qwParent parent widget (window) of this dialog */
+		cFileOperationDialog(QMainWindow *qmwParent);
+																///< constructor
+																/**< \param qmwParent parent window of this dialog */
 
 		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter);
 																///< shows copy or move dialog

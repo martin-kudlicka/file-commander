@@ -5,13 +5,15 @@
 
 #include "ui_CopyMoveDialog.h"
 
+#include <QMainWindow>
+
 class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
 {
 	Q_OBJECT
 
 	public:
-		cCopyMoveDialog(QWidget *qwParent);									///< constructor
-																						/**< \param qwParent parent widget (window) of this dialog */
+		cCopyMoveDialog(QMainWindow *qmwParent);							///< constructor
+																						/**< \param qmwParent parent window of this dialog */
 
 	signals:
 		void Background();														///< set operation as background

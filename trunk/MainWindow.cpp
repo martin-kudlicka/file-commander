@@ -5,6 +5,7 @@
 #include "NewDirectoryDialog.h"
 #include "OptionsDialog.h"
 #include "ListerMainWindow.h"
+#include "FindFilesDialog.h"
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -237,6 +238,15 @@ void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
 
 	csSettings.SetWindowState(smwsState);
 } // on_qaSavePosition_triggered
+
+// search selected
+void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
+{
+	cFindFilesDialog cffdFind(this);
+
+	// TODO on_qaSearch_triggered
+	cffdFind.exec();
+} // on_qaSearch_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)

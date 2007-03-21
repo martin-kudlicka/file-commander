@@ -1,9 +1,9 @@
 #include "FileOperation/DeleteDialog.h"
 
 // constructor
-cDeleteDialog::cDeleteDialog(QWidget *qwParent)
+cDeleteDialog::cDeleteDialog(QMainWindow *qmwParent)
 {
-	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 } // cDeleteDialog
 

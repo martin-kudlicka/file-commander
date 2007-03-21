@@ -1,9 +1,9 @@
 #include "ListerMainWindow/FindDialog.h"
 
 // constructor
-cFindDialog::cFindDialog(QWidget *qwParent, const bool &bPlugin)
+cFindDialog::cFindDialog(QMainWindow *qmwParent, const bool &bPlugin)
 {
-	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	if (bPlugin) {

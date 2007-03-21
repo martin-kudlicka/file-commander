@@ -390,16 +390,23 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
-    <addaction name="qaExit" />
+    <addaction name="qaQuit" />
    </widget>
    <widget class="QMenu" name="menuConfiguration" >
     <property name="title" >
-     <string>&amp;Configuration</string>
+     <string>C&amp;onfiguration</string>
     </property>
     <addaction name="qaOptions" />
     <addaction name="qaSavePosition" />
    </widget>
+   <widget class="QMenu" name="menuCommands" >
+    <property name="title" >
+     <string>&amp;Commands</string>
+    </property>
+    <addaction name="qaSearch" />
+   </widget>
    <addaction name="menuFile" />
+   <addaction name="menuCommands" />
    <addaction name="menuConfiguration" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -411,14 +418,17 @@
     <number>4</number>
    </attribute>
   </widget>
-  <action name="qaExit" >
+  <action name="qaQuit" >
    <property name="text" >
-    <string>E&amp;xit</string>
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut" >
+    <string>Alt+F4</string>
    </property>
   </action>
   <action name="qaOptions" >
    <property name="text" >
-    <string>&amp;Options</string>
+    <string>&amp;Options...</string>
    </property>
   </action>
   <action name="qaSavePosition" >
@@ -426,11 +436,19 @@
     <string>&amp;Save position</string>
    </property>
   </action>
+  <action name="qaSearch" >
+   <property name="text" >
+    <string>&amp;Search...</string>
+   </property>
+   <property name="shortcut" >
+    <string>Alt+F7</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>qaExit</sender>
+   <sender>qaQuit</sender>
    <signal>triggered()</signal>
    <receiver>qmwMainWindow</receiver>
    <slot>close()</slot>

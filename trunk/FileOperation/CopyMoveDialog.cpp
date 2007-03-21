@@ -1,9 +1,9 @@
 #include "FileOperation/CopyMoveDialog.h"
 
 // constructor
-cCopyMoveDialog::cCopyMoveDialog(QWidget *qwParent)
+cCopyMoveDialog::cCopyMoveDialog(QMainWindow *qmwParent)
 {
-	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 } // cCopyMoveDialog
 

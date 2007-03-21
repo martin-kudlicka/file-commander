@@ -5,14 +5,16 @@
 
 #include "ui_FindDialog.h"
 
+#include <QMainWindow>
+
 class cFindDialog : public QDialog, public Ui::qdFind
 {
 	Q_OBJECT
 
 	public:
-		cFindDialog(QWidget *qwParent, const bool &bPlugin);	///< constructor
-																				/**< \param qwParent parent widget (window) of this dialog
-																					  \param bPlugin true if search in plugin */
+		cFindDialog(QMainWindow *qmwParent, const bool &bPlugin);	///< constructor
+																						/**< \param qwParent parent window of this dialog
+																							  \param bPlugin true if search in plugin */
 }; // cFindDialog
 
 #endif
