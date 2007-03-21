@@ -74,6 +74,8 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaMultimedia_triggered(bool checked = false);							///< multimedia mode selected
 																										/**< \param checked true if menu item is checkable and checked */
+		void on_qaOpen_triggered(bool checked = false);									///< open selected
+																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaPrint_triggered(bool checked = false);								///< print selected
 																										/**< \param checked true if menu item is checkable and checked */
 		void on_qaPrintSetup_triggered(bool checked = false);							///< print setup selected
