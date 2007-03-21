@@ -13,6 +13,9 @@ cListerMainWindow::~cListerMainWindow()
 	} // if
 
 	delete qhiPlugins;
+	if (qteContent && qteContent->document()) {
+		qteContent->setDocument(NULL);
+	} // if
 	qteContent->deleteLater();
 
 	deleteLater();
@@ -331,7 +334,7 @@ void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
 {
 	if (qteContent) {
 		// native
-		// TODO on_qaPrint_triggered native
+		qtdDocument.print(&qpPrinter);
 	} else {
 		// plugin
 		RECT rMargins;
@@ -456,6 +459,7 @@ void cListerMainWindow::resizeEvent(QResizeEvent *event)
 void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
 {
 	if (qteContent) {
+		qteContent->setDocument(NULL);
 		qteContent->deleteLater();
 		qteContent = NULL;
 	} // if
@@ -490,7 +494,8 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		// fill text edit
 		qbaFile = qfFile.readAll();
 		if (qaText->isChecked() || qaBinary->isChecked()) {
-			qteContent->setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
+			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
+			qteContent->setDocument(&qtdDocument);
 		} else {
 			// TODO ShowContent Hex
 		} // if else
