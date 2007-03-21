@@ -1,6 +1,7 @@
 #include "FindFilesDialog.h"
 
 #include "FindFilesDialog/DrivesDialog.h"
+#include <QFileDialog>
 
 // constructor
 cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel)
@@ -39,6 +40,18 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 
 	return true;
 } // ConditionsSuit
+
+// browse button is clicked on
+void cFindFilesDialog::on_qpbBrowse_clicked(bool checked /* false */)
+{
+	QString qsDirectory;
+
+	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select a directory"), "/");
+	if (qsDirectory != "") {
+		qcbSearchIn->insertItem(0, qsDirectory);
+		qcbSearchIn->setCurrentIndex(0);
+	} // if
+} // on_qpbBrowse_clicked
 
 // drives button is clicked on
 void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
