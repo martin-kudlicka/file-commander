@@ -131,7 +131,7 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 	for (iI = 0; iI < 2; iI++) {
 		while (qhiPlugins->hasNext()) {
 			qhiPlugins->next();
-			hwPlugin = qhiPlugins->value().tllListLoad(centralwidget->winId(), qsFile.toLatin1().data(), iFlags);
+			hwPlugin = qhiPlugins->value().tllListLoad(centralwidget->winId(), QDir::toNativeSeparators(qsFile).toLatin1().data(), iFlags);
 			if (hwPlugin) {
 				resizeEvent(NULL);
 				return true;
