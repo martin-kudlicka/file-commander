@@ -25,12 +25,13 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 	private:
 		cLister *clLister;																		///< lister plugin's class
 		cSettings *csSettings;																	///< application's main settings file
-		int iSearchFlags;																			///< last used flags for search
+		int iSearchFlags;																			///< last used flags for plugin search
 		QHash<QString, cLister::sPluginInfo> qhPlugins;									///< table of plugins
 		QHashIterator<QString, cLister::sPluginInfo> *qhiPlugins;					///< currently used plugin
 		QPrinter qpPrinter;																		///< printer settings
 		QString qsFile;																			///< file content to show
 		QString qsSearchedText;																	///< last searched text
+		QTextDocument::FindFlags ffFlags;													///< last used flags for native search
 		QTextEdit *qteContent;																	///< file content in standard widget
 		WId hwPlugin;																				///< plugin's window
 

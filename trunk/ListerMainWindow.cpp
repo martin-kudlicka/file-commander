@@ -241,10 +241,21 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 
 		if (qteContent) {
 			// native
-			// TODO on_qaFind_triggered native
+			if (cfdFind->qcbSearchBackwards->isChecked()) {
+				ffFlags = QTextDocument::FindBackward;
+			} else {
+				ffFlags = 0;
+			} // if
+			if (cfdFind->qcbCaseSensitive->isChecked()) {
+				ffFlags |= QTextDocument::FindCaseSensitively;
+			} // if
+			if (cfdFind->qcbWholeWords->isChecked()) {
+				ffFlags |= QTextDocument::FindWholeWords;
+			} // if
+			qteContent->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
+			qteContent->find(qsSearchedText, ffFlags);
 		} else {
 			// plugin
-
 			iSearchFlags = lcs_findfirst;
 			if (cfdFind->qcbCaseSensitive->isChecked()) {
 				iSearchFlags |= lcs_matchcase;
@@ -267,7 +278,7 @@ void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
 {
 	if (qteContent) {
 		// native
-		// TODO on_qaFindNext_triggered native
+		qteContent->find(qsSearchedText, ffFlags);
 	} else {
 		// plugin
 		if (iSearchFlags & lcs_findfirst) {
