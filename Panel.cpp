@@ -241,10 +241,10 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 	qsFileSizeIn = csSettings->GetFileSizeIn();
 
 	if (qsFileSizeIn == qsDYNAMIC) {
-		if (qi64Size < qi64_1KILOBYTE) {
+		if (qi64Size < qi64_KILOBYTE) {
 			qsFileSizeIn = qsBYTES;
 		} else {
-			if (qi64Size < qi64_1MEGABYTE) {
+			if (qi64Size < qi64_MEGABYTE) {
 				qsFileSizeIn = qsKILOBYTES;
 			} else {
 				qsFileSizeIn = qsMEGABYTES;
@@ -256,9 +256,9 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 		return QVariant(qi64Size).toString() + tr(" B");
 	} else {
 		if (qsFileSizeIn == qsKILOBYTES) {
-			return QVariant(qi64Size / qi64_1KILOBYTE).toString() + tr(" k");
+			return QVariant(qi64Size / qi64_KILOBYTE).toString() + tr(" k");
 		} else {
-			return QVariant(qi64Size / qi64_1MEGABYTE).toString() + tr(" M");
+			return QVariant(qi64Size / qi64_MEGABYTE).toString() + tr(" M");
 		} // if else
 	} // if else
 } // GetSizeString

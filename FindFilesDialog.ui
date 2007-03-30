@@ -141,7 +141,7 @@
     </rect>
    </property>
    <property name="currentIndex" >
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab" >
     <attribute name="title" >
@@ -394,19 +394,6 @@
     <attribute name="title" >
      <string>Advanced</string>
     </attribute>
-    <widget class="QCheckBox" name="checkBox_11" >
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>113</y>
-       <width>61</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="text" >
-      <string>File size</string>
-     </property>
-    </widget>
     <widget class="QGroupBox" name="groupBox_3" >
      <property name="geometry" >
       <rect>
@@ -419,51 +406,6 @@
      <property name="title" >
       <string>Date/time</string>
      </property>
-     <widget class="QCheckBox" name="qcbDateTimeBetween" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>23</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Between</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbDateTimeNotOlderThan" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>53</y>
-        <width>91</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Not older than</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="qsbOldCount" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>110</x>
-        <y>50</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimum" >
-       <number>1</number>
-      </property>
-      <property name="value" >
-       <number>1</number>
-      </property>
-     </widget>
      <widget class="QDateTimeEdit" name="qdteTo" >
       <property name="enabled" >
        <bool>false</bool>
@@ -503,6 +445,32 @@
        <string>and</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="qcbDateTimeBetween" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>23</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Between</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbDateTimeNotOlderThan" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>53</y>
+        <width>91</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Not older than</string>
+      </property>
+     </widget>
      <widget class="QComboBox" name="qcbOldType" >
       <property name="enabled" >
        <bool>false</bool>
@@ -516,21 +484,27 @@
        </rect>
       </property>
      </widget>
+     <widget class="QSpinBox" name="qsbOldCount" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>110</x>
+        <y>50</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimum" >
+       <number>1</number>
+      </property>
+      <property name="value" >
+       <number>1</number>
+      </property>
+     </widget>
     </widget>
-    <widget class="QComboBox" name="comboBox_5" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="geometry" >
-      <rect>
-       <x>80</x>
-       <y>110</y>
-       <width>71</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_6" >
+    <widget class="QComboBox" name="qcbFileSizeType" >
      <property name="enabled" >
       <bool>false</bool>
      </property>
@@ -543,7 +517,33 @@
       </rect>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox_2" >
+    <widget class="QCheckBox" name="qcbFileSize" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>113</y>
+       <width>61</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>File size</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="qcbFileSizeComparator" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="geometry" >
+      <rect>
+       <x>80</x>
+       <y>110</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="qsbFileSize" >
      <property name="enabled" >
       <bool>false</bool>
      </property>
@@ -554,6 +554,9 @@
        <width>91</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="maximum" >
+      <number>999</number>
      </property>
     </widget>
    </widget>
@@ -633,10 +636,10 @@
   <tabstop>qsbOldCount</tabstop>
   <tabstop>qdteFrom</tabstop>
   <tabstop>qcbOldType</tabstop>
-  <tabstop>checkBox_11</tabstop>
-  <tabstop>comboBox_5</tabstop>
-  <tabstop>spinBox_2</tabstop>
-  <tabstop>comboBox_6</tabstop>
+  <tabstop>qcbFileSize</tabstop>
+  <tabstop>qcbFileSizeComparator</tabstop>
+  <tabstop>qsbFileSize</tabstop>
+  <tabstop>qcbFileSizeType</tabstop>
   <tabstop>listWidget</tabstop>
   <tabstop>pushButton_3</tabstop>
   <tabstop>pushButton_2</tabstop>
