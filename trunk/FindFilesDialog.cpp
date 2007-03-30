@@ -4,13 +4,19 @@
 #include <QFileDialog>
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel)
+cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	this->cpPanel = cpPanel;
+	this->qfilSelectedDirectories = qfilSelectedDirectories;
 
+	if (qfilSelectedDirectories.count() > 0) {
+		qcbSearchInSelectedDirectories->setChecked(true);
+	} else {
+		qcbSearchInSelectedDirectories->setEnabled(false);
+	} // if else
 	qtwSearch->headerItem()->setHidden(true);
 
 	// fill some options
@@ -46,6 +52,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 			} // if
 		} else {
 			// wildcard
+			qreExpression.setPatternSyntax(QRegExp::Wildcard);
 			if (qreExpression.exactMatch(qfFile.fileName())) {
 				bOk = true;
 				break;
@@ -58,6 +65,20 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 
 	return true;
 } // ConditionsSuit
+
+// search only in selected directories
+void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
+{
+	if (state == Qt::Checked) {
+		qcbSearchIn->setEnabled(false);
+		qpbBrowse->setEnabled(false);
+		qpbDrives->setEnabled(false);
+	} else {
+		qcbSearchIn->setEnabled(true);
+		qpbBrowse->setEnabled(true);
+		qpbDrives->setEnabled(true);
+	} // if else
+} // on_qcbSearchInSelectedDirectories_stateChanged
 
 // browse button is clicked on
 void cFindFilesDialog::on_qpbBrowse_clicked(bool checked /* false */)
@@ -105,17 +126,22 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
 	int iI;
 	QFileInfoList qfilDirectories;
-	QStringList qslPaths;
 
 	qpbStart->setEnabled(false);
 	bStop = false;
 	qpbStop->setEnabled(true);
 
 	// add source path to directories to search in
-	qslPaths = qcbSearchIn->currentText().split(';');
-	for (iI = 0; iI < qslPaths.count(); iI++) {
-		qfilDirectories.append(qslPaths.at(iI));
-	} // for
+	if (qcbSearchInSelectedDirectories->isChecked()) {
+		qfilDirectories = qfilSelectedDirectories;
+	} else {
+		QStringList qslPaths;
+
+		qslPaths = qcbSearchIn->currentText().split(';');
+		for (iI = 0; iI < qslPaths.count(); iI++) {
+			qfilDirectories.append(qslPaths.at(iI));
+		} // for
+	} // if else
 
 	// clear previous search
 	qfilSearch.clear();

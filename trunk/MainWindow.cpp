@@ -244,9 +244,11 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 {
 	cFindFilesDialog *cffdFind;
 	cPanel *cpSource;
+	QFileInfoList qfilDirectories;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cffdFind = new cFindFilesDialog(this, cpSource);
+	qfilDirectories = cpSource->GetSelectedDirItemsList();
+	cffdFind = new cFindFilesDialog(this, cpSource, qfilDirectories);
 
 	cffdFind->exec();
 } // on_qaSearch_triggered
