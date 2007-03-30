@@ -8,12 +8,18 @@
 #include <QMainWindow>
 #include "Panel.h"
 
-const QString qsMINUTES = "minute(s)";
-const QString qsHOURS = "hour(s)";
+const QString qsBYTES2 = "byte(s)";
 const QString qsDAYS = "day(s)";
-const QString qsWEEKS = "week(s)";
+const QString qsGIGABYTES2 = "gigabyte(s)";
+const QString qsHOURS = "hour(s)";
+const QString qsKILOBYTES2 = "kilobyte(s)";
+const QString qsMEGABYTES2 = "megabyte(s)";
+const QString qsMINUTES = "minute(s)";
 const QString qsMONTHS = "month(s)";
+const QString qsWEEKS = "week(s)";
 const QString qsYEARS = "year(s)";
+const QStringList qsFILE_SIZE_COMPARATOR = (QStringList() << "=" << "<" << ">");
+const QStringList qsFILE_SIZE_TYPE = (QStringList() << qsBYTES2 << qsKILOBYTES2 << qsMEGABYTES2 << qsGIGABYTES2);
 const QStringList qslOLDER_THAN = (QStringList() << qsMINUTES << qsHOURS << qsDAYS << qsWEEKS << qsMONTHS << qsYEARS);
 
 class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
@@ -44,6 +50,8 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																								/**< \param state search between dates/time flag */
 		void on_qcbDateTimeNotOlderThan_stateChanged(int state);				///< search files not older than specified
 																								/**< \param state search between dates/time flag */
+		void on_qcbFileSize_stateChanged(int state);								///< search files by their size
+																								/**< \param state search by size flag */
 		void on_qcbSearchInSelectedDirectories_stateChanged(int state);	///< search only in selected directories
 																								/**< \param state type of search */
 		void on_qpbBrowse_clicked(bool checked = false);						///< browse button is clicked on

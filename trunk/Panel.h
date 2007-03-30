@@ -23,6 +23,10 @@ class cPanel : private QObject
 	Q_OBJECT
 
 	public:
+		static const qint64 qi64_GIGABYTE = 1073741824;		///< 1 gigabyte in bytes
+		static const qint64 qi64_KILOBYTE = 1024;				///< 1 kilobyte in bytes
+		static const qint64 qi64_MEGABYTE = 1048576;			///< 1 megabyte in bytes
+
 		// count of objects
 		struct sObjects {
 			uint Directories;											///< number of directories
@@ -59,9 +63,6 @@ class cPanel : private QObject
 		void GoToUpDir();												///< go up one level (directory)
 
 	private:
-		static const qint64 qi64_1KILOBYTE = 1024;			///< 1 kilobyte in bytes
-		static const qint64 qi64_1MEGABYTE = 1048576;		///< 1 megabyte in bytes
-
 		static const int iTIMER_INTERVAL = 1000;				///< timer interval
 
 		/// strings for widgets

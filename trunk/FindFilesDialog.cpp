@@ -20,6 +20,8 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFil
 	qdteFrom->setDateTime(QDateTime::currentDateTime());
 	qdteTo->setDateTime(QDateTime::currentDateTime());
 	qcbOldType->addItems(qslOLDER_THAN);
+	qcbFileSizeComparator->addItems(qsFILE_SIZE_COMPARATOR);
+	qcbFileSizeType->addItems(qsFILE_SIZE_TYPE);
 	qtwSearch->headerItem()->setHidden(true);
 
 	// fill some options
@@ -41,13 +43,21 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 	int iI;
 	QStringList qslSearchFor;
 
-	// search for
 	bOk = false;
 	qslSearchFor = qcbSearchFor->currentText().split(';');
 	if (qslSearchFor.count() == 1 && qslSearchFor.at(0) == "" && !qcbSearchForRegularExpression->isChecked()) {
 		qslSearchFor.append("*.*");
 	} // if
+#ifdef Q_WS_WIN
+	// correct *.* to *
+	for (iI = 0; iI < qslSearchFor.count(); iI++) {
+		if (qslSearchFor.at(iI) == "*.*") {
+			qslSearchFor[iI] = "*";
+		} // if
+	} // for
+#endif
 
+	// search for
 	for (iI = 0; iI < qslSearchFor.count(); iI++) {
 		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive);
 
@@ -108,6 +118,41 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 		} // if
 	} // if
 
+	// file size
+	if (qcbFileSize->isChecked()) {
+		qint64 qi64CompareSize;
+
+		if (qcbFileSizeType->currentText() == qsBYTES2) {
+			qi64CompareSize = qsbFileSize->value();
+		} else {
+			if (qcbFileSizeType->currentText() == qsKILOBYTES2) {
+				qi64CompareSize = cPanel::qi64_KILOBYTE * qsbFileSize->value();
+			} else {
+				if (qcbFileSizeType->currentText() == qsMEGABYTES2) {
+					qi64CompareSize = cPanel::qi64_MEGABYTE * qsbFileSize->value();
+				} else {
+					qi64CompareSize = cPanel::qi64_GIGABYTE * qsbFileSize->value();
+				} // if else
+			} // if else
+		} // if else
+
+		if (qcbFileSizeComparator->currentText() == "=") {
+			if (qfFile.size() != qi64CompareSize) {
+				return false;
+			} // if
+		} else {
+			if (qcbFileSizeComparator->currentText() == "<") {
+				if (qfFile.size() >= qi64CompareSize) {
+					return false;
+				} // if else
+			} else {
+				if (qfFile.size() <= qi64CompareSize) {
+					return false;
+				} // if
+			} // if else
+		} // if else
+	} // if
+
 	return true;
 } // ConditionsSuit
 
@@ -146,6 +191,20 @@ void cFindFilesDialog::on_qcbDateTimeNotOlderThan_stateChanged(int state)
 		qcbOldType->setEnabled(false);
 	} // if else
 } // on_qcbDateTimeNotOlderThan_stateChanged
+
+// search files by their size
+void cFindFilesDialog::on_qcbFileSize_stateChanged(int state)
+{
+	if (state == Qt::Checked) {
+		qcbFileSizeComparator->setEnabled(true);
+		qsbFileSize->setEnabled(true);
+		qcbFileSizeType->setEnabled(true);
+	} else {
+		qcbFileSizeComparator->setEnabled(false);
+		qsbFileSize->setEnabled(false);
+		qcbFileSizeType->setEnabled(false);
+	} // if else
+} // on_qcbFileSize_stateChanged
 
 // search only in selected directories
 void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
