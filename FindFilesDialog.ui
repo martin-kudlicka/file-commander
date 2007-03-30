@@ -37,22 +37,6 @@
    <property name="title" >
     <string>Found files:</string>
    </property>
-   <widget class="QTreeWidget" name="qtwSearch" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>361</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="selectionMode" >
-     <enum>QAbstractItemView::ExtendedSelection</enum>
-    </property>
-    <property name="rootIsDecorated" >
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton" >
     <property name="enabled" >
      <bool>false</bool>
@@ -99,6 +83,22 @@
     </property>
     <property name="text" >
      <string>&amp;Feed to panel</string>
+    </property>
+   </widget>
+   <widget class="QTreeWidget" name="qtwSearch" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>361</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="selectionMode" >
+     <enum>QAbstractItemView::ExtendedSelection</enum>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
@@ -159,19 +159,6 @@
      <property name="title" >
       <string>Full text</string>
      </property>
-     <widget class="QComboBox" name="comboBox_3" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>331</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QCheckBox" name="checkBox_4" >
       <property name="enabled" >
        <bool>false</bool>
@@ -265,6 +252,19 @@
        <string>Search for text</string>
       </property>
      </widget>
+     <widget class="QComboBox" name="comboBox_3" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>331</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox" >
      <property name="geometry" >
@@ -278,32 +278,6 @@
      <property name="title" >
       <string>Files</string>
      </property>
-     <widget class="QCheckBox" name="checkBox" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>100</y>
-        <width>191</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search in selected directories/files</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_2" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>80</y>
-        <width>121</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Regular expression</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label" >
       <property name="geometry" >
        <rect>
@@ -320,22 +294,6 @@
        <cstring>qcbSearchFor</cstring>
       </property>
      </widget>
-     <widget class="QLabel" name="label_2" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>53</y>
-        <width>48</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search &amp;in</string>
-      </property>
-      <property name="buddy" >
-       <cstring>qcbSearchIn</cstring>
-      </property>
-     </widget>
      <widget class="QComboBox" name="qcbSearchFor" >
       <property name="geometry" >
        <rect>
@@ -349,24 +307,24 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QComboBox" name="qcbSearchIn" >
+     <widget class="QPushButton" name="qpbBrowse" >
       <property name="geometry" >
        <rect>
-        <x>70</x>
-        <y>50</y>
-        <width>101</width>
-        <height>22</height>
+        <x>180</x>
+        <y>70</y>
+        <width>75</width>
+        <height>23</height>
        </rect>
       </property>
-      <property name="editable" >
-       <bool>true</bool>
+      <property name="text" >
+       <string>&amp;Browse</string>
       </property>
      </widget>
      <widget class="QPushButton" name="qpbDrives" >
       <property name="geometry" >
        <rect>
         <x>260</x>
-        <y>50</y>
+        <y>70</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -375,17 +333,59 @@
        <string>&amp;Drives</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="qpbBrowse" >
+     <widget class="QLabel" name="label_2" >
       <property name="geometry" >
        <rect>
-        <x>180</x>
-        <y>50</y>
-        <width>75</width>
-        <height>23</height>
+        <x>10</x>
+        <y>70</y>
+        <width>48</width>
+        <height>16</height>
        </rect>
       </property>
       <property name="text" >
-       <string>&amp;Browse</string>
+       <string>Search &amp;in</string>
+      </property>
+      <property name="buddy" >
+       <cstring>qcbSearchIn</cstring>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_2" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>121</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Regular expression</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>100</y>
+        <width>191</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Search in marked directories/files</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="qcbSearchIn" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>70</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="editable" >
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
@@ -650,8 +650,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>351</x>
-     <y>381</y>
+     <x>347</x>
+     <y>500</y>
     </hint>
     <hint type="destinationlabel" >
      <x>203</x>
