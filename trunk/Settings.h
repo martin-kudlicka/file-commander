@@ -15,6 +15,7 @@ const QString qsEXTENSION = "Extension";
 const QString qsFALSE = "false";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsFULL_SCREEN = "FullScreen";
+const QString qsGIGABYTES = "Gigabytes";
 const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsKILOBYTES = "Kilobytes";

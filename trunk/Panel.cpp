@@ -247,7 +247,11 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 			if (qi64Size < qi64_MEGABYTE) {
 				qsFileSizeIn = qsKILOBYTES;
 			} else {
-				qsFileSizeIn = qsMEGABYTES;
+				if (qi64Size < qi64_GIGABYTE) {
+					qsFileSizeIn = qsMEGABYTES;
+				} else {
+					qsFileSizeIn = qsGIGABYTES;
+				} // if else
 			} // if else
 		} // if else
 	} // if
@@ -256,9 +260,13 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 		return QVariant(qi64Size).toString() + tr(" B");
 	} else {
 		if (qsFileSizeIn == qsKILOBYTES) {
-			return QVariant(qi64Size / qi64_KILOBYTE).toString() + tr(" k");
+			return QString("%1 k").arg(static_cast<double>(qi64Size) / qi64_KILOBYTE, 0, 'f', 1);
 		} else {
-			return QVariant(qi64Size / qi64_MEGABYTE).toString() + tr(" M");
+			if (qsFileSizeIn == qsMEGABYTES) {
+				return QString("%1 M").arg(static_cast<double>(qi64Size) / qi64_MEGABYTE, 0, 'f', 1);
+			} else {
+				return QString("%1 G").arg(static_cast<double>(qi64Size) / qi64_GIGABYTE, 0, 'f', 1);
+			} // if else
 		} // if else
 	} // if else
 } // GetSizeString
