@@ -473,10 +473,10 @@ void cPanel::RefreshContent(const int &iIndex)
 
 	// get file list
 	fFilters = QDir::Dirs | QDir::Files;
-	if (csSettings->GetValue(cSettings::ShowSystemFiles) == qsTRUE) {
+	if (csSettings->GetShowSystemFiles()) {
 		fFilters |= QDir::System;
 	} // if
-	if (csSettings->GetValue(cSettings::ShowHiddenFiles) == qsTRUE) {
+	if (csSettings->GetShowHiddenFiles()) {
 		fFilters |= QDir::Hidden;
 	} // if
 	qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);

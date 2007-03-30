@@ -165,12 +165,10 @@ void cOptionsDialog::FillOptions()
 	// panels
 	// display
 	// files
-	qsValue = csSettings->GetValue(cSettings::ShowSystemFiles);
-	if (qsValue == qsTRUE) {
+	if (csSettings->GetShowSystemFiles()) {
 		qcbShowSystemFiles->setChecked(true);
 	} // if
-	qsValue = csSettings->GetValue(cSettings::ShowHiddenFiles);
-	if (qsValue == qsTRUE) {
+	if (csSettings->GetShowHiddenFiles()) {
 		qcbShowHiddenFiles->setChecked(true);
 	} // if
 	// files size in
@@ -217,10 +215,10 @@ void cOptionsDialog::FillOptions()
 			qrbListerVariableCharWidth->setChecked(true);
 		} // if else
 	} // if else
-	if (slLister.qsWrapText == qsTRUE) {
+	if (slLister.bWrapText) {
 		qcbListerWrapText->setChecked(true);
 	} // if
-	if (slLister.qsFitImageToWindow == qsTRUE) {
+	if (slLister.bFitImageToWindow) {
 		qcbListerFitImageToWindow->setChecked(true);
 	} // if
 	// content
@@ -661,18 +659,8 @@ void cOptionsDialog::SaveOptions()
 
 	// panels
 	// display
-	if (qcbShowSystemFiles->isChecked()) {
-		qsValue = qsTRUE;
-	} else {
-		qsValue = qsFALSE;
-	} // if else
-	csSettings->SetValue(cSettings::ShowSystemFiles, qsValue);
-	if (qcbShowHiddenFiles->isChecked()) {
-		qsValue = qsTRUE;
-	} else {
-		qsValue = qsFALSE;
-	} // if else
-	csSettings->SetValue(cSettings::ShowHiddenFiles, qsValue);
+	csSettings->SetShowSystemFiles(qcbShowSystemFiles->isChecked());
+	csSettings->SetShowHiddenFiles(qcbShowHiddenFiles->isChecked());
 	if (qrbSizeBytes->isChecked()) {
 		qsValue = qsBYTES;
 	} else {
@@ -708,16 +696,8 @@ void cOptionsDialog::SaveOptions()
 			slLister.qsCharSet = qsVARIABLE_CHAR_WIDTH;
 		} // if else
 	} // if else
-	if (qcbListerWrapText->isChecked()) {
-		slLister.qsWrapText = qsTRUE;
-	} else {
-		slLister.qsWrapText = qsFALSE;
-	} // if else
-	if (qcbListerFitImageToWindow->isChecked()) {
-		slLister.qsFitImageToWindow = qsTRUE;
-	} else {
-		slLister.qsFitImageToWindow = qsFALSE;
-	} // if else
+	slLister.bWrapText = qcbListerWrapText->isChecked();
+	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
 	csSettings->SetListerSettings(slLister);
 
 	// others
