@@ -182,6 +182,24 @@ QString cPanel::GetPath()
 	return qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath;
 } // GetPath
 
+// get dir infos of selected items
+QFileInfoList cPanel::GetSelectedDirItemsList()
+{
+	int iI;
+	QFileInfoList qfilDirectories;
+	QList<QTreeWidgetItem *> qlSelected;
+
+	qlSelected = static_cast<cTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != ".." && qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).isDir()) {
+			// ignore ".." directories
+			qfilDirectories.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+		} // if
+	} // for
+
+	return qfilDirectories;
+} // GetSelectedDirItemsList
+
 // get file infos of selected items
 QFileInfoList cPanel::GetSelectedItemsList()
 {
