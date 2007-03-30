@@ -17,6 +17,9 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFil
 	} else {
 		qcbSearchInSelectedDirectories->setEnabled(false);
 	} // if else
+	qdteFrom->setDateTime(QDateTime::currentDateTime());
+	qdteTo->setDateTime(QDateTime::currentDateTime());
+	qcbOldType->addItems(qslOLDER_THAN);
 	qtwSearch->headerItem()->setHidden(true);
 
 	// fill some options
@@ -41,6 +44,10 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 	// search for
 	bOk = false;
 	qslSearchFor = qcbSearchFor->currentText().split(';');
+	if (qslSearchFor.count() == 1 && qslSearchFor.at(0) == "" && !qcbSearchForRegularExpression->isChecked()) {
+		qslSearchFor.append("*.*");
+	} // if
+
 	for (iI = 0; iI < qslSearchFor.count(); iI++) {
 		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive);
 
@@ -63,8 +70,82 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 		return false;
 	} // if
 
+	// date/time between
+	if (qcbDateTimeBetween->isChecked()) {
+		if (qfFile.lastModified() < qdteFrom->dateTime() || qfFile.lastModified() > qdteTo->dateTime()) {
+			return false;
+		} // if
+	} // if
+
+	// date/time not older than
+	if (qcbDateTimeNotOlderThan->isChecked()) {
+		QDateTime qdtMaxOld;
+
+		if (qcbOldType->currentText() == qsMINUTES) {
+			qdtMaxOld = QDateTime::currentDateTime().addSecs(-60 * qsbOldCount->value());
+		} else {
+			if (qcbOldType->currentText() == qsHOURS) {
+				qdtMaxOld = QDateTime::currentDateTime().addMSecs(-3600 * qsbOldCount->value());
+			} else {
+				if (qcbOldType->currentText() == qsDAYS) {
+					qdtMaxOld = QDateTime::currentDateTime().addDays(-1 * qsbOldCount->value());
+				} else {
+					if (qcbOldType->currentText() == qsWEEKS) {
+						qdtMaxOld = QDateTime::currentDateTime().addDays(-7 * qsbOldCount->value());
+					} else {
+						if (qcbOldType->currentText() == qsMONTHS) {
+							qdtMaxOld = QDateTime::currentDateTime().addMonths(-1 * qsbOldCount->value());
+						} else {
+							qdtMaxOld = QDateTime::currentDateTime().addMonths(-12 * qsbOldCount->value());
+						} // if else
+					} // if else
+				} // if else
+			} // if else
+		} // if else
+
+		if (qfFile.lastModified() < qdtMaxOld) {
+			return false;
+		} // if
+	} // if
+
 	return true;
 } // ConditionsSuit
+
+// search files in specified date/time range
+void cFindFilesDialog::on_qcbDateTimeBetween_stateChanged(int state)
+{
+	if (state == Qt::Checked) {
+		if (qcbDateTimeNotOlderThan->isChecked()) {
+			qcbDateTimeNotOlderThan->setChecked(false);
+			qsbOldCount->setEnabled(false);
+			qcbOldType->setEnabled(false);
+		} // if
+		qdteFrom->setEnabled(true);
+		qdteTo->setEnabled(true);
+	} else {
+		qcbDateTimeBetween->setChecked(false);
+		qdteFrom->setEnabled(false);
+		qdteTo->setEnabled(false);
+	} // if else
+} // on_qcbDateTimeBetween_stateChanged
+
+// search files not older than specified
+void cFindFilesDialog::on_qcbDateTimeNotOlderThan_stateChanged(int state)
+{
+	if (state == Qt::Checked) {
+		if (qcbDateTimeBetween->isChecked()) {
+			qcbDateTimeBetween->setChecked(false);
+			qdteFrom->setEnabled(false);
+			qdteTo->setEnabled(false);
+		} // if
+		qsbOldCount->setEnabled(true);
+		qcbOldType->setEnabled(true);
+	} else {
+		qcbDateTimeNotOlderThan->setChecked(false);
+		qsbOldCount->setEnabled(false);
+		qcbOldType->setEnabled(false);
+	} // if else
+} // on_qcbDateTimeNotOlderThan_stateChanged
 
 // search only in selected directories
 void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)

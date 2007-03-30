@@ -8,6 +8,14 @@
 #include <QMainWindow>
 #include "Panel.h"
 
+const QString qsMINUTES = "minute(s)";
+const QString qsHOURS = "hour(s)";
+const QString qsDAYS = "day(s)";
+const QString qsWEEKS = "week(s)";
+const QString qsMONTHS = "month(s)";
+const QString qsYEARS = "year(s)";
+const QStringList qslOLDER_THAN = (QStringList() << qsMINUTES << qsHOURS << qsDAYS << qsWEEKS << qsMONTHS << qsYEARS);
+
 class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 {
 	Q_OBJECT
@@ -32,8 +40,12 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																									  \return true if conditions ok */
 
 	private slots:
+		void on_qcbDateTimeBetween_stateChanged(int state);					///< search files in specified date/time range
+																								/**< \param state search between dates/time flag */
+		void on_qcbDateTimeNotOlderThan_stateChanged(int state);				///< search files not older than specified
+																								/**< \param state search between dates/time flag */
 		void on_qcbSearchInSelectedDirectories_stateChanged(int state);	///< search only in selected directories
-																								/**< \param state state of search type */
+																								/**< \param state type of search */
 		void on_qpbBrowse_clicked(bool checked = false);						///< browse button is clicked on
 																								/**< \param checked true if button is checkable and checked */
 		void on_qpbDrives_clicked(bool checked = false);						///< drives button is clicked on
