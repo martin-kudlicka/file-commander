@@ -184,7 +184,11 @@ void cOptionsDialog::FillOptions()
 			if (qsValue == qsMEGABYTES) {
 				qrbSizeMegabytes->setChecked(true);
 			} else {
-				qrbSizeDynamic->setChecked(true);
+				if (qsValue == qsGIGABYTES) {
+					qrbSizeGigabytes->setChecked(true);
+				} else {
+					qrbSizeDynamic->setChecked(true);
+				} // if else
 			} // if else
 		} // if else
 	} // if else
@@ -678,7 +682,11 @@ void cOptionsDialog::SaveOptions()
 			if (qrbSizeMegabytes->isChecked()) {
 				qsValue = qsMEGABYTES;
 			} else {
-				qsValue = qsDYNAMIC;
+				if (qrbSizeGigabytes->isChecked()) {
+					qsValue = qsGIGABYTES;
+				} else {
+					qsValue = qsDYNAMIC;
+				} // if else
 			} // if else
 		} // if else
 	} // if else

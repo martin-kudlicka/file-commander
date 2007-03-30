@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="currentIndex" >
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_4" />
     <widget class="QWidget" name="page_5" >
@@ -112,7 +112,7 @@
         <x>140</x>
         <y>10</y>
         <width>120</width>
-        <height>111</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="title" >
@@ -161,13 +161,26 @@
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>80</y>
+         <y>100</y>
          <width>83</width>
          <height>18</height>
         </rect>
        </property>
        <property name="text" >
         <string>Dynamic</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="qrbSizeGigabytes" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>83</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Gigabytes</string>
        </property>
       </widget>
      </widget>
