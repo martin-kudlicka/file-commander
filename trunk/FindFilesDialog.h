@@ -8,13 +8,11 @@
 #include <QMainWindow>
 #include "Panel.h"
 
-const QString qsBYTES2 = "byte(s)";
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
 const QString qsHOURS = "hour(s)";
 const QString qsKILOBYTES2 = "kilobyte(s)";
 const QString qsMEGABYTES2 = "megabyte(s)";
-const QString qsMINUTES = "minute(s)";
 const QString qsMONTHS = "month(s)";
 const QString qsWEEKS = "week(s)";
 const QString qsYEARS = "year(s)";
@@ -27,17 +25,19 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 	Q_OBJECT
 
 	public:
-		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories);
+		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings);
 																								///< constructor
 																								/**< \param qmwParent parent window of this dialog
 																									  \param cpPanel panel to work with
-																									  \param qfilSelectedDirectories selected directories in dir view */
+																									  \param qfilSelectedDirectories selected directories in dir view
+																									  \param csSettings application's settings file */
 
 	private:
 		static const qint64 qi64SEARCH_BUFFER = 1048576;						///< search for text in files in this buffer size
 
 		bool bStop;																			///< interrupt finding files
 		cPanel *cpPanel;																	///< panel to work with
+		cSettings *csSettings;															///< application's settings file
 		QFileInfoList qfilSearch;														///< search result
 		QFileInfoList qfilSelectedDirectories;										///< selected directories in dir view
 
@@ -46,6 +46,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		bool ConditionsSuit(const QFileInfo &qfiFile);							///< check search conditions on found file
 																								/**< \param qfFile file to check conditions on
 																									  \return true if conditions ok */
+		void RefreshSavedSettings();													///< refreshes list of saved settings
 
 	private slots:
 		void on_qcbDateTimeBetween_stateChanged(int state);					///< search files in specified date/time range
@@ -60,12 +61,19 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																								/**< \param state type of search */
 		void on_qpbBrowse_clicked(bool checked = false);						///< browse button is clicked on
 																								/**< \param checked true if button is checkable and checked */
+		void on_qpbDeleteFind_clicked(bool checked = false);					///< delete find is clicked on
+																								/**< \param checked true if button is checkable and checked */
 		void on_qpbDrives_clicked(bool checked = false);						///< drives button is clicked on
+																								/**< \param checked true if button is checkable and checked */
+		void on_qpbLoadFind_clicked(bool checked = false);						///< load find is clicked on
+																								/**< \param checked true if button is checkable and checked */
+		void on_qpbSaveFind_clicked(bool checked = false);						///< save find is clicked on
 																								/**< \param checked true if button is checkable and checked */
 		void on_qpbStart_clicked(bool checked = false);							///< start button is clicked on
 																								/**< \param checked true if button is checkable and checked */
 		void on_qpbStop_clicked(bool checked = false);							///< stop button is clicked on
 																								/**< \param checked true if button is checkable and checked */
+		void on_qtwSavedFinds_itemSelectionChanged();							///< selected item changed in saved finds view
 }; // cFindFilesDialog
 
 #endif

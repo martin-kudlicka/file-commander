@@ -5,15 +5,17 @@
 #include <QTextDocument>
 #include <QTextCodec>
 #include <QTextCursor>
+#include "FindFilesDialog/SaveFindSettingsDialog.h"
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories)
+cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	this->cpPanel = cpPanel;
 	this->qfilSelectedDirectories = qfilSelectedDirectories;
+	this->csSettings = csSettings;
 
 	if (qfilSelectedDirectories.count() > 0) {
 		qcbSearchInSelectedDirectories->setChecked(true);
@@ -26,9 +28,13 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFil
 	qcbFileSizeComparator->addItems(qsFILE_SIZE_COMPARATOR);
 	qcbFileSizeType->addItems(qsFILE_SIZE_TYPE);
 	qtwSearch->headerItem()->setHidden(true);
+	qtwSavedFinds->headerItem()->setHidden(true);
 
 	// fill some options
 	qcbSearchIn->insertItem(0, cpPanel->GetPath());
+
+	// refresh list of saved settings
+	RefreshSavedSettings();
 } // cFindFilesDialog
 
 // catch dialog close
@@ -304,10 +310,12 @@ void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
 		qcbSearchIn->setEnabled(false);
 		qpbBrowse->setEnabled(false);
 		qpbDrives->setEnabled(false);
+		qpbSaveFind->setEnabled(false);
 	} else {
 		qcbSearchIn->setEnabled(true);
 		qpbBrowse->setEnabled(true);
 		qpbDrives->setEnabled(true);
+		qpbSaveFind->setEnabled(true);
 	} // if else
 } // on_qcbSearchInSelectedDirectories_stateChanged
 
@@ -318,10 +326,16 @@ void cFindFilesDialog::on_qpbBrowse_clicked(bool checked /* false */)
 
 	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select a directory"), "/");
 	if (qsDirectory != "") {
-		qcbSearchIn->insertItem(0, qsDirectory);
-		qcbSearchIn->setCurrentIndex(0);
+		qcbSearchIn->setEditText(qsDirectory);
 	} // if
 } // on_qpbBrowse_clicked
+
+// delete find is clicked on
+void cFindFilesDialog::on_qpbDeleteFind_clicked(bool checked /* false */)
+{
+	csSettings->RemoveFindSettings(qtwSavedFinds->selectedItems().at(0)->text(0));
+	RefreshSavedSettings();
+} // on_qpbDeleteFind_clicked
 
 // drives button is clicked on
 void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
@@ -345,12 +359,88 @@ void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 			} // if
 		} // for
 
-		qcbSearchIn->insertItem(0, qsPath);
-		qcbSearchIn->setCurrentIndex(0);
+		qcbSearchIn->setEditText(qsPath);
 	} // if
 
 	cddDrives->deleteLater();
 } // on_qpbDrives_clicked
+
+// load find is clicked on
+void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */)
+{
+	cSettings::sFindSettings sfsFindSettings;
+
+	sfsFindSettings = csSettings->GetFindSettings(qtwSavedFinds->selectedItems().at(0)->text(0));
+
+	// general
+	qcbSearchFor->setEditText(sfsFindSettings.qsSearchFor);
+	qcbSearchForRegularExpression->setChecked(sfsFindSettings.bSearchForRegularExpression);
+	qcbSearchIn->setEditText(sfsFindSettings.qsSearchIn);
+	qsbSubdirectoryDepth->setValue(sfsFindSettings.iSubdirectoryDepth);
+	qcbSearchForText->setChecked(sfsFindSettings.bSearchForText);
+	qcbFullText->setEditText(sfsFindSettings.qsFullText);
+	qcbFullTextWholeWords->setChecked(sfsFindSettings.bFulTextWholeWords);
+	qcbFullTextCaseSensitive->setChecked(sfsFindSettings.bFullTextCaseSensitive);
+	qcbFullTextNotContainingText->setChecked(sfsFindSettings.bFullTextNotContainingText);
+	qcbFullTextHex->setChecked(sfsFindSettings.bFullTextHex);
+	qcbFullTextRegularExpression->setChecked(sfsFindSettings.bFullTextRegularExpression);
+	// advanced
+	qcbDateTimeBetween->setChecked(sfsFindSettings.bDateTimeBetween);
+	qdteFrom->setDateTime(sfsFindSettings.qdtFrom);
+	qdteTo->setDateTime(sfsFindSettings.qdtTo);
+	qcbDateTimeNotOlderThan->setChecked(sfsFindSettings.bNotOlderThan);
+	qsbOldCount->setValue(sfsFindSettings.iNotOlderThanCount);
+	qcbOldType->setCurrentIndex(qcbOldType->findText(sfsFindSettings.qsNotOlderThanType));
+	qcbFileSize->setChecked(sfsFindSettings.bFileSize);
+	qcbFileSizeComparator->setCurrentIndex(qcbFileSizeComparator->findText(sfsFindSettings.qsFileSizeComparator));
+	qsbFileSize->setValue(sfsFindSettings.iFileSizeValue);
+	qcbFileSizeType->setCurrentIndex(qcbFileSizeType->findText(sfsFindSettings.qsFileSizeType));
+} // on_qpbLoadFind_clicked
+
+// save find is clicked on
+void cFindFilesDialog::on_qpbSaveFind_clicked(bool checked /* false */)
+{
+	cSaveFindSettingsDialog csfsdDialog(this);
+
+	if (csfsdDialog.exec() == QDialog::Accepted) {
+		cSettings::sFindSettings sfsFindSettings;
+
+		// general
+		sfsFindSettings.qsSearchFor = qcbSearchFor->currentText();
+		sfsFindSettings.bSearchForRegularExpression = qcbSearchForRegularExpression->isChecked();
+		sfsFindSettings.qsSearchIn = qcbSearchIn->currentText();
+		sfsFindSettings.iSubdirectoryDepth = qsbSubdirectoryDepth->value();
+		sfsFindSettings.bSearchForText = qcbSearchForText->isChecked();
+		if (qcbSearchForText->isChecked()) {
+			sfsFindSettings.qsFullText = qcbFullText->currentText();
+			sfsFindSettings.bFulTextWholeWords = qcbFullTextWholeWords->isChecked();
+			sfsFindSettings.bFullTextCaseSensitive = qcbFullTextCaseSensitive->isChecked();
+			sfsFindSettings.bFullTextNotContainingText = qcbFullTextNotContainingText->isChecked();
+			sfsFindSettings.bFullTextHex = qcbFullTextHex->isChecked();
+			sfsFindSettings.bFullTextRegularExpression = qcbFullTextRegularExpression->isChecked();
+		} // if
+		// advanced
+		sfsFindSettings.bDateTimeBetween = qcbDateTimeBetween->isChecked();
+		if (qcbDateTimeBetween->isChecked()) {
+			sfsFindSettings.qdtFrom = qdteFrom->dateTime();
+			sfsFindSettings.qdtTo = qdteTo->dateTime();
+		} // if
+		sfsFindSettings.bNotOlderThan = qcbDateTimeNotOlderThan->isChecked();
+		if (qcbDateTimeNotOlderThan->isChecked()) {
+			sfsFindSettings.iNotOlderThanCount = qsbOldCount->value();
+			sfsFindSettings.qsNotOlderThanType = qcbOldType->currentText();
+		} // if
+		sfsFindSettings.bFileSize = qcbFileSize->isChecked();
+		if (qcbFileSize->isChecked()) {
+			sfsFindSettings.qsFileSizeComparator = qcbFileSizeComparator->currentText();
+			sfsFindSettings.iFileSizeValue = qsbFileSize->value();
+			sfsFindSettings.qsFileSizeType = qcbFileSizeType->currentText();
+		} // if
+
+		csSettings->SetFindSettings(csfsdDialog.qleName->text(), sfsFindSettings);
+		RefreshSavedSettings();
+	} // if
+} // on_qpbSaveFind_clicked
 
 // start button is clicked on
 void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
@@ -429,3 +519,33 @@ void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 {
 	bStop = true;
 } // on_qpbStop_clicked
+
+// selected item changed in saved finds view
+void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged()
+{
+	if (qtwSavedFinds->selectedItems().count() > 0) {
+		qpbLoadFind->setEnabled(true);
+		qpbDeleteFind->setEnabled(true);
+	} else {
+		qpbLoadFind->setEnabled(false);
+		qpbDeleteFind->setEnabled(false);
+	} // if else
+} // on_qtwSavedFinds_itemSelectionChanged
+
+// refreshes list of saved settings
+void cFindFilesDialog::RefreshSavedSettings()
+{
+	int iI;
+	QStringList qslSavedFinds;
+
+	qtwSavedFinds->clear();
+
+	qslSavedFinds = csSettings->GetSavedFinds();
+
+	for (iI = 0; iI < qslSavedFinds.count(); iI++) {
+		QTreeWidgetItem *qtwiFind;
+
+		qtwiFind = new QTreeWidgetItem(qtwSavedFinds);
+		qtwiFind->setText(0, qslSavedFinds.at(iI));
+	} // for
+} // RefreshSavedSettings
