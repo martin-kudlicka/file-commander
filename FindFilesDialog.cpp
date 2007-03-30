@@ -153,6 +153,11 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 		} // if else
 	} // if
 
+	// full text
+	if (qcbSearchForText->isChecked() && qfFile.isFile()) {
+		// TODO ConditionsSuit full text
+	} // if
+
 	return true;
 } // ConditionsSuit
 
@@ -205,6 +210,26 @@ void cFindFilesDialog::on_qcbFileSize_stateChanged(int state)
 		qcbFileSizeType->setEnabled(false);
 	} // if else
 } // on_qcbFileSize_stateChanged
+
+// search for text in files
+void cFindFilesDialog::on_qcbSearchForText_stateChanged(int state)
+{
+	if (state == Qt::Checked) {
+		qcbFullText->setEnabled(true);
+		qcbFullTextWholeWords->setEnabled(true);
+		qcbFullTextCaseSensitive->setEnabled(true);
+		qcbFullTextNotContainingText->setEnabled(true);
+		qcbFullTextHex->setEnabled(true);
+		qcbFullTextRegularExpression->setEnabled(true);
+	} else {
+		qcbFullText->setEnabled(false);
+		qcbFullTextWholeWords->setEnabled(false);
+		qcbFullTextCaseSensitive->setEnabled(false);
+		qcbFullTextNotContainingText->setEnabled(false);
+		qcbFullTextHex->setEnabled(false);
+		qcbFullTextRegularExpression->setEnabled(false);
+	} // if else
+} // on_qcbSearchForText_stateChanged
 
 // search only in selected directories
 void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
@@ -264,7 +289,7 @@ void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 // start button is clicked on
 void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
-	int iI;
+	int iDepth, iI;
 	QFileInfoList qfilDirectories;
 
 	qpbStart->setEnabled(false);
@@ -288,33 +313,45 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	qtwSearch->clear();
 
 	// search through directories
+	iDepth = 0;
 	while (!qfilDirectories.isEmpty() && !bStop) {
-		QFileInfo qfiDir;
-		QFileInfoList qfilDirContent;
+		QFileInfoList qfilNextDirDepth;
 
-		// get content of directory
-		qfiDir = qfilDirectories.takeAt(0);
-		qfilDirContent = cFileRoutine::GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+		while (!qfilDirectories.isEmpty() && !bStop) {
+			QFileInfo qfiDir;
+			QFileInfoList qfilDirContent;
 
-		// check conditions
-		for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
-			if (ConditionsSuit(qfilDirContent.at(iI))) {
-				// file suit conditions
-				QTreeWidgetItem *qtwiItem;
+			// get content of directory
+			qfiDir = qfilDirectories.takeAt(0);
+			qfilDirContent = cFileRoutine::GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
 
-				qfilSearch += qfilDirContent.at(iI);
-				qtwiItem = new QTreeWidgetItem(qtwSearch);
-				qtwiItem->setText(0, qfilDirContent.at(iI).filePath());
-				QApplication::processEvents(QEventLoop::AllEvents);
-			} // if
-		} // for
+			// check conditions
+			for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
+				if (ConditionsSuit(qfilDirContent.at(iI))) {
+					// file suit conditions
+					QTreeWidgetItem *qtwiItem;
 
-		// add found directories
-		for (iI = 0; iI < qfilDirContent.count(); iI++) {
-			if (qfilDirContent.at(iI).isDir()) {
-				qfilDirectories.append(qfilDirContent.at(iI));
-			} // if
-		} // for
+					qfilSearch += qfilDirContent.at(iI);
+					qtwiItem = new QTreeWidgetItem(qtwSearch);
+					qtwiItem->setText(0, qfilDirContent.at(iI).filePath());
+					QApplication::processEvents();
+				} // if
+			} // for
+
+			// add found directories
+			for (iI = 0; iI < qfilDirContent.count(); iI++) {
+				if (qfilDirContent.at(iI).isDir()) {
+					qfilNextDirDepth.append(qfilDirContent.at(iI));
+				} // if
+			} // for
+		} // while
+
+		if (iDepth < qsbSubdirectoryDepth->value()) {
+			qfilDirectories += qfilNextDirDepth;
+			iDepth++;
+		} else {
+			break;
+		} // if else
 	} // while
 
 	qpbStop->setEnabled(false);
