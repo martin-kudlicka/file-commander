@@ -5,5 +5,6 @@ cNewDirectoryDialog::cNewDirectoryDialog(QMainWindow *qmwParent)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
-	qleDirectory->setFocus();
+
+	qleDirectory->setFocus(Qt::OtherFocusReason);
 } // cNewDirectoryDialog

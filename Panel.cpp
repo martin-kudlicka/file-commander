@@ -403,7 +403,7 @@ void cPanel::on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem)
 // drive selected
 void cPanel::on_qcbDrive_activated(int index)
 {
-	static_cast<cTreeWidget *>(qswDir->currentWidget())->setFocus();
+	static_cast<cTreeWidget *>(qswDir->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // on_qcbDrive_activated
 
 // selected drive changes
