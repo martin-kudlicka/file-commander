@@ -50,10 +50,10 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 			qaVariableCharWidth->setChecked(true);
 		} // if else
 	} // if else
-	if (slLister.qsWrapText == qsTRUE) {
+	if (slLister.bWrapText) {
 		qaWrapText->setChecked(true);
 	} // if
-	if (slLister.qsFitImageToWindow == qsTRUE) {
+	if (slLister.bFitImageToWindow) {
 		qaFitImageToWindow->setChecked(true);
 	} // if
 

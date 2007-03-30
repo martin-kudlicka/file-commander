@@ -278,8 +278,8 @@ cSettings::sLister cSettings::GetListerSettings()
 
 	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
 	slLister.qsCharSet = qsSettings.value(qsCHAR_SET, qsANSI).toString();
-	slLister.qsWrapText = qsSettings.value(qsWRAP_TEXT, qsTRUE).toString();
-	slLister.qsFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW, qsFALSE).toString();
+	slLister.bWrapText = qsSettings.value(qsWRAP_TEXT, true).toBool();
+	slLister.bFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW).toBool();
 	qsSettings.endGroup();
 
 	return slLister;
@@ -342,6 +342,18 @@ QStringList cSettings::GetSavedFinds()
 	return qslSavedFinds;
 } // GetSavedFinds
 
+// show hidden files in dir view flag
+bool cSettings::GetShowHiddenFiles()
+{
+	return qsSettings.value(qsDISPLAY__SHOW_HIDDEN_FILES).toBool();
+} // GetShowHiddenFiles
+
+// show system files in dir view flag
+bool cSettings::GetShowSystemFiles()
+{
+	return qsSettings.value(qsDISPLAY__SHOW_SYSTEM_FILES).toBool();
+} // GetShowSystemFiles
+
 ///< get some information about tab
 cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
@@ -363,21 +375,6 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 
 	return stiTabInfo;
 } // GetTabInfo
-
-// find out value for specified key
-QString cSettings::GetValue(const eKey &ekKey)
-{
-	QString qsResult;
-
-	switch (ekKey) {
-		case ShowHiddenFiles:	qsResult = qsSettings.value(qsDISPLAY__SHOW_HIDDEN_FILES, qsFALSE).toString();
-										break;
-		case ShowSystemFiles:	qsResult = qsSettings.value(qsDISPLAY__SHOW_SYSTEM_FILES, qsFALSE).toString();
-										break;
-	} // switch
-
-	return qsResult;
-} // GetValue
 
 // retrieve startup main window parameters
 cSettings::sMainWindowState cSettings::GetWindowState()
@@ -450,8 +447,8 @@ void cSettings::SetListerSettings(const sLister &slLister)
 {
 	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
 	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
-	qsSettings.setValue(qsWRAP_TEXT, slLister.qsWrapText);
-	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.qsFitImageToWindow);
+	qsSettings.setValue(qsWRAP_TEXT, slLister.bWrapText);
+	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);
 	qsSettings.endGroup();
 } // SetListerSettings
 
@@ -536,16 +533,17 @@ void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
 	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
 } // SetReadonlyFileOverwrite
 
-// set key - value pair
-void cSettings::SetValue(const eKey &ekKey, const QString &qsValue)
+// set show hidden files in dir view flag
+void cSettings::SetShowHiddenFiles(const bool &bShowHidden)
 {
-	switch (ekKey) {
-		case ShowHiddenFiles:	qsSettings.setValue(qsDISPLAY__SHOW_HIDDEN_FILES, qsValue);
-										break;
-		case ShowSystemFiles:	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, qsValue);
-										break;
-	} // switch
-} // SetValue
+	qsSettings.setValue(qsDISPLAY__SHOW_HIDDEN_FILES, bShowHidden);
+} // SetShowHiddenFiles
+
+// set show system files in dir view flag
+void cSettings::SetShowSystemFiles(const bool &bShowSystem)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, bShowSystem);
+} // SetShowSystemFiles
 
 // set startup main window state
 void cSettings::SetWindowState(const sMainWindowState &smwsState)

@@ -14,7 +14,6 @@ const QString qsBYTES2 = "byte(s)";
 const QString qsDATE = "Date";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
-const QString qsFALSE = "false";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsGIGABYTES = "Gigabytes";
@@ -32,18 +31,12 @@ const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSIZE = "Size";
 const QString qsSKIP_ALL = "SkipAll";
-const QString qsTRUE = "true";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 const QString qsYES_TO_ALL = "YesToAll";
 
 class cSettings : private QObject
 {
 	public:
-		/// keys for values
-		enum eKey {
-			ShowHiddenFiles,												///< visibility of hidden files in panels
-			ShowSystemFiles												///< visibility of system files in panels
-		};
 		/// plugin type
 		enum ePlugin {
 			ContentPlugins,												///< content plugin type
@@ -91,8 +84,8 @@ class cSettings : private QObject
 		/// lister settings
 		struct sLister {
 			QString qsCharSet;											///< selected char set
-			QString qsWrapText;											///< word wrapping flag
-			QString qsFitImageToWindow;								///< image auto resize flag
+			bool bWrapText;												///< word wrapping flag
+			bool bFitImageToWindow;										///< image auto resize flag
 		};
 		/// plugin
 		struct sPlugin {
@@ -161,6 +154,8 @@ class cSettings : private QObject
 																				/**< \return default readonly file overwrite mode */
 		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
 																				/**< \return list of save find settings */
+		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
+		bool GetShowSystemFiles();										///< show system files in dir view flag
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
 																				///< get some information about tab
 																				/**< \param epPosition left or right panel
@@ -169,9 +164,6 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
-		QString GetValue(const eKey &ekKey);						///< find out value for specified key
-																				/**< \param ekKey key to find value for
-																					  \return value for the key */
 		sMainWindowState GetWindowState();							///< retrieve startup main window parameters
 																				/**< \return startup main window parameters */
 		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
@@ -200,10 +192,8 @@ class cSettings : private QObject
 																				/**< \param qsTime user defined time display format */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
-		void SetValue(const eKey &ekKey, const QString &qsValue);
-																				///< set key - value pair
-																				/**< \param ekKey key
-																					  \param qsValue value */
+		void SetShowHiddenFiles(const bool &bShowHidden);		///< set show hidden files in dir view flag
+		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view flag
 		void SetWindowState(const sMainWindowState &smwsState);
 																				///< set startup main window state
 																				/**< \param smwsState window state information */
