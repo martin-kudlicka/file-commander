@@ -2,6 +2,9 @@
 
 #include "FindFilesDialog/DrivesDialog.h"
 #include <QFileDialog>
+#include <QTextDocument>
+#include <QTextCodec>
+#include <QTextCursor>
 
 // constructor
 cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories)
@@ -156,6 +159,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	// full text
 	if (qcbSearchForText->isChecked()) {
 		if (qfiFile.isFile()) {
+			bool bFound;
 			QByteArray qbaFile;
 			QFile qfFile;
 			QString qsPattern;
@@ -172,39 +176,45 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 			} // if
 			qfFile.open(QIODevice::ReadOnly);
 
-			// Rabin-Karp algorithm
-			int iD, iDM, iH1, iH2, iI, iQ;
+			bFound = false;
+			qbaFile = qfFile.read(qi64SEARCH_BUFFER);
+			while (!qbaFile.isEmpty() && !bStop) {
+				QTextCursor qtcCursor;
+				QTextDocument qtdText;
+				QTextDocument::FindFlags ffFlags;
 
-			iD = 32;
-			iQ = 33554393;
+				if (qcbFullTextWholeWords->isChecked()) {
+					ffFlags = QTextDocument::FindWholeWords;
+				} // if
+				if (qcbFullTextCaseSensitive->isChecked()) {
+					ffFlags |= QTextDocument::FindCaseSensitively;
+				} // if
 
-			iDM = 1;
-			for (iI = 0; iI < qsPattern.length() - 1; iI++) {
-				iDM = (iD * iDM) % iQ;
-			} // for
-			iH1 = 0;
-			iH2 = 0;
-			qbaFile = qfFile.peek(qsPattern.length());
-			for (iI = 0; iI < qsPattern.length(); iI++) {
-				iH1 = (iH1 * iD + qsPattern.at(iI).toAscii()) % iQ;
-				iH2 = (iH2 * iD + qbaFile.at(iI)) % iQ;
-			} // for
+				qtdText.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 
-			iI = 0;
-			while (iH1 != iH2 && iI < qfFile.size() - qsPattern.length()) {
-				QByteArray qbaPart;
+				if (qcbFullTextRegularExpression->isChecked()) {
+					qtcCursor = qtdText.find(QRegExp(qsPattern), 0, ffFlags);
+				} else {
+					qtcCursor = qtdText.find(qsPattern, 0, ffFlags);
+				} // if else
 
-				qbaPart = qfFile.peek(qsPattern.length() + 1);
-				iH2 = (iH2 + iD * iQ - qbaPart.at(0) * iDM) % iQ;
-				iH2 = (iH2 * iD + qbaPart.at(qsPattern.length())) % iQ;
+				if (!qtcCursor.isNull()) {
+					bFound = true;
+					break;
+				} // if
 
-				iI++;
-				qfFile.seek(iI);
+				// next buffer part
+				if (qfFile.atEnd()) {
+					break;
+				} else {
+					QApplication::processEvents();
+					qfFile.seek(qfFile.pos() - qsPattern.length() + 1);
+					qbaFile = qfFile.read(qi64SEARCH_BUFFER);
+				} // if else
 			} // while
-
 			qfFile.close();
 
-			if ((iH1 != iH2) ^ qcbFullTextNotContainingText->isChecked()) {
+			if (!bFound ^ qcbFullTextNotContainingText->isChecked()) {
 				return false;
 			} // if
 		} else {

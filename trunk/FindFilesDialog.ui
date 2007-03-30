@@ -95,7 +95,7 @@
        <string>Search &amp;for</string>
       </property>
       <property name="buddy" >
-       <cstring>qcbSearchForRegularExpression</cstring>
+       <cstring>qcbSearchFor</cstring>
       </property>
      </widget>
      <widget class="QLabel" name="label_2" >
@@ -111,7 +111,7 @@
        <string>Search &amp;in</string>
       </property>
       <property name="buddy" >
-       <cstring>qcbSearchInSelectedDirectories</cstring>
+       <cstring>qcbSearchIn</cstring>
       </property>
      </widget>
      <widget class="QCheckBox" name="qcbSearchInSelectedDirectories" >
