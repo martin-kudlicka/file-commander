@@ -54,6 +54,83 @@
     <string>&amp;Cancel</string>
    </property>
   </widget>
+  <widget class="QGroupBox" name="groupBox_4" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>360</y>
+     <width>401</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Found files:</string>
+   </property>
+   <widget class="QTreeWidget" name="qtwSearch" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>381</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="selectionMode" >
+     <enum>QAbstractItemView::ExtendedSelection</enum>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>150</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;View</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>230</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Go to file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>310</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Feed to panel</string>
+    </property>
+   </widget>
+  </widget>
   <widget class="QTabWidget" name="tabWidget" >
    <property name="geometry" >
     <rect>
@@ -64,7 +141,7 @@
     </rect>
    </property>
    <property name="currentIndex" >
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab" >
     <attribute name="title" >
@@ -516,7 +593,7 @@
     <attribute name="title" >
      <string>Load/save</string>
     </attribute>
-    <widget class="QPushButton" name="pushButton_3" >
+    <widget class="QPushButton" name="qpbSaveFind" >
      <property name="geometry" >
       <rect>
        <x>90</x>
@@ -529,7 +606,23 @@
       <string>Save</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2" >
+    <widget class="QTreeWidget" name="qtwSavedFinds" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>371</width>
+       <height>80</height>
+      </rect>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="qpbLoadFind" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
      <property name="geometry" >
       <rect>
        <x>10</x>
@@ -542,7 +635,10 @@
       <string>Load</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_4" >
+    <widget class="QPushButton" name="qpbDeleteFind" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
      <property name="geometry" >
       <rect>
        <x>170</x>
@@ -555,93 +651,6 @@
       <string>Delete</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listWidget" >
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>371</width>
-       <height>80</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>360</y>
-     <width>401</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Found files:</string>
-   </property>
-   <widget class="QTreeWidget" name="qtwSearch" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>381</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="selectionMode" >
-     <enum>QAbstractItemView::ExtendedSelection</enum>
-    </property>
-    <property name="rootIsDecorated" >
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>150</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;View</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>230</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Go to file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_6" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>310</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Feed to panel</string>
-    </property>
    </widget>
   </widget>
  </widget>
@@ -669,10 +678,9 @@
   <tabstop>qcbFileSizeComparator</tabstop>
   <tabstop>qsbFileSize</tabstop>
   <tabstop>qcbFileSizeType</tabstop>
-  <tabstop>listWidget</tabstop>
-  <tabstop>pushButton_3</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>pushButton_4</tabstop>
+  <tabstop>qpbSaveFind</tabstop>
+  <tabstop>qpbLoadFind</tabstop>
+  <tabstop>qpbDeleteFind</tabstop>
   <tabstop>qcbDateTimeNotOlderThan</tabstop>
   <tabstop>qcbDateTimeBetween</tabstop>
  </tabstops>
@@ -685,8 +693,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>347</x>
-     <y>500</y>
+     <x>343</x>
+     <y>520</y>
     </hint>
     <hint type="destinationlabel" >
      <x>203</x>

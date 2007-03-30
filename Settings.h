@@ -4,11 +4,13 @@
 #define SETTINGS_H
 
 #include <QSettings>
+#include <QDateTime>
 
 const QString qsANSI = "ANSI";
 const QString qsASCII = "ASCII";
 const QString qsASK = "Ask";
 const QString qsBYTES = "Bytes";
+const QString qsBYTES2 = "byte(s)";
 const QString qsDATE = "Date";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
@@ -21,6 +23,7 @@ const QString qsIDENTIFIER = "Identifier";
 const QString qsKILOBYTES = "Kilobytes";
 const QString qsMAXIMIZED = "Maximized";
 const QString qsMEGABYTES = "Megabytes";
+const QString qsMINUTES = "minute(s)";
 const QString qsNAME = "Name";
 const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
@@ -58,6 +61,32 @@ class cSettings : private QObject
 			QString qsPlugin;												///< plugin filename or "no" if native
 			QString qsUnit;												///< selected unit for column
 			int iWidth;														///< column width
+		};
+		/// find settings
+		struct sFindSettings {
+			// general
+			QString qsSearchFor;											///< search for this file(s)
+			bool bSearchForRegularExpression;						///< search for is regular expression flag
+			QString qsSearchIn;											///< search in this directory(s)
+			int iSubdirectoryDepth;										///< number of subdirectories to go through
+			bool bSearchForText;											///< search for text flag
+			QString qsFullText;											///< text to search
+			bool bFulTextWholeWords;									///< search whole words
+			bool bFullTextCaseSensitive;								///< case sensitive search
+			bool bFullTextNotContainingText;							///< search files not containing specified text
+			bool bFullTextHex;											///< specified text is hex code flag
+			bool bFullTextRegularExpression;							///< specified text is regular expression flag
+			// advanced
+			bool bDateTimeBetween;										///< search files between two dates/times flag
+			QDateTime qdtFrom;											///< minimum date/time of file
+			QDateTime qdtTo;												///< maximum date/time of file
+			bool bNotOlderThan;											///< search file not older than flag
+			int iNotOlderThanCount;										///< count of "something" to be not older than
+			QString qsNotOlderThanType;								///< that's the "something" :)
+			bool bFileSize;												///< file size to match in search flag
+			QString qsFileSizeComparator;								///< file size comparator
+			int iFileSizeValue;											///< file size value
+			QString qsFileSizeType;										///< type of file size value
 		};
 		/// lister settings
 		struct sLister {
@@ -117,6 +146,9 @@ class cSettings : private QObject
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
+		sFindSettings GetFindSettings(const QString &qsName);	///< get find settings
+																				/**< \param qsName name of find settings set
+																					  \return find settings */
 		sLister GetListerSettings();									///< lister settings
 																				/**< \return lister settings */
 																				/**< \return file size unit */
@@ -127,6 +159,8 @@ class cSettings : private QObject
 																				/**< \return plugin time display format */
 		QString GetReadonlyFileOverwrite();							///< find out readonly file overwrite mode
 																				/**< \return default readonly file overwrite mode */
+		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
+																				/**< \return list of save find settings */
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
 																				///< get some information about tab
 																				/**< \param epPosition left or right panel
@@ -142,6 +176,9 @@ class cSettings : private QObject
 																				/**< \return startup main window parameters */
 		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
 																				/**< \param qsColumnSet column set to remove */
+		void RemoveFindSettings(const QString &qsFindSettings);
+																				///< remove find settings
+																				/**< \param qsFindSettings find settings name */
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
@@ -149,6 +186,10 @@ class cSettings : private QObject
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
 																				/**< \param qsSize file size to show */
+		void SetFindSettings(const QString &qsName, const sFindSettings &sfsFindSettings);
+																				///< save find settings for find files dialog
+																				/**< \param qsName name of find settings
+																					  \param sfsFindSettings settings for find files dialog */
 		void SetListerSettings(const sLister &slLister);		///< set default lister settings
 																				/**< \param slLister lister settings */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
