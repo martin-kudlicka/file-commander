@@ -41,7 +41,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 
 		void closeEvent(QCloseEvent *event);										///< catch dialog close
 																								/**< \param event close event description */
-		bool ConditionsSuit(const QFileInfo &qfFile);							///< check search conditions on found file
+		bool ConditionsSuit(const QFileInfo &qfiFile);							///< check search conditions on found file
 																								/**< \param qfFile file to check conditions on
 																									  \return true if conditions ok */
 

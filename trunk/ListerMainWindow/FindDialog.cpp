@@ -10,5 +10,5 @@ cFindDialog::cFindDialog(QMainWindow *qmwParent, const bool &bPlugin)
 		qcbRegularExpression->setEnabled(false);
 	} // if
 
-	qcbFind->setFocus();
+	qcbFind->setFocus(Qt::OtherFocusReason);
 } // cFindDialog

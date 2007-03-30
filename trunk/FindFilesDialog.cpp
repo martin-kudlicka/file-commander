@@ -37,7 +37,7 @@ void cFindFilesDialog::closeEvent(QCloseEvent *event)
 } // closeEvent
 
 // check search conditions on found file
-bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
+bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 {
 	bool bOk;
 	int iI;
@@ -63,14 +63,14 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 
 		if (qcbSearchForRegularExpression->isChecked()) {
 			// regular expression
-			if (qreExpression.indexIn(qfFile.fileName()) != -1) {
+			if (qreExpression.indexIn(qfiFile.fileName()) != -1) {
 				bOk = true;
 				break;
 			} // if
 		} else {
 			// wildcard
 			qreExpression.setPatternSyntax(QRegExp::Wildcard);
-			if (qreExpression.exactMatch(qfFile.fileName())) {
+			if (qreExpression.exactMatch(qfiFile.fileName())) {
 				bOk = true;
 				break;
 			} // if
@@ -82,7 +82,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 
 	// date/time between
 	if (qcbDateTimeBetween->isChecked()) {
-		if (qfFile.lastModified() < qdteFrom->dateTime() || qfFile.lastModified() > qdteTo->dateTime()) {
+		if (qfiFile.lastModified() < qdteFrom->dateTime() || qfiFile.lastModified() > qdteTo->dateTime()) {
 			return false;
 		} // if
 	} // if
@@ -113,7 +113,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 			} // if else
 		} // if else
 
-		if (qfFile.lastModified() < qdtMaxOld) {
+		if (qfiFile.lastModified() < qdtMaxOld) {
 			return false;
 		} // if
 	} // if
@@ -137,16 +137,16 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 		} // if else
 
 		if (qcbFileSizeComparator->currentText() == "=") {
-			if (qfFile.size() != qi64CompareSize) {
+			if (qfiFile.size() != qi64CompareSize) {
 				return false;
 			} // if
 		} else {
 			if (qcbFileSizeComparator->currentText() == "<") {
-				if (qfFile.size() >= qi64CompareSize) {
+				if (qfiFile.size() >= qi64CompareSize) {
 					return false;
 				} // if else
 			} else {
-				if (qfFile.size() <= qi64CompareSize) {
+				if (qfiFile.size() <= qi64CompareSize) {
 					return false;
 				} // if
 			} // if else
@@ -154,8 +154,62 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 	} // if
 
 	// full text
-	if (qcbSearchForText->isChecked() && qfFile.isFile()) {
-		// TODO ConditionsSuit full text
+	if (qcbSearchForText->isChecked()) {
+		if (qfiFile.isFile()) {
+			QByteArray qbaFile;
+			QFile qfFile;
+			QString qsPattern;
+
+			if (qcbFullTextHex->isChecked()) {
+				// TODO ConditionsSuit Hex
+			} else {
+				qsPattern = qcbFullText->currentText();
+			} // if else
+
+			qfFile.setFileName(qfiFile.filePath());
+			if (qfFile.size() < qsPattern.length()) {
+				return false;
+			} // if
+			qfFile.open(QIODevice::ReadOnly);
+
+			// Rabin-Karp algorithm
+			int iD, iDM, iH1, iH2, iI, iQ;
+
+			iD = 32;
+			iQ = 33554393;
+
+			iDM = 1;
+			for (iI = 0; iI < qsPattern.length() - 1; iI++) {
+				iDM = (iD * iDM) % iQ;
+			} // for
+			iH1 = 0;
+			iH2 = 0;
+			qbaFile = qfFile.peek(qsPattern.length());
+			for (iI = 0; iI < qsPattern.length(); iI++) {
+				iH1 = (iH1 * iD + qsPattern.at(iI).toAscii()) % iQ;
+				iH2 = (iH2 * iD + qbaFile.at(iI)) % iQ;
+			} // for
+
+			iI = 0;
+			while (iH1 != iH2 && iI < qfFile.size() - qsPattern.length()) {
+				QByteArray qbaPart;
+
+				qbaPart = qfFile.peek(qsPattern.length() + 1);
+				iH2 = (iH2 + iD * iQ - qbaPart.at(0) * iDM) % iQ;
+				iH2 = (iH2 * iD + qbaPart.at(qsPattern.length())) % iQ;
+
+				iI++;
+				qfFile.seek(iI);
+			} // while
+
+			qfFile.close();
+
+			if (iH1 != iH2) {
+				return false;
+			} // if
+		} else {
+			return false;
+		} // if else
 	} // if
 
 	return true;
@@ -221,6 +275,7 @@ void cFindFilesDialog::on_qcbSearchForText_stateChanged(int state)
 		qcbFullTextNotContainingText->setEnabled(true);
 		qcbFullTextHex->setEnabled(true);
 		qcbFullTextRegularExpression->setEnabled(true);
+		qcbFullText->setFocus(Qt::OtherFocusReason);
 	} else {
 		qcbFullText->setEnabled(false);
 		qcbFullTextWholeWords->setEnabled(false);

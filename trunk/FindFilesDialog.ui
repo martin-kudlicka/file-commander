@@ -279,6 +279,35 @@
        <string>Not containing text</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="qcbSearchForText" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>101</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Search for text</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextRegularExpression" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="geometry" >
+       <rect>
+        <x>140</x>
+        <y>90</y>
+        <width>121</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Regular expression</string>
+      </property>
+     </widget>
      <widget class="QCheckBox" name="qcbFullTextHex" >
       <property name="enabled" >
        <bool>false</bool>
@@ -307,34 +336,8 @@
         <height>22</height>
        </rect>
       </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbSearchForText" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search for text</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbFullTextRegularExpression" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>140</x>
-        <y>90</y>
-        <width>121</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Regular expression</string>
+      <property name="editable" >
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
