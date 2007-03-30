@@ -204,10 +204,11 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 
 			qfFile.close();
 
-			if (iH1 != iH2) {
+			if ((iH1 != iH2) ^ qcbFullTextNotContainingText->isChecked()) {
 				return false;
 			} // if
 		} else {
+			// for directories
 			return false;
 		} // if else
 	} // if
