@@ -36,11 +36,21 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfFile)
 	bOk = false;
 	qslSearchFor = qcbSearchFor->currentText().split(';');
 	for (iI = 0; iI < qslSearchFor.count(); iI++) {
-		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive, QRegExp::Wildcard);
-		if (qreExpression.exactMatch(qfFile.fileName())) {
-			bOk = true;
-			break;
-		} // if
+		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive);
+
+		if (qcbSearchForRegularExpression->isChecked()) {
+			// regular expression
+			if (qreExpression.indexIn(qfFile.fileName()) != -1) {
+				bOk = true;
+				break;
+			} // if
+		} else {
+			// wildcard
+			if (qreExpression.exactMatch(qfFile.fileName())) {
+				bOk = true;
+				break;
+			} // if
+		} // if else
 	} // for
 	if (!bOk) {
 		return false;
