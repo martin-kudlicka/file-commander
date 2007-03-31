@@ -379,14 +379,14 @@ void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
 	} // for
 
 	cpPanel->FeedToPanel(qfilFiles);
-	deleteLater();
+	reject();
 } // on_qpbFeedToPanel_clicked
 
 // go to file button is clicked on
 void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
 	cpPanel->GoToFile(qtwSearch->selectedItems().at(0)->text(0));
-	deleteLater();
+	reject();
 } // on_qpbGoToFile_clicked
 
 // load find is clicked on
