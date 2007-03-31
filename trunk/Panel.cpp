@@ -143,6 +143,12 @@ void cPanel::EditFile()
 	} // if
 } // EditFile
 
+// show custom list of files in current dir view
+void cPanel::FeedToPanel(QFileInfoList &qfilFiles)
+{
+	RefreshContent(qswDir->currentIndex(), qfilFiles);
+} // FeedToPanel
+
 // count objects
 cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
 {
@@ -476,11 +482,10 @@ void cPanel::on_qtTimer_timeout()
 } // on_qtTimer_timeout
 
 // refresh dir content
-void cPanel::RefreshContent(const int &iIndex)
+void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 {
 	int iI;
 	QDir::Filters fFilters;
-	QFileInfoList qfilFiles;
 	QList<cContentDelayed::sParameters> qlParameters;
 
 	// interrupt delayed content processing
@@ -489,17 +494,19 @@ void cPanel::RefreshContent(const int &iIndex)
 	// clear previous file contents
 	qhTabs.value(iIndex).qhFiles->clear();
 
-	// get file list
-	fFilters = QDir::Dirs | QDir::Files;
-	if (csSettings->GetShowSystemFiles()) {
-		fFilters |= QDir::System;
+	if (qfilFiles.count() == 0) {
+		// get file list
+		fFilters = QDir::Dirs | QDir::Files;
+		if (csSettings->GetShowSystemFiles()) {
+			fFilters |= QDir::System;
+		} // if
+		if (csSettings->GetShowHiddenFiles()) {
+			fFilters |= QDir::Hidden;
+		} // if
+		qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);
 	} // if
-	if (csSettings->GetShowHiddenFiles()) {
-		fFilters |= QDir::Hidden;
-	} // if
-	qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);
 
-	// go through files and fill dir panel and add them into file list (qhFiles)
+	// go through files and add them into file list
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		int iJ;
 		QTreeWidgetItem *qtwiFile;
