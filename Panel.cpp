@@ -719,7 +719,7 @@ void cPanel::Sort(const int &iIndex)
 		ssSort.soSortOrder = Qt::AscendingOrder;
 		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
 		for (iI = 0; iI < qlDirectories.count(); iI++) {
-			if (qlDirectories.at(iI)->text(ssSort.iSortedColumn) == "..") {
+			if (qhTabs.value(iIndex).qhFiles->value(qlDirectories.at(iI)).fileName() == "..") {
 				qlDirectories.move(iI, 0);
 				break;
 			} // if
