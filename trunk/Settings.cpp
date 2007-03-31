@@ -50,6 +50,7 @@ const QString qsWRAP_TEXT = "WrapText";
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Display
 const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
+const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // FindFiles
@@ -342,6 +343,12 @@ QStringList cSettings::GetSavedFinds()
 	return qslSavedFinds;
 } // GetSavedFinds
 
+// square brackets around directory name
+bool cSettings::GetShowBracketsAroundDirectoryName()
+{
+	return qsSettings.value(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, true).toBool();
+} // GetShowBracketsAroundDirectoryName
+
 // show hidden files in dir view flag
 bool cSettings::GetShowHiddenFiles()
 {
@@ -532,6 +539,12 @@ void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
 {
 	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
 } // SetReadonlyFileOverwrite
+
+// square brackets around directory name
+void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, bShowBrackets);
+} // SetShowBracketsAroundDirectoryName
 
 // set show hidden files in dir view flag
 void cSettings::SetShowHiddenFiles(const bool &bShowHidden)

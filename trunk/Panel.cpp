@@ -530,12 +530,18 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 				} else {
 					if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsNAME) {
 						// name
+						QString qsName;
+
 						if (qfilFiles.at(iI).isDir() && qfilFiles.at(iI).fileName() == "..") {
 							// special handle for ".." directory to show both points
-							qtwiFile->setText(iJ, qfilFiles.at(iI).fileName());
+							qsName = qfilFiles.at(iI).fileName();
 						} else {
-							qtwiFile->setText(iJ, qfilFiles.at(iI).completeBaseName());
+							qsName = qfilFiles.at(iI).completeBaseName();
 						} // if
+						if (qfilFiles.at(iI).isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+							qsName = '[' + qsName + ']';
+						} // if
+						qtwiFile->setText(iJ, qsName);
 					} else {
 						if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsEXTENSION) {
 							// extension

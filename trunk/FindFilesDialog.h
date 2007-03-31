@@ -38,6 +38,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		static const qint64 qi64SEARCH_BUFFER = 1048576;						///< search for text in files in this buffer size
 
 		bool bStop;																			///< interrupt finding files
+		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< founded files table
 		cLister *clLister;																///< lister plugin's class
 		cPanel *cpPanel;																	///< panel to work with
 		cSettings *csSettings;															///< application's settings file

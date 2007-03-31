@@ -164,14 +164,12 @@ void cOptionsDialog::FillOptions()
 
 	// panels
 	// display
-	// files
 	if (csSettings->GetShowSystemFiles()) {
 		qcbShowSystemFiles->setChecked(true);
 	} // if
 	if (csSettings->GetShowHiddenFiles()) {
 		qcbShowHiddenFiles->setChecked(true);
 	} // if
-	// files size in
 	qsValue = csSettings->GetFileSizeIn();
 	if (qsValue == qsBYTES) {
 		qrbSizeBytes->setChecked(true);
@@ -190,6 +188,9 @@ void cOptionsDialog::FillOptions()
 			} // if else
 		} // if else
 	} // if else
+	if (csSettings->GetShowBracketsAroundDirectoryName()) {
+		qcbSquareBracketsAroundDirectoryName->setChecked(true);
+	} // if
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qslHeader.append(tr("Type"));
@@ -661,6 +662,7 @@ void cOptionsDialog::SaveOptions()
 	// display
 	csSettings->SetShowSystemFiles(qcbShowSystemFiles->isChecked());
 	csSettings->SetShowHiddenFiles(qcbShowHiddenFiles->isChecked());
+	csSettings->SetShowBracketsAroundDirectoryName(qcbSquareBracketsAroundDirectoryName->isChecked());
 	if (qrbSizeBytes->isChecked()) {
 		qsValue = qsBYTES;
 	} else {
