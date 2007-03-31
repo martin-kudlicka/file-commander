@@ -138,161 +138,12 @@
     </rect>
    </property>
    <property name="currentIndex" >
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab" >
     <attribute name="title" >
      <string>General</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>371</width>
-       <height>151</height>
-      </rect>
-     </property>
-     <property name="title" >
-      <string>Files</string>
-     </property>
-     <widget class="QLabel" name="label" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>23</y>
-        <width>54</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search &amp;for</string>
-      </property>
-      <property name="buddy" >
-       <cstring>qcbSearchFor</cstring>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>48</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search &amp;in</string>
-      </property>
-      <property name="buddy" >
-       <cstring>qcbSearchIn</cstring>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbSearchInSelectedDirectories" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>100</y>
-        <width>161</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search in marked directories</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="qcbSearchFor" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>20</y>
-        <width>291</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="editable" >
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="qpbBrowse" >
-      <property name="geometry" >
-       <rect>
-        <x>280</x>
-        <y>70</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>&amp;Browse</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="qpbDrives" >
-      <property name="geometry" >
-       <rect>
-        <x>280</x>
-        <y>100</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>&amp;Drives</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="qcbSearchIn" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>70</y>
-        <width>201</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="editable" >
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbSearchForRegularExpression" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>50</y>
-        <width>121</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Regular expression</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4" >
-      <property name="geometry" >
-       <rect>
-        <x>70</x>
-        <y>123</y>
-        <width>92</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Subdirectory depth</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="qsbSubdirectoryDepth" >
-      <property name="geometry" >
-       <rect>
-        <x>170</x>
-        <y>120</y>
-        <width>44</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="value" >
-       <number>99</number>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_2" >
      <property name="geometry" >
       <rect>
@@ -412,6 +263,161 @@
       </property>
       <property name="editable" >
        <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>371</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <property name="title" >
+      <string>Files</string>
+     </property>
+     <widget class="QLabel" name="label" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>23</y>
+        <width>54</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Search &amp;for</string>
+      </property>
+      <property name="buddy" >
+       <cstring>qcbSearchFor</cstring>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>48</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Search &amp;in</string>
+      </property>
+      <property name="buddy" >
+       <cstring>qcbSearchIn</cstring>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbSearchInSelectedDirectories" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>100</y>
+        <width>161</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Search in marked directories</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="qcbSearchFor" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>20</y>
+        <width>291</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="editable" >
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="qcbSearchIn" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>70</y>
+        <width>201</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="editable" >
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbSearchForRegularExpression" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>121</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Regular expression</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4" >
+      <property name="geometry" >
+       <rect>
+        <x>70</x>
+        <y>123</y>
+        <width>92</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Subdirectory depth</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="qsbSubdirectoryDepth" >
+      <property name="geometry" >
+       <rect>
+        <x>170</x>
+        <y>120</y>
+        <width>44</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="value" >
+       <number>99</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbBrowse" >
+      <property name="geometry" >
+       <rect>
+        <x>280</x>
+        <y>70</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>&amp;Browse</string>
+      </property>
+      <property name="autoDefault" >
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="qpbDrives" >
+      <property name="geometry" >
+       <rect>
+        <x>280</x>
+        <y>100</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>&amp;Drives</string>
+      </property>
+      <property name="autoDefault" >
+       <bool>false</bool>
       </property>
      </widget>
     </widget>
@@ -594,42 +600,13 @@
      <property name="geometry" >
       <rect>
        <x>90</x>
-       <y>100</y>
+       <y>280</y>
        <width>75</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text" >
       <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QTreeWidget" name="qtwSavedFinds" >
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>371</width>
-       <height>80</height>
-      </rect>
-     </property>
-     <property name="rootIsDecorated" >
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="qpbLoadFind" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text" >
-      <string>Load</string>
      </property>
     </widget>
     <widget class="QPushButton" name="qpbDeleteFind" >
@@ -639,7 +616,7 @@
      <property name="geometry" >
       <rect>
        <x>170</x>
-       <y>100</y>
+       <y>280</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -648,15 +625,46 @@
       <string>Delete</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="qpbLoadFind" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>280</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QTreeWidget" name="qtwSavedFinds" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>371</width>
+       <height>261</height>
+      </rect>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
  <tabstops>
   <tabstop>qcbSearchFor</tabstop>
-  <tabstop>qpbDrives</tabstop>
-  <tabstop>qcbSearchIn</tabstop>
   <tabstop>qcbSearchForRegularExpression</tabstop>
+  <tabstop>qcbSearchIn</tabstop>
+  <tabstop>qpbBrowse</tabstop>
+  <tabstop>qpbDrives</tabstop>
   <tabstop>qcbSearchInSelectedDirectories</tabstop>
+  <tabstop>qsbSubdirectoryDepth</tabstop>
   <tabstop>qcbSearchForText</tabstop>
   <tabstop>qcbFullText</tabstop>
   <tabstop>qcbFullTextWholeWords</tabstop>
@@ -665,21 +673,27 @@
   <tabstop>qcbFullTextHex</tabstop>
   <tabstop>qcbFullTextRegularExpression</tabstop>
   <tabstop>qpbStart</tabstop>
+  <tabstop>qpbStop</tabstop>
   <tabstop>qpbCancel</tabstop>
+  <tabstop>qtwSearch</tabstop>
+  <tabstop>qpbView</tabstop>
+  <tabstop>qpbGoToFile</tabstop>
+  <tabstop>qpbFeedToPanel</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>qdteTo</tabstop>
-  <tabstop>qsbOldCount</tabstop>
+  <tabstop>qcbDateTimeBetween</tabstop>
   <tabstop>qdteFrom</tabstop>
+  <tabstop>qdteTo</tabstop>
+  <tabstop>qcbDateTimeNotOlderThan</tabstop>
+  <tabstop>qsbOldCount</tabstop>
   <tabstop>qcbOldType</tabstop>
   <tabstop>qcbFileSize</tabstop>
   <tabstop>qcbFileSizeComparator</tabstop>
   <tabstop>qsbFileSize</tabstop>
   <tabstop>qcbFileSizeType</tabstop>
-  <tabstop>qpbSaveFind</tabstop>
+  <tabstop>qtwSavedFinds</tabstop>
   <tabstop>qpbLoadFind</tabstop>
+  <tabstop>qpbSaveFind</tabstop>
   <tabstop>qpbDeleteFind</tabstop>
-  <tabstop>qcbDateTimeNotOlderThan</tabstop>
-  <tabstop>qcbDateTimeBetween</tabstop>
  </tabstops>
  <resources/>
  <connections>
