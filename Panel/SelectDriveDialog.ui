@@ -1,0 +1,94 @@
+<ui version="4.0" >
+ <class>qdSelectDrive</class>
+ <widget class="QDialog" name="qdSelectDrive" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>179</width>
+    <height>100</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Select drive</string>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>155</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Drive not found, select another.</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="qcbDrive" >
+   <property name="geometry" >
+    <rect>
+     <x>100</x>
+     <y>30</y>
+     <width>67</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="qdbbResponse" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>160</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons" >
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>qcbDrive</tabstop>
+  <tabstop>qdbbResponse</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>qdbbResponse</sender>
+   <signal>accepted()</signal>
+   <receiver>qdSelectDrive</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>169</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>153</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>qdbbResponse</sender>
+   <signal>rejected()</signal>
+   <receiver>qdSelectDrive</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>169</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>178</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
