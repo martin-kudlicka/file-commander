@@ -66,6 +66,22 @@
    <property name="title" >
     <string>Found files:</string>
    </property>
+   <widget class="QPushButton" name="qpbView" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>150</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <widget class="QTreeWidget" name="qtwSearch" >
     <property name="geometry" >
      <rect>
@@ -82,38 +98,6 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>150</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;View</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5" >
-    <property name="enabled" >
-     <bool>false</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>230</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Go to file</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_6" >
     <property name="enabled" >
      <bool>false</bool>
@@ -128,6 +112,22 @@
     </property>
     <property name="text" >
      <string>&amp;Feed to panel</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="qpbGoToFile" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>230</x>
+      <y>110</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Go to file</string>
     </property>
    </widget>
   </widget>

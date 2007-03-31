@@ -248,7 +248,7 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 
 	SetSourceAndDestinationPanel(&cpSource);
 	qfilDirectories = cpSource->GetSelectedDirItemsList();
-	cffdFind = new cFindFilesDialog(this, cpSource, qfilDirectories, &csSettings);
+	cffdFind = new cFindFilesDialog(this, cpSource, qfilDirectories, &csSettings, cpPlugins->clLister);
 
 	cffdFind->exec();
 } // on_qaSearch_triggered

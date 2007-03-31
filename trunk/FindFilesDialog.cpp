@@ -6,16 +6,19 @@
 #include <QTextCodec>
 #include <QTextCursor>
 #include "FindFilesDialog/SaveFindSettingsDialog.h"
+#include "ListerMainWindow.h"
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings)
+cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings, cLister *clLister)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
+	setWindowModality(Qt::WindowModal);
 
 	this->cpPanel = cpPanel;
 	this->qfilSelectedDirectories = qfilSelectedDirectories;
 	this->csSettings = csSettings;
+	this->clLister = clLister;
 
 	if (qfilSelectedDirectories.count() > 0) {
 		qcbSearchInSelectedDirectories->setChecked(true);
@@ -520,6 +523,15 @@ void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 	bStop = true;
 } // on_qpbStop_clicked
 
+// view button is clicked on
+void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
+{
+	cListerMainWindow *clmwListerWindow;
+
+	clmwListerWindow = new cListerMainWindow(csSettings, clLister, qtwSearch->selectedItems().at(0)->text(0));
+	clmwListerWindow->show();
+} // on_qpbView_clicked
+
 // selected item changed in saved finds view
 void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged()
 {
@@ -531,6 +543,18 @@ void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged()
 		qpbDeleteFind->setEnabled(false);
 	} // if else
 } // on_qtwSavedFinds_itemSelectionChanged
+
+// selected item changed in found files list
+void cFindFilesDialog::on_qtwSearch_itemSelectionChanged()
+{
+	if (qtwSearch->selectedItems().count() > 0) {
+		qpbView->setEnabled(true);
+		qpbGoToFile->setEnabled(true);
+	} else {
+		qpbView->setEnabled(false);
+		qpbGoToFile->setEnabled(false);
+	} // if else
+} // on_qtwSearch_itemSelectionChanged
 
 // refreshes list of saved settings
 void cFindFilesDialog::RefreshSavedSettings()
