@@ -271,6 +271,24 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 	} // if else
 } // GetSizeString
 
+// show dir view with specified file
+void cPanel::GoToFile(const QString &qsFile)
+{
+	// refresh content to new path
+	SetPath(QFileInfo(qsFile).path());
+
+	// find the right file
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+	while (qhiFiles.hasNext()) {
+		qhiFiles.next();
+		if (qhiFiles.value().fileName() == QFileInfo(qsFile).fileName()) {
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->clearSelection();
+			qhiFiles.key()->setSelected(true);
+			break;
+		} // if
+	} // while
+} // GoToFile
+
 // go to root directory
 void cPanel::GoToRootDir()
 {
