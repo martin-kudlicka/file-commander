@@ -49,6 +49,8 @@ class cPanel : private QObject
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
 																			///< add new tab with dir view
 		void EditFile();												///< edit selected file in editor
+		void FeedToPanel(QFileInfoList &qfilFiles);			///< show custom list of files in current dir view
+																			/**< \param qfilFiles custom list of files */
 		static sObjects GetCount(const QFileInfoList &qfilObjects);
 																			///< count objects
 																			/**< \param qfilObjects objects to count
@@ -111,8 +113,10 @@ class cPanel : private QObject
 		QString GetSizeString(const qint64 &qi64Size);		///< "convert" size to string according to setting in options
 																			/**< \param qi64Size size
 																				  \return file size in string with suffix */
-		void RefreshContent(const int &iIndex);				///< refresh dir content
-																			/**< \param iIndex index of dir view */
+		void RefreshContent(const int &iIndex, QFileInfoList &qfilFiles = QFileInfoList());
+																			///< refresh dir content
+																			/**< \param iIndex index of dir view
+																				  \param qfilFiles custom list of files */
 		void RefreshHeader(const int &iIndex);					///< refresh column's header
 																			/**< \param iIndex index of dir view */
 		void SetPath(const QString &qsPath);					///< set new path for current dir view

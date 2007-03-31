@@ -368,6 +368,20 @@ void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 	cddDrives->deleteLater();
 } // on_qpbDrives_clicked
 
+// feed to panel button is clicked on
+void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
+{
+	int iI;
+	QFileInfoList qfilFiles;
+
+	for (iI = 0; iI < qtwSearch->topLevelItemCount(); iI++) {
+		qfilFiles.append(QFileInfo(qtwSearch->topLevelItem(iI)->text(0)));
+	} // for
+
+	cpPanel->FeedToPanel(qfilFiles);
+	deleteLater();
+} // on_qpbFeedToPanel_clicked
+
 // go to file button is clicked on
 void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
@@ -459,6 +473,7 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	QFileInfoList qfilDirectories;
 
 	qpbStart->setEnabled(false);
+	qpbFeedToPanel->setEnabled(false);
 	bStop = false;
 	qpbStop->setEnabled(true);
 
@@ -522,6 +537,9 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 
 	qpbStop->setEnabled(false);
 	qpbStart->setEnabled(true);
+	if (qtwSearch->topLevelItemCount() > 0) {
+		qpbFeedToPanel->setEnabled(true);
+	} // if
 } // on_qpbStart_clicked
 
 // stop button is clicked on
