@@ -548,7 +548,11 @@ void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged()
 void cFindFilesDialog::on_qtwSearch_itemSelectionChanged()
 {
 	if (qtwSearch->selectedItems().count() > 0) {
-		qpbView->setEnabled(true);
+		if (QFileInfo(qtwSearch->selectedItems().at(0)->text(0)).isFile()) {
+			qpbView->setEnabled(true);
+		} else {
+			qpbView->setEnabled(false);
+		} // if else
 		qpbGoToFile->setEnabled(true);
 	} else {
 		qpbView->setEnabled(false);
