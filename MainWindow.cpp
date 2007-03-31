@@ -120,8 +120,6 @@ cMainWindow::cMainWindow()
 	qtTimer.start(iTIMER_INTERVAL);
 
 	// shortcuts
-	qsFullScreen = new QShortcut(QKeySequence("F11"), this);
-	connect(qsFullScreen, SIGNAL(activated()), SLOT(on_qsFullScreen_activated()));
 	qsLeftDrive = new QShortcut(QKeySequence("Alt+F1"), this);
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
@@ -180,35 +178,11 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 	} // for
 } // LoadTabs
 
-// delete button is clicked on
-void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
+// full screen mode is selected
+void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
 {
-	cPanel *cpSource;
-
-	SetSourceAndDestinationPanel(&cpSource);
-	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
-} // on_qpbDelete_clicked
-
-// edit button is clicked on
-void cMainWindow::on_qpbEdit_clicked(bool checked /* false */)
-{
-	cPanel *cpSource;
-
-	SetSourceAndDestinationPanel(&cpSource);
-	cpSource->EditFile();
-} // on_qpbEdit_clicked
-
-// left root dir button is clicked on
-void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */)
-{
-	cpLeft->GoToRootDir();
-} // on_qpbLeftRootDir_clicked
-
-// left up dir button is clicked on
-void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
-{
-	cpLeft->GoToUpDir();
-} // on_qpbLeftUpDir_clicked
+	setWindowState(windowState() ^ Qt::WindowFullScreen);
+} // on_qaFullScreen_triggered
 
 // options are selected
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
@@ -272,6 +246,36 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 	cfoFileOperation->Operate(cFileRoutine::CopyOperation, cpSource, cpDestination);
 } // on_qpbCopy_clicked
 
+// delete button is clicked on
+void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
+} // on_qpbDelete_clicked
+
+// edit button is clicked on
+void cMainWindow::on_qpbEdit_clicked(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->EditFile();
+} // on_qpbEdit_clicked
+
+// left root dir button is clicked on
+void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */)
+{
+	cpLeft->GoToRootDir();
+} // on_qpbLeftRootDir_clicked
+
+// left up dir button is clicked on
+void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
+{
+	cpLeft->GoToUpDir();
+} // on_qpbLeftUpDir_clicked
+
 // move button is clicked on
 void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 {
@@ -332,12 +336,6 @@ void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 		} // if
 	} // for
 } // on_qpbView_clicked
-
-// full screen mode switched
-void cMainWindow::on_qsFullScreen_activated()
-{
-	setWindowState(windowState() ^ Qt::WindowFullScreen);
-} // on_qsFullScreen_activated
 
 // left drive shortcut activated
 void cMainWindow::on_qsLeftDrive_activated()
