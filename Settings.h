@@ -154,6 +154,8 @@ class cSettings : private QObject
 																				/**< \return default readonly file overwrite mode */
 		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
 																				/**< \return list of save find settings */
+		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
+																				/**< \return show brackets around directory name flag */
 		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
 		bool GetShowSystemFiles();										///< show system files in dir view flag
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
@@ -192,8 +194,13 @@ class cSettings : private QObject
 																				/**< \param qsTime user defined time display format */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
+		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
+																				///< square brackets around directory name
+																				/**< \param bShowBrackets show brackets around directory name flag */
 		void SetShowHiddenFiles(const bool &bShowHidden);		///< set show hidden files in dir view flag
+																				/**< \param bShowHidden show hidden files in dir view flag */
 		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view flag
+																				/**< \param bShowHidden show system files in dir view flag */
 		void SetWindowState(const sMainWindowState &smwsState);
 																				///< set startup main window state
 																				/**< \param smwsState window state information */

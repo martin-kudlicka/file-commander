@@ -375,7 +375,7 @@ void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
 	QFileInfoList qfilFiles;
 
 	for (iI = 0; iI < qtwSearch->topLevelItemCount(); iI++) {
-		qfilFiles.append(QFileInfo(qtwSearch->topLevelItem(iI)->text(0)));
+		qfilFiles.append(qhFiles.value(qtwSearch->topLevelItem(iI)));
 	} // for
 
 	cpPanel->FeedToPanel(qfilFiles);
@@ -385,7 +385,7 @@ void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
 // go to file button is clicked on
 void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
-	cpPanel->GoToFile(qtwSearch->selectedItems().at(0)->text(0));
+	cpPanel->GoToFile(qhFiles.value(qtwSearch->selectedItems().at(0)).filePath());
 	reject();
 } // on_qpbGoToFile_clicked
 
@@ -492,6 +492,7 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	// clear previous search
 	qfilSearch.clear();
 	qtwSearch->clear();
+	qhFiles.clear();
 
 	// search through directories
 	iDepth = 0;
@@ -510,11 +511,17 @@ void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 			for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
 				if (ConditionsSuit(qfilDirContent.at(iI))) {
 					// file suit conditions
+					QString qsText;
 					QTreeWidgetItem *qtwiItem;
 
 					qfilSearch += qfilDirContent.at(iI);
 					qtwiItem = new QTreeWidgetItem(qtwSearch);
-					qtwiItem->setText(0, qfilDirContent.at(iI).filePath());
+					qsText = qfilDirContent.at(iI).filePath();
+					if (qfilDirContent.at(iI).isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+						qsText = '[' + qsText + ']';
+					} // if
+					qtwiItem->setText(0, qsText);
+					qhFiles.insert(qtwiItem, qfilDirContent.at(iI));
 					QApplication::processEvents();
 				} // if
 			} // for
@@ -553,7 +560,7 @@ void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
 {
 	cListerMainWindow *clmwListerWindow;
 
-	clmwListerWindow = new cListerMainWindow(csSettings, clLister, qtwSearch->selectedItems().at(0)->text(0));
+	clmwListerWindow = new cListerMainWindow(csSettings, clLister, qhFiles.value(qtwSearch->selectedItems().at(0)).filePath());
 	clmwListerWindow->show();
 } // on_qpbView_clicked
 
