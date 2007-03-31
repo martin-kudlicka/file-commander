@@ -59,6 +59,8 @@ class cPanel : private QObject
 																			/**< \return dir info list about selected directories */
 		QFileInfoList GetSelectedItemsList();					///< get file infos of selected items
 																			/**< \return file info list about selected files */
+		void GoToFile(const QString &qsFile);					///< show dir view with specified file
+																			/**< \param qsFile file to find */
 		void GoToRootDir();											///< go to root directory
 		void GoToUpDir();												///< go up one level (directory)
 

@@ -250,7 +250,7 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 	qfilDirectories = cpSource->GetSelectedDirItemsList();
 	cffdFind = new cFindFilesDialog(this, cpSource, qfilDirectories, &csSettings, cpPlugins->clLister);
 
-	cffdFind->exec();
+	cffdFind->show();
 } // on_qaSearch_triggered
 
 // copy button is clicked on
