@@ -17,6 +17,7 @@
 #include "Panel/TreeWidget.h"
 #include <QTimer>
 #include "Plugins/ContentDelayed.h"
+#include <QMainWindow>
 
 class cPanel : private QObject
 {
@@ -33,9 +34,10 @@ class cPanel : private QObject
 			uint Files;													///< number of files
 		};
 
-		cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
 																			///< constructor
-																			/**< \param qswPanel panel for cTreeWidget
+																			/**< \param qmwParent parent window for dialogs
+																				  \param qswPanel panel for cTreeWidget
 																				  \param qcbDrive drive combo box
 																				  \param qlDriveInfo drive name and it's space information
 																				  \param qtbTab panel's tab bar
@@ -96,6 +98,7 @@ class cPanel : private QObject
 		QLabel *qlPath;												///< path
 		QLabel *qlDriveInfo;											///< drive info - label, used/free place
 		QLabel *qlSelected;											///< selected items
+		QMainWindow *qmwParent;										///< parent window for dialogs
 		QMap<QString, cFileRoutine::sDriveInfo> *qmDrives;	///< drives in system
 		QStackedWidget *qswDir;										///< directory view
 		QTabBar *qtbTab;												///< tabs for dir view

@@ -5,6 +5,7 @@
 #include "Panel/Process.h"
 #include <QHeaderView>
 #include <QProcess>
+#include "Panel/SelectDriveDialog.h"
 
 cSettings::sSort cPanel::ssSort;	///< sort information (static class variable)
 
@@ -97,7 +98,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -108,11 +109,14 @@ cPanel::cPanel(QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInf
 	this->csSettings = csSettings;
 	this->ccContent = ccContent;
 	this->qmDrives = qmDrives;
+	this->qmwParent = qmwParent;
+
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
 	qswDir->winId()
 #endif
 	);
+
 	// signals for controls
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
@@ -456,8 +460,6 @@ void cPanel::on_qcbDrive_currentIndexChanged(int index)
 		return;
 	} // if
 
-	qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
-
 	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(*qmDrives);
 	while (qmiDrives.hasNext()) {
 		qmiDrives.next();
@@ -683,13 +685,54 @@ void cPanel::RefreshHeader(const int &iIndex)
 // set new path for current dir view
 void cPanel::SetPath(const QString &qsPath)
 {
+#ifdef Q_WS_WIN
+	HANDLE hHandle;
+	WIN32_FIND_DATA fdFindData;
+#endif
+
 	// remove old path from watcher
 	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-	qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
-	// add new path to watcher
-	qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-	qhLastPaths.insert(qcbDrive->currentText(), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath));
-	RefreshContent(qswDir->currentIndex());
+#ifdef Q_WS_WIN
+	// check new path
+	hHandle = FindFirstFile(reinterpret_cast<LPCWSTR>(QString(qsPath + "/*").unicode()), &fdFindData);
+	if (hHandle == INVALID_HANDLE_VALUE) {
+		if (QDir(qsPath).isRoot()) {
+			// invalid drive
+			QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
+
+			qmDrives = cFileRoutine::GetDrives();
+			cSelectDriveDialog csddDrive(qmwParent, qmDrives, qcbDrive->currentText());
+
+			if (csddDrive.exec() == QDialog::Accepted) {
+				// change to newly selected drive
+				qcbDrive->blockSignals(true);
+				qcbDrive->setCurrentIndex(-1);
+				qcbDrive->blockSignals(false);
+				qcbDrive->setCurrentIndex(qcbDrive->findText(csddDrive.qcbDrive->currentText()));
+			} else {
+				// try to change to previous path
+				qcbDrive->blockSignals(true);
+				qcbDrive->setCurrentIndex(qcbDrive->findText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive));
+				qcbDrive->blockSignals(false);
+				SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+			} // if else
+		} else {
+			// maybe valid drive bad invalid path
+			GoToUpDir();
+		} // if else
+	} else {
+		// path ok
+		FindClose(hHandle);
+#endif
+		qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
+		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
+		// add new path to watcher
+		qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+		qhLastPaths.insert(qcbDrive->currentText(), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath));
+		RefreshContent(qswDir->currentIndex());
+#ifdef Q_WS_WIN
+	} // if else
+#endif
 } // SetPath
 
 // sort dir content and show
