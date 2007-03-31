@@ -481,6 +481,12 @@ void cPanel::on_qtTimer_timeout()
 	ActualizeVolumeInfo();
 } // on_qtTimer_timeout
 
+// refresh current dir view
+void cPanel::Refresh()
+{
+	RefreshContent(qswDir->currentIndex());
+} // Refresh
+
 // refresh dir content
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 {

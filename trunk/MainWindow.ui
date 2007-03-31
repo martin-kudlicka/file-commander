@@ -382,6 +382,12 @@
     </property>
     <addaction name="qaQuit" />
    </widget>
+   <widget class="QMenu" name="menuCommands" >
+    <property name="title" >
+     <string>&amp;Commands</string>
+    </property>
+    <addaction name="qaSearch" />
+   </widget>
    <widget class="QMenu" name="menuConfiguration" >
     <property name="title" >
      <string>C&amp;onfiguration</string>
@@ -389,14 +395,15 @@
     <addaction name="qaOptions" />
     <addaction name="qaSavePosition" />
    </widget>
-   <widget class="QMenu" name="menuCommands" >
+   <widget class="QMenu" name="menuShow" >
     <property name="title" >
-     <string>&amp;Commands</string>
+     <string>&amp;Show</string>
     </property>
-    <addaction name="qaSearch" />
+    <addaction name="qaRefresh" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuCommands" />
+   <addaction name="menuShow" />
    <addaction name="menuConfiguration" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -432,6 +439,14 @@
    </property>
    <property name="shortcut" >
     <string>Alt+F7</string>
+   </property>
+  </action>
+  <action name="qaRefresh" >
+   <property name="text" >
+    <string>&amp;Refresh</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
