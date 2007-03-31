@@ -7,6 +7,7 @@
 
 #include <QMainWindow>
 #include "Panel.h"
+#include "Plugins/Lister.h"
 
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
@@ -25,17 +26,19 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 	Q_OBJECT
 
 	public:
-		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings);
+		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings, cLister *clLister);
 																								///< constructor
 																								/**< \param qmwParent parent window of this dialog
 																									  \param cpPanel panel to work with
 																									  \param qfilSelectedDirectories selected directories in dir view
-																									  \param csSettings application's settings file */
+																									  \param csSettings application's settings file
+																									  \param clLister lister plugins */
 
 	private:
 		static const qint64 qi64SEARCH_BUFFER = 1048576;						///< search for text in files in this buffer size
 
 		bool bStop;																			///< interrupt finding files
+		cLister *clLister;																///< lister plugin's class
 		cPanel *cpPanel;																	///< panel to work with
 		cSettings *csSettings;															///< application's settings file
 		QFileInfoList qfilSearch;														///< search result
@@ -73,7 +76,10 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																								/**< \param checked true if button is checkable and checked */
 		void on_qpbStop_clicked(bool checked = false);							///< stop button is clicked on
 																								/**< \param checked true if button is checkable and checked */
+		void on_qpbView_clicked(bool checked = false);							///< view button is clicked on
+																								/**< \param checked true if button is checkable and checked */
 		void on_qtwSavedFinds_itemSelectionChanged();							///< selected item changed in saved finds view
+		void on_qtwSearch_itemSelectionChanged();									///< selected item changed in found files list
 }; // cFindFilesDialog
 
 #endif
