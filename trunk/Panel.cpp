@@ -312,7 +312,22 @@ void cPanel::GoToUpDir()
 
 	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 	if(!qdDir.isRoot()) {
+		QString qsFrom;
+
+		// remember directory going from
+		qsFrom = QFileInfo(GetPath()).fileName();
+
 		SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath + "/..");
+
+		// find directory went from and set it as current
+		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+		while (qhiFile.hasNext()) {
+			qhiFile.next();
+			if (qhiFile.value().fileName() == qsFrom) {
+				static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+				break;
+			} // if
+		} // while
 	} // if
 } // GoToUpDir
 
@@ -336,24 +351,11 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(item);
 	if (qfiFile.isDir()) {
 		// double click on directory -> go into directory
-		QString qsFrom;
-
 		if (qfiFile.fileName() == "..") {
-			// remember directory going from
-			qsFrom = QFileInfo(GetPath()).fileName();
-		} // if
-		SetPath(qfiFile.filePath());
-		if (qfiFile.fileName() == "..") {
-			// find directory went from and set it as current
-			QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
-			while (qhiFile.hasNext()) {
-				qhiFile.next();
-				if (qhiFile.value().fileName() == qsFrom) {
-					static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
-					break;
-				} // if
-			} // while
-		} // if
+			GoToUpDir();
+		} else {
+			SetPath(qfiFile.filePath());
+		} // if else
 	} else {
 		// double click on file -> execute it
 		cProcess::Execute(qfiFile.filePath());

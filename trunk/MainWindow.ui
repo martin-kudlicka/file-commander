@@ -399,6 +399,8 @@
     <property name="title" >
      <string>&amp;Show</string>
     </property>
+    <addaction name="qaFullScreen" />
+    <addaction name="separator" />
     <addaction name="qaRefresh" />
    </widget>
    <addaction name="menuFile" />
@@ -447,6 +449,14 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="qaFullScreen" >
+   <property name="text" >
+    <string>&amp;Full screen</string>
+   </property>
+   <property name="shortcut" >
+    <string>F11</string>
    </property>
   </action>
  </widget>
