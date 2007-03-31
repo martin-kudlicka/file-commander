@@ -218,6 +218,15 @@ void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	codOptions.exec();
 } // on_qaOptions_triggered
 
+///< refresh is selected
+void cMainWindow::on_qaRefresh_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->Refresh();
+} // on_qaRefresh_triggered
+
 // save position is selected
 void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
 {

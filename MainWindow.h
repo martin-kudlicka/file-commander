@@ -56,6 +56,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private slots:
 		void on_qaOptions_triggered(bool checked = false);	///< options are selected
 																			/**< \param checked true if menu item is checkable and checked */
+		void on_qaRefresh_triggered(bool checked = false);	///< refresh is selected
+																			/**< \param checked true if menu item is checkable and checked */
 		void on_qaSavePosition_triggered(bool checked = false);
 																			///< save position is selected
 																			/**< \param checked true if menu item is checkable and checked */

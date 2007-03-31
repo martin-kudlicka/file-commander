@@ -65,6 +65,7 @@ class cPanel : private QObject
 																			/**< \param qsFile file to find */
 		void GoToRootDir();											///< go to root directory
 		void GoToUpDir();												///< go up one level (directory)
+		void Refresh();												///< refresh current dir view
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;				///< timer interval
