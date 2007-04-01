@@ -8,8 +8,8 @@
 class cProcess
 {
 	public:
-		static void Execute(QString &qsProcess);	///< execute file
-																/**< \param qsProcess file to execute */
+		static void Execute(const QString &qsProcess, const QString &qsPath = NULL);	///< execute file
+																												/**< \param qsProcess file to execute */
 }; // cProcess
 
 #endif

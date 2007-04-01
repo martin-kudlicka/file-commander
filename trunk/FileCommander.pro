@@ -20,6 +20,7 @@ FORMS = MainWindow.ui \
 		  FileOperation/DeleteDialog.ui \
 		  FileOperation/DeleteWidget.ui
 HEADERS = MainWindow.h \
+			 ComboBox.h \
 		    OptionsDialog.h \
 		    Options/NewColumnSetDialog.h \
 			 NewDirectoryDialog.h \
@@ -62,6 +63,7 @@ win32 {
 }
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
+			 ComboBox.cpp \
 			 OptionsDialog.cpp \
 			 Options/NewColumnSetDialog.cpp \
 			 NewDirectoryDialog.cpp \

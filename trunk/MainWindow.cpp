@@ -6,6 +6,7 @@
 #include "OptionsDialog.h"
 #include "ListerMainWindow.h"
 #include "FindFilesDialog.h"
+#include "Panel/Process.h"
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -17,6 +18,7 @@ cMainWindow::~cMainWindow()
 	delete cpLeft;
 	delete cpRight;
 	delete cpPlugins;
+	ccbCommand->deleteLater();
 } // cMainWindow
 
 // drive lists actualization
@@ -96,6 +98,12 @@ cMainWindow::cMainWindow()
 	qvblTabBar = static_cast<QVBoxLayout *>(qswRight->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbRight);
 	qtbRight.setFocusPolicy(Qt::NoFocus);
+	// add command combo box
+	ccbCommand = new cComboBox();
+	ccbCommand->setEditable(true);
+	ccbCommand->setFocusPolicy(Qt::NoFocus);
+	connect(ccbCommand, SIGNAL(EnterPressed()), SLOT(on_ccbCommand_EnterPressed()));
+	static_cast<QHBoxLayout *>(centralwidget->layout()->itemAt(1))->addWidget(ccbCommand);
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
@@ -177,6 +185,12 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} // if else
 	} // for
 } // LoadTabs
+
+// command confirmed
+void cMainWindow::on_ccbCommand_EnterPressed()
+{
+	cProcess::Execute(ccbCommand->currentText(), qlGlobalPath->text());
+} // on_ccbCommand_EnterPressed
 
 // full screen mode is selected
 void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
