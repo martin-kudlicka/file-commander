@@ -10,6 +10,7 @@ FORMS = MainWindow.ui \
 		  FindFilesDialog/DrivesDialog.ui \
 		  FindFilesDialog/SaveFindSettingsDialog.ui \
 		  Panel/SelectDriveDialog.ui \
+		  Panel/SelectFilesDialog.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
@@ -34,6 +35,7 @@ HEADERS = MainWindow.h \
 			 Panel/ShellMenu.h \
 			 Panel/Process.h \
 			 Panel/SelectDriveDialog.h \
+			 Panel/SelectFilesDialog.h \
 			 FileOperation.h \
 			 FileOperation/FileOperationDialog.h \
 			 FileOperation/FileRoutine.h \
@@ -77,6 +79,7 @@ SOURCES = FileCommander.cpp \
 			 Panel/ShellMenu.cpp \
 			 Panel/Process.cpp \
 			 Panel/SelectDriveDialog.cpp \
+			 Panel/SelectFilesDialog.cpp \
 			 FileOperation.cpp \
 			 FileOperation/FileOperationDialog.cpp \
 			 FileOperation/FileRoutine.cpp \

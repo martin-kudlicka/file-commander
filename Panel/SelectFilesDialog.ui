@@ -1,0 +1,148 @@
+<ui version="4.0" >
+ <class>qdSelectFiles</class>
+ <widget class="QDialog" name="qdSelectFiles" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>253</width>
+    <height>203</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Select files</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qcbFilter</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>102</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>or use &amp;find files filter:</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qtwFindSets</cstring>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbDefine" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>170</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Define</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>170</x>
+     <y>170</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="qcbFilter" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>231</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="editable" >
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOK" >
+   <property name="geometry" >
+    <rect>
+     <x>90</x>
+     <y>170</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;OK</string>
+   </property>
+  </widget>
+  <widget class="QTreeWidget" name="qtwFindSets" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>231</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="rootIsDecorated" >
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>qpbOK</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>qdSelectFiles</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>131</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>130</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>qpbCancel</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>qdSelectFiles</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>211</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>130</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

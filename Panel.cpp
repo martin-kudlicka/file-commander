@@ -728,6 +728,15 @@ void cPanel::RefreshHeader(const int &iIndex)
 	RefreshContent(iIndex);
 } // RefreshHeader
 
+// select or unselect some files
+void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister)
+{
+	cSelectFilesDialog csfdSelect(qmwParent, estType, csSettings, clLister);
+
+	if (csfdSelect.exec() == QDialog::Accepted) {
+	} // if
+} // Select
+
 // select all files
 void cPanel::SelectAll()
 {
