@@ -696,6 +696,8 @@ void cPanel::SetPath(const QString &qsPath)
 	// check new path
 	hHandle = FindFirstFile(reinterpret_cast<LPCWSTR>(QString(qsPath + "/*").unicode()), &fdFindData);
 	if (hHandle == INVALID_HANDLE_VALUE) {
+		qlDriveInfo->hide();
+
 		if (QDir(qsPath).isRoot()) {
 			// invalid drive
 			QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
@@ -723,6 +725,7 @@ void cPanel::SetPath(const QString &qsPath)
 	} else {
 		// path ok
 		FindClose(hHandle);
+		qlDriveInfo->show();
 #endif
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
