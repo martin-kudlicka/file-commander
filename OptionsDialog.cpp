@@ -7,15 +7,8 @@
 #include <QSpinBox>
 #include <QHeaderView>
 
-const QString qsCOLUMN_SETS = QT_TR_NOOP("Column sets");
-const QString qsCONFIRMATION = QT_TR_NOOP("Confirmation");
-const QString qsCONTENT = QT_TR_NOOP("Content");
-const QString qsDISPLAY = QT_TR_NOOP("Display");
-const QString qsLISTER = QT_TR_NOOP("Lister");
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
-const QString qsOTHERS = QT_TR_NOOP("Others");
-const QString qsPANELS = QT_TR_NOOP("Panels");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 
 // destructor
@@ -23,6 +16,8 @@ cOptionsDialog::~cOptionsDialog()
 {
 	qmNative->deleteLater();
 	qmPlugins->deleteLater();
+	qagToolBarActions->deleteLater();
+	qtbToolBar->deleteLater();
 } // ~cOptionsDialog
 
 // add new column to current column set
@@ -81,34 +76,6 @@ void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTree
 	qtwTree->resizeColumnToContents(iPLUGIN_NAME_COLUMN);
 } // AddPluginIntoTree
 
-// build choices tree
-void cOptionsDialog::CreateChoices()
-{
-	QTreeWidgetItem *qtwiChoice, *qtwiSubChoice;
-
-	// panels
-	qtwiChoice = new QTreeWidgetItem(qtwChoices);
-	qtwiChoice->setText(0, qsPANELS);
-	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
-	qtwiSubChoice->setText(0, qsDISPLAY);
-	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
-	qtwiSubChoice->setText(0, qsCOLUMN_SETS);
-
-	// plugins
-	qtwiChoice = new QTreeWidgetItem(qtwChoices);
-	qtwiChoice->setText(0, qsPLUGINS);
-	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
-	qtwiSubChoice->setText(0, qsCONTENT);
-	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
-	qtwiSubChoice->setText(0, qsLISTER);
-
-	// others
-	qtwiChoice = new QTreeWidgetItem(qtwChoices);
-	qtwiChoice->setText(0, qsOTHERS);
-	qtwiSubChoice = new QTreeWidgetItem(qtwiChoice);
-	qtwiSubChoice->setText(0, qsCONFIRMATION);
-} // CreateChoices
-
 // constructor
 cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContent *ccContent)
 {
@@ -123,37 +90,41 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 	// remember original options
 	qlOldOptions = csSettings->GetAllSettings();
 
+	CreateToolBar();
 	PrepareColumnsMenu();
-
-	// left menu
-	qtwChoices->headerItem()->setHidden(true);
-	CreateChoices();
-	qtwChoices->expandAll();
-
-	// submenus
 	FillOptions();
-
-	// select first item
-	qtwChoices->setCurrentItem(qtwChoices->topLevelItem(0));
 
 	// connections
 	connect(&qmColumns, SIGNAL(triggered(QAction *)), SLOT(on_qmColumns_triggered(QAction *)));
 } // cConfigurationDialog
 
-// fills plugin information into tree
-void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree)
+// create left toolbar for navigation
+void cOptionsDialog::CreateToolBar()
 {
-	int iI;
-	QStringList qslHeader;
+	// create toolbar
+	qtbToolBar = new QToolBar();
+	qtbToolBar->setOrientation(Qt::Vertical);
+	qtbToolBar->setSizePolicy(QSizePolicy::Preferred, qtbToolBar->sizePolicy().verticalPolicy());
+	static_cast<QHBoxLayout *>(layout())->insertWidget(0, qtbToolBar);
 
-	qslHeader.append(tr("File path"));
-	qslHeader.append(tr("Enabled"));
-	qtwTree->setHeaderLabels(qslHeader);
+	// add actions
+	qagToolBarActions = new QActionGroup(qtbToolBar);
+	qaPanels = qtbToolBar->addAction(tr("Panels"));
+	qaPanels->setCheckable(true);
+	qagToolBarActions->addAction(qaPanels);
+	qaPlugins = qtbToolBar->addAction(tr("Plugins"));
+	qaPlugins->setCheckable(true);
+	qagToolBarActions->addAction(qaPlugins);
+	qaOthers = qtbToolBar->addAction(tr("Others"));
+	qaOthers->setCheckable(true);
+	qagToolBarActions->addAction(qaOthers);
 
-	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		AddPluginIntoTree(qlPlugins.at(iI), qtwTree);
-	} // for
-} // FillPluginsTree
+	// check first action as default
+	qaPanels->setChecked(true);
+
+	// connect
+	connect(qagToolBarActions, SIGNAL(triggered(QAction *)), SLOT(on_qagToolBarActions_triggered(QAction *)));
+} // CreateToolBar
 
 // fill options with set settings
 void cOptionsDialog::FillOptions()
@@ -205,6 +176,7 @@ void cOptionsDialog::FillOptions()
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
 
 	// plugins
+	// general
 	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
 	slLister = csSettings->GetListerSettings();
 	if (slLister.qsCharSet == qsANSI) {
@@ -224,9 +196,11 @@ void cOptionsDialog::FillOptions()
 	} // if
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
+	// lister
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
 
 	// others
+	// confirmation
 	qsValue = csSettings->GetFileOverwrite();
 	if (qsValue == qsASK) {
 		qrbOverwriteAsk->setChecked(true);
@@ -252,6 +226,21 @@ void cOptionsDialog::FillOptions()
 		} // if else
 	} // if else
 } // FillOptions
+
+// fills plugin information into tree
+void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree)
+{
+	int iI;
+	QStringList qslHeader;
+
+	qslHeader.append(tr("File path"));
+	qslHeader.append(tr("Enabled"));
+	qtwTree->setHeaderLabels(qslHeader);
+
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		AddPluginIntoTree(qlPlugins.at(iI), qtwTree);
+	} // for
+} // FillPluginsTree
 
 // get information about column from column set
 cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
@@ -298,6 +287,20 @@ QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPl
 	return qlPlugins;
 } // GetPluginList
 
+// clicked on action in tool bar panel
+void cOptionsDialog::on_qagToolBarActions_triggered(QAction *qaAction)
+{
+	if (qaAction == qaPanels) {
+		qswTabs->setCurrentIndex(iPANELS_TAB);
+	} else {
+		if (qaAction == qaPlugins) {
+			qswTabs->setCurrentIndex(iPLUGINS_TAB);
+		} else {
+			qswTabs->setCurrentIndex(iOTHERS_TAB);
+		} // if else
+	} // if else
+} // on_qagToolBarActions_triggered
+
 // column set changed
 void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 {
@@ -324,17 +327,17 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 } // on_qcbColumnSet_currentIndexChanged
 
 // changes accepted
-void cOptionsDialog::on_qdbbRespond_accepted()
+void cOptionsDialog::on_qdbbResponse_accepted()
 {
 	SaveOptions();
 	accept();
-} // on_qdbbRespond_accepted
+} // on_qdbbResponse_accepted
 
-void cOptionsDialog::on_qdbbRespond_rejected()
+void cOptionsDialog::on_qdbbResponse_rejected()
 {
 	csSettings->RestoreSettings(qlOldOptions);
 	reject();
-} // on_qdbbRespond_rejected
+} // on_qdbbResponse_rejected
 
 // column selected into column set
 void cOptionsDialog::on_qmColumns_triggered(QAction *action)
@@ -475,45 +478,6 @@ void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 {
 	delete qtwListerPlugins->selectedItems().at(0);
 } // on_qpbRemoveListerPlugin_clicked
-
-// choice change
-void cOptionsDialog::on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-	// panels
-	if (current->text(0) == qsPANELS) {
-		qswChoices->setCurrentIndex(iPANELS_PAGE);
-	} else {
-		if (current->text(0) == qsDISPLAY) {
-			qswChoices->setCurrentIndex(iDISPLAY_PAGE);
-		} else {
-			if (current->text(0) == qsCOLUMN_SETS) {
-				qswChoices->setCurrentIndex(iCOLUMN_SETS_PAGE);
-			} else {
-				// plugins
-				if (current->text(0) == qsPLUGINS) {
-					qswChoices->setCurrentIndex(iPLUGINS_PAGE);
-				} else {
-					if (current->text(0) == qsCONTENT) {
-						qswChoices->setCurrentIndex(iCONTENT_PLUGINS_PAGE);
-					} else {
-						if (current->text(0) == qsLISTER) {
-							qswChoices->setCurrentIndex(iLISTER_PLUGINS_PAGE);
-						} else {
-							// others
-							if (current->text(0) == qsOTHERS) {
-								qswChoices->setCurrentIndex(iOTHERS_PAGE);
-							} else {
-								if (current->text(0) == qsCONFIRMATION) {
-									qswChoices->setCurrentIndex(iCONFIRMATION_PAGE);
-								} // if
-							} // if else
-						} // if else
-					} // if else
-				} // if else
-			} // if else
-		} // if else
-	} // if else
-} // on_qtwChoices_currentItemChanged
 
 // prepare context plugin menu
 void cOptionsDialog::PrepareColumnsMenu()
