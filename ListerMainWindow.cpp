@@ -18,8 +18,6 @@ cListerMainWindow::~cListerMainWindow()
 		qteContent->setDocument(NULL);
 	} // if
 	qteContent->deleteLater();
-
-	deleteLater();
 } // ~cListerMainWindow
 
 // creates lister window
@@ -63,7 +61,7 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 // lister window close
 void cListerMainWindow::closeEvent(QCloseEvent *event)
 {
-	delete this;
+	deleteLater();;
 } // closeEvent
 
 // destroy of plugin's window

@@ -434,15 +434,6 @@
    <addaction name="menuShow" />
    <addaction name="menuConfiguration" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
-  <widget class="QToolBar" name="toolBar" >
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
-   </attribute>
-  </widget>
   <action name="qaQuit" >
    <property name="text" >
     <string>&amp;Quit</string>
