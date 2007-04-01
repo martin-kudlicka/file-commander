@@ -11,9 +11,11 @@ class cComboBox : public QComboBox
 
 	private:
 		void keyPressEvent(QKeyEvent *event);	///< key pressed in combo box
+															/**< \param event key event description */
 
 	signals:
-		void EnterPressed();							///< command confirmed
+		void KeyPressed(QKeyEvent *qkeEvent);	///< key pressed in command combo box
+															/**< \param qkeEvent key event description */
 
 }; // cComboBox
 

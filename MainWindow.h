@@ -54,7 +54,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						  \param cpDestination destination panel */
 
 	private slots:
-		void on_ccbCommand_EnterPressed();								///< command confirmed
+		void on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent);		///< key pressed in command combo box
+																					/**< \param qkeEvent key event description */
 		void on_qaFullScreen_triggered(bool checked = false);		///< full screen mode is selected
 																					/**< \param checked true if menu item is checkable and checked */
 		void on_qaOptions_triggered(bool checked = false);			///< options are selected
