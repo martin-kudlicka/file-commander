@@ -9,16 +9,31 @@
 #include "ListerMainWindow.h"
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings, cLister *clLister)
+cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister)
 {
-	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 	setWindowModality(Qt::WindowModal);
 
 	this->cpPanel = cpPanel;
-	this->qfilSelectedDirectories = qfilSelectedDirectories;
 	this->csSettings = csSettings;
 	this->clLister = clLister;
+
+	if (cpPanel) {
+		// find files called from application's main menu
+		qfilSelectedDirectories = cpPanel->GetSelectedDirItemsList();
+		qcbSearchIn->insertItem(0, cpPanel->GetPath());
+	} else {
+		// find files called from file marking
+		qcbSearchIn->setEnabled(false);
+		qpbBrowse->setEnabled(false);
+		qpbDrives->setEnabled(false);
+		qsbSubdirectoryDepth->setValue(0);
+		qsbSubdirectoryDepth->setEnabled(false);
+		qgbFoundFiles->hide();
+		qpbStart->setEnabled(false);
+		qpbCancel->setText(tr("OK"));
+	} // if else
 
 	if (qfilSelectedDirectories.count() > 0) {
 		qcbSearchInSelectedDirectories->setChecked(true);
@@ -32,9 +47,6 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFil
 	qcbFileSizeType->addItems(qsFILE_SIZE_TYPE);
 	qtwSearch->headerItem()->setHidden(true);
 	qtwSavedFinds->headerItem()->setHidden(true);
-
-	// fill some options
-	qcbSearchIn->insertItem(0, cpPanel->GetPath());
 
 	// refresh list of saved settings
 	RefreshSavedSettings();

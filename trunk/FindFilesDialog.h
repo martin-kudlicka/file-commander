@@ -5,7 +5,6 @@
 
 #include "ui_FindFilesDialog.h"
 
-#include <QMainWindow>
 #include "Panel.h"
 #include "Plugins/Lister.h"
 
@@ -26,11 +25,10 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 	Q_OBJECT
 
 	public:
-		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, QFileInfoList &qfilSelectedDirectories, cSettings *csSettings, cLister *clLister);
+		cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister);
 																								///< constructor
-																								/**< \param qmwParent parent window of this dialog
+																								/**< \param qwParent parent window of this dialog
 																									  \param cpPanel panel to work with
-																									  \param qfilSelectedDirectories selected directories in dir view
 																									  \param csSettings application's settings file
 																									  \param clLister lister plugins */
 

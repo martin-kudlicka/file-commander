@@ -253,11 +253,9 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 {
 	cFindFilesDialog *cffdFind;
 	cPanel *cpSource;
-	QFileInfoList qfilDirectories;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	qfilDirectories = cpSource->GetSelectedDirItemsList();
-	cffdFind = new cFindFilesDialog(this, cpSource, qfilDirectories, &csSettings, cpPlugins->clLister);
+	cffdFind = new cFindFilesDialog(this, cpSource, &csSettings, cpPlugins->clLister);
 
 	cffdFind->exec();
 	cffdFind->deleteLater();
@@ -272,6 +270,15 @@ void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 	cpSource->SelectAll();
 } // on_qaSelectAll_triggered
 
+// select group selected
+void cMainWindow::on_qaSelectGroup_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->Select(cSelectFilesDialog::Select, cpPlugins->clLister);
+} // on_qaSelectGroup_triggered
+
 // unselect all selected
 void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */)
 {
@@ -280,6 +287,15 @@ void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource);
 	cpSource->UnselectAll();
 } // on_qaUnselectAll_triggered
+
+// unselect group selected
+void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clLister);
+} // on_qaUnselectGroup_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
