@@ -294,13 +294,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="comboBox" >
-        <property name="focusPolicy" >
-         <enum>Qt::NoFocus</enum>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
