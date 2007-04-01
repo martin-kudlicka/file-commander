@@ -112,12 +112,12 @@ void cOptionsDialog::CreateToolBar()
 	qaPanels = qtbToolBar->addAction(tr("Panels"));
 	qaPanels->setCheckable(true);
 	qagToolBarActions->addAction(qaPanels);
+	qaOperations = qtbToolBar->addAction(tr("Operations"));
+	qaOperations->setCheckable(true);
+	qagToolBarActions->addAction(qaOperations);
 	qaPlugins = qtbToolBar->addAction(tr("Plugins"));
 	qaPlugins->setCheckable(true);
 	qagToolBarActions->addAction(qaPlugins);
-	qaOthers = qtbToolBar->addAction(tr("Others"));
-	qaOthers->setCheckable(true);
-	qagToolBarActions->addAction(qaOthers);
 
 	// check first action as default
 	qaPanels->setChecked(true);
@@ -162,6 +162,12 @@ void cOptionsDialog::FillOptions()
 	if (csSettings->GetShowBracketsAroundDirectoryName()) {
 		qcbSquareBracketsAroundDirectoryName->setChecked(true);
 	} // if
+	qsValue = csSettings->GetSelectionMode();
+	if (qsValue == qsONLY_FILES) {
+		qrbSelectionOnlyFiles->setChecked(true);
+	} else {
+		qrbSelectionFilesAndDirectories->setChecked(true);
+	} // if else
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qslHeader.append(tr("Type"));
@@ -296,7 +302,7 @@ void cOptionsDialog::on_qagToolBarActions_triggered(QAction *qaAction)
 		if (qaAction == qaPlugins) {
 			qswTabs->setCurrentIndex(iPLUGINS_TAB);
 		} else {
-			qswTabs->setCurrentIndex(iOTHERS_TAB);
+			qswTabs->setCurrentIndex(iOPERATIONS_TAB);
 		} // if else
 	} // if else
 } // on_qagToolBarActions_triggered
@@ -645,6 +651,12 @@ void cOptionsDialog::SaveOptions()
 		} // if else
 	} // if else
 	csSettings->SetFileSizeIn(qsValue);
+	if (qrbSelectionOnlyFiles->isChecked()) {
+		qsValue = qsONLY_FILES;
+	} else {
+		qsValue = qsFILES_AND_DIRECTORIES;
+	} // if else
+	csSettings->SetSelectionMode(qsValue);
 
 	// plugins
 	// content

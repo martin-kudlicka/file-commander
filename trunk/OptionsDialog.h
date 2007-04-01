@@ -26,8 +26,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iCOLUMNS = 5;										///< columns count in column view
 
 		static const int iPANELS_TAB = 0;									///< tab number of panels options
-		static const int iPLUGINS_TAB = 1;									///< tab number of plugins options
-		static const int iOTHERS_TAB = 2;									///< tab number of others options
+		static const int iOPERATIONS_TAB = 1;								///< tab number of operations options
+		static const int iPLUGINS_TAB = 2;									///< tab number of plugins options
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled
@@ -45,7 +45,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 
 		cContent *ccContent;														///< content plugins
 		cSettings *csSettings;													///< application's settings
-		QAction *qaOthers;														///< others options
+		QAction *qaOperations;													///< operations options
 		QAction *qaPanels;														///< panels options
 		QAction *qaPlugins;														///< plugins options
 		QActionGroup *qagToolBarActions;										///< group of all options in panel

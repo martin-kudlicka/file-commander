@@ -55,10 +55,23 @@
           <attribute name="title" >
            <string>&amp;Display</string>
           </attribute>
+          <widget class="QCheckBox" name="qcbSquareBracketsAroundDirectoryName" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>211</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Square brackets around directory name</string>
+           </property>
+          </widget>
           <widget class="QGroupBox" name="groupBox" >
            <property name="geometry" >
             <rect>
-             <x>140</x>
+             <x>10</x>
              <y>10</y>
              <width>120</width>
              <height>71</height>
@@ -94,23 +107,10 @@
             </property>
            </widget>
           </widget>
-          <widget class="QCheckBox" name="qcbSquareBracketsAroundDirectoryName" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>150</y>
-             <width>211</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Square brackets around directory name</string>
-           </property>
-          </widget>
           <widget class="QGroupBox" name="groupBox_5" >
            <property name="geometry" >
             <rect>
-             <x>10</x>
+             <x>150</x>
              <y>10</y>
              <width>120</width>
              <height>131</height>
@@ -182,6 +182,45 @@
             </property>
             <property name="text" >
              <string>Bytes</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_7" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>131</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Selection mode</string>
+           </property>
+           <widget class="QRadioButton" name="qrbSelectionOnlyFiles" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Only files</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbSelectionFilesAndDirectories" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>121</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Files and directories</string>
             </property>
            </widget>
           </widget>
@@ -318,6 +357,143 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+          </widget>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_3" >
+        <widget class="QTabWidget" name="tabWidget_3" >
+         <property name="geometry" >
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>471</width>
+           <height>231</height>
+          </rect>
+         </property>
+         <property name="currentIndex" >
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_6" >
+          <attribute name="title" >
+           <string>&amp;Confirmation</string>
+          </attribute>
+          <widget class="QGroupBox" name="groupBox_2" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>131</width>
+             <height>111</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>File overwrite</string>
+           </property>
+           <widget class="QRadioButton" name="qrbOverwriteAll" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Overwrite all</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbOverwriteAllOlder" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>111</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Overwrite all older</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbOverwriteSkipAll" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>80</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Skip all</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbOverwriteAsk" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Ask</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_3" >
+           <property name="geometry" >
+            <rect>
+             <x>150</x>
+             <y>10</y>
+             <width>130</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Readonly file overwrite</string>
+           </property>
+           <widget class="QRadioButton" name="qrbReadonlyOverwriteAsk" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Ask</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbReadonlyOverwriteYesToAll" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Yes to all</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbReadonlyOverwriteNoToAll" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>No to all</string>
+            </property>
+           </widget>
           </widget>
          </widget>
         </widget>
@@ -556,143 +732,6 @@
            <property name="rootIsDecorated" >
             <bool>false</bool>
            </property>
-          </widget>
-         </widget>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="page_3" >
-        <widget class="QTabWidget" name="tabWidget_3" >
-         <property name="geometry" >
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>471</width>
-           <height>231</height>
-          </rect>
-         </property>
-         <property name="currentIndex" >
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tab_6" >
-          <attribute name="title" >
-           <string>&amp;Confirmation</string>
-          </attribute>
-          <widget class="QGroupBox" name="groupBox_2" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>131</width>
-             <height>111</height>
-            </rect>
-           </property>
-           <property name="title" >
-            <string>File overwrite</string>
-           </property>
-           <widget class="QRadioButton" name="qrbOverwriteAll" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>40</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Overwrite all</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbOverwriteAllOlder" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>111</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Overwrite all older</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbOverwriteSkipAll" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>80</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Skip all</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbOverwriteAsk" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>20</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Ask</string>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QGroupBox" name="groupBox_3" >
-           <property name="geometry" >
-            <rect>
-             <x>150</x>
-             <y>10</y>
-             <width>130</width>
-             <height>91</height>
-            </rect>
-           </property>
-           <property name="title" >
-            <string>Readonly file overwrite</string>
-           </property>
-           <widget class="QRadioButton" name="qrbReadonlyOverwriteAsk" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>20</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Ask</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbReadonlyOverwriteYesToAll" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>40</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Yes to all</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbReadonlyOverwriteNoToAll" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>83</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>No to all</string>
-            </property>
-           </widget>
           </widget>
          </widget>
         </widget>

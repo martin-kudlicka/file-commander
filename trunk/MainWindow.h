@@ -66,6 +66,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																					/**< \param checked true if menu item is checkable and checked */
 		void on_qaSearch_triggered(bool checked = false);			///< search selected
 																					/**< \param checked true if menu item is checkable and checked */
+		void on_qaSelectAll_triggered(bool checked = false);		///< select all selected
+																					/**< \param checked true if menu item is checkable and checked */
+		void on_qaUnselectAll_triggered(bool checked = false);	///< unselect all selected
+																					/**< \param checked true if menu item is checkable and checked */
 		void on_qpbCopy_clicked(bool checked = false);				///< copy button is clicked on
 																					/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);			///< delete button is clicked on

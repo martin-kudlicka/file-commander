@@ -709,6 +709,25 @@ void cPanel::RefreshHeader(const int &iIndex)
 	RefreshContent(iIndex);
 } // RefreshHeader
 
+// select all files
+void cPanel::SelectAll()
+{
+	QString qsMode;
+
+	qsMode = csSettings->GetSelectionMode();
+	if (qsMode == qsONLY_FILES) {
+		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+		while (qhiFiles.hasNext()) {
+			qhiFiles.next();
+			if (qhiFiles.value().isFile()) {
+				qhiFiles.key()->setSelected(true);
+			} // if
+		} // while
+	} else {
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->selectAll();
+	} // if else
+} // SelectAll
+
 // set new path for current dir view
 void cPanel::SetPath(const QString &qsPath)
 {
@@ -848,3 +867,9 @@ bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidge
 		} // if else
 	} // if else
 } // TreeSortByString
+
+// unselect all files
+void cPanel::UnselectAll()
+{
+	static_cast<cTreeWidget *>(qswDir->currentWidget())->clearSelection();
+} // UnselectAll
