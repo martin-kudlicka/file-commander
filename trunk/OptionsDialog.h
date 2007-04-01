@@ -8,6 +8,7 @@
 #include "Settings.h"
 #include <QMenu>
 #include "Plugins/Content.h"
+#include <QToolBar>
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
 {
@@ -24,14 +25,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 	private:
 		static const int iCOLUMNS = 5;										///< columns count in column view
 
-		static const int iPANELS_PAGE = 0;									///< main panel's page
-		static const int iDISPLAY_PAGE = 1;									///< panel's display page
-		static const int iCOLUMN_SETS_PAGE = 2;							///< column's sets page
-		static const int iPLUGINS_PAGE = 3;									///< main plugin's page
-		static const int iCONTENT_PLUGINS_PAGE = 4;						///< content plugin's page
-		static const int iLISTER_PLUGINS_PAGE = 5;						///< lister plugin's page
-		static const int iOTHERS_PAGE = 6;									///< others page
-		static const int iCONFIRMATION_PAGE = 7;							///< confirmation page
+		static const int iPANELS_TAB = 0;									///< tab number of panels options
+		static const int iPLUGINS_TAB = 1;									///< tab number of plugins options
+		static const int iOTHERS_TAB = 2;									///< tab number of others options
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled
@@ -49,10 +45,15 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 
 		cContent *ccContent;														///< content plugins
 		cSettings *csSettings;													///< application's settings
+		QAction *qaOthers;														///< others options
+		QAction *qaPanels;														///< panels options
+		QAction *qaPlugins;														///< plugins options
+		QActionGroup *qagToolBarActions;										///< group of all options in panel
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
 		QMenu qmColumns;															///< columns menu
 		QMenu *qmNative;															///< native part of columns menu
 		QMenu *qmPlugins;															///< plugins part of columns menu
+		QToolBar *qtbToolBar;													///< left toolbar for navigation
 
 		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX);
 																						///< add new column to current column set
@@ -63,7 +64,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< add another plugin into tree
 																						/**< \param spPlugin plugin to add
 																							  \param qtwTree tree to put plugin into */
-		void CreateChoices();													///< build choices tree
+		void CreateToolBar();													///< create left toolbar for navigation
 		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
 																						///< get info about specified plugins
 																						/**< \param qtwPlugins plugins to get info
@@ -83,11 +84,13 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void SaveOptions();														///< save changes into application's settings file
 
 	private slots:
+		void on_qagToolBarActions_triggered(QAction *qaAction);		///< clicked on action in tool bar panel
+																						/**< \param qaAction tool bar's action */
 		void on_qcbColumnSet_currentIndexChanged(const QString &text);
 																						///< column set changed
 																						/**< \param text new selected column set */
-		void on_qdbbRespond_accepted();										///< changes accepted
-		void on_qdbbRespond_rejected();										///< changes rejected
+		void on_qdbbResponse_accepted();										///< changes accepted
+		void on_qdbbResponse_rejected();										///< changes rejected
 		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
 																						/**< \param action selected column (or column's unit) */
 		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
@@ -112,10 +115,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qsbWidth_valueChanged(int val);							///< changed width of column
 																						/**< \param val new column width */
-		void on_qtwChoices_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-																						///< choice change
-																						/**< \param current new choice
-																							  \param previous last choice */
 		void on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< selected cell changed
 																						/**< \param current actually selected item
