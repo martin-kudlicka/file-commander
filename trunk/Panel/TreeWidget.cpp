@@ -11,6 +11,7 @@ cTreeWidget::cTreeWidget()
 // dir view got focus
 void cTreeWidget::focusInEvent(QFocusEvent *event)
 {
+	QTreeWidget::focusInEvent(event);
 	emit GotFocus();
 } // focusInEvent
 
@@ -18,14 +19,17 @@ void cTreeWidget::focusInEvent(QFocusEvent *event)
 void cTreeWidget::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key()) {
+		case Qt::Key_Down:
+		case Qt::Key_Up:		QTreeWidget::keyPressEvent(event);
+									break;
 		case Qt::Key_Insert:	setSelectionMode(MultiSelection);
 									setCurrentItem(topLevelItem(indexOfTopLevelItem(currentItem()) + 1));
 									setSelectionMode(ExtendedSelection);
 									break;
 		case Qt::Key_Space:	currentItem()->setSelected(!currentItem()->isSelected());
-									emit SpacePressed(currentItem());
+									emit KeyPressed(event, currentItem());
 									break;
-		default:					QTreeWidget::keyPressEvent(event);
+		default:					emit KeyPressed(event, NULL);
 	} // switch
 } // keyPressEvent
 

@@ -7,6 +7,7 @@
 #include "ListerMainWindow.h"
 #include "FindFilesDialog.h"
 #include "Panel/Process.h"
+#include <QKeyEvent>
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -102,14 +103,14 @@ cMainWindow::cMainWindow()
 	ccbCommand = new cComboBox();
 	ccbCommand->setEditable(true);
 	ccbCommand->setFocusPolicy(Qt::NoFocus);
-	connect(ccbCommand, SIGNAL(EnterPressed()), SLOT(on_ccbCommand_EnterPressed()));
+	connect(ccbCommand, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ccbCommand_KeyPressed(QKeyEvent *)));
 	static_cast<QHBoxLayout *>(centralwidget->layout()->itemAt(1))->addWidget(ccbCommand);
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
 	// panels
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, ccbCommand);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, ccbCommand);
 
 	ActualizeDrives();
 	// load settings
@@ -187,10 +188,12 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 } // LoadTabs
 
 // command confirmed
-void cMainWindow::on_ccbCommand_EnterPressed()
+void cMainWindow::on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent)
 {
-	cProcess::Execute(ccbCommand->currentText(), qlGlobalPath->text());
-} // on_ccbCommand_EnterPressed
+	if (qkeEvent->key() == Qt::Key_Enter) {
+		cProcess::Execute(ccbCommand->currentText(), qlGlobalPath->text());
+	} // if
+} // on_ccbCommand_KeyPressed
 
 // full screen mode is selected
 void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)

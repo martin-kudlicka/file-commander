@@ -5,12 +5,16 @@
 // key pressed in combo box
 void cComboBox::keyPressEvent(QKeyEvent *event)
 {
-	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-		emit EnterPressed();
-		insertItem(0, currentText());
-		setCurrentIndex(-1);
-		setEditText("");
-	} else {
-		QComboBox::keyPressEvent(event);
-	} // if else
+	switch (event->key()) {
+		case Qt::Key_Down:
+		case Qt::Key_Up:		emit KeyPressed(event);
+									break;
+		case Qt::Key_Enter:
+		case Qt::Key_Return:	emit KeyPressed(event);
+									insertItem(0, currentText());
+									setCurrentIndex(-1);
+									setEditText("");
+									break;
+		default:					QComboBox::keyPressEvent(event);
+	} // switch
 } // keyPressEvent

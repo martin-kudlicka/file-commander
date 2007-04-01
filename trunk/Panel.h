@@ -18,6 +18,7 @@
 #include <QTimer>
 #include "Plugins/ContentDelayed.h"
 #include <QMainWindow>
+#include "ComboBox.h"
 
 class cPanel : private QObject
 {
@@ -34,7 +35,7 @@ class cPanel : private QObject
 			uint Files;													///< number of files
 		};
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, cComboBox *ccbCommand);
 																			///< constructor
 																			/**< \param qmwParent parent window for dialogs
 																				  \param qswPanel panel for cTreeWidget
@@ -46,7 +47,8 @@ class cPanel : private QObject
 																				  \param csSettings application's settings
 																				  \param ccContent application'c content plugins
 																				  \param qmDrives information about system drives
-																				  \param qlGlobalPath path visible in the bottom of main window */
+																				  \param qlGlobalPath path visible in the bottom of main window
+																				  \param ccbCommand command combo box */
 		~cPanel();														///< destructor
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
@@ -87,6 +89,7 @@ class cPanel : private QObject
 			sWidgets *swWidgets;										///< to remember displayed strings
 		};
 
+		cComboBox *ccbCommand;										///< command combo box
 		cContent *ccContent;											///< access to content plugins
 		cContentDelayed *ccdContentDelayed;						///< thread to get delayed content plugins values
 		cSettings *csSettings;										///< main settings
@@ -106,6 +109,7 @@ class cPanel : private QObject
 		QTabBar *qtbTab;												///< tabs for dir view
 		QTimer qtTimer;												///< timer for requesting changeable informations
 		static cSettings::sSort ssSort;							///< sort information
+		static QStackedWidget *qswLastActive;					///< last active panel
 
 		void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		void ActualizeWidgets();									///< actualize widgets with info about current directory view
@@ -138,6 +142,9 @@ class cPanel : private QObject
 		void InterruptContentDelayed();							///< interrupt delayed content processing before refresh dir view content
 
 	private slots:
+		void on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent);
+																			///< key pressed in command combo box
+																			/**< \param qkeEvent key event description */
 		void on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput);
 																			///< got golumn value from plugin
 																			/**< \param soOutput information to update dir view */
@@ -152,9 +159,10 @@ class cPanel : private QObject
 		void on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree);
 																			///< changed selected items in directory view
 																			/**< \param ctwTree changed directory view */
-		void on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem);
+		void on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiItem);
 																			///< space pressed in dir view
-																			/**< \param qtwiItem item space pressed on */
+																			/**< \param qkeEvent key event description
+																				  \param qtwiItem item space pressed on */
 		void on_qcbDrive_activated(int index);					///< drive selected
 																			/**< \param index index of selected drive */
 		void on_qcbDrive_currentIndexChanged(int index);	///< selected drive changes

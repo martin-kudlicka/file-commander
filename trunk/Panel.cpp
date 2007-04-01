@@ -6,8 +6,10 @@
 #include <QHeaderView>
 #include <QProcess>
 #include "Panel/SelectDriveDialog.h"
+#include <QKeyEvent>
 
-cSettings::sSort cPanel::ssSort;	///< sort information (static class variable)
+cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
+QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 
 // destructor
 cPanel::~cPanel()
@@ -73,7 +75,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
-	connect(ctwTree, SIGNAL(SpacePressed(QTreeWidgetItem *)), SLOT(on_ctwTree_SpacePressed(QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 
 	// set tab properties
@@ -99,7 +101,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, cComboBox *ccbCommand)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -112,6 +114,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qmDrives = qmDrives;
 	this->qmwParent = qmwParent;
 	this->qlGlobalPath = qlGlobalPath;
+	this->ccbCommand = ccbCommand;
 
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
@@ -123,6 +126,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
+	connect(ccbCommand, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ccbCommand_KeyPressed(QKeyEvent *)));
 
 	// timer
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
@@ -337,6 +341,15 @@ void cPanel::GoToUpDir()
 	} // if
 } // GoToUpDir
 
+// key pressed in command combo box
+void cPanel::on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent)
+{
+	if (qswLastActive == qswDir && (qkeEvent->key() == Qt::Key_Down || qkeEvent->key() == Qt::Key_Up)) {
+		qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+		QApplication::sendEvent(qswLastActive->currentWidget(), qkeEvent);
+	} // if
+} // on_ccbCommand_KeyPressed
+
 // got golumn value from plugin
 void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
 {
@@ -352,6 +365,7 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 // dir view got focus
 void cPanel::on_ctwTree_GotFocus()
 {
+	qswLastActive = qswDir;
 	qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 } // on_ctwTree_GotFocus
 
@@ -418,41 +432,46 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 } // on_ctwTree_itemSelectionChanged
 
 // space pressed in dir view
-void cPanel::on_ctwTree_SpacePressed(QTreeWidgetItem *qtwiItem)
+void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiItem)
 {
 	int iColumnExtension, iI;
 	QFileInfo qfiFile;
 	QFileInfoList qfilFiles;
 	qint64 qi64Size;
 
-	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
+	switch (qkeEvent->key()) {
+		case Qt::Key_Space:	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
 
-	// refresh content plugin values
-	for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
-		if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
-			qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
-		} // if
-	} // for
+									// refresh content plugin values
+									for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
+										if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
+											qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+										} // if
+									} // for
 
-	if (qfiFile.isFile()) {
-		// selected item is file
-		return;
-	} // if
+									if (qfiFile.isFile()) {
+										// selected item is file
+										return;
+									} // if
 
-	iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
-	if (iColumnExtension == -1) {
-		// no place to show occupied space
-		return;
-	} // if
+									iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
+									if (iColumnExtension == -1) {
+										// no place to show occupied space
+										return;
+									} // if
 
-	qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
-	qi64Size = 0;
-	for (iI = 0; iI < qfilFiles.count(); iI++) {
-		qi64Size += qfilFiles.at(iI).size();
-	} // for
+									qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+									qi64Size = 0;
+									for (iI = 0; iI < qfilFiles.count(); iI++) {
+										qi64Size += qfilFiles.at(iI).size();
+									} // for
 
-	qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
-} // on_ctwTree_SpacePressed
+									qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+									break;
+		default:					QApplication::sendEvent(ccbCommand, qkeEvent);
+									ccbCommand->setFocus(Qt::OtherFocusReason);
+	} // switch
+} // on_ctwTree_KeyPressed
 
 // drive selected
 void cPanel::on_qcbDrive_activated(int index)
