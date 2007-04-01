@@ -31,6 +31,9 @@ class cSelectFilesDialog : public QDialog, private Ui::qdSelectFiles
 		cLister *clLister;											///< lister plugins
 		cSettings *csSettings;										///< application's settings
 
+		bool eventFilter(QObject *watched, QEvent *event);	///< event filter
+																			/**< \param watcher object to filter
+																				  \param event event description */
 		void RefreshFindSets();										///< refresh finds sets from settings file
 
 	private slots:

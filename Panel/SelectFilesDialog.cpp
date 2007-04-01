@@ -12,6 +12,7 @@ cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType
 	this->csSettings = csSettings;
 	this->clLister = clLister;
 
+	qcbFilter->installEventFilter(this);
 	qtwFindSets->header()->setHidden(true);
 
 	if (estType == Select) {
@@ -22,6 +23,20 @@ cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType
 
 	RefreshFindSets();
 } // cSelectFilesDialog
+
+// event filter
+bool cSelectFilesDialog::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qcbFilter) {
+		// clear selection of predefined filter if combo box gets focus
+		if (event->type() == QEvent::FocusIn) {
+			qtwFindSets->clearSelection();
+		} // if
+		return false;
+	} else {
+		return QDialog::eventFilter(watched, event);
+	} // if else
+} // eventFilter
 
 // define button is clicked on
 void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
