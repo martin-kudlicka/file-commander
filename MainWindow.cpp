@@ -19,7 +19,6 @@ cMainWindow::~cMainWindow()
 	delete cpLeft;
 	delete cpRight;
 	delete cpPlugins;
-	ccbCommand->deleteLater();
 } // cMainWindow
 
 // drive lists actualization
@@ -91,6 +90,7 @@ cMainWindow::cMainWindow()
 			setWindowState(Qt::WindowFullScreen);
 		} // if
 	} // if else
+	qcbCommand->installEventFilter(this);
 	// add left tab
 	qvblTabBar = static_cast<QVBoxLayout *>(qswLeft->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbLeft);
@@ -99,18 +99,12 @@ cMainWindow::cMainWindow()
 	qvblTabBar = static_cast<QVBoxLayout *>(qswRight->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbRight);
 	qtbRight.setFocusPolicy(Qt::NoFocus);
-	// add command combo box
-	ccbCommand = new cComboBox();
-	ccbCommand->setEditable(true);
-	ccbCommand->setFocusPolicy(Qt::NoFocus);
-	connect(ccbCommand, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ccbCommand_KeyPressed(QKeyEvent *)));
-	static_cast<QHBoxLayout *>(centralwidget->layout()->itemAt(1))->addWidget(ccbCommand);
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
 	// panels
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, ccbCommand);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, ccbCommand);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand);
 
 	ActualizeDrives();
 	// load settings
@@ -134,6 +128,26 @@ cMainWindow::cMainWindow()
 	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 } // cMainWindow
+
+// event filter
+bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qcbCommand) {
+		if (event->type() == QEvent::KeyPress) {
+			switch (static_cast<QKeyEvent *>(event)->key()) {
+				case Qt::Key_Enter:
+				case Qt::Key_Return:	cProcess::Execute(qcbCommand->currentText(), qlGlobalPath->text());
+											qcbCommand->insertItem(0, qcbCommand->currentText());
+											qcbCommand->setCurrentIndex(-1);
+											qcbCommand->setEditText("");
+											return true;
+			} // switch
+		} // if
+		return false;
+	} else {
+		return QMainWindow::eventFilter(watched, event);
+	} // if else
+} // eventFilter
 
 // find active panel (left or right)
 QStackedWidget *cMainWindow::GetActivePanel()
@@ -186,14 +200,6 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} // if else
 	} // for
 } // LoadTabs
-
-// command confirmed
-void cMainWindow::on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent)
-{
-	if (qkeEvent->key() == Qt::Key_Enter) {
-		cProcess::Execute(ccbCommand->currentText(), qlGlobalPath->text());
-	} // if
-} // on_ccbCommand_KeyPressed
 
 // full screen mode is selected
 void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)

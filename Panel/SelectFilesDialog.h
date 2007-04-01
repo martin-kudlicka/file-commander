@@ -33,7 +33,8 @@ class cSelectFilesDialog : public QDialog, private Ui::qdSelectFiles
 
 		bool eventFilter(QObject *watched, QEvent *event);	///< event filter
 																			/**< \param watcher object to filter
-																				  \param event event description */
+																				  \param event event description
+																				  \return true if event is handled */
 		void RefreshFindSets();										///< refresh finds sets from settings file
 
 	private slots:

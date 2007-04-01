@@ -294,6 +294,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QComboBox" name="qcbCommand" >
+        <property name="focusPolicy" >
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
