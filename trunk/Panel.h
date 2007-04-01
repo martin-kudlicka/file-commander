@@ -34,7 +34,7 @@ class cPanel : private QObject
 			uint Files;													///< number of files
 		};
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath);
 																			///< constructor
 																			/**< \param qmwParent parent window for dialogs
 																				  \param qswPanel panel for cTreeWidget
@@ -45,7 +45,8 @@ class cPanel : private QObject
 																				  \param qlSelected information about selected directories and files
 																				  \param csSettings application's settings
 																				  \param ccContent application'c content plugins
-																				  \param qmDrives information about system drives */
+																				  \param qmDrives information about system drives
+																				  \param qlGlobalPath path visible in the bottom of main window */
 		~cPanel();														///< destructor
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
@@ -95,6 +96,7 @@ class cPanel : private QObject
 		QFileSystemWatcher qfswWatcher;							///< watching directory changes
 		QHash<uint, sTab> qhTabs;									///< tabs in current panel
 		QHash<QString, QString> qhLastPaths;					///< last visited paths for drives
+		QLabel *qlGlobalPath;										///< path visible in the bottom of main window
 		QLabel *qlPath;												///< path
 		QLabel *qlDriveInfo;											///< drive info - label, used/free place
 		QLabel *qlSelected;											///< selected items
@@ -142,6 +144,7 @@ class cPanel : private QObject
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);
 																			///< show tree view context menu
 																			/**< \param pos position of context menu */
+		void on_ctwTree_GotFocus();								///< dir view got focus
 		void on_ctwTree_itemActivated(QTreeWidgetItem *item, int column);
 																			///< double click in tree view
 																			/**< \param item item clicked on

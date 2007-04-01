@@ -74,6 +74,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(SpacePressed(QTreeWidgetItem *)), SLOT(on_ctwTree_SpacePressed(QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -98,7 +99,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -110,6 +111,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->ccContent = ccContent;
 	this->qmDrives = qmDrives;
 	this->qmwParent = qmwParent;
+	this->qlGlobalPath = qlGlobalPath;
 
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
@@ -346,6 +348,12 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 {
 	csmMenu->Show(GetSelectedItemsStringList(), static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_ctwTree_customContextMenuRequested
+
+// dir view got focus
+void cPanel::on_ctwTree_GotFocus()
+{
+	qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+} // on_ctwTree_GotFocus
 
 // double click in tree view
 void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
@@ -742,6 +750,7 @@ void cPanel::SetPath(const QString &qsPath)
 		// add new path to watcher
 		qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 		qhLastPaths.insert(qcbDrive->currentText(), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath));
+		qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 		RefreshContent(qswDir->currentIndex());
 #ifdef Q_WS_WIN
 	} // if else
