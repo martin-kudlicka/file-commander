@@ -13,10 +13,13 @@ class cTreeWidget : public QTreeWidget
 		cTreeWidget();															///< constructor
 
 	private:
+		void focusInEvent(QFocusEvent *event);							///< dir view got focus
+																					///< \param event incoming focus event */
 		void keyPressEvent(QKeyEvent *event);							///< handle key processing
 																					/**< \param event incoming key event */
 
 	signals:
+		void GotFocus();														///< dir view got focus
 		void itemSelectionChanged(const cTreeWidget *ctwTree);	///< selection changed it directory view
 																					/**< \param ctwTree tree that changes selection */
 		void SpacePressed(QTreeWidgetItem *qtwiItem);				///< space pressed in dir view

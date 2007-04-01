@@ -8,6 +8,12 @@ cTreeWidget::cTreeWidget()
 	connect(this, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
 } // cTreeWidget
 
+// dir view got focus
+void cTreeWidget::focusInEvent(QFocusEvent *event)
+{
+	emit GotFocus();
+} // focusInEvent
+
 // handle key processing
 void cTreeWidget::keyPressEvent(QKeyEvent *event)
 {
