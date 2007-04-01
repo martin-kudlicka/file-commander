@@ -201,6 +201,15 @@ void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
 	setWindowState(windowState() ^ Qt::WindowFullScreen);
 } // on_qaFullScreen_triggered
 
+// invert selection is selected
+void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->InvertSelection();
+} // on_qaInvertSelection_triggered
+
 // options are selected
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {

@@ -58,6 +58,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																					/**< \param qkeEvent key event description */
 		void on_qaFullScreen_triggered(bool checked = false);		///< full screen mode is selected
 																					/**< \param checked true if menu item is checkable and checked */
+		void on_qaInvertSelection_triggered(bool checked = false);	///< invert selection is selected
+																					/**< \param checked true if menu item is checkable and checked */
 		void on_qaOptions_triggered(bool checked = false);			///< options are selected
 																					/**< \param checked true if menu item is checkable and checked */
 		void on_qaRefresh_triggered(bool checked = false);			///< refresh is selected
