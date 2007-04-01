@@ -720,7 +720,17 @@ void cPanel::SetPath(const QString &qsPath)
 			} // if else
 		} else {
 			// maybe valid drive bad invalid path
-			GoToUpDir();
+			QDir qdDir;
+
+			qdDir.setPath(qsPath);
+			qdDir.cdUp();
+			if (qdDir.path() == qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath) {
+				// unsuccessful try to change to subdirectory
+				qlDriveInfo->show();
+			} else {
+				// bad directory, try to go one dir up
+				GoToUpDir();
+			} // if else
 		} // if else
 	} else {
 		// path ok
