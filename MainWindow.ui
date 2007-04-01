@@ -395,12 +395,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="qaQuit" />
-   </widget>
    <widget class="QMenu" name="menuCommands" >
     <property name="title" >
      <string>&amp;Commands</string>
@@ -422,7 +416,24 @@
     <addaction name="separator" />
     <addaction name="qaRefresh" />
    </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="qaQuit" />
+   </widget>
+   <widget class="QMenu" name="menu_Mark" >
+    <property name="title" >
+     <string>&amp;Mark</string>
+    </property>
+    <addaction name="qaSelectGroup" />
+    <addaction name="qaUnselectGroup" />
+    <addaction name="qaSelectAll" />
+    <addaction name="qaUnselectAll" />
+    <addaction name="qaInvertSelection" />
+   </widget>
    <addaction name="menuFile" />
+   <addaction name="menu_Mark" />
    <addaction name="menuCommands" />
    <addaction name="menuShow" />
    <addaction name="menuConfiguration" />
@@ -467,6 +478,31 @@
    </property>
    <property name="shortcut" >
     <string>F11</string>
+   </property>
+  </action>
+  <action name="qaSelectGroup" >
+   <property name="text" >
+    <string>&amp;Select group...</string>
+   </property>
+  </action>
+  <action name="qaUnselectGroup" >
+   <property name="text" >
+    <string>&amp;Unselect group...</string>
+   </property>
+  </action>
+  <action name="qaSelectAll" >
+   <property name="text" >
+    <string>Select &amp;all</string>
+   </property>
+  </action>
+  <action name="qaUnselectAll" >
+   <property name="text" >
+    <string>U&amp;nselect all</string>
+   </property>
+  </action>
+  <action name="qaInvertSelection" >
+   <property name="text" >
+    <string>Invert s&amp;election</string>
    </property>
   </action>
  </widget>

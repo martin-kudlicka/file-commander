@@ -50,6 +50,7 @@ const QString qsWRAP_TEXT = "WrapText";
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Display
 const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
+const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
@@ -343,6 +344,12 @@ QStringList cSettings::GetSavedFinds()
 	return qslSavedFinds;
 } // GetSavedFinds
 
+// selection mode of files and directories
+QString cSettings::GetSelectionMode()
+{
+	return qsSettings.value(qsDISPLAY__SELECTION_MODE, qsONLY_FILES).toString();
+} // GetSelectionMode
+
 // square brackets around directory name
 bool cSettings::GetShowBracketsAroundDirectoryName()
 {
@@ -539,6 +546,12 @@ void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
 {
 	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
 } // SetReadonlyFileOverwrite
+
+// set selection mode of files and directories
+void cSettings::SetSelectionMode(const QString &qsMode)
+{
+	qsSettings.setValue(qsDISPLAY__SELECTION_MODE, qsMode);
+} // SetSelectionMode
 
 // square brackets around directory name
 void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)

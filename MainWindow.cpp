@@ -254,6 +254,24 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 	cffdFind->deleteLater();
 } // on_qaSearch_triggered
 
+// select all selected
+void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->SelectAll();
+} // on_qaSelectAll_triggered
+
+// unselect all selected
+void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */)
+{
+	cPanel *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource);
+	cpSource->UnselectAll();
+} // on_qaUnselectAll_triggered
+
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {

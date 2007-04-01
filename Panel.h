@@ -71,6 +71,8 @@ class cPanel : private QObject
 		void GoToRootDir();											///< go to root directory
 		void GoToUpDir();												///< go up one level (directory)
 		void Refresh();												///< refresh current dir view
+		void SelectAll();												///< select all files
+		void UnselectAll();											///< unselect all files
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;				///< timer interval

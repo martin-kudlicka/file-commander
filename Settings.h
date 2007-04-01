@@ -14,6 +14,7 @@ const QString qsBYTES2 = "byte(s)";
 const QString qsDATE = "Date";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
+const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsGIGABYTES = "Gigabytes";
@@ -27,6 +28,7 @@ const QString qsNAME = "Name";
 const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsNORMAL = "Normal";
+const QString qsONLY_FILES = "OnlyFiles";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSIZE = "Size";
@@ -154,6 +156,8 @@ class cSettings : private QObject
 																				/**< \return default readonly file overwrite mode */
 		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
 																				/**< \return list of save find settings */
+		QString GetSelectionMode();									///< selection mode of files and directories
+																				/**< \return selection mode */
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
 																				/**< \return show brackets around directory name flag */
 		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
@@ -194,6 +198,8 @@ class cSettings : private QObject
 																				/**< \param qsTime user defined time display format */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
+		void SetSelectionMode(const QString &qsMode);			///< set selection mode of files and directories
+																				/**< \param qsMode selection mode */
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
 																				///< square brackets around directory name
 																				/**< \param bShowBrackets show brackets around directory name flag */
