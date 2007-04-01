@@ -101,7 +101,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, cComboBox *ccbCommand)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -114,7 +114,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qmDrives = qmDrives;
 	this->qmwParent = qmwParent;
 	this->qlGlobalPath = qlGlobalPath;
-	this->ccbCommand = ccbCommand;
+	this->qcbCommand = qcbCommand;
 
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
@@ -122,11 +122,12 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 #endif
 	);
 
+	qcbCommand->installEventFilter(this);
+
 	// signals for controls
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
-	connect(ccbCommand, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ccbCommand_KeyPressed(QKeyEvent *)));
 
 	// timer
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
@@ -152,6 +153,27 @@ void cPanel::EditFile()
 #endif
 	} // if
 } // EditFile
+
+// event filter
+bool cPanel::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qcbCommand) {
+		if (event->type() == QEvent::KeyPress) {
+			if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Down || static_cast<QKeyEvent *>(event)->key() == Qt::Key_Up) {
+				if (qswLastActive == qswDir) {
+					qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+					QApplication::sendEvent(qswLastActive->currentWidget(), event);
+					return true;
+				} else {
+					return false;
+				} // if else
+			} // if
+		} // if
+		return false;
+	} else {
+		return QObject::eventFilter(watched, event);
+	} // if else
+} // eventFilter
 
 // show custom list of files in current dir view
 void cPanel::FeedToPanel(QFileInfoList &qfilFiles)
@@ -360,15 +382,6 @@ void cPanel::InvertSelection()
 	} // while
 } // InvertSelection
 
-// key pressed in command combo box
-void cPanel::on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent)
-{
-	if (qswLastActive == qswDir && (qkeEvent->key() == Qt::Key_Down || qkeEvent->key() == Qt::Key_Up)) {
-		qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
-		QApplication::sendEvent(qswLastActive->currentWidget(), qkeEvent);
-	} // if
-} // on_ccbCommand_KeyPressed
-
 // got golumn value from plugin
 void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
 {
@@ -487,8 +500,8 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 
 									qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
 									break;
-		default:					QApplication::sendEvent(ccbCommand, qkeEvent);
-									ccbCommand->setFocus(Qt::OtherFocusReason);
+		default:					QApplication::sendEvent(qcbCommand, qkeEvent);
+									qcbCommand->setFocus(Qt::OtherFocusReason);
 	} // switch
 } // on_ctwTree_KeyPressed
 

@@ -9,7 +9,6 @@
 #include "FileOperation.h"
 #include <QTimer>
 #include <QShortcut>
-#include "ComboBox.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";
@@ -29,7 +28,6 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		static const int iTAB_POS = 1;										///< position of TabBar in layout
 		static const int iTIMER_INTERVAL = 1000;							///< timer interval
 
-		cComboBox *ccbCommand;													///< command combo box
 		cFileOperation *cfoFileOperation;									///< handling file operations
 		cPanel *cpLeft;															///< left dir panel
 		cPanel *cpRight;															///< right dir panel
@@ -44,6 +42,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTimer qtTimer;															///< timer for requesting changeable informations
 
 		void ActualizeDrives();													///< drive lists actualization
+		bool eventFilter(QObject *watched, QEvent *event);				///< event filter
+																						/**< \param watched filtered object
+																							  \param event event description
+																							  \return true if event is handled */
 		QStackedWidget *GetActivePanel();									///< find active panel (left or right)
 																						/**< \return pointer to active panel */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
@@ -54,8 +56,6 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							  \param cpDestination destination panel */
 
 	private slots:
-		void on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent);			///< key pressed in command combo box
-																						/**< \param qkeEvent key event description */
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaInvertSelection_triggered(bool checked = false);	///< invert selection is selected

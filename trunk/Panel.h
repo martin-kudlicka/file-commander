@@ -18,7 +18,6 @@
 #include <QTimer>
 #include "Plugins/ContentDelayed.h"
 #include <QMainWindow>
-#include "ComboBox.h"
 #include "Panel/SelectFilesDialog.h"
 
 class cPanel : private QObject
@@ -36,7 +35,7 @@ class cPanel : private QObject
 			uint Files;																	///< number of files
 		};
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, cComboBox *ccbCommand);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
 																								  \param qswPanel panel for cTreeWidget
@@ -49,7 +48,7 @@ class cPanel : private QObject
 																								  \param ccContent application'c content plugins
 																								  \param qmDrives information about system drives
 																								  \param qlGlobalPath path visible in the bottom of main window
-																								  \param ccbCommand command combo box */
+																								  \param qcbCommand command combo box */
 		~cPanel();																		///< destructor
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
@@ -97,11 +96,11 @@ class cPanel : private QObject
 			sWidgets *swWidgets;														///< to remember displayed strings
 		};
 
-		cComboBox *ccbCommand;														///< command combo box
 		cContent *ccContent;															///< access to content plugins
 		cContentDelayed *ccdContentDelayed;										///< thread to get delayed content plugins values
 		cSettings *csSettings;														///< main settings
 		cShellMenu *csmMenu;															///< right click "native" shell menu
+		QComboBox *qcbCommand;														///< command combo box
 		QComboBox *qcbDrive;															///< drive
 		QFileIconProvider qfipIcon;												///< icons
 		QFileSystemWatcher qfswWatcher;											///< watching directory changes
@@ -121,6 +120,10 @@ class cPanel : private QObject
 
 		void ActualizeVolumeInfo();												///< actualize volume information - disk name and space
 		void ActualizeWidgets();													///< actualize widgets with info about current directory view
+		bool eventFilter(QObject *watched, QEvent *event);					///< event filter
+																							/**< \param watched filtered object
+																								  \param event event description
+																								  \return true if event is handled */
 		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
 																							///< find index of native column
 																							/**< \param qsColumn native column name
@@ -150,8 +153,6 @@ class cPanel : private QObject
 		void InterruptContentDelayed();											///< interrupt delayed content processing before refresh dir view content
 
 	private slots:
-		void on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent);				///< key pressed in command combo box
-																							/**< \param qkeEvent key event description */
 		void on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput);
 																							///< got golumn value from plugin
 																							/**< \param soOutput information to update dir view */
