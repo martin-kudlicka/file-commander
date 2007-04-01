@@ -341,6 +341,25 @@ void cPanel::GoToUpDir()
 	} // if
 } // GoToUpDir
 
+// invert selection of files
+void cPanel::InvertSelection()
+{
+	QString qsMode;
+
+	qsMode = csSettings->GetSelectionMode();
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		if (qhiFile.value().isDir()) {
+			if (qsMode == qsFILES_AND_DIRECTORIES) {
+				qhiFile.key()->setSelected(!qhiFile.key()->isSelected());
+			} // if
+		} else {
+			qhiFile.key()->setSelected(!qhiFile.key()->isSelected());
+		} // if else
+	} // while
+} // InvertSelection
+
 // key pressed in command combo box
 void cPanel::on_ccbCommand_KeyPressed(QKeyEvent *qkeEvent)
 {

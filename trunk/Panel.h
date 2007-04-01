@@ -70,6 +70,7 @@ class cPanel : private QObject
 																			/**< \param qsFile file to find */
 		void GoToRootDir();											///< go to root directory
 		void GoToUpDir();												///< go up one level (directory)
+		void InvertSelection();										///< invert selection of files
 		void Refresh();												///< refresh current dir view
 		void SelectAll();												///< select all files
 		void UnselectAll();											///< unselect all files
