@@ -107,6 +107,7 @@ cMainWindow::cMainWindow()
 	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand);
 
 	ActualizeDrives();
+	show();
 	// load settings
 	// left tabs
 	LoadTabs(cSettings::PositionLeft);

@@ -15,6 +15,9 @@ cSelectDriveDialog::cSelectDriveDialog(QMainWindow *qmwParent, const QMap<QStrin
 
 	// select currently selected drive
 	qcbDrive->setCurrentIndex(qcbDrive->findText(qsDrive));
+	if (qcbDrive->currentIndex() == -1) {
+		qcbDrive->setCurrentIndex(0);
+	} // if
 
 	qcbDrive->setFocus(Qt::OtherFocusReason);
 } // cSelectDriveDialog
