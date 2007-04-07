@@ -383,6 +383,16 @@ void cPanel::InvertSelection()
 	} // while
 } // InvertSelection
 
+// find out if qsDirectory points to the root
+bool cPanel::IsRootDirectory(const QString &qsDirectory)
+{
+	if (QDir(qsDirectory).cdUp()) {
+		return false;
+	} else {
+		return true;
+	} // if else
+} // IsRootDirectory
+
 // got golumn value from plugin
 void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
 {
@@ -821,7 +831,7 @@ void cPanel::SetPath(const QString &qsPath)
 	if (hHandle == INVALID_HANDLE_VALUE) {
 		qlDriveInfo->hide();
 
-		if (QDir(qsPath).isRoot()) {
+		if (IsRootDirectory(qsPath)) {
 			// invalid drive
 			QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
 
@@ -857,7 +867,6 @@ void cPanel::SetPath(const QString &qsPath)
 		} // if else
 	} else {
 		// path ok
-		FindClose(hHandle);
 		qlDriveInfo->show();
 #endif
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
@@ -869,6 +878,7 @@ void cPanel::SetPath(const QString &qsPath)
 		RefreshContent(qswDir->currentIndex());
 #ifdef Q_WS_WIN
 	} // if else
+	FindClose(hHandle);
 #endif
 } // SetPath
 

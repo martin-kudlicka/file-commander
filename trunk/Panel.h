@@ -134,6 +134,9 @@ class cPanel : private QObject
 		QString GetSizeString(const qint64 &qi64Size);						///< "convert" size to string according to setting in options
 																							/**< \param qi64Size size
 																								  \return file size in string with suffix */
+		bool IsRootDirectory(const QString &qsDirectory);					///< find out if qsDirectory points to the root
+																							/**< \param qsDirectory directory to test
+																								  \return true if qsDirectory is root directory */
 		void RefreshContent(const int &iIndex, QFileInfoList &qfilFiles = QFileInfoList());
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view
