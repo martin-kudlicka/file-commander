@@ -26,6 +26,10 @@ void cPanel::ActualizeVolumeInfo()
 	QString qsName;
 
 #ifdef Q_WS_WIN
+	if (qhTabs.count() == 0) {
+		// do not show information before at least one tab is created to prevent main window resizing
+		return;
+	} // if
 	qsName = cFileRoutine::GetVolumeName(qmDrives->value(qcbDrive->currentText()).qsPath);
 #else
 	qsName = qcbDrive->currentText();
