@@ -19,6 +19,7 @@
 #include "Plugins/ContentDelayed.h"
 #include <QMainWindow>
 #include "Panel/SelectFilesDialog.h"
+#include "FileOperation.h"
 
 class cPanel : private QObject
 {
@@ -29,13 +30,7 @@ class cPanel : private QObject
 		static const qint64 qi64_KILOBYTE = 1024;								///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;							///< 1 megabyte in bytes
 
-		// count of objects
-		struct sObjects {
-			uint Directories;															///< number of directories
-			uint Files;																	///< number of files
-		};
-
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
 																								  \param qswPanel panel for cTreeWidget
@@ -48,7 +43,8 @@ class cPanel : private QObject
 																								  \param ccContent application'c content plugins
 																								  \param qmDrives information about system drives
 																								  \param qlGlobalPath path visible in the bottom of main window
-																								  \param qcbCommand command combo box */
+																								  \param qcbCommand command combo box
+																								  \param cfoFileOperation handling file operations */
 		~cPanel();																		///< destructor
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
@@ -56,10 +52,6 @@ class cPanel : private QObject
 		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
-		static sObjects GetCount(const QFileInfoList &qfilObjects);
-																							///< count objects
-																							/**< \param qfilObjects objects to count
-																								  \return count of objects */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
 		QFileInfoList GetSelectedDirItemsList();								///< get dir infos of selected items
@@ -98,6 +90,7 @@ class cPanel : private QObject
 
 		cContent *ccContent;															///< access to content plugins
 		cContentDelayed *ccdContentDelayed;										///< thread to get delayed content plugins values
+		cFileOperation *cfoFileOperation;										///< handling file operations
 		cSettings *csSettings;														///< main settings
 		cShellMenu *csmMenu;															///< right click "native" shell menu
 		QComboBox *qcbCommand;														///< command combo box
@@ -166,6 +159,10 @@ class cPanel : private QObject
 																							/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);	///< show tree view context menu
 																							/**< \param pos position of context menu */
+		void on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls);
+																							///< drop event occured
+																							/**< \param edaAction action to do in this event with source
+																								  \param clUrls source objects location */
 		void on_ctwTree_GotFocus();												///< dir view got focus
 		void on_ctwTree_itemActivated(QTreeWidgetItem *item, int column);
 																							///< double click in tree view

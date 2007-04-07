@@ -102,9 +102,14 @@ cMainWindow::cMainWindow()
 	// remove default widgets
 	qswLeft->removeWidget(qswLeft->widget(0));
 	qswRight->removeWidget(qswRight->widget(0));
+	// background operations layout
+	qhblBackgroundOperations = new QHBoxLayout(qpbCopy->parentWidget()->layout()->parentWidget());
+	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
+	// file operations class initizalization
+	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 	// panels
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
 
 	ActualizeDrives();
 	show();
@@ -113,12 +118,6 @@ cMainWindow::cMainWindow()
 	LoadTabs(cSettings::PositionLeft);
 	// right tabs
 	LoadTabs(cSettings::PositionRight);
-
-	// initialize variables
-	// background operations layout
-	qhblBackgroundOperations = new QHBoxLayout(qpbCopy->parentWidget()->layout()->parentWidget());
-	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
-	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
@@ -308,18 +307,24 @@ void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */)
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {
 	cPanel *cpDestination, *cpSource;
+	QFileInfoList qfilSource;
+	QString qsDestination;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	cfoFileOperation->Operate(cFileRoutine::CopyOperation, cpSource, cpDestination);
+	qfilSource = cpSource->GetSelectedItemsList();
+	qsDestination = cpDestination->GetPath();
+	cfoFileOperation->Operate(cFileRoutine::CopyOperation, qfilSource, qsDestination);
 } // on_qpbCopy_clicked
 
 // delete button is clicked on
 void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
 {
 	cPanel *cpSource;
+	QFileInfoList qfilSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, cpSource);
+	qfilSource = cpSource->GetSelectedItemsList();
+	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, qfilSource);
 } // on_qpbDelete_clicked
 
 // edit button is clicked on
@@ -347,9 +352,13 @@ void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */)
 void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 {
 	cPanel *cpDestination, *cpSource;
+	QFileInfoList qfilSource;
+	QString qsDestination;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	cfoFileOperation->Operate(cFileRoutine::MoveOperation, cpSource, cpDestination);
+	qfilSource = cpSource->GetSelectedItemsList();
+	qsDestination = cpDestination->GetPath();
+	cfoFileOperation->Operate(cFileRoutine::MoveOperation, qfilSource, qsDestination);
 } // on_qpbMove_clicked
 
 // new directory button is clicked on

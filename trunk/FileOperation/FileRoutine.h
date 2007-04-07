@@ -10,6 +10,8 @@
 class cFileRoutine
 {
 	public:
+		static const int iQUEUED_OPERATION_POSITION = 1;			///< position of queued background operation in layout
+
 		/// file operation type
 		enum eOperation {														///< type of file operation
 			CopyOperation,														///< copy
@@ -21,8 +23,6 @@ class cFileRoutine
 			ForegroundWindow,													///< modal foreground window
 			BackgroundWindow													///< window in qhblOperations layout
 		};
-
-		static const int iQUEUED_OPERATION_POSITION = 1;			///< position of queued background operation in layout
 
 		/// disk space
 		struct sDiskSpace {

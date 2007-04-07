@@ -3,7 +3,6 @@
 #ifndef FILE_OPERATION_H
 #define FILE_OPERATION_H
 
-#include "Panel.h"
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QQueue>
@@ -22,13 +21,19 @@ class cFileOperation : private QObject
 																				  \param qbnlOperations layout for bacground and queued windows
 																				  \param csSettings application's configuration */
 
-		void Operate(const cFileRoutine::eOperation &eoOperation, cPanel *cpSource, cPanel *cpDestination = NULL);
+		void Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString &qsDestination = QString());
 																			///< prepare operation
 																			/**< \param eoOperation operation type
-																				  \param cpSource source file panel
-																				  \param cpDestination destination file panel */
+																				  \param qfilSource source file list
+																				  \param qsDestinationPath destination path */
 
 	private:
+		// count of objects
+		struct sObjects {
+			uint Directories;													///< number of directories
+			uint Files;															///< number of files
+		};
+
 		/// queued operation description
 		struct sOperation {
 			cFileRoutine::eOperation eoOperation;				///< operation type
@@ -54,6 +59,10 @@ class cFileOperation : private QObject
 																			/**< \param eoOperation type of operation
 																				  \param qfilSource source file list
 																				  \param qsDestination destination path */
+		sObjects GetCount(const QFileInfoList &qfilObjects);
+																			///< count of objects
+																			/**< \param qfilObjects objects to count
+																				  \return count of objects */
 		void ProcessQueue();											///< process first queued operation
 
 	signals:
