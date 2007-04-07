@@ -26,7 +26,7 @@ void cTreeWidget::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Space:	currentItem()->setSelected(!currentItem()->isSelected());
 									emit KeyPressed(event, currentItem());
 									break;
-		default:					if (event->text() == "") {
+		default:					if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return || event->text() == "") {
 										QTreeWidget::keyPressEvent(event);
 									} else {
 										emit KeyPressed(event, NULL);

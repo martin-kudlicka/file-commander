@@ -137,6 +137,11 @@ class cPanel : private QObject
 		bool IsRootDirectory(const QString &qsDirectory);					///< find out if qsDirectory points to the root
 																							/**< \param qsDirectory directory to test
 																								  \return true if qsDirectory is root directory */
+#ifdef Q_WS_WIN
+		bool PathExists(const QString &qsPath);								///< check if path is valid
+																							/**< \param qsPath path to test
+																								  \return true if path exists and is accessible */
+#endif
 		void RefreshContent(const int &iIndex, QFileInfoList &qfilFiles = QFileInfoList());
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view
