@@ -7,6 +7,7 @@
 #include <QProcess>
 #include "Panel/SelectDriveDialog.h"
 #include <QKeyEvent>
+#include "FindFilesDialog.h"
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -747,6 +748,41 @@ void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cLister *clL
 	cSelectFilesDialog csfdSelect(qmwParent, estType, csSettings, clLister);
 
 	if (csfdSelect.exec() == QDialog::Accepted) {
+		cFindFilesDialog cffdFindFiles(NULL, NULL, csSettings, clLister);
+		cSettings::sFindSettings sfsFind;
+		QFileInfoList qfilFiles;
+
+		if (csfdSelect.qtwFindSets->selectedItems().count() > 0) {
+			sfsFind = csSettings->GetFindSettings(csfdSelect.qtwFindSets->selectedItems().at(0)->text(0));
+		} else {
+			sfsFind.qsSearchFor = csfdSelect.qcbFilter->currentText();
+			sfsFind.bSearchForRegularExpression = false;
+			sfsFind.bSearchForText = false;
+			sfsFind.bDateTimeBetween = false;
+			sfsFind.bNotOlderThan = false;
+			sfsFind.bFileSize = false;
+		} // if else
+		sfsFind.qsSearchIn = GetPath();
+		sfsFind.iSubdirectoryDepth = 0;
+
+		cffdFindFiles.Start(sfsFind, true);
+		qfilFiles = cffdFindFiles.SearchResult();
+
+		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+		while (qhiFile.hasNext()) {
+			int iI;
+
+			qhiFile.next();
+			for (iI = 0; iI < qfilFiles.count(); iI++) {
+				if (qhiFile.value().fileName() == qfilFiles.at(iI).fileName()) {
+					if (estType == cSelectFilesDialog::Select) {
+						qhiFile.key()->setSelected(true);
+					} else {
+						qhiFile.key()->setSelected(false);
+					} // if else
+				} // if
+			} // for
+		} // while
 	} // if
 } // Select
 

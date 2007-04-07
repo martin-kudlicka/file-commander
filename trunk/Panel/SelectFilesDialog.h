@@ -9,7 +9,7 @@
 #include "Settings.h"
 #include "Plugins/Lister.h"
 
-class cSelectFilesDialog : public QDialog, private Ui::qdSelectFiles
+class cSelectFilesDialog : public QDialog, public Ui::qdSelectFiles
 {
 	Q_OBJECT
 

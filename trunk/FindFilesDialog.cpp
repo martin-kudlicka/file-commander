@@ -30,7 +30,7 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings
 		qpbDrives->setEnabled(false);
 		qsbSubdirectoryDepth->setValue(0);
 		qsbSubdirectoryDepth->setEnabled(false);
-		qgbFoundFiles->hide();
+		qgbFoundFiles->setEnabled(false);
 		qpbStart->setEnabled(false);
 		qpbCancel->setText(tr("OK"));
 	} // if else
@@ -68,8 +68,8 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	QStringList qslSearchFor;
 
 	bOk = false;
-	qslSearchFor = qcbSearchFor->currentText().split(';');
-	if (qslSearchFor.count() == 1 && qslSearchFor.at(0) == "" && !qcbSearchForRegularExpression->isChecked()) {
+	qslSearchFor = sfsCurrentSearch.qsSearchFor.split(';');
+	if (qslSearchFor.count() == 1 && qslSearchFor.at(0) == "" && !sfsCurrentSearch.bSearchForRegularExpression) {
 		qslSearchFor.append("*.*");
 	} // if
 #ifdef Q_WS_WIN
@@ -85,7 +85,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	for (iI = 0; iI < qslSearchFor.count(); iI++) {
 		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive);
 
-		if (qcbSearchForRegularExpression->isChecked()) {
+		if (sfsCurrentSearch.bSearchForRegularExpression) {
 			// regular expression
 			if (qreExpression.indexIn(qfiFile.fileName()) != -1) {
 				bOk = true;
@@ -105,32 +105,32 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	} // if
 
 	// date/time between
-	if (qcbDateTimeBetween->isChecked()) {
-		if (qfiFile.lastModified() < qdteFrom->dateTime() || qfiFile.lastModified() > qdteTo->dateTime()) {
+	if (sfsCurrentSearch.bDateTimeBetween) {
+		if (qfiFile.lastModified() < sfsCurrentSearch.qdtFrom || qfiFile.lastModified() > sfsCurrentSearch.qdtTo) {
 			return false;
 		} // if
 	} // if
 
 	// date/time not older than
-	if (qcbDateTimeNotOlderThan->isChecked()) {
+	if (sfsCurrentSearch.bNotOlderThan) {
 		QDateTime qdtMaxOld;
 
-		if (qcbOldType->currentText() == qsMINUTES) {
-			qdtMaxOld = QDateTime::currentDateTime().addSecs(-60 * qsbOldCount->value());
+		if (sfsCurrentSearch.qsNotOlderThanType == qsMINUTES) {
+			qdtMaxOld = QDateTime::currentDateTime().addSecs(-60 * sfsCurrentSearch.iNotOlderThanCount);
 		} else {
-			if (qcbOldType->currentText() == qsHOURS) {
-				qdtMaxOld = QDateTime::currentDateTime().addMSecs(-3600 * qsbOldCount->value());
+			if (sfsCurrentSearch.qsNotOlderThanType == qsHOURS) {
+				qdtMaxOld = QDateTime::currentDateTime().addMSecs(-3600 * sfsCurrentSearch.iNotOlderThanCount);
 			} else {
-				if (qcbOldType->currentText() == qsDAYS) {
-					qdtMaxOld = QDateTime::currentDateTime().addDays(-1 * qsbOldCount->value());
+				if (sfsCurrentSearch.qsNotOlderThanType == qsDAYS) {
+					qdtMaxOld = QDateTime::currentDateTime().addDays(-1 * sfsCurrentSearch.iNotOlderThanCount);
 				} else {
-					if (qcbOldType->currentText() == qsWEEKS) {
-						qdtMaxOld = QDateTime::currentDateTime().addDays(-7 * qsbOldCount->value());
+					if (sfsCurrentSearch.qsNotOlderThanType == qsWEEKS) {
+						qdtMaxOld = QDateTime::currentDateTime().addDays(-7 * sfsCurrentSearch.iNotOlderThanCount);
 					} else {
-						if (qcbOldType->currentText() == qsMONTHS) {
-							qdtMaxOld = QDateTime::currentDateTime().addMonths(-1 * qsbOldCount->value());
+						if (sfsCurrentSearch.qsNotOlderThanType == qsMONTHS) {
+							qdtMaxOld = QDateTime::currentDateTime().addMonths(-1 * sfsCurrentSearch.iNotOlderThanCount);
 						} else {
-							qdtMaxOld = QDateTime::currentDateTime().addMonths(-12 * qsbOldCount->value());
+							qdtMaxOld = QDateTime::currentDateTime().addMonths(-12 * sfsCurrentSearch.iNotOlderThanCount);
 						} // if else
 					} // if else
 				} // if else
@@ -143,29 +143,29 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	} // if
 
 	// file size
-	if (qcbFileSize->isChecked()) {
+	if (sfsCurrentSearch.bFileSize) {
 		qint64 qi64CompareSize;
 
-		if (qcbFileSizeType->currentText() == qsBYTES2) {
-			qi64CompareSize = qsbFileSize->value();
+		if (sfsCurrentSearch.qsFileSizeType == qsBYTES2) {
+			qi64CompareSize = sfsCurrentSearch.iFileSizeValue;
 		} else {
-			if (qcbFileSizeType->currentText() == qsKILOBYTES2) {
-				qi64CompareSize = cPanel::qi64_KILOBYTE * qsbFileSize->value();
+			if (sfsCurrentSearch.qsFileSizeType == qsKILOBYTES2) {
+				qi64CompareSize = cPanel::qi64_KILOBYTE * sfsCurrentSearch.iFileSizeValue;
 			} else {
-				if (qcbFileSizeType->currentText() == qsMEGABYTES2) {
-					qi64CompareSize = cPanel::qi64_MEGABYTE * qsbFileSize->value();
+				if (sfsCurrentSearch.qsFileSizeType == qsMEGABYTES2) {
+					qi64CompareSize = cPanel::qi64_MEGABYTE * sfsCurrentSearch.iFileSizeValue;
 				} else {
-					qi64CompareSize = cPanel::qi64_GIGABYTE * qsbFileSize->value();
+					qi64CompareSize = cPanel::qi64_GIGABYTE * sfsCurrentSearch.iFileSizeValue;
 				} // if else
 			} // if else
 		} // if else
 
-		if (qcbFileSizeComparator->currentText() == "=") {
+		if (sfsCurrentSearch.qsFileSizeComparator == "=") {
 			if (qfiFile.size() != qi64CompareSize) {
 				return false;
 			} // if
 		} else {
-			if (qcbFileSizeComparator->currentText() == "<") {
+			if (sfsCurrentSearch.qsFileSizeComparator == "<") {
 				if (qfiFile.size() >= qi64CompareSize) {
 					return false;
 				} // if else
@@ -178,17 +178,17 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 	} // if
 
 	// full text
-	if (qcbSearchForText->isChecked()) {
+	if (sfsCurrentSearch.bSearchForText) {
 		if (qfiFile.isFile()) {
 			bool bFound;
 			QByteArray qbaFile;
 			QFile qfFile;
 			QString qsPattern;
 
-			if (qcbFullTextHex->isChecked()) {
+			if (sfsCurrentSearch.bFullTextHex) {
 				// TODO ConditionsSuit Hex
 			} else {
-				qsPattern = qcbFullText->currentText();
+				qsPattern = sfsCurrentSearch.qsFullText;
 			} // if else
 
 			qfFile.setFileName(qfiFile.filePath());
@@ -204,16 +204,16 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 				QTextDocument qtdText;
 				QTextDocument::FindFlags ffFlags;
 
-				if (qcbFullTextWholeWords->isChecked()) {
+				if (sfsCurrentSearch.bFulTextWholeWords) {
 					ffFlags = QTextDocument::FindWholeWords;
 				} // if
-				if (qcbFullTextCaseSensitive->isChecked()) {
+				if (sfsCurrentSearch.bFullTextCaseSensitive) {
 					ffFlags |= QTextDocument::FindCaseSensitively;
 				} // if
 
 				qtdText.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 
-				if (qcbFullTextRegularExpression->isChecked()) {
+				if (sfsCurrentSearch.bFullTextRegularExpression) {
 					qtcCursor = qtdText.find(QRegExp(qsPattern), 0, ffFlags);
 				} else {
 					qtcCursor = qtdText.find(qsPattern, 0, ffFlags);
@@ -235,7 +235,7 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 			} // while
 			qfFile.close();
 
-			if (!bFound ^ qcbFullTextNotContainingText->isChecked()) {
+			if (!bFound ^ sfsCurrentSearch.bFullTextNotContainingText) {
 				return false;
 			} // if
 		} else {
@@ -246,6 +246,46 @@ bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 
 	return true;
 } // ConditionsSuit
+
+// store settings in sFindSettings structure
+cSettings::sFindSettings cFindFilesDialog::GetSettings()
+{
+	cSettings::sFindSettings sfsFindSettings;
+
+	// general
+	sfsFindSettings.qsSearchFor = qcbSearchFor->currentText();
+	sfsFindSettings.bSearchForRegularExpression = qcbSearchForRegularExpression->isChecked();
+	sfsFindSettings.qsSearchIn = qcbSearchIn->currentText();
+	sfsFindSettings.iSubdirectoryDepth = qsbSubdirectoryDepth->value();
+	sfsFindSettings.bSearchForText = qcbSearchForText->isChecked();
+	if (qcbSearchForText->isChecked()) {
+		sfsFindSettings.qsFullText = qcbFullText->currentText();
+		sfsFindSettings.bFulTextWholeWords = qcbFullTextWholeWords->isChecked();
+		sfsFindSettings.bFullTextCaseSensitive = qcbFullTextCaseSensitive->isChecked();
+		sfsFindSettings.bFullTextNotContainingText = qcbFullTextNotContainingText->isChecked();
+		sfsFindSettings.bFullTextHex = qcbFullTextHex->isChecked();
+		sfsFindSettings.bFullTextRegularExpression = qcbFullTextRegularExpression->isChecked();
+	} // if
+	// advanced
+	sfsFindSettings.bDateTimeBetween = qcbDateTimeBetween->isChecked();
+	if (qcbDateTimeBetween->isChecked()) {
+		sfsFindSettings.qdtFrom = qdteFrom->dateTime();
+		sfsFindSettings.qdtTo = qdteTo->dateTime();
+	} // if
+	sfsFindSettings.bNotOlderThan = qcbDateTimeNotOlderThan->isChecked();
+	if (qcbDateTimeNotOlderThan->isChecked()) {
+		sfsFindSettings.iNotOlderThanCount = qsbOldCount->value();
+		sfsFindSettings.qsNotOlderThanType = qcbOldType->currentText();
+	} // if
+	sfsFindSettings.bFileSize = qcbFileSize->isChecked();
+	if (qcbFileSize->isChecked()) {
+		sfsFindSettings.qsFileSizeComparator = qcbFileSizeComparator->currentText();
+		sfsFindSettings.iFileSizeValue = qsbFileSize->value();
+		sfsFindSettings.qsFileSizeType = qcbFileSizeType->currentText();
+	} // if
+
+	return sfsFindSettings;
+} // GetSettings
 
 // search files in specified date/time range
 void cFindFilesDialog::on_qcbDateTimeBetween_stateChanged(int state)
@@ -441,38 +481,7 @@ void cFindFilesDialog::on_qpbSaveFind_clicked(bool checked /* false */)
 	if (csfsdDialog.exec() == QDialog::Accepted) {
 		cSettings::sFindSettings sfsFindSettings;
 
-		// general
-		sfsFindSettings.qsSearchFor = qcbSearchFor->currentText();
-		sfsFindSettings.bSearchForRegularExpression = qcbSearchForRegularExpression->isChecked();
-		sfsFindSettings.qsSearchIn = qcbSearchIn->currentText();
-		sfsFindSettings.iSubdirectoryDepth = qsbSubdirectoryDepth->value();
-		sfsFindSettings.bSearchForText = qcbSearchForText->isChecked();
-		if (qcbSearchForText->isChecked()) {
-			sfsFindSettings.qsFullText = qcbFullText->currentText();
-			sfsFindSettings.bFulTextWholeWords = qcbFullTextWholeWords->isChecked();
-			sfsFindSettings.bFullTextCaseSensitive = qcbFullTextCaseSensitive->isChecked();
-			sfsFindSettings.bFullTextNotContainingText = qcbFullTextNotContainingText->isChecked();
-			sfsFindSettings.bFullTextHex = qcbFullTextHex->isChecked();
-			sfsFindSettings.bFullTextRegularExpression = qcbFullTextRegularExpression->isChecked();
-		} // if
-		// advanced
-		sfsFindSettings.bDateTimeBetween = qcbDateTimeBetween->isChecked();
-		if (qcbDateTimeBetween->isChecked()) {
-			sfsFindSettings.qdtFrom = qdteFrom->dateTime();
-			sfsFindSettings.qdtTo = qdteTo->dateTime();
-		} // if
-		sfsFindSettings.bNotOlderThan = qcbDateTimeNotOlderThan->isChecked();
-		if (qcbDateTimeNotOlderThan->isChecked()) {
-			sfsFindSettings.iNotOlderThanCount = qsbOldCount->value();
-			sfsFindSettings.qsNotOlderThanType = qcbOldType->currentText();
-		} // if
-		sfsFindSettings.bFileSize = qcbFileSize->isChecked();
-		if (qcbFileSize->isChecked()) {
-			sfsFindSettings.qsFileSizeComparator = qcbFileSizeComparator->currentText();
-			sfsFindSettings.iFileSizeValue = qsbFileSize->value();
-			sfsFindSettings.qsFileSizeType = qcbFileSizeType->currentText();
-		} // if
-
+		sfsFindSettings = GetSettings();
 		csSettings->SetFindSettings(csfsdDialog.qleName->text(), sfsFindSettings);
 		RefreshSavedSettings();
 	} // if
@@ -481,78 +490,11 @@ void cFindFilesDialog::on_qpbSaveFind_clicked(bool checked /* false */)
 // start button is clicked on
 void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
-	int iDepth, iI;
-	QFileInfoList qfilDirectories;
-
 	qpbStart->setEnabled(false);
 	qpbFeedToPanel->setEnabled(false);
-	bStop = false;
 	qpbStop->setEnabled(true);
 
-	// add source path to directories to search in
-	if (qcbSearchInSelectedDirectories->isChecked()) {
-		qfilDirectories = qfilSelectedDirectories;
-	} else {
-		QStringList qslPaths;
-
-		qslPaths = qcbSearchIn->currentText().split(';');
-		for (iI = 0; iI < qslPaths.count(); iI++) {
-			qfilDirectories.append(qslPaths.at(iI));
-		} // for
-	} // if else
-
-	// clear previous search
-	qfilSearch.clear();
-	qtwSearch->clear();
-	qhFiles.clear();
-
-	// search through directories
-	iDepth = 0;
-	while (!qfilDirectories.isEmpty() && !bStop) {
-		QFileInfoList qfilNextDirDepth;
-
-		while (!qfilDirectories.isEmpty() && !bStop) {
-			QFileInfo qfiDir;
-			QFileInfoList qfilDirContent;
-
-			// get content of directory
-			qfiDir = qfilDirectories.takeAt(0);
-			qfilDirContent = cFileRoutine::GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-
-			// check conditions
-			for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
-				if (ConditionsSuit(qfilDirContent.at(iI))) {
-					// file suit conditions
-					QString qsText;
-					QTreeWidgetItem *qtwiItem;
-
-					qfilSearch += qfilDirContent.at(iI);
-					qtwiItem = new QTreeWidgetItem(qtwSearch);
-					qsText = qfilDirContent.at(iI).filePath();
-					if (qfilDirContent.at(iI).isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
-						qsText = '[' + qsText + ']';
-					} // if
-					qtwiItem->setText(0, qsText);
-					qhFiles.insert(qtwiItem, qfilDirContent.at(iI));
-					QApplication::processEvents();
-				} // if
-			} // for
-
-			// add found directories
-			for (iI = 0; iI < qfilDirContent.count(); iI++) {
-				if (qfilDirContent.at(iI).isDir()) {
-					qfilNextDirDepth.append(qfilDirContent.at(iI));
-				} // if
-			} // for
-		} // while
-
-		if (iDepth < qsbSubdirectoryDepth->value()) {
-			qfilDirectories += qfilNextDirDepth;
-			iDepth++;
-		} else {
-			break;
-		} // if else
-	} // while
+	Start(GetSettings(), false);
 
 	qpbStop->setEnabled(false);
 	qpbStart->setEnabled(true);
@@ -621,3 +563,93 @@ void cFindFilesDialog::RefreshSavedSettings()
 		qtwiFind->setText(0, qslSavedFinds.at(iI));
 	} // for
 } // RefreshSavedSettings
+
+// founded files
+QFileInfoList cFindFilesDialog::SearchResult()
+{
+	QFileInfoList qfilFiles;
+
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		qfilFiles += qhiFile.value();
+	} // while
+
+	return qfilFiles;
+} // SearchResult
+
+// start of the new search
+void cFindFilesDialog::Start(const cSettings::sFindSettings &sfsCurrentSearch, const bool &bMarking)
+{
+	int iDepth, iI;
+	QFileInfoList qfilDirectories;
+
+	bStop = false;
+	this->sfsCurrentSearch = sfsCurrentSearch;
+
+	// add source path to directories to search in
+	if (qcbSearchInSelectedDirectories->isChecked()) {
+		qfilDirectories = qfilSelectedDirectories;
+	} else {
+		QStringList qslPaths;
+
+		qslPaths = sfsCurrentSearch.qsSearchIn.split(';');
+		for (iI = 0; iI < qslPaths.count(); iI++) {
+			qfilDirectories.append(qslPaths.at(iI));
+		} // for
+	} // if else
+
+	// clear previous search
+	qtwSearch->clear();
+	qhFiles.clear();
+
+	// search through directories
+	iDepth = 0;
+	while (!qfilDirectories.isEmpty() && !bStop) {
+		QFileInfoList qfilNextDirDepth;
+
+		while (!qfilDirectories.isEmpty() && !bStop) {
+			QFileInfo qfiDir;
+			QFileInfoList qfilDirContent;
+
+			// get content of directory
+			qfiDir = qfilDirectories.takeAt(0);
+			qfilDirContent = cFileRoutine::GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+
+			// check conditions
+			for (iI = 0; iI < qfilDirContent.count() && !bStop; iI++) {
+				if (ConditionsSuit(qfilDirContent.at(iI))) {
+					// file suit conditions
+					QTreeWidgetItem *qtwiItem;
+
+					if (!bMarking) {
+						QString qsText;
+
+						qtwiItem = new QTreeWidgetItem(qtwSearch);
+						qsText = qfilDirContent.at(iI).filePath();
+						if (qfilDirContent.at(iI).isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+							qsText = '[' + qsText + ']';
+						} // if
+						qtwiItem->setText(0, qsText);
+						QApplication::processEvents();
+					} // if
+					qhFiles.insertMulti(qtwiItem, qfilDirContent.at(iI));
+				} // if
+			} // for
+
+			// add found directories
+			for (iI = 0; iI < qfilDirContent.count(); iI++) {
+				if (qfilDirContent.at(iI).isDir()) {
+					qfilNextDirDepth.append(qfilDirContent.at(iI));
+				} // if
+			} // for
+		} // while
+
+		if (sfsCurrentSearch.iSubdirectoryDepth < qsbSubdirectoryDepth->value()) {
+			qfilDirectories += qfilNextDirDepth;
+			iDepth++;
+		} else {
+			break;
+		} // if else
+	} // while
+} // Start

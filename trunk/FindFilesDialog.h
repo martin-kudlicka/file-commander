@@ -32,6 +32,13 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																									  \param csSettings application's settings file
 																									  \param clLister lister plugins */
 
+		QFileInfoList SearchResult();													///< founded files
+																								/**< \return list of founded files */
+		void Start(const cSettings::sFindSettings &sfsCurrentSearch, const bool &bMarking);
+																								///< start of the new search
+																								/**< \param sfsCurrentSearch search parameters
+																									  \param bMarking true if finding files to mark */
+
 	private:
 		static const qint64 qi64SEARCH_BUFFER = 1048576;						///< search for text in files in this buffer size
 
@@ -40,6 +47,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cLister *clLister;																///< lister plugin's class
 		cPanel *cpPanel;																	///< panel to work with
 		cSettings *csSettings;															///< application's settings file
+		cSettings::sFindSettings sfsCurrentSearch;								///< current search settings
 		QFileInfoList qfilSearch;														///< search result
 		QFileInfoList qfilSelectedDirectories;										///< selected directories in dir view
 
@@ -48,6 +56,8 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		bool ConditionsSuit(const QFileInfo &qfiFile);							///< check search conditions on found file
 																								/**< \param qfFile file to check conditions on
 																									  \return true if conditions ok */
+		cSettings::sFindSettings GetSettings();									///< store settings in sFindSettings structure
+																								/**< \return find settings */
 		void RefreshSavedSettings();													///< refreshes list of saved settings
 
 	private slots:
