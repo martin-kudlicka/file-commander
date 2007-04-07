@@ -571,6 +571,26 @@ void cPanel::on_qtTimer_timeout()
 	ActualizeVolumeInfo();
 } // on_qtTimer_timeout
 
+#ifdef Q_WS_WIN
+// check if path is valid
+bool cPanel::PathExists(const QString &qsPath)
+{
+	bool bResult;
+	HANDLE hHandle;
+	WIN32_FIND_DATA fdFindData;
+
+	hHandle = FindFirstFile(reinterpret_cast<LPCWSTR>(QString(qsPath + "/*").unicode()), &fdFindData);
+	if (hHandle == INVALID_HANDLE_VALUE) {
+		bResult = false;
+	} else {
+		bResult = true;
+	} // if else
+	FindClose(hHandle);
+
+	return bResult;
+} // PathExists
+#endif
+
 // refresh current dir view
 void cPanel::Refresh()
 {
@@ -599,6 +619,12 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 		if (csSettings->GetShowHiddenFiles()) {
 			fFilters |= QDir::Hidden;
 		} // if
+		// check path
+		if (!PathExists(qhTabs.value(iIndex).swWidgets->qsPath)) {
+			SetPath(qhTabs.value(iIndex).swWidgets->qsPath);
+			return;
+		} // if
+		// get files
 		qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);
 	} // if
 
@@ -818,17 +844,12 @@ void cPanel::SelectAll()
 // set new path for current dir view
 void cPanel::SetPath(const QString &qsPath)
 {
-#ifdef Q_WS_WIN
-	HANDLE hHandle;
-	WIN32_FIND_DATA fdFindData;
-#endif
-
 	// remove old path from watcher
 	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+
 #ifdef Q_WS_WIN
 	// check new path
-	hHandle = FindFirstFile(reinterpret_cast<LPCWSTR>(QString(qsPath + "/*").unicode()), &fdFindData);
-	if (hHandle == INVALID_HANDLE_VALUE) {
+	if (!PathExists(qsPath)) {
 		qlDriveInfo->hide();
 
 		if (IsRootDirectory(qsPath)) {
@@ -852,7 +873,7 @@ void cPanel::SetPath(const QString &qsPath)
 				SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 			} // if else
 		} else {
-			// maybe valid drive bad invalid path
+			// maybe valid drive but invalid path
 			QDir qdDir;
 
 			qdDir.setPath(qsPath);
@@ -869,6 +890,7 @@ void cPanel::SetPath(const QString &qsPath)
 		// path ok
 		qlDriveInfo->show();
 #endif
+
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
 		// add new path to watcher
@@ -878,7 +900,6 @@ void cPanel::SetPath(const QString &qsPath)
 		RefreshContent(qswDir->currentIndex());
 #ifdef Q_WS_WIN
 	} // if else
-	FindClose(hHandle);
 #endif
 } // SetPath
 
