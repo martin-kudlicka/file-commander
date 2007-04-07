@@ -19,9 +19,6 @@ void cTreeWidget::focusInEvent(QFocusEvent *event)
 void cTreeWidget::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key()) {
-		case Qt::Key_Down:
-		case Qt::Key_Up:		QTreeWidget::keyPressEvent(event);
-									break;
 		case Qt::Key_Insert:	setSelectionMode(MultiSelection);
 									setCurrentItem(topLevelItem(indexOfTopLevelItem(currentItem()) + 1));
 									setSelectionMode(ExtendedSelection);
@@ -29,7 +26,11 @@ void cTreeWidget::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Space:	currentItem()->setSelected(!currentItem()->isSelected());
 									emit KeyPressed(event, currentItem());
 									break;
-		default:					emit KeyPressed(event, NULL);
+		default:					if (event->text() == "") {
+										QTreeWidget::keyPressEvent(event);
+									} else {
+										emit KeyPressed(event, NULL);
+									} // if else
 	} // switch
 } // keyPressEvent
 
