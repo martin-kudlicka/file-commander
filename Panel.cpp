@@ -8,6 +8,8 @@
 #include "Panel/SelectDriveDialog.h"
 #include <QKeyEvent>
 #include "FindFilesDialog.h"
+#include <QMenu>
+#include <QUrl>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -82,6 +84,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
+	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -106,7 +109,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 } // AddTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -120,6 +123,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qmwParent = qmwParent;
 	this->qlGlobalPath = qlGlobalPath;
 	this->qcbCommand = qcbCommand;
+	this->cfoFileOperation = cfoFileOperation;
 
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
@@ -185,25 +189,6 @@ void cPanel::FeedToPanel(QFileInfoList &qfilFiles)
 {
 	RefreshContent(qswDir->currentIndex(), qfilFiles);
 } // FeedToPanel
-
-// count objects
-cPanel::sObjects cPanel::GetCount(const QFileInfoList &qfilObjects)
-{
-	int iI;
-	sObjects soCount;
-
-	soCount.Directories = 0;
-	soCount.Files = 0;
-	for (iI = 0; iI < qfilObjects.count(); iI++) {
-		if (qfilObjects.at(iI).isDir()) {
-			soCount.Directories++;
-		} else {
-			soCount.Files++;
-		} // if else
-	} // for
-
-	return soCount;
-} // GetCount
 
 // find index of native column
 int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
@@ -408,6 +393,45 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 {
 	csmMenu->Show(GetSelectedItemsStringList(), static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_ctwTree_customContextMenuRequested
+
+// drop event occured
+void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls)
+{
+	cFileRoutine::eOperation eoOperation;
+	int iI;
+	QFileInfoList qfilFiles;
+
+	if (edaAction == cTreeWidget::CopyDropAction) {
+		eoOperation = cFileRoutine::CopyOperation;
+	} else {
+		QAction *qaCancel, *qaChoice, *qaCopy, *qaMove;
+		QMenu qmMenu;
+
+		qaCopy = qmMenu.addAction(tr("Copy"));
+		qaMove = qmMenu.addAction(tr("Move"));
+		qmMenu.addSeparator();
+		qaCancel = qmMenu.addAction(tr("Cancel"));
+
+		qaChoice = qmMenu.exec(QCursor::pos());
+
+		if (qaChoice == qaCopy) {
+			eoOperation = cFileRoutine::CopyOperation;
+		} else {
+			if (qaChoice == qaMove) {
+				eoOperation = cFileRoutine::MoveOperation;
+			} else {
+				return;
+			} // if else
+		} // if else
+	} // if else
+
+	// get list of source files
+	for (iI = 0; iI < clUrls.count(); iI++) {
+		qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
+	} // for
+
+	cfoFileOperation->Operate(eoOperation, qfilFiles, GetPath());
+} // on_ctwTree_DropEvent
 
 // dir view got focus
 void cPanel::on_ctwTree_GotFocus()

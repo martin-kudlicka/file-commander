@@ -50,6 +50,25 @@ void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QF
 	ProcessQueue();
 } // Enque
 
+// count of objects
+cFileOperation::sObjects cFileOperation::GetCount(const QFileInfoList &qfilObjects)
+{
+	int iI;
+	sObjects soCount;
+
+	soCount.Directories = 0;
+	soCount.Files = 0;
+	for (iI = 0; iI < qfilObjects.count(); iI++) {
+		if (qfilObjects.at(iI).isDir()) {
+			soCount.Directories++;
+		} else {
+			soCount.Files++;
+		} // if else
+	} // for
+
+	return soCount;
+} // GetCount
+
 // copy / move thread finished
 void cFileOperation::on_cCopyMove_finished()
 {
@@ -110,24 +129,21 @@ void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // prepare operation
-void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel *cpSource, cPanel *cpDestination /* NULL */)
+void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString &qsDestination /* NULL */)
 {
 	cCopyMove *ccmCopyMove;
 	cDelete *cdDelete;
 	cFileOperationDialog cfodDialog(qmwParent);
-	cPanel::sObjects soObjects;
-	QFileInfoList qfilSource;
+	sObjects soObjects;
 	cFileOperationDialog::eUserAction euaAction;
-	QString qsDestination, qsFilter;
+	QString qsFilter;
 
-	qfilSource = cpSource->GetSelectedItemsList();
 	if (qfilSource.count() == 0) {
 		// no items selected
 		return;
 	} // if
 
 	if (eoOperation != cFileRoutine::DeleteOperation) {
-		qsDestination = cpDestination->GetPath();
 		if (qfilSource.count() == 1) {
 			// one file selected
 			if (qfilSource.at(0).isFile()) {
@@ -139,7 +155,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, cPanel
 		} // if else
 	} // if
 
-	soObjects = cPanel::GetCount(qfilSource);
+	soObjects = GetCount(qfilSource);
 
 	switch (eoOperation) {
 		case cFileRoutine::DeleteOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,

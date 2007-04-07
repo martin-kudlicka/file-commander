@@ -1,12 +1,39 @@
 #include "Panel/TreeWidget.h"
 
 #include <QKeyEvent>
+#include <QUrl>
 
 // constructor
 cTreeWidget::cTreeWidget()
 {
 	connect(this, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
+	setDragDropMode(QAbstractItemView::DragDrop);
 } // cTreeWidget
+
+// drag enter event
+void cTreeWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasUrls()) {
+		event->acceptProposedAction();
+	} // if
+} // dragEnterEvent
+
+// drag move event
+void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+	event->acceptProposedAction();
+} // dragMoveEvent
+
+// drop of object in dir view
+void cTreeWidget::dropEvent(QDropEvent *event)
+{
+	if (event->mouseButtons() == Qt::LeftButton) {
+		emit DropEvent(CopyDropAction, event->mimeData()->urls());
+	} else {
+		emit DropEvent(ChooseDropAction, event->mimeData()->urls());
+	} // if else
+	event->acceptProposedAction();
+} // dropEvent
 
 // dir view got focus
 void cTreeWidget::focusInEvent(QFocusEvent *event)
