@@ -127,6 +127,8 @@ cMainWindow::cMainWindow()
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	qsRightDrive = new QShortcut(QKeySequence("Alt+F2"), this);
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
+
+	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
 
 // event filter
