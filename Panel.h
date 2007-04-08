@@ -159,6 +159,8 @@ class cPanel : private QObject
 																							/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);	///< show tree view context menu
 																							/**< \param pos position of context menu */
+		void on_ctwTree_DragEvent(cTreeWidget *ctwSource);					///< start dragging of selected objects
+																							/**< \param ctwSource source dir view */
 		void on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls);
 																							///< drop event occured
 																							/**< \param edaAction action to do in this event with source

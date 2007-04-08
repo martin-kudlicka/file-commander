@@ -19,6 +19,8 @@ class cTreeWidget : public QTreeWidget
 		cTreeWidget();																		///< constructor
 
 	private:
+		QPoint qpDragStart;																///< drag start position
+
 		void dragEnterEvent(QDragEnterEvent *event);								///< drag enter event
 																								/**< \param event event description */
 		void dragMoveEvent(QDragMoveEvent *event);								///< drag move event
@@ -29,8 +31,14 @@ class cTreeWidget : public QTreeWidget
 																								///< \param event incoming focus event */
 		void keyPressEvent(QKeyEvent *event);										///< handle key processing
 																								/**< \param event incoming key event */
+		void mouseMoveEvent(QMouseEvent *event);									///< mouse move in dir view
+																								/**< \param event event description */
+		void mousePressEvent(QMouseEvent *event);									///< mouse click in dir view
+																								/**< \param event event description */
 
 	signals:
+		void DragEvent(cTreeWidget *ctwSource);									///< start dragging of selected objects
+																								/**< \param ctwSource source dir view */
 		void DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls);
 																								///< drop event occured
 																								/**< \param edaAction action to do in this event with source

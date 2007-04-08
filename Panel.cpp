@@ -85,6 +85,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)));
+	connect(ctwTree, SIGNAL(DragEvent(cTreeWidget *)), SLOT(on_ctwTree_DragEvent(cTreeWidget *)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -393,6 +394,31 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 {
 	csmMenu->Show(GetSelectedItemsStringList(), static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_ctwTree_customContextMenuRequested
+
+// start dragging of selected objects
+void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
+{
+	QStringList qfilFiles;
+
+	qfilFiles = GetSelectedItemsStringList();
+
+	if (qfilFiles.count() > 0) {
+		int iI;
+		QDrag *qdDrag;
+		QList<QUrl> qlUrls;
+		QMimeData *qmdMimeData;
+
+		for (iI = 0; iI < qfilFiles.count(); iI++) {
+			qlUrls.append(QUrl::fromLocalFile(qfilFiles.at(iI)));
+		} // for
+
+		qmdMimeData = new QMimeData();
+		qmdMimeData->setUrls(qlUrls);
+		qdDrag = new QDrag(ctwSource);
+		qdDrag->setMimeData(qmdMimeData);
+		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
+	} // if
+} // on_ctwTree_DragEvent
 
 // drop event occured
 void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls)
