@@ -2,6 +2,7 @@
 
 #include <QKeyEvent>
 #include <QUrl>
+#include <QApplication>
 
 // constructor
 cTreeWidget::cTreeWidget()
@@ -60,6 +61,26 @@ void cTreeWidget::keyPressEvent(QKeyEvent *event)
 									} // if else
 	} // switch
 } // keyPressEvent
+
+// mouse move in dir view
+void cTreeWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & (Qt::LeftButton | Qt::RightButton)) {
+		if ((event->pos() - qpDragStart).manhattanLength() >= QApplication::startDragDistance()) {
+			emit DragEvent(this);
+		} // if
+	} // if
+} // mouseMoveEvent
+
+// mouse click in dir view
+void cTreeWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
+		qpDragStart = event->pos();
+	} // if
+
+	QTreeWidget::mousePressEvent(event);
+} // mousePressEvent
 
 // selection changed it directory view
 void cTreeWidget::on_ctwTree_itemSelectionChanged()
