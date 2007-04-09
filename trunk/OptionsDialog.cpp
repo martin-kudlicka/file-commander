@@ -168,6 +168,9 @@ void cOptionsDialog::FillOptions()
 	} else {
 		qrbSelectionFilesAndDirectories->setChecked(true);
 	} // if else
+	if (csSettings->GetSaveSettingsOnQuit()) {
+		qcbSaveSettingsOnQuit->setChecked(true);
+	} // if
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qslHeader.append(tr("Type"));
@@ -657,6 +660,7 @@ void cOptionsDialog::SaveOptions()
 		qsValue = qsFILES_AND_DIRECTORIES;
 	} // if else
 	csSettings->SetSelectionMode(qsValue);
+	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
 
 	// plugins
 	// content
