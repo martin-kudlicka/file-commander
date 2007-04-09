@@ -50,6 +50,7 @@ const QString qsWRAP_TEXT = "WrapText";
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Display
 const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
+const QString qsDISPLAY__SAVE_SETTINGS_ON_QUIT = "Display/SaveSettingsOnQuit";
 const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
@@ -344,6 +345,12 @@ QStringList cSettings::GetSavedFinds()
 	return qslSavedFinds;
 } // GetSavedFinds
 
+// save settings on quit option
+bool cSettings::GetSaveSettingsOnQuit()
+{
+	return qsSettings.value(qsDISPLAY__SAVE_SETTINGS_ON_QUIT, true).toBool();
+} // GetSaveSettingsOnQuit
+
 // selection mode of files and directories
 QString cSettings::GetSelectionMode()
 {
@@ -546,6 +553,12 @@ void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
 {
 	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
 } // SetReadonlyFileOverwrite
+
+// save settings on quit option
+void cSettings::SetSaveSettingsOnQuit(const bool &bSave)
+{
+	qsSettings.setValue(qsDISPLAY__SAVE_SETTINGS_ON_QUIT, bSave);
+} // SetSaveSettingsOnQuit
 
 // set selection mode of files and directories
 void cSettings::SetSelectionMode(const QString &qsMode)

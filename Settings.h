@@ -156,6 +156,8 @@ class cSettings : private QObject
 																				/**< \return default readonly file overwrite mode */
 		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
 																				/**< \return list of save find settings */
+		bool GetSaveSettingsOnQuit();									///< save settings on quit option
+																				/**< \return saves settings on quit when true */
 		QString GetSelectionMode();									///< selection mode of files and directories
 																				/**< \return selection mode */
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
@@ -198,6 +200,8 @@ class cSettings : private QObject
 																				/**< \param qsTime user defined time display format */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
+		void SetSaveSettingsOnQuit(const bool &bSave);			///< save settings on quit option
+																				/**< \param bSave saves settings on quit when true */
 		void SetSelectionMode(const QString &qsMode);			///< set selection mode of files and directories
 																				/**< \param qsMode selection mode */
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
