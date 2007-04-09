@@ -102,6 +102,21 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 } // AddTab
 
+// close tab
+void cPanel::CloseTab(const int &iTabIndex)
+{
+	int iI;
+
+	// reposition of tabs following remove tab
+	for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
+		qhTabs.insert(iI - 1, qhTabs.value(iI));
+	} // for
+	qhTabs.remove(qhTabs.count() - 1);
+
+	qtbTab->removeTab(iTabIndex);
+	qswDir->removeWidget(qswDir->widget(iTabIndex));
+} // CloseTab
+
 // constructor
 cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation)
 {
