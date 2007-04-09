@@ -43,17 +43,7 @@ void cPanel::ActualizeVolumeInfo()
 // actualize widgets with info about current directory view
 void cPanel::ActualizeWidgets()
 {
-	QDir qdDir;
-
-	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-
-	// tab bar
-	if (qdDir.dirName() == "") {
-		qtbTab->setTabText(qswDir->currentIndex(), qdDir.path().at(0));
-	} else {
-		qtbTab->setTabText(qswDir->currentIndex(), qdDir.dirName());
-	} // if else
-	// path
+	SetTabText(qswDir->currentIndex());
 
 	qcbDrive->blockSignals(true);
 	qcbDrive->setCurrentIndex(qcbDrive->findText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive));
@@ -95,6 +85,7 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	qhTabs.insert(iIndex, stTab);
+	SetTabText(iIndex);
 
 	// add path to watcher
 	qfswWatcher.addPath(stiTabInfo.qsPath);
@@ -148,6 +139,20 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	connect(ccdContentDelayed, SIGNAL(GotColumnValue(const cContentDelayed::sOutput &)), SLOT(on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccdContentDelayed, SLOT(on_InterruptContentDelayed()));
 } // cPanel
+
+// create new tab by duplicate one
+void cPanel::DuplicateTab(const int &iTabIndex)
+{
+	cSettings::sTabInfo stiTabInfo;
+
+	stiTabInfo.qsColumnSet = qhTabs.value(iTabIndex).qsColumnSet;
+	stiTabInfo.qsDrive = qhTabs.value(iTabIndex).swWidgets->qsDrive;
+	stiTabInfo.qsPath = qhTabs.value(iTabIndex).swWidgets->qsPath;
+	stiTabInfo.ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iTabIndex))->sortColumn();
+	stiTabInfo.ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iTabIndex))->header()->sortIndicatorOrder();
+
+	AddTab(stiTabInfo);
+} // DuplicateTab
 
 // edit selected file in editor
 void cPanel::EditFile()
@@ -433,10 +438,10 @@ void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, con
 		QAction *qaCancel, *qaChoice, *qaCopy, *qaMove;
 		QMenu qmMenu;
 
-		qaCopy = qmMenu.addAction(tr("Copy"));
-		qaMove = qmMenu.addAction(tr("Move"));
+		qaCopy = qmMenu.addAction(tr("C&opy"));
+		qaMove = qmMenu.addAction(tr("&Move"));
 		qmMenu.addSeparator();
-		qaCancel = qmMenu.addAction(tr("Cancel"));
+		qaCancel = qmMenu.addAction(tr("&Cancel"));
 
 		qaChoice = qmMenu.exec(QCursor::pos());
 
@@ -954,6 +959,21 @@ void cPanel::SetPath(const QString &qsPath)
 	} // if else
 #endif
 } // SetPath
+
+// set text in tab bar
+void cPanel::SetTabText(const int &iTabIndex)
+{
+	QDir qdDir;
+
+	qdDir.setPath(qhTabs.value(iTabIndex).swWidgets->qsPath);
+
+	// tab bar
+	if (qdDir.dirName() == "") {
+		qtbTab->setTabText(iTabIndex, qdDir.path().at(0));
+	} else {
+		qtbTab->setTabText(iTabIndex, qdDir.dirName());
+	} // if else
+} // SetTabText
 
 // sort dir content and show
 void cPanel::Sort(const int &iIndex)

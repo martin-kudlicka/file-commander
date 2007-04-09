@@ -49,6 +49,8 @@ class cPanel : private QObject
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
 																							///< add new tab with dir view
+		void DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
+																							/**< \param iTabIndex tab to duplicate */
 		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
@@ -143,6 +145,8 @@ class cPanel : private QObject
 																							/**< \param iIndex index of dir view */
 		void SetPath(const QString &qsPath);									///< set new path for current dir view
 																							/**< \param qsPath new path */
+		void SetTabText(const int &iTabIndex);									///< set text in tab bar
+																							/**< \param iTabIndex tab bar index to set text in */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
 		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
