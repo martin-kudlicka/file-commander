@@ -92,10 +92,14 @@ cMainWindow::cMainWindow()
 	} // if else
 	qcbCommand->installEventFilter(this);
 	// add left tab
+	qtbLeft.setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(&qtbLeft, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_qtbLeft_customContextMenuRequested(const QPoint &)));
 	qvblTabBar = static_cast<QVBoxLayout *>(qswLeft->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbLeft);
 	qtbLeft.setFocusPolicy(Qt::NoFocus);
 	// add right tab
+	qtbRight.setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(&qtbRight, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_qtbRight_customContextMenuRequested(const QPoint &)));
 	qvblTabBar = static_cast<QVBoxLayout *>(qswRight->parentWidget()->layout());
 	qvblTabBar->insertWidget(iTAB_POS, &qtbRight);
 	qtbRight.setFocusPolicy(Qt::NoFocus);
@@ -397,12 +401,12 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 // view button is clicked on
 void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 {
-	cPanel *cSource;
+	cPanel *cpSource;
 	int iI;
 	QFileInfoList qfilFiles;
 
-	SetSourceAndDestinationPanel(&cSource);
-	qfilFiles = cSource->GetSelectedItemsList();
+	SetSourceAndDestinationPanel(&cpSource);
+	qfilFiles = cpSource->GetSelectedItemsList();
 
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		if (qfilFiles.at(iI).isFile()) {
@@ -427,6 +431,18 @@ void cMainWindow::on_qsRightDrive_activated()
 	qcbRightDrive->showPopup();
 } // on_qsRightDrive_activated
 
+// context menu of left tab bar
+void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos)
+{
+	TabBarShowContextMenu(cSettings::PositionLeft, pos);
+} // on_qtbLeft_customContextMenuRequested
+
+// context menu of right tab bar
+void cMainWindow::on_qtbRight_customContextMenuRequested(const QPoint &pos)
+{
+	TabBarShowContextMenu(cSettings::PositionRight, pos);
+} // on_qtbRight_customContextMenuRequested
+
 ///< timer's timeout
 void cMainWindow::on_qtTimer_timeout()
 {
@@ -449,3 +465,53 @@ void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDes
 		} // if
 	} // if else
 } // SetSourceAndDestinationPanel
+
+// show context menu for tab
+void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor)
+{
+	int iI, iTabIndex;
+	QAction *qaChoice;
+	QTabBar *qtbTabBar;
+
+	// get the tab index clicked on
+	if (epTab == cSettings::PositionLeft) {
+		qtbTabBar = &qtbLeft;
+	} else {
+		qtbTabBar = &qtbRight;
+	} // if else
+	iTabIndex = -1;
+	for (iI = 0; iI < qtbTabBar->count(); iI++) {
+		if (qtbTabBar->tabRect(iI).contains(qpCursor)) {
+			iTabIndex = iI;
+			break;
+		} // if
+	} // for
+
+	if (iTabIndex != -1) {
+		cPanel *cpSource;
+		QAction *qaTabBarCloseTab, *qaTabBarDuplicateTab;
+		QMenu qmTabBar(this);
+
+		// create tab context menu
+		qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));
+		qaTabBarCloseTab = qmTabBar.addAction(tr("&Close tab"));
+
+		// disable close tab if only one tab is available
+		if (qtbTabBar->count() == 1) {
+			qaTabBarCloseTab->setEnabled(false);
+		} else {
+			qaTabBarCloseTab->setEnabled(true);
+		} // if else
+
+		qaChoice = qmTabBar.exec(QCursor::pos());
+
+		SetSourceAndDestinationPanel(&cpSource);
+
+		if (qaChoice == qaTabBarDuplicateTab) {
+			cpSource->DuplicateTab(iTabIndex);
+		} else {
+			if (qaChoice == qaTabBarCloseTab) {
+			} // if
+		} // if else
+	} // if
+} // TabBarShowContextMenu

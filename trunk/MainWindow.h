@@ -54,6 +54,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						///< set focused panel as source, other as destination
 																						/**< \param cpSource source panel
 																							  \param cpDestination destination panel */
+		void TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor);
+																						///< show context menu for tab
+																						/**< \param epTab left or right tab
+																							  \param qpCursor cursor position on tab */
 
 	private slots:
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
@@ -98,6 +102,12 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if button is checkable and checked */
 		void on_qsLeftDrive_activated();										///< left drive shortcut activated
 		void on_qsRightDrive_activated();									///< right drive shortcut activated
+		void on_qtbLeft_customContextMenuRequested(const QPoint &pos);
+																						///< context menu of left tab bar
+																						/**< \param pos cursor position */
+		void on_qtbRight_customContextMenuRequested(const QPoint &pos);
+																						///< context menu of right tab bar
+																						/**< \param pos cursor position */
 		void on_qtTimer_timeout();												///< timer's timeout
 }; // cMainWindow
 
