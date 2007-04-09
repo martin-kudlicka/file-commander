@@ -61,7 +61,6 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	sTab stTab;
 
 	// create tab
-	qtbTab->addTab("");
 	ctwTree = new cTreeWidget();
 	ctwTree->setRootIsDecorated(false);
 	ctwTree->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -85,6 +84,9 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	qhTabs.insert(iIndex, stTab);
+
+	// add new tab into GUI
+	qtbTab->addTab("");
 	SetTabText(iIndex);
 
 	// add path to watcher
@@ -129,6 +131,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
+	connect(qtbTab, SIGNAL(currentChanged(int)), SLOT(on_qtbTab_currentChanged(int)));
 
 	// timer
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
@@ -623,6 +626,13 @@ void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
 	Sort(qswDir->currentIndex());
 } // on_qhvTreeHeader_sectionClicked
+
+// tab bar's index changed
+void cPanel::on_qtbTab_currentChanged(int index)
+{
+	qswDir->setCurrentIndex(index);
+	ActualizeWidgets();
+} // on_qtbTab_currentChanged
 
 // timer's timeout
 void cPanel::on_qtTimer_timeout()
