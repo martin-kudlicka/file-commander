@@ -511,6 +511,7 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 			cpSource->DuplicateTab(iTabIndex);
 		} else {
 			if (qaChoice == qaTabBarCloseTab) {
+				cpSource->CloseTab(iTabIndex);
 			} // if
 		} // if else
 	} // if
