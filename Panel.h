@@ -189,6 +189,8 @@ class cPanel : private QObject
 																							/**< \param path directory to watch */
 		void on_qhvTreeHeader_sectionClicked(int logicalIndex);			///< click on header in tree (dir) view
 																							/**< \param logicalIndex column index clicked on */
+		void on_qtbTab_currentChanged(int index);								///< tab bar's index changed
+																							/**< \param index new tab bar index */
 		void on_qtTimer_timeout();													///< timer's timeout
 }; // cPanel
 
