@@ -770,8 +770,10 @@ void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *curr
 	qleShortcut->blockSignals(true);
 	if (current) {
 		qleShortcut->setText(current->text(1));
+		qleShortcut->setEnabled(true);
 	} else {
 		qleShortcut->clear();
+		qleShortcut->setEnabled(false);
 	} // if else
 	qleShortcut->blockSignals(false);
 } // on_qtwShortcutItem_currentItemChanged

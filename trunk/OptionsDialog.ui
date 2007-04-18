@@ -36,7 +36,7 @@
         </size>
        </property>
        <property name="currentIndex" >
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page" >
         <widget class="QTabWidget" name="tabWidget" >
@@ -782,6 +782,19 @@
             <bool>false</bool>
            </property>
           </widget>
+          <widget class="QLineEdit" name="qleShortcut" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>340</x>
+             <y>180</y>
+             <width>113</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
           <widget class="QTreeWidget" name="qtwShortcutItem" >
            <property name="geometry" >
             <rect>
@@ -793,29 +806,6 @@
            </property>
            <property name="rootIsDecorated" >
             <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="qleShortcut" >
-           <property name="geometry" >
-            <rect>
-             <x>340</x>
-             <y>180</y>
-             <width>113</width>
-             <height>20</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="qcbShortcut" >
-           <property name="geometry" >
-            <rect>
-             <x>270</x>
-             <y>182</y>
-             <width>71</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>&amp;Shortcut</string>
            </property>
           </widget>
          </widget>
