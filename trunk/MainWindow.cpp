@@ -12,6 +12,10 @@
 // destructor
 cMainWindow::~cMainWindow()
 {
+	if (csSettings.GetSaveSettingsOnQuit()) {
+		SaveSettings();
+	} // if
+
 	delete qsLeftDrive;
 	delete qsRightDrive;
 	delete cfoFileOperation;
@@ -260,6 +264,12 @@ void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
 	csSettings.SetWindowState(smwsState);
 } // on_qaSavePosition_triggered
 
+// save settings is selected
+void cMainWindow::on_qaSaveSettings_triggered(bool checked /* false */)
+{
+	SaveSettings();
+} // on_qaSaveSettings_triggered
+
 // search selected
 void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 {
@@ -449,6 +459,13 @@ void cMainWindow::on_qtTimer_timeout()
 	// check for new or removed drives
 	ActualizeDrives();
 } // on_qtTimer_timeout
+
+// save dir view settings
+void cMainWindow::SaveSettings()
+{
+	cpLeft->SaveSettings(cSettings::PositionLeft);
+	cpRight->SaveSettings(cSettings::PositionRight);
+} // SaveSettings
 
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)

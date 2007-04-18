@@ -584,6 +584,27 @@ void cSettings::SetShowSystemFiles(const bool &bShowSystem)
 	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, bShowSystem);
 } // SetShowSystemFiles
 
+// save tab settings
+void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs)
+{
+	int iI;
+
+	// remove old tabs
+	if (epPosition == PositionLeft) {
+		qsSettings.beginGroup(qsLEFT_PANEL__TABS__);
+	} else {
+		qsSettings.beginGroup(qsRIGHT_PANEL__TABS__);
+	} // if else
+	qsSettings.remove("");
+	qsSettings.endGroup();
+
+	// create new tabs
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		CreateTab(epPosition, iI, qlTabs.at(iI));
+	} // for
+
+} // SetTabs
+
 // set startup main window state
 void cSettings::SetWindowState(const sMainWindowState &smwsState)
 {

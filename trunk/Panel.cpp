@@ -860,6 +860,28 @@ void cPanel::RefreshHeader(const int &iIndex)
 	RefreshContent(iIndex);
 } // RefreshHeader
 
+// save panel settings
+void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
+{
+	QList<cSettings::sTabInfo> qlTabs;
+
+	QHashIterator<uint, sTab> qhiTab(qhTabs);
+	while (qhiTab.hasNext()) {
+		cSettings::sTabInfo stiTab;
+
+		qhiTab.next();
+		stiTab.qsColumnSet = qhiTab.value().qsColumnSet;
+		stiTab.qsDrive = qhiTab.value().swWidgets->qsDrive;
+		stiTab.qsPath = qhiTab.value().swWidgets->qsPath;
+		stiTab.ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(qhiTab.key()))->sortColumn();
+		stiTab.ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(qhiTab.key()))->header()->sortIndicatorOrder();
+
+		qlTabs.append(stiTab);
+	} // while
+
+	csSettings->SetTabs(epPosition, qlTabs);
+} // SaveSettings
+
 // select or unselect some files
 void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister)
 {

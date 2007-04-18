@@ -211,6 +211,10 @@ class cSettings : private QObject
 																				/**< \param bShowHidden show hidden files in dir view flag */
 		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view flag
 																				/**< \param bShowHidden show system files in dir view flag */
+		void SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs);
+																				///< save tab settings
+																				/**< \param epPosition panel position
+																					  \param qlTabs tab settings */
 		void SetWindowState(const sMainWindowState &smwsState);
 																				///< set startup main window state
 																				/**< \param smwsState window state information */
