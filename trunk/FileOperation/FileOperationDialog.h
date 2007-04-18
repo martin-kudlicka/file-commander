@@ -7,6 +7,7 @@
 
 #include "FileOperation/FileRoutine.h"
 #include <QMainWindow>
+#include "Settings.h"
 
 class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 {
@@ -19,9 +20,10 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 			EnqueueAction									///< enqueue button selected
 		};
 
-		cFileOperationDialog(QMainWindow *qmwParent);
+		cFileOperationDialog(QMainWindow *qmwParent, cSettings *csSettings);
 																///< constructor
-																/**< \param qmwParent parent window of this dialog */
+																/**< \param qmwParent parent window of this dialog
+																	  \param csSettings application's settings file */
 
 		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter);
 																///< shows copy or move dialog

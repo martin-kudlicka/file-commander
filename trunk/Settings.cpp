@@ -370,29 +370,29 @@ QString cSettings::GetShortcut(const QString &qsShortcut)
 		QString qsDefault;
 
 		// directory view
-		if (qsShortcut == qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT) {
+		if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT) {
 			qsDefault = "Alt+F1";
 		} else {
-			if (qsShortcut == qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT) {
+			if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT) {
 				qsDefault = "Alt+F2";
 			} else {
 				// main button
-				if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__VIEW) {
+				if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) {
 					qsDefault = "F3";
 				} else {
-					if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__EDIT) {
+					if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT) {
 						qsDefault = "F4";
 					} else {
-						if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__COPY) {
+						if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__COPY) {
 							qsDefault = "F5";
 						} else {
-							if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__MOVE) {
+							if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE) {
 								qsDefault = "F6";
 							} else {
-								if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY) {
+								if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY) {
 									qsDefault = "F7";
 								} else {
-									if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__DELETE) {
+									if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE) {
 										qsDefault = "F8";
 									} else {
 										// main menu
@@ -422,7 +422,12 @@ QString cSettings::GetShortcut(const QString &qsShortcut)
 																	} else {
 																		if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__REFRESH) {
 																			qsDefault = "Ctrl+R";
-																		} // if
+																		} else {
+																			// operations dialog
+																			if (qsShortcut == qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) {
+																				qsDefault = "F2";
+																			} // if
+																		} // if else
 																	} // if else
 																} // if else
 															} // if else

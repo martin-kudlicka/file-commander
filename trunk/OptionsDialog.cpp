@@ -12,14 +12,6 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 // shortcuts
-const QStringList qslSHORTCUTS__PANELS__DIRECTORY_VIEW = QStringList() << qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT <<
-																								  qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT;
-const QStringList qslSHORTCUTS__PANELS__MAIN_BUTTON = QStringList() << qsSHORTCUT__MAIN_BUTTON__VIEW <<
-																							  qsSHORTCUT__MAIN_BUTTON__EDIT <<
-																							  qsSHORTCUT__MAIN_BUTTON__COPY <<
-																							  qsSHORTCUT__MAIN_BUTTON__MOVE <<
-																							  qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY <<
-																							  qsSHORTCUT__MAIN_BUTTON__DELETE;
 const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__QUIT;
 const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP <<
@@ -32,6 +24,15 @@ const QStringList qslSHORTCUTS__MAIN_MENU__SHOW = QStringList() << qsSHORTCUT__M
 const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS <<
 																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION <<
 																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS;
+const QStringList qslSHORTCUTS__OPERATIONS__DIALOG = QStringList() << qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE;
+const QStringList qslSHORTCUTS__PANELS__DIRECTORY_VIEW = QStringList() << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT <<
+																								  qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT;
+const QStringList qslSHORTCUTS__PANELS__MAIN_BUTTON = QStringList() << qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW <<
+																							  qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT <<
+																							  qsSHORTCUT__PANELS__MAIN_BUTTON__COPY <<
+																							  qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE <<
+																							  qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY <<
+																							  qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE;
 
 // destructor
 cOptionsDialog::~cOptionsDialog()
@@ -298,6 +299,10 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutDirectoryView->setText(0, tr("Directory view"));
 	qtwiShortcutMainButtons = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutMainButtons->setText(0, tr("Main buttons"));
+	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
+	qtwiShortcutMain->setText(0, tr("Operations"));
+	qtwiShortcutOperationsDialog = new QTreeWidgetItem(qtwiShortcutMain);
+	qtwiShortcutOperationsDialog->setText(0, tr("Dialog"));
 	qtwShortcutCategory->expandAll();
 	qtwShortcutCategory->setCurrentItem(qtwiShortcutFile);
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
@@ -754,7 +759,11 @@ void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *
 						} else {
 							if (current == qtwiShortcutMainButtons) {
 								FillShortcutItems(qslSHORTCUTS__PANELS__MAIN_BUTTON);
-							} // if
+							} else {
+								if (current == qtwiShortcutOperationsDialog) {
+									FillShortcutItems(qslSHORTCUTS__OPERATIONS__DIALOG);
+								} // if
+							} // if else
 						} // if else
 					} // if else
 				} // if else

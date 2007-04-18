@@ -62,6 +62,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QTreeWidgetItem *qtwiShortcutFile;									///< shortcut file category
 		QTreeWidgetItem *qtwiShortcutMainButtons;							///< shortcut main buttons category
 		QTreeWidgetItem *qtwiShortcutMark;									///< shortcut mark category
+		QTreeWidgetItem *qtwiShortcutOperationsDialog;					///< shortcut operations dialog category
 		QTreeWidgetItem *qtwiShortcutShow;									///< shortcut show category
 
 		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX);

@@ -74,21 +74,21 @@ void cMainWindow::ActualizeDrives()
 void cMainWindow::AssignShortcuts()
 {
 	// directory view
-	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT)), this);
-	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
+	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT)), this);
+	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
 	// main buttons
-	qpbView->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__VIEW)));
-	qpbView->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__VIEW) + ' ' + qpbView->text());
-	qpbEdit->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__EDIT)));
-	qpbEdit->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__EDIT) + ' ' + qpbEdit->text());
-	qpbCopy->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__COPY)));
-	qpbCopy->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__COPY) + ' ' + qpbCopy->text());
-	qpbMove->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__MOVE)));
-	qpbMove->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__MOVE) + ' ' + qpbMove->text());
-	qpbNewDirectory->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY)));
-	qpbNewDirectory->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY) + ' ' + qpbNewDirectory->text());
-	qpbDelete->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__DELETE)));
-	qpbDelete->setText(csSettings.GetShortcut(qsSHORTCUT__MAIN_BUTTON__DELETE) + ' ' + qpbDelete->text());
+	qpbView->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW)));
+	qpbView->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) + ' ' + qpbView->text());
+	qpbEdit->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT)));
+	qpbEdit->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT) + ' ' + qpbEdit->text());
+	qpbCopy->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__COPY)));
+	qpbCopy->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__COPY) + ' ' + qpbCopy->text());
+	qpbMove->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE)));
+	qpbMove->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE) + ' ' + qpbMove->text());
+	qpbNewDirectory->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY)));
+	qpbNewDirectory->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY) + ' ' + qpbNewDirectory->text());
+	qpbDelete->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE)));
+	qpbDelete->setText(csSettings.GetShortcut(qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE) + ' ' + qpbDelete->text());
 	// main menu
 	qaQuit->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_MENU__FILE__QUIT)));
 	qaSelectGroup->setShortcut(QKeySequence(csSettings.GetShortcut(qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP)));

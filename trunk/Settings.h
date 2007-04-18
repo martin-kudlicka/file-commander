@@ -36,14 +36,6 @@ const QString qsSKIP_ALL = "SkipAll";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 const QString qsYES_TO_ALL = "YesToAll";
 // shortcuts
-const QString qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT = "Drive left";
-const QString qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT = "Drive right";
-const QString qsSHORTCUT__MAIN_BUTTON__VIEW = "View";
-const QString qsSHORTCUT__MAIN_BUTTON__EDIT = "Edit";
-const QString qsSHORTCUT__MAIN_BUTTON__COPY = "Copy";
-const QString qsSHORTCUT__MAIN_BUTTON__MOVE = "Move";
-const QString qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY = "New directory";
-const QString qsSHORTCUT__MAIN_BUTTON__DELETE = "Delete";
 const QString qsSHORTCUT__MAIN_MENU__FILE__QUIT = "Quit";
 const QString qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP = "Select group...";
 const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP = "Unselect group...";
@@ -56,6 +48,15 @@ const QString qsSHORTCUT__MAIN_MENU__SHOW__REFRESH = "Refresh";
 const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS = "Options";
 const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION = "Save position";
 const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS = "Save settings";
+const QString qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE = "Enqueue";
+const QString qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT = "Drive left";
+const QString qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT = "Drive right";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW = "View";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT = "Edit";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__COPY = "Copy";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE = "Move";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY = "New directory";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE = "Delete";
 
 class cSettings : private QObject
 {
