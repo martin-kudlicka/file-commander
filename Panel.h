@@ -68,6 +68,8 @@ class cPanel : private QObject
 		void GoToUpDir();																///< go up one level (directory)
 		void InvertSelection();														///< invert selection of files
 		void Refresh();																///< refresh current dir view
+		void SaveSettings(const cSettings::ePosition &epPosition);		///< save panel settings
+																							/**< \param epPosition panel's position */
 		void Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister);
 																							///< select or unselect some files
 																							/**< \param estType select/unselect mode

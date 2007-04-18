@@ -50,6 +50,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \return pointer to active panel */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
 																						/**< \param epPos means left or right TabBar */
+		void SaveSettings();														///< save dir view settings
 		void SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination = NULL);
 																						///< set focused panel as source, other as destination
 																						/**< \param cpSource source panel
@@ -69,6 +70,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qaRefresh_triggered(bool checked = false);				///< refresh is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaSavePosition_triggered(bool checked = false);		///< save position is selected
+																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaSaveSettings_triggered(bool checked = false);		///< save settings is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaSearch_triggered(bool checked = false);				///< search selected
 																						/**< \param checked true if menu item is checkable and checked */
