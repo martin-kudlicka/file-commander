@@ -62,8 +62,10 @@ const QString qsFIND_FILES__ = "FindFiles/";
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 // MainWindow/
 const QString qsMAIN_WINDOW = "MainWindow";
-// Others/
-const QString qsOTHERS__ = "Others/";
+// Operations/
+const QString qsOPERATIONS__ = "Operations/";
+// Others/Shortcuts
+const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
 const QString qsPLUGINS__LISTER__SETTINGS = "Plugins/Lister/Settings";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
@@ -223,7 +225,7 @@ QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 // find out file overwrite mode
 QString cSettings::GetFileOverwrite()
 {
-	return qsSettings.value(qsOTHERS__ + qsFILE_OVERWRITE, qsASK).toString();
+	return qsSettings.value(qsOPERATIONS__ + qsFILE_OVERWRITE, qsASK).toString();
 } // GetFileOverwrite
 
 // unit for files size
@@ -330,7 +332,7 @@ QString cSettings::GetPluginTimeDisplay()
 // find out readonly file overwrite mode
 QString cSettings::GetReadonlyFileOverwrite()
 {
-	return qsSettings.value(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsASK).toString();
+	return qsSettings.value(qsOPERATIONS__ + qsREADONLY_FILE_OVERWRITE, qsASK).toString();
 } // GetReadonlyFileOverwrite
 
 // list of saved find settings for find files dialog
@@ -356,6 +358,91 @@ QString cSettings::GetSelectionMode()
 {
 	return qsSettings.value(qsDISPLAY__SELECTION_MODE, qsONLY_FILES).toString();
 } // GetSelectionMode
+
+// find shortcut
+QString cSettings::GetShortcut(const QString &qsShortcut)
+{
+	if (qsSettings.contains(qsOTHERS__SHORTCUTS__ + qsShortcut)) {
+		// if shortcut is defined return it
+		return qsSettings.value(qsOTHERS__SHORTCUTS__ + qsShortcut).toString();
+	} else {
+		// else return default
+		QString qsDefault;
+
+		// directory view
+		if (qsShortcut == qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT) {
+			qsDefault = "Alt+F1";
+		} else {
+			if (qsShortcut == qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT) {
+				qsDefault = "Alt+F2";
+			} else {
+				// main button
+				if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__VIEW) {
+					qsDefault = "F3";
+				} else {
+					if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__EDIT) {
+						qsDefault = "F4";
+					} else {
+						if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__COPY) {
+							qsDefault = "F5";
+						} else {
+							if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__MOVE) {
+								qsDefault = "F6";
+							} else {
+								if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY) {
+									qsDefault = "F7";
+								} else {
+									if (qsShortcut == qsSHORTCUT__MAIN_BUTTON__DELETE) {
+										qsDefault = "F8";
+									} else {
+										// main menu
+										if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__QUIT) {
+											qsDefault = "Alt+F4";
+										} else {
+											if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP) {
+												qsDefault = "+";
+											} else {
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP) {
+													qsDefault = "-";
+												} else {
+													if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL) {
+														qsDefault = "Ctrl++";
+													} else {
+														if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL) {
+															qsDefault = "Ctrl+-";
+														} else {
+															if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION) {
+																qsDefault = "*";
+															} else {
+																if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
+																	qsDefault = "Alt+F7";
+																} else {
+																	if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN) {
+																		qsDefault = "F11";
+																	} else {
+																		if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__REFRESH) {
+																			qsDefault = "Ctrl+R";
+																		} // if
+																	} // if else
+																} // if else
+															} // if else
+														} // if else
+													} // if else
+												} // if else
+											} // if else
+										} // if else
+									} // if else
+								} // if else
+							} // if else
+						} // if else
+					} // if else
+				} // if else
+			} // if else
+		} // if else
+
+		return qsDefault;
+	} // if else
+} // GetShortcut
 
 // square brackets around directory name
 bool cSettings::GetShowBracketsAroundDirectoryName()
@@ -454,7 +541,7 @@ void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
 // set default overwrite behaviour
 void cSettings::SetFileOverwrite(const QString &qsMode)
 {
-	qsSettings.setValue(qsOTHERS__ + qsFILE_OVERWRITE, qsMode);
+	qsSettings.setValue(qsOPERATIONS__ + qsFILE_OVERWRITE, qsMode);
 } // SetFileOverwrite
 
 // set file size mode
@@ -551,7 +638,7 @@ void cSettings::SetPluginTimeDisplay(const QString &qsTime)
 // set default readonly overwrite behaviour
 void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
 {
-	qsSettings.setValue(qsOTHERS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
+	qsSettings.setValue(qsOPERATIONS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
 } // SetReadonlyFileOverwrite
 
 // save settings on quit option
@@ -565,6 +652,12 @@ void cSettings::SetSelectionMode(const QString &qsMode)
 {
 	qsSettings.setValue(qsDISPLAY__SELECTION_MODE, qsMode);
 } // SetSelectionMode
+
+// set shortcut
+void cSettings::SetShortcut(const QString &qsName, const QString &qsShortcut)
+{
+	qsSettings.setValue(qsOTHERS__SHORTCUTS__ + qsName, qsShortcut);
+} // SetShortcut
 
 // square brackets around directory name
 void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)

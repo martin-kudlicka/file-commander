@@ -28,6 +28,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iPANELS_TAB = 0;									///< tab number of panels options
 		static const int iOPERATIONS_TAB = 1;								///< tab number of operations options
 		static const int iPLUGINS_TAB = 2;									///< tab number of plugins options
+		static const int iOTHERS_TAB = 3;									///< tab number of others options
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled
@@ -46,6 +47,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		cContent *ccContent;														///< content plugins
 		cSettings *csSettings;													///< application's settings
 		QAction *qaOperations;													///< operations options
+		QAction *qaOthers;														///< others options
 		QAction *qaPanels;														///< panels options
 		QAction *qaPlugins;														///< plugins options
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
@@ -54,6 +56,13 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QMenu *qmNative;															///< native part of columns menu
 		QMenu *qmPlugins;															///< plugins part of columns menu
 		QToolBar *qtbToolBar;													///< left toolbar for navigation
+		QTreeWidgetItem *qtwiShortcutCommands;								///< shortcut commands category
+		QTreeWidgetItem *qtwiShortcutConfiguration;						///< shortcut configuration category
+		QTreeWidgetItem *qtwiShortcutDirectoryView;						///< shortcut directory view category
+		QTreeWidgetItem *qtwiShortcutFile;									///< shortcut file category
+		QTreeWidgetItem *qtwiShortcutMainButtons;							///< shortcut main buttons category
+		QTreeWidgetItem *qtwiShortcutMark;									///< shortcut mark category
+		QTreeWidgetItem *qtwiShortcutShow;									///< shortcut show category
 
 		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX);
 																						///< add new column to current column set
@@ -65,6 +74,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param spPlugin plugin to add
 																							  \param qtwTree tree to put plugin into */
 		void CreateToolBar();													///< create left toolbar for navigation
+		bool eventFilter(QObject *watched, QEvent *event);				///< event filter
+																						/**< \param watched filtered object
+																							  \param event event description
+																							  \return true if event is handled */
 		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
 																						///< get info about specified plugins
 																						/**< \param qtwPlugins plugins to get info
@@ -74,6 +87,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param qlPlugins plugin list
 																							  \param qtwTree tree to fill */
 		void FillOptions();														///< fill options with set settings
+		void FillShortcutItems(const QStringList &qslItems);			///< fill shortcuts for selected category
+																						/**< \param qslItems shortcut list */
 		cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem);
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column
@@ -91,6 +106,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param text new selected column set */
 		void on_qdbbResponse_accepted();										///< changes accepted
 		void on_qdbbResponse_rejected();										///< changes rejected
+		void on_qleShortcut_textChanged(const QString &text);			///< shortcut changed
+																						/**< \param text new shortcut key sequence */
 		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
 																						/**< \param action selected column (or column's unit) */
 		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
@@ -122,6 +139,14 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
 		void on_qtwListerPlugins_itemSelectionChanged();				///< selected lister plugin changed
+		void on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+																						///< selected shortcut category changed
+																						/**< \param current current shortcut category
+																							  \param previous old shortcut category */
+		void on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+																						///< selected shortcut changed
+																						/**< \param current current shortcut
+																							  \param previous old shortcut */
 }; // cOptionsDialog
 
 #endif
