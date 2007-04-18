@@ -42,6 +42,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTimer qtTimer;															///< timer for requesting changeable informations
 
 		void ActualizeDrives();													///< drive lists actualization
+		void AssignShortcuts();													///< assign shortcuts
 		bool eventFilter(QObject *watched, QEvent *event);				///< event filter
 																						/**< \param watched filtered object
 																							  \param event event description

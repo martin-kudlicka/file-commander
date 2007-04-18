@@ -35,6 +35,27 @@ const QString qsSIZE = "Size";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 const QString qsYES_TO_ALL = "YesToAll";
+// shortcuts
+const QString qsSHORTCUT__DIRECTORY_VIEW__DRIVE_LEFT = "Drive left";
+const QString qsSHORTCUT__DIRECTORY_VIEW__DRIVE_RIGHT = "Drive right";
+const QString qsSHORTCUT__MAIN_BUTTON__VIEW = "View";
+const QString qsSHORTCUT__MAIN_BUTTON__EDIT = "Edit";
+const QString qsSHORTCUT__MAIN_BUTTON__COPY = "Copy";
+const QString qsSHORTCUT__MAIN_BUTTON__MOVE = "Move";
+const QString qsSHORTCUT__MAIN_BUTTON__NEW_DIRECTORY = "New directory";
+const QString qsSHORTCUT__MAIN_BUTTON__DELETE = "Delete";
+const QString qsSHORTCUT__MAIN_MENU__FILE__QUIT = "Quit";
+const QString qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP = "Select group...";
+const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP = "Unselect group...";
+const QString qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL = "Select all";
+const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL = "Unselect all";
+const QString qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION = "Invert selection";
+const QString qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH = "Search...";
+const QString qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN = "Fullscreen";
+const QString qsSHORTCUT__MAIN_MENU__SHOW__REFRESH = "Refresh";
+const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS = "Options";
+const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION = "Save position";
+const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS = "Save settings";
 
 class cSettings : private QObject
 {
@@ -160,6 +181,9 @@ class cSettings : private QObject
 																				/**< \return saves settings on quit when true */
 		QString GetSelectionMode();									///< selection mode of files and directories
 																				/**< \return selection mode */
+		QString GetShortcut(const QString &qsShortcut);			///< find shortcut
+																				/**< \param qsShortcut shortcut name
+																					  \return shortcun key sequence */
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
 																				/**< \return show brackets around directory name flag */
 		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
@@ -204,6 +228,10 @@ class cSettings : private QObject
 																				/**< \param bSave saves settings on quit when true */
 		void SetSelectionMode(const QString &qsMode);			///< set selection mode of files and directories
 																				/**< \param qsMode selection mode */
+		void SetShortcut(const QString &qsName, const QString &qsShortcut);
+																				///< set shortcut
+																				/**< \param qsName item name to set shortcut for
+																					  \param qsShortcut shortcut to set */
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
 																				///< square brackets around directory name
 																				/**< \param bShowBrackets show brackets around directory name flag */
