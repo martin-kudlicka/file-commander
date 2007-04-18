@@ -133,7 +133,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 {
 	cCopyMove *ccmCopyMove;
 	cDelete *cdDelete;
-	cFileOperationDialog cfodDialog(qmwParent);
+	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	sObjects soObjects;
 	cFileOperationDialog::eUserAction euaAction;
 	QString qsFilter;
