@@ -38,24 +38,24 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 	qteContent = NULL;
 
 	// assign shortcuts
-	qaOpen->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__FILE__OPEN)));
-	qaSaveAs->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__FILE__SAVE_AS)));
-	qaPrint->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__FILE__PRINT)));
-	qaPrintSetup->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__FILE__PRINT_SETUP)));
-	qaClose->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__FILE__CLOSE)));
-	qaCopyAsText->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT)));
-	qaSelectAll->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__EDIT__SELECT_ALL)));
-	qaFind->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__EDIT__FIND)));
-	qaFindNext->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__EDIT__FIND_NEXT)));
-	qaText->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__TEXT)));
-	qaBinary->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__BINARY)));
-	qaHex->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__HEX)));
-	qaMultimedia->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA)));
-	qaANSI->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__ANSI)));
-	qaASCII->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__ASCII)));
-	qaVariableCharWidth->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH)));
-	qaWrapText->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT)));
-	qaFitImageToWindow->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW)));
+	qaOpen->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__OPEN)));
+	qaSaveAs->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__SAVE_AS)));
+	qaPrint->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__PRINT)));
+	qaPrintSetup->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__PRINT_SETUP)));
+	qaClose->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__CLOSE)));
+	qaCopyAsText->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT)));
+	qaSelectAll->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__EDIT__SELECT_ALL)));
+	qaFind->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__EDIT__FIND)));
+	qaFindNext->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__EDIT__FIND_NEXT)));
+	qaText->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__TEXT)));
+	qaBinary->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__BINARY)));
+	qaHex->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__HEX)));
+	qaMultimedia->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA)));
+	qaANSI->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__ANSI)));
+	qaASCII->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__ASCII)));
+	qaVariableCharWidth->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH)));
+	qaWrapText->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT)));
+	qaFitImageToWindow->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW)));
 
 	// settings
 	slLister = csSettings->GetListerSettings();

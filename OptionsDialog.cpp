@@ -303,32 +303,43 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutMain->setText(0, tr("Main menu"));
 	qtwiShortcutFile = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutFile->setText(0, tr("File"));
+	qtwiShortcutFile->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutMark = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutMark->setText(0, tr("Mark"));
+	qtwiShortcutMark->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutCommands = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutCommands->setText(0, tr("Commands"));
+	qtwiShortcutCommands->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutShow = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutShow->setText(0, tr("Show"));
+	qtwiShortcutShow->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutConfiguration = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutConfiguration->setText(0, tr("Configuration"));
+	qtwiShortcutConfiguration->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
 	qtwiShortcutMain->setText(0, tr("Panels"));
 	qtwiShortcutDirectoryView = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutDirectoryView->setText(0, tr("Directory view"));
+	qtwiShortcutDirectoryView->setData(0, Qt::UserRole, cSettings::PanelsCategory);
 	qtwiShortcutMainButtons = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutMainButtons->setText(0, tr("Main buttons"));
+	qtwiShortcutMainButtons->setData(0, Qt::UserRole, cSettings::PanelsCategory);
 	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
 	qtwiShortcutMain->setText(0, tr("Operations"));
 	qtwiShortcutOperationsDialog = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutOperationsDialog->setText(0, tr("Dialog"));
+	qtwiShortcutOperationsDialog->setData(0, Qt::UserRole, cSettings::OperationsCategory);
 	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
 	qtwiShortcutMain->setText(0, tr("Lister"));
 	qtwiShortcutListerFile = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutListerFile->setText(0, tr("File"));
+	qtwiShortcutListerFile->setData(0, Qt::UserRole, cSettings::ListerCategory);
 	qtwiShortcutListerEdit = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutListerEdit->setText(0, tr("Edit"));
+	qtwiShortcutListerEdit->setData(0, Qt::UserRole, cSettings::ListerCategory);
 	qtwiShortcutListerOptions = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutListerOptions->setText(0, tr("Options"));
+	qtwiShortcutListerOptions->setData(0, Qt::UserRole, cSettings::ListerCategory);
 	qtwShortcutCategory->expandAll();
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
 
@@ -373,7 +384,7 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 } // FillPluginsTree
 
 // fill shortcuts for selected category
-void cOptionsDialog::FillShortcutItems(const QStringList &qslItems)
+void cOptionsDialog::FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems)
 {
 	int iI;
 
@@ -384,7 +395,7 @@ void cOptionsDialog::FillShortcutItems(const QStringList &qslItems)
 
 		qtwShortcut = new QTreeWidgetItem(qtwShortcutItem);
 		qtwShortcut->setText(0, qslItems.at(iI));
-		qtwShortcut->setText(1, csSettings->GetShortcut(qslItems.at(iI)));
+		qtwShortcut->setText(1, csSettings->GetShortcut(escCategory, qslItems.at(iI)));
 	} // for
 
 	qtwShortcutItem->resizeColumnToContents(0);
@@ -495,7 +506,7 @@ void cOptionsDialog::on_qdbbResponse_rejected()
 void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 {
 	qtwShortcutItem->currentItem()->setText(1, text);
-	csSettings->SetShortcut(qtwShortcutItem->currentItem()->text(0), text);
+	csSettings->SetShortcut(static_cast<cSettings::eShortcutCategory>(qtwShortcutCategory->currentItem()->data(0, Qt::UserRole).toInt()), qtwShortcutItem->currentItem()->text(0), text);
 } // on_qleShortcut_textEdited
 
 // column selected into column set
@@ -763,47 +774,47 @@ void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *
 
 	if (current == qtwiShortcutFile) {
 		// main menu/file
-		FillShortcutItems(qslSHORTCUTS__MAIN_MENU__FILE);
+		FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__FILE);
 	} else {
 		if (current == qtwiShortcutMark) {
 			// main menu/mark
-			FillShortcutItems(qslSHORTCUTS__MAIN_MENU__MARK);
+			FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__MARK);
 		} else {
 			if (current == qtwiShortcutCommands) {
 				// main menu/commands
-				FillShortcutItems(qslSHORTCUTS__MAIN_MENU__COMMANDS);
+				FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__COMMANDS);
 			} else {
 				if (current == qtwiShortcutShow) {
 					// main menu/show
-					FillShortcutItems(qslSHORTCUTS__MAIN_MENU__SHOW);
+					FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__SHOW);
 				} else {
 					if (current == qtwiShortcutConfiguration) {
 						// main menu/configuration
-						FillShortcutItems(qslSHORTCUTS__MAIN_MENU__CONFIGURATION);
+						FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__CONFIGURATION);
 					} else {
 						if (current == qtwiShortcutDirectoryView) {
 							// panels/directory view
-							FillShortcutItems(qslSHORTCUTS__PANELS__DIRECTORY_VIEW);
+							FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__DIRECTORY_VIEW);
 						} else {
 							if (current == qtwiShortcutMainButtons) {
 								// panels/main buttons
-								FillShortcutItems(qslSHORTCUTS__PANELS__MAIN_BUTTON);
+								FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__MAIN_BUTTON);
 							} else {
 								if (current == qtwiShortcutOperationsDialog) {
 									// operations/dialog
-									FillShortcutItems(qslSHORTCUTS__OPERATIONS__DIALOG);
+									FillShortcutItems(cSettings::OperationsCategory, qslSHORTCUTS__OPERATIONS__DIALOG);
 								} else {
 									if (current == qtwiShortcutListerFile) {
 										// lister/file
-										FillShortcutItems(qslSHORTCUTS__LISTER__FILE);
+										FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__FILE);
 									} else {
 										if (current == qtwiShortcutListerEdit) {
 											// lister/edit
-											FillShortcutItems(qslSHORTCUTS__LISTER__EDIT);
+											FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__EDIT);
 										} else {
 											if (current == qtwiShortcutListerOptions) {
 												// lister/options
-												FillShortcutItems(qslSHORTCUTS__LISTER__OPTIONS);
+												FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__OPTIONS);
 											} // if
 										} // if else
 									} // if else
