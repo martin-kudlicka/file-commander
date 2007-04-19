@@ -330,7 +330,6 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutListerOptions = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutListerOptions->setText(0, tr("Options"));
 	qtwShortcutCategory->expandAll();
-	qtwShortcutCategory->setCurrentItem(qtwiShortcutFile);
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
 
 	// plugins
@@ -387,6 +386,8 @@ void cOptionsDialog::FillShortcutItems(const QStringList &qslItems)
 		qtwShortcut->setText(0, qslItems.at(iI));
 		qtwShortcut->setText(1, csSettings->GetShortcut(qslItems.at(iI)));
 	} // for
+
+	qtwShortcutItem->resizeColumnToContents(0);
 } // FillShortcutItems
 
 // get information about column from column set
