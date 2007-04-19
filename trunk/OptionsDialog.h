@@ -91,8 +91,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param qlPlugins plugin list
 																							  \param qtwTree tree to fill */
 		void FillOptions();														///< fill options with set settings
-		void FillShortcutItems(const QStringList &qslItems);			///< fill shortcuts for selected category
-																						/**< \param qslItems shortcut list */
+		void FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems);
+																						///< fill shortcuts for selected category
+																						/**< \param escCategory shortcut category
+																							  \param qslItems shortcut list */
 		cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem);
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column

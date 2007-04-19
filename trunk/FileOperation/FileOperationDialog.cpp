@@ -9,8 +9,8 @@ cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *cs
 	setupUi(this);
 
 	// assign shortcuts
-	qpbEnqueue->setShortcut(QKeySequence(csSettings->GetShortcut(qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE)));
-	qpbEnqueue->setText(csSettings->GetShortcut(qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) + ' ' + qpbEnqueue->text());
+	qpbEnqueue->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE)));
+	qpbEnqueue->setText(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) + ' ' + qpbEnqueue->text());
 } // cCopyMoveDialog
 
 // Browse button clicked on

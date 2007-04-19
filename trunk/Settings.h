@@ -89,6 +89,13 @@ class cSettings : private QObject
 			PositionLeft,													///< left panel
 			PositionRight													///< right panel
 		};
+		/// shortcut category
+		enum eShortcutCategory {
+			MainMenuCategory,												///< main menu shortcut category
+			PanelsCategory,												///< panels shortcut category
+			OperationsCategory,											///< operations shortcut category
+			ListerCategory													///< lister shortcut category
+		};
 		/// column in dir tree view
 		struct sColumn {
 			QString qsIdentifier;										///< column identifier
@@ -200,8 +207,10 @@ class cSettings : private QObject
 																				/**< \return saves settings on quit when true */
 		QString GetSelectionMode();									///< selection mode of files and directories
 																				/**< \return selection mode */
-		QString GetShortcut(const QString &qsShortcut);			///< find shortcut
-																				/**< \param qsShortcut shortcut name
+		QString GetShortcut(const eShortcutCategory &escCategory, const QString &qsShortcut);
+																				///< find shortcut
+																				/**< \param escCategory shortcut category
+																					  \param qsShortcut shortcut name
 																					  \return shortcun key sequence */
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
 																				/**< \return show brackets around directory name flag */
@@ -247,9 +256,10 @@ class cSettings : private QObject
 																				/**< \param bSave saves settings on quit when true */
 		void SetSelectionMode(const QString &qsMode);			///< set selection mode of files and directories
 																				/**< \param qsMode selection mode */
-		void SetShortcut(const QString &qsName, const QString &qsShortcut);
+		void SetShortcut(const eShortcutCategory &escCategory, const QString &qsName, const QString &qsShortcut);
 																				///< set shortcut
-																				/**< \param qsName item name to set shortcut for
+																				/**< \param escCategory shortcut category
+																					  \param qsName item name to set shortcut for
 																					  \param qsShortcut shortcut to set */
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
 																				///< square brackets around directory name
