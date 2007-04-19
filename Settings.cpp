@@ -367,85 +367,117 @@ QString cSettings::GetShortcut(const QString &qsShortcut)
 		return qsSettings.value(qsOTHERS__SHORTCUTS__ + qsShortcut).toString();
 	} else {
 		// else return default
-		QString qsDefault;
+
+		// main menu
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__QUIT) {
+			return "Alt+F4";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP) {
+			return "+";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP) {
+			return "-";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL) {
+			return "Ctrl++";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL) {
+			return "Ctrl+-";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION) {
+			return "*";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
+			return "Alt+F7";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN) {
+			return "F11";
+		} // if
+		if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__REFRESH) {
+			return "Ctrl+R";
+		} // if
+
+		// main button
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) {
+			return "F3";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT) {
+			return "F4";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__COPY) {
+			return "F5";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE) {
+			return "F6";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY) {
+			return "F7";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE) {
+			return "F8";
+		} // if
 
 		// directory view
 		if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT) {
-			qsDefault = "Alt+F1";
-		} else {
-			if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT) {
-				qsDefault = "Alt+F2";
-			} else {
-				// main button
-				if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) {
-					qsDefault = "F3";
-				} else {
-					if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT) {
-						qsDefault = "F4";
-					} else {
-						if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__COPY) {
-							qsDefault = "F5";
-						} else {
-							if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE) {
-								qsDefault = "F6";
-							} else {
-								if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY) {
-									qsDefault = "F7";
-								} else {
-									if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE) {
-										qsDefault = "F8";
-									} else {
-										// main menu
-										if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__QUIT) {
-											qsDefault = "Alt+F4";
-										} else {
-											if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP) {
-												qsDefault = "+";
-											} else {
-												if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP) {
-													qsDefault = "-";
-												} else {
-													if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL) {
-														qsDefault = "Ctrl++";
-													} else {
-														if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL) {
-															qsDefault = "Ctrl+-";
-														} else {
-															if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION) {
-																qsDefault = "*";
-															} else {
-																if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
-																	qsDefault = "Alt+F7";
-																} else {
-																	if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN) {
-																		qsDefault = "F11";
-																	} else {
-																		if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__REFRESH) {
-																			qsDefault = "Ctrl+R";
-																		} else {
-																			// operations dialog
-																			if (qsShortcut == qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) {
-																				qsDefault = "F2";
-																			} // if
-																		} // if else
-																	} // if else
-																} // if else
-															} // if else
-														} // if else
-													} // if else
-												} // if else
-											} // if else
-										} // if else
-									} // if else
-								} // if else
-							} // if else
-						} // if else
-					} // if else
-				} // if else
-			} // if else
-		} // if else
+			return "Alt+F1";
+		} // if
+		if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT) {
+			return "Alt+F2";
+		} // if
 
-		return qsDefault;
+		// operations dialog
+		if (qsShortcut == qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) {
+			return "F2";
+		} // if
+
+		// lister
+		if (qsShortcut == qsSHORTCUT__LISTER__FILE__PRINT) {
+			return "Ctrl+P";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__FILE__CLOSE) {
+			return "Esc";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT) {
+			return "Ctr+C";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__EDIT__SELECT_ALL) {
+			return "Ctrl+A";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__EDIT__FIND) {
+			return "F7";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__EDIT__FIND_NEXT) {
+			return "F3";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__TEXT) {
+			return "1";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__BINARY) {
+			return "2";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__HEX) {
+			return "3";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA) {
+			return "4";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__ANSI) {
+			return "A";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__ASCII) {
+			return "S";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH) {
+			return "V";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT) {
+			return "W";
+		} // if
+		if (qsShortcut == qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW) {
+			return "F";
+		} // if
+
+		return QString();
 	} // if else
 } // GetShortcut
 

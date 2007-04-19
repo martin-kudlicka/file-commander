@@ -31,6 +31,22 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOptions" >
+    <property name="title" >
+     <string>Options</string>
+    </property>
+    <addaction name="qaText" />
+    <addaction name="qaBinary" />
+    <addaction name="qaHex" />
+    <addaction name="qaMultimedia" />
+    <addaction name="separator" />
+    <addaction name="qaANSI" />
+    <addaction name="qaASCII" />
+    <addaction name="qaVariableCharWidth" />
+    <addaction name="separator" />
+    <addaction name="qaWrapText" />
+    <addaction name="qaFitImageToWindow" />
+   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>Edit</string>
@@ -52,29 +68,13 @@
     <addaction name="separator" />
     <addaction name="qaClose" />
    </widget>
-   <widget class="QMenu" name="menuOptions" >
-    <property name="title" >
-     <string>Options</string>
-    </property>
-    <addaction name="qaText" />
-    <addaction name="qaBinary" />
-    <addaction name="qaHex" />
-    <addaction name="qaMultimedia" />
-    <addaction name="separator" />
-    <addaction name="qaANSI" />
-    <addaction name="qaASCII" />
-    <addaction name="qaVariableCharWidth" />
-    <addaction name="separator" />
-    <addaction name="qaWrapText" />
-    <addaction name="qaFitImageToWindow" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuOptions" />
   </widget>
   <action name="qaOpen" >
    <property name="text" >
-    <string>Open</string>
+    <string>Open...</string>
    </property>
   </action>
   <action name="qaSaveAs" >
@@ -112,9 +112,6 @@
    <property name="text" >
     <string>Print...</string>
    </property>
-   <property name="shortcut" >
-    <string>Ctrl+P</string>
-   </property>
   </action>
   <action name="qaPrintSetup" >
    <property name="text" >
@@ -124,9 +121,6 @@
   <action name="qaClose" >
    <property name="text" >
     <string>Close</string>
-   </property>
-   <property name="shortcut" >
-    <string>Esc</string>
    </property>
   </action>
   <action name="qaCopyAsText" >
@@ -139,32 +133,20 @@
    <property name="toolTip" >
     <string>Copy as text</string>
    </property>
-   <property name="shortcut" >
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="qaSelectAll" >
    <property name="text" >
     <string>Select all</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="qaFind" >
    <property name="text" >
     <string>Find...</string>
    </property>
-   <property name="shortcut" >
-    <string>F7</string>
-   </property>
   </action>
   <action name="qaFindNext" >
    <property name="text" >
     <string>Find next</string>
-   </property>
-   <property name="shortcut" >
-    <string>F3</string>
    </property>
   </action>
   <action name="qaText" >
@@ -174,9 +156,6 @@
    <property name="text" >
     <string>Text</string>
    </property>
-   <property name="shortcut" >
-    <string>1</string>
-   </property>
   </action>
   <action name="qaBinary" >
    <property name="checkable" >
@@ -185,9 +164,6 @@
    <property name="text" >
     <string>Binary</string>
    </property>
-   <property name="shortcut" >
-    <string>2</string>
-   </property>
   </action>
   <action name="qaHex" >
    <property name="checkable" >
@@ -195,9 +171,6 @@
    </property>
    <property name="text" >
     <string>Hex</string>
-   </property>
-   <property name="shortcut" >
-    <string>3</string>
    </property>
   </action>
   <action name="qaMultimedia" >
@@ -210,9 +183,6 @@
    <property name="text" >
     <string>Multimedia</string>
    </property>
-   <property name="shortcut" >
-    <string>4</string>
-   </property>
   </action>
   <action name="qaANSI" >
    <property name="checkable" >
@@ -220,9 +190,6 @@
    </property>
    <property name="text" >
     <string>ANSI (Windows char set)</string>
-   </property>
-   <property name="shortcut" >
-    <string>A</string>
    </property>
   </action>
   <action name="qaASCII" >
@@ -232,9 +199,6 @@
    <property name="text" >
     <string>ASCII (DOS char set)</string>
    </property>
-   <property name="shortcut" >
-    <string>S</string>
-   </property>
   </action>
   <action name="qaVariableCharWidth" >
    <property name="checkable" >
@@ -242,9 +206,6 @@
    </property>
    <property name="text" >
     <string>Variable char width</string>
-   </property>
-   <property name="shortcut" >
-    <string>V</string>
    </property>
   </action>
   <action name="qaWrapText" >
@@ -254,9 +215,6 @@
    <property name="text" >
     <string>Wrap text</string>
    </property>
-   <property name="shortcut" >
-    <string>W</string>
-   </property>
   </action>
   <action name="qaFitImageToWindow" >
    <property name="checkable" >
@@ -264,9 +222,6 @@
    </property>
    <property name="text" >
     <string>Fit image to window</string>
-   </property>
-   <property name="shortcut" >
-    <string>F</string>
    </property>
   </action>
  </widget>

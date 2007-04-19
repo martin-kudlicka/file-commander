@@ -12,6 +12,24 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 // shortcuts
+const QStringList qslSHORTCUTS__LISTER__FILE = QStringList() << qsSHORTCUT__LISTER__FILE__OPEN <<
+																					 qsSHORTCUT__LISTER__FILE__SAVE_AS <<
+																					 qsSHORTCUT__LISTER__FILE__PRINT <<
+																					 qsSHORTCUT__LISTER__FILE__PRINT_SETUP <<
+																					 qsSHORTCUT__LISTER__FILE__CLOSE;
+const QStringList qslSHORTCUTS__LISTER__EDIT = QStringList() << qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT <<
+																					 qsSHORTCUT__LISTER__EDIT__SELECT_ALL <<
+																					 qsSHORTCUT__LISTER__EDIT__FIND <<
+																					 qsSHORTCUT__LISTER__EDIT__FIND_NEXT;
+const QStringList qslSHORTCUTS__LISTER__OPTIONS = QStringList() << qsSHORTCUT__LISTER__OPTIONS__TEXT <<
+																						 qsSHORTCUT__LISTER__OPTIONS__BINARY <<
+																						 qsSHORTCUT__LISTER__OPTIONS__HEX <<
+																						 qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA <<
+																						 qsSHORTCUT__LISTER__OPTIONS__ANSI <<
+																						 qsSHORTCUT__LISTER__OPTIONS__ASCII <<
+																						 qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH <<
+																						 qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT <<
+																						 qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW;
 const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__QUIT;
 const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP <<
@@ -303,6 +321,14 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutMain->setText(0, tr("Operations"));
 	qtwiShortcutOperationsDialog = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutOperationsDialog->setText(0, tr("Dialog"));
+	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
+	qtwiShortcutMain->setText(0, tr("Lister"));
+	qtwiShortcutListerFile = new QTreeWidgetItem(qtwiShortcutMain);
+	qtwiShortcutListerFile->setText(0, tr("File"));
+	qtwiShortcutListerEdit = new QTreeWidgetItem(qtwiShortcutMain);
+	qtwiShortcutListerEdit->setText(0, tr("Edit"));
+	qtwiShortcutListerOptions = new QTreeWidgetItem(qtwiShortcutMain);
+	qtwiShortcutListerOptions->setText(0, tr("Options"));
 	qtwShortcutCategory->expandAll();
 	qtwShortcutCategory->setCurrentItem(qtwiShortcutFile);
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
@@ -755,14 +781,32 @@ void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *
 						FillShortcutItems(qslSHORTCUTS__MAIN_MENU__CONFIGURATION);
 					} else {
 						if (current == qtwiShortcutDirectoryView) {
+							// panels/directory view
 							FillShortcutItems(qslSHORTCUTS__PANELS__DIRECTORY_VIEW);
 						} else {
 							if (current == qtwiShortcutMainButtons) {
+								// panels/main buttons
 								FillShortcutItems(qslSHORTCUTS__PANELS__MAIN_BUTTON);
 							} else {
 								if (current == qtwiShortcutOperationsDialog) {
+									// operations/dialog
 									FillShortcutItems(qslSHORTCUTS__OPERATIONS__DIALOG);
-								} // if
+								} else {
+									if (current == qtwiShortcutListerFile) {
+										// lister/file
+										FillShortcutItems(qslSHORTCUTS__LISTER__FILE);
+									} else {
+										if (current == qtwiShortcutListerEdit) {
+											// lister/edit
+											FillShortcutItems(qslSHORTCUTS__LISTER__EDIT);
+										} else {
+											if (current == qtwiShortcutListerOptions) {
+												// lister/options
+												FillShortcutItems(qslSHORTCUTS__LISTER__OPTIONS);
+											} // if
+										} // if else
+									} // if else
+								} // if else
 							} // if else
 						} // if else
 					} // if else
