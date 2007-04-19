@@ -60,6 +60,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QTreeWidgetItem *qtwiShortcutConfiguration;						///< shortcut configuration category
 		QTreeWidgetItem *qtwiShortcutDirectoryView;						///< shortcut directory view category
 		QTreeWidgetItem *qtwiShortcutFile;									///< shortcut file category
+		QTreeWidgetItem *qtwiShortcutListerEdit;							///< shortcut lister edit category
+		QTreeWidgetItem *qtwiShortcutListerFile;							///< shortcut lister file category
+		QTreeWidgetItem *qtwiShortcutListerOptions;						///< shortcut lister options category
 		QTreeWidgetItem *qtwiShortcutMainButtons;							///< shortcut main buttons category
 		QTreeWidgetItem *qtwiShortcutMark;									///< shortcut mark category
 		QTreeWidgetItem *qtwiShortcutOperationsDialog;					///< shortcut operations dialog category
