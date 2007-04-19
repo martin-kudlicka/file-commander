@@ -179,6 +179,6 @@ QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
 										} // if else
 		case ft_multiplechoice:
 		case ft_string:			return cFieldValue;
-		default:						return "";
+		default:						return QString();
 	} // switch
 } // ValidateFieldValue
