@@ -60,17 +60,21 @@ QMap<QString, cFileRoutine::sDriveInfo> cFileRoutine::GetDrives()
 } // GetDrives
 
 // return list of sources (within subdirectories too)
-QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
+QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, const QString &qsFilter /* "*" */)
 {
 	int iI;
 	QFileInfoList qfilDirectories, qfilSources;
 
-	qfilSources = qfilFileAndDirList;
-
+	// filter sources
 	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
 		if (qfilFileAndDirList.at(iI).isDir()) {
 			qfilDirectories.append(qfilFileAndDirList.at(iI));
-		} // if
+			qfilSources.append(qfilFileAndDirList.at(iI));
+		} else {
+			if (SuitsFilter(qfilFileAndDirList.at(iI).fileName(), qsFilter)) {
+				qfilSources.append(qfilFileAndDirList.at(iI));
+			} // if
+		} // if else
 	} // for
 
 	while (!qfilDirectories.isEmpty()) {
@@ -79,11 +83,16 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList)
 
 		qfiDir = qfilDirectories.takeAt(0);
 		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-		qfilSources += qfilDirContent;
+
+		// filter sources and add next directories
 		for (iI = 0; iI < qfilDirContent.count(); iI++) {
 			if (qfilDirContent.at(iI).isDir()) {
 				qfilDirectories.append(qfilDirContent.at(iI));
-			} // if
+			} else {
+				if (SuitsFilter(qfilDirContent.at(iI).fileName(), qsFilter)) {
+					qfilSources.append(qfilDirContent.at(iI));
+				} // if
+			} // if else
 		} // for
 	} // while
 
@@ -101,3 +110,43 @@ QString cFileRoutine::GetVolumeName(const QString &qsRootPath)
 	return qsName.left(qsName.trimmed().size() - 1);
 } // GetVolumeName
 #endif
+
+// check if filename suits filter
+bool cFileRoutine::SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression /* false */)
+{
+	int iI;
+	QStringList qslFilter;
+
+	qslFilter = qsFilter.split(';');
+	if (qslFilter.count() == 1 && qslFilter.at(0) == "" && !bRegularExpression) {
+		qslFilter.append("*.*");
+	} // if
+#ifdef Q_WS_WIN
+	// correct *.* to *
+	for (iI = 0; iI < qslFilter.count(); iI++) {
+		if (qslFilter.at(iI) == "*.*") {
+			qslFilter[iI] = "*";
+		} // if
+	} // for
+#endif
+
+	// search for
+	for (iI = 0; iI < qslFilter.count(); iI++) {
+		QRegExp qreExpression(qslFilter.at(iI), Qt::CaseInsensitive);
+
+		if (bRegularExpression) {
+			// regular expression
+			if (qreExpression.indexIn(qsName) != -1) {
+				return true;
+			} // if
+		} else {
+			// wildcard
+			qreExpression.setPatternSyntax(QRegExp::Wildcard);
+			if (qreExpression.exactMatch(qsName)) {
+				return true;
+			} // if
+		} // if else
+	} // for
+
+	return false;
+} // SuitsFilter

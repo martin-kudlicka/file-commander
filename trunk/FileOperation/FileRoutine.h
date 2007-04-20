@@ -45,15 +45,24 @@ class cFileRoutine
 																						  \return disk space information */
 		static QMap<QString, sDriveInfo> GetDrives();				///< detect drives in system
 																					/**< \return information about drive in system */
-		static QFileInfoList GetSources(const QFileInfoList &qfilFileAndDirList);
+		static QFileInfoList GetSources(const QFileInfoList &qfilFileAndDirList, const QString &qsFilter = "*");
 																					///< return list of sources (within subdirectories too)
 																					/**< \param qfilFileAndDirList list of directories and files
+																						  \param qsFilter filter for input files
 																						  \return source list */
 #ifdef Q_WS_WIN
 		static QString GetVolumeName(const QString &qsRootPath);	///< find out name of the disk
 																					/**< \param qsRootPath root path on disk to detect name
 																						  \return volume name */
+#endif
+		static bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false);
+																					///< check if filename suits filter
+																					/**< \param qsName filename to check
+																						  \param qsFilter filter to suit
+																						  \param bRegularExpression qsFilter is regular expression
+																						  \return true if filename suits filter */
 
+#ifdef Q_WS_WIN
 	private:
 		static const uint uiVOLUME_NAME = 32;							///< volume name buffer size
 #endif

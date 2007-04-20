@@ -64,42 +64,9 @@ void cFindFilesDialog::closeEvent(QCloseEvent *event)
 bool cFindFilesDialog::ConditionsSuit(const QFileInfo &qfiFile)
 {
 	bool bOk;
-	int iI;
-	QStringList qslSearchFor;
-
-	bOk = false;
-	qslSearchFor = sfsCurrentSearch.qsSearchFor.split(';');
-	if (qslSearchFor.count() == 1 && qslSearchFor.at(0) == "" && !sfsCurrentSearch.bSearchForRegularExpression) {
-		qslSearchFor.append("*.*");
-	} // if
-#ifdef Q_WS_WIN
-	// correct *.* to *
-	for (iI = 0; iI < qslSearchFor.count(); iI++) {
-		if (qslSearchFor.at(iI) == "*.*") {
-			qslSearchFor[iI] = "*";
-		} // if
-	} // for
-#endif
 
 	// search for
-	for (iI = 0; iI < qslSearchFor.count(); iI++) {
-		QRegExp qreExpression(qslSearchFor.at(iI), Qt::CaseInsensitive);
-
-		if (sfsCurrentSearch.bSearchForRegularExpression) {
-			// regular expression
-			if (qreExpression.indexIn(qfiFile.fileName()) != -1) {
-				bOk = true;
-				break;
-			} // if
-		} else {
-			// wildcard
-			qreExpression.setPatternSyntax(QRegExp::Wildcard);
-			if (qreExpression.exactMatch(qfiFile.fileName())) {
-				bOk = true;
-				break;
-			} // if
-		} // if else
-	} // for
+	bOk = cFileRoutine::SuitsFilter(qfiFile.fileName(), sfsCurrentSearch.qsSearchFor, sfsCurrentSearch.bSearchForRegularExpression);
 	if (!bOk) {
 		return false;
 	} // if

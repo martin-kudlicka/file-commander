@@ -22,7 +22,7 @@ cFileOperation::cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 } // cFileOperation
 
 // place operation into queue
-void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination)
+void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const QString &qsFilter)
 {
 	QListWidgetItem *qlwiOperation;
 	QString qsItem;
@@ -43,6 +43,7 @@ void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QF
 	soOperation.eoOperation = eoOperation;
 	soOperation.qfilSource = qfilSource;
 	soOperation.qsDestination = qsDestination;
+	soOperation.qsFilter = qsFilter;
 	soOperation.qlwiItem = qlwiOperation;
 	qqQperations.enqueue(soOperation);
 	AddIntoQueueList(qlwiOperation);
@@ -199,10 +200,10 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
 																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 																	qlCopyMove.append(ccmCopyMove);
-																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, cFileRoutine::ForegroundWindow);
+																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
 																} // if else
 																break;
-		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination);
+		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination, qsFilter);
 																break;
 	} // if
 } // Operate
@@ -224,7 +225,7 @@ void cFileOperation::ProcessQueue()
 															ccmInQueue = ccmCopyMove;
 															connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 															qlCopyMove.append(ccmCopyMove);
-															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, cFileRoutine::BackgroundWindow);
+															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
 															break;
 			case cFileRoutine::DeleteOperation:	cdDelete = new cDelete(qmwParent, qhblOperations
 #ifdef Q_WS_WIN
