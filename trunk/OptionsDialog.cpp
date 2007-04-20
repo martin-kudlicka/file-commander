@@ -203,10 +203,13 @@ bool cOptionsDialog::eventFilter(QObject *watched, QEvent *event)
 			/*if (qkeKey->modifiers() & Qt::KeypadModifier) {
 				qsKey += "Num ";
 			} // if*/
-			qsKey += QChar(qkeKey->key());
 
-			qleShortcut->setText(qsKey);
-
+			if (QKeySequence(qkeKey->key()).toString().at(0) != 0x17C0) {
+				// not only Ctrl, Alt or Shift keys pressed
+				qsKey += QKeySequence(qkeKey->key()).toString();
+				qleShortcut->setText(qsKey);
+			} // if
+				
 			return true;
 		} else {
 			return false;
