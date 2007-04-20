@@ -60,7 +60,7 @@ QMap<QString, cFileRoutine::sDriveInfo> cFileRoutine::GetDrives()
 } // GetDrives
 
 // return list of sources (within subdirectories too)
-QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, const QString &qsFilter /* "*" */)
+QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, const bool &bAllDirectories /* true */, const QString &qsFilter /* "*" */)
 {
 	int iI;
 	QFileInfoList qfilDirectories, qfilSources;
@@ -88,6 +88,9 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, 
 		for (iI = 0; iI < qfilDirContent.count(); iI++) {
 			if (qfilDirContent.at(iI).isDir()) {
 				qfilDirectories.append(qfilDirContent.at(iI));
+				if (bAllDirectories) {
+					qfilSources.append(qfilDirContent.at(iI));
+				} // if
 			} else {
 				if (SuitsFilter(qfilDirContent.at(iI).fileName(), qsFilter)) {
 					qfilSources.append(qfilDirContent.at(iI));
