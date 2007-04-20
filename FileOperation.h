@@ -39,6 +39,7 @@ class cFileOperation : private QObject
 			cFileRoutine::eOperation eoOperation;				///< operation type
 			QFileInfoList qfilSource;								///< source file list
 			QString qsDestination;									///< destination path
+			QString qsFilter;											///< filter
 			QListWidgetItem *qlwiItem;								///< item listed in queue widget
 		};
 
@@ -54,11 +55,12 @@ class cFileOperation : private QObject
 		QList<cDelete *> qlDelete;									///< list of delete threads
 		QQueue<sOperation> qqQperations;							///< queued operations
 
-		void Enque(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination);
+		void Enque(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const QString &qsFilter);
 																			///< place operation into queue
 																			/**< \param eoOperation type of operation
 																				  \param qfilSource source file list
-																				  \param qsDestination destination path */
+																				  \param qsDestination destination path
+																				  \param qsFilter filter for input files*/
 		sObjects GetCount(const QFileInfoList &qfilObjects);
 																			///< count of objects
 																			/**< \param qfilObjects objects to count

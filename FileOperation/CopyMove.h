@@ -28,11 +28,12 @@ class cCopyMove : public QThread
 																					  \param qhblOperations layout for background widget
 																					  \param csSettings application's configuration */
 
-		void CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const cFileRoutine::eWindow &eStyle);
+		void CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const QString &qsFilter, const cFileRoutine::eWindow &eStyle);
 																				///< start of copy or move operation
 																				/**< \param eoOperation copy or move operation
 																					  \param qfilSource source file list
 																					  \param qsDestination destination path
+																					  \param qsFilter filter for input files
 																					  \param eStyle foreground or background operation */
 
 	private:
@@ -59,6 +60,7 @@ class cCopyMove : public QThread
 		QMainWindow *qmwParent;											///< parent window for foreground operation window
 		QSemaphore qsPause;												///< to wait for answer on dialog
 		QString qsDestination;											///< destination path
+		QString qsFilter;													///< filter for input files
 		QString qsNewFilename;											///< new filename after rename
 		QString qsSource;													///< currently copied/moved source file
 		QString qsTarget;													///< target of currently copied/moved file

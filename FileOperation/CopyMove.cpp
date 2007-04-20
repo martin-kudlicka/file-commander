@@ -49,10 +49,11 @@ void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 } // Copy
 
 // start of copy or move operation
-void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const cFileRoutine::eWindow &eStyle)
+void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, const QString &qsDestination, const QString &qsFilter, const cFileRoutine::eWindow &eStyle)
 {
 	this->eoOperation = eoOperation;
 	this->qfilSource = qfilSource;
+	this->qsFilter = qsFilter;
 	this->qsDestination = qsDestination;
 
 	// information windows
@@ -218,7 +219,7 @@ void cCopyMove::run()
 	QString qsOverwrite, qsSourcePath;
 
 	// gather source files and source path
-	qfilSources = cFileRoutine::GetSources(qfilSource);
+	qfilSources = cFileRoutine::GetSources(qfilSource, qsFilter);
 	qsSourcePath = qfilSource.at(0).path();
 
 	// prepare progress bars
