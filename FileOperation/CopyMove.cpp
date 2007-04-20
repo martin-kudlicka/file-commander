@@ -212,6 +212,10 @@ void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
 // thread code
 void cCopyMove::run()
 {
+	cCopyMoveConflictDialog::eChoice ecConflict;
+#ifdef Q_WS_WIN
+	cPermissionDialog::eChoice ecPermission;
+#endif
 	int iI;
 	QDir qdDir;
 	QFileInfoList qfilSources;
@@ -445,4 +449,6 @@ void cCopyMove::run()
 		ccmwWidget->deleteLater();
 	} // if else
 	ccmcConflict->deleteLater();
+	crRename->deleteLater();
+	cpPermission->deleteLater();
 } // run

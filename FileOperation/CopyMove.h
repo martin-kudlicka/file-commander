@@ -41,14 +41,12 @@ class cCopyMove : public QThread
 
 		bool bCanceled;													///< true if operation is canceled
 		cCopyMoveConflict *ccmcConflict;								///< conflict dialog
-		cCopyMoveConflictDialog::eChoice ecConflict;				///< global conflict user's response
 		cCopyMoveConflictDialog::eChoice ecConflictCurrent;	///< current conflict user's response
 		cCopyMoveDialog *ccmdDialog;									///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;									///< copy/move widget
 		cFileRoutine::eOperation eoOperation;						///< copy or move operation
 #ifdef Q_WS_WIN
 		cPermission *cpPermission;										///< permission dialog
-		cPermissionDialog::eChoice ecPermission;					///< global permission dialog user's response
 		cPermissionDialog::eChoice ecPermissionCurrent;			///< current permission dialog user's response
 #endif
 		cRename *crRename;												///< rename dialog
