@@ -60,6 +60,11 @@ void cDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilter, c
 	connect(cpPermission, SIGNAL(Finished(const cPermissionDialog::eChoice &)), SLOT(on_cpPermission_Finished(const cPermissionDialog::eChoice &)));
 #endif
 
+	// retry dialog
+	crRetry = new cRetry(qmwParent);
+	connect(this, SIGNAL(ShowRetryDialog(QWidget *, const QString &, const QString &)), crRetry, SLOT(Show(QWidget *, const QString &, const QString &)));
+	connect(crRetry, SIGNAL(Finished(const cRetryDialog::eChoice &)), SLOT(on_crRetry_Finished(const cRetryDialog::eChoice &)));
+
 	start();
 } // Delete
 
@@ -87,9 +92,20 @@ void cDelete::on_cpPermission_Finished(const cPermissionDialog::eChoice &ecRespo
 } // on_cpPermission_Finished
 #endif
 
+// retry dialog closed with user response
+void cDelete::on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse)
+{
+	ecRetryCurrent = ecResponse;
+	qsPause.release();
+} // on_crRetry_Finished
+
 // separate thread process
 void cDelete::run()
 {
+#ifdef Q_WS_WIN
+	cPermissionDialog::eChoice ecPermission;
+#endif
+	cRetryDialog::eChoice ecRetry;
 	int iI;
 	QFileInfoList qfilSources;
 #ifdef Q_WS_WIN
@@ -115,6 +131,7 @@ void cDelete::run()
 		} // if else
 	} // if else
 #endif
+	ecRetry = cRetryDialog::Ask;
 
 	// main process
 	for (iI = qfilSources.count() - 1; iI >= 0; iI--) {
@@ -157,11 +174,55 @@ void cDelete::run()
 		} // if
 #endif
 
-		if (qfilSources.at(iI).isDir()) {
-			qdSource.rmdir(qfilSources.at(iI).filePath());
-		} else {
-			qdSource.remove(qfilSources.at(iI).filePath());
-		} // if else
+		while (true) {
+			bool bSuccess;
+
+			if (qfilSources.at(iI).isDir()) {
+				bSuccess = qdSource.rmdir(qfilSources.at(iI).filePath());
+			} else {
+				bSuccess = qdSource.remove(qfilSources.at(iI).filePath());
+			} // if else
+
+			if (!bSuccess) {
+				if (ecRetry != cRetryDialog::SkipAll) {
+					QString qsInformation;
+					QWidget *qwParent;
+
+					if (cddDialog) {
+						qwParent = cddDialog;
+					} else {
+						qwParent = qmwParent;
+					} // if else
+					if (qfilSources.at(iI).isDir()) {
+						qsInformation = tr("Can't remove following directory:");
+					} else {
+						qsInformation = tr("Can't delete following file:");
+					} // if else
+
+					emit ShowRetryDialog(qwParent, qsInformation, qfilSources.at(iI).filePath());
+					// wait for answer
+					qsPause.acquire();
+
+					if (ecRetryCurrent == cRetryDialog::SkipAll) {
+						// memorize permanent answer
+						ecRetry = cRetryDialog::SkipAll;
+					} // if
+				} // if
+				if (ecRetry == cRetryDialog::SkipAll || ecRetryCurrent == cRetryDialog::Skip || ecRetryCurrent == cRetryDialog::Abort) {
+					// skip this file
+					break;
+				} // if
+				// else try once more
+			} else {
+				// successfuly removed/deleted
+				break;
+			} // if else
+		} // while
+
+		if (ecRetryCurrent == cRetryDialog::Abort) {
+			// process aborted
+			break;
+		} // if
 
 		emit SetTotalValue(qi64TotalMaximum - iI);
 	} // for
@@ -172,4 +233,6 @@ void cDelete::run()
 	} else {
 		cdwWidget->deleteLater();
 	} // if else
+	cpPermission->deleteLater();
+	crRetry->deleteLater();
 } // run

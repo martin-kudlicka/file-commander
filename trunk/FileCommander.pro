@@ -19,7 +19,8 @@ FORMS = MainWindow.ui \
 		  FileOperation/PermissionDialog.ui \
 		  FileOperation/QueueWidget.ui \
 		  FileOperation/DeleteDialog.ui \
-		  FileOperation/DeleteWidget.ui
+		  FileOperation/DeleteWidget.ui \
+		  FileOperation/RetryDialog.ui
 HEADERS = MainWindow.h \
 		    OptionsDialog.h \
 		    Options/NewColumnSetDialog.h \
@@ -51,6 +52,8 @@ HEADERS = MainWindow.h \
 			 FileOperation/Delete.h \
 			 FileOperation/DeleteDialog.h \
 			 FileOperation/DeleteWidget.h \
+			 FileOperation/RetryDialog.h \
+			 FileOperation/Retry.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
@@ -94,6 +97,8 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/Delete.cpp \
 			 FileOperation/DeleteDialog.cpp \
 			 FileOperation/DeleteWidget.cpp \
+			 FileOperation/RetryDialog.cpp \
+			 FileOperation/Retry.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \

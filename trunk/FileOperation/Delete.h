@@ -14,6 +14,7 @@
 #include "FileOperation/Permission.h"
 #include <QSemaphore>
 #endif
+#include "FileOperation/Retry.h"
 
 class cDelete : public QThread
 {
@@ -42,8 +43,11 @@ class cDelete : public QThread
 		cDeleteWidget *cdwWidget;								///< delete widget
 #ifdef Q_WS_WIN
 		cPermission *cpPermission;								///< permission dialog
-		cPermissionDialog::eChoice ecPermission;			///< global permission dialog user's response
 		cPermissionDialog::eChoice ecPermissionCurrent;	///< current permission dialog user's response
+#endif
+		cRetry *crRetry;											///< retry dialog
+		cRetryDialog::eChoice ecRetryCurrent;				///< current retry dialog user's response
+#ifdef Q_WS_WIN
 		cSettings *csSettings;									///< application's configuration
 #endif
 		QFileInfoList qfilSource;								///< source file list
@@ -71,6 +75,11 @@ class cDelete : public QThread
 																		/**< \param qsFilename concerned file
 																			  \param qsInformation question about file */
 #endif
+		void ShowRetryDialog(QWidget *qwParent, const QString &qsInformation, const QString &qsFilename);
+																		///< show retry dialog
+																		/**< \param qsParent parent window
+																			  \param qsInformation question about file
+																			  \param qsFilename concerned file */
 
 	private slots:
 		void on_cd_OperationCanceled();						///< delete operation was canceled
@@ -80,6 +89,9 @@ class cDelete : public QThread
 																		///< permission dialog closed with user response
 																		/**< \param ecResponse dialog result */
 #endif
+		void on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse);
+																		///< retry dialog closed with user response
+																		/**< \param ecResponse dialog result */
 }; // cDelete
 
 #endif
