@@ -219,7 +219,7 @@ void cCopyMove::run()
 	QString qsOverwrite, qsSourcePath;
 
 	// gather source files and source path
-	qfilSources = cFileRoutine::GetSources(qfilSource, qsFilter);
+	qfilSources = cFileRoutine::GetSources(qfilSource, false, qsFilter);
 	qsSourcePath = qfilSource.at(0).path();
 
 	// prepare progress bars

@@ -188,7 +188,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 #endif
 																	connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
 																	qlDelete.append(cdDelete);
-																	cdDelete->Delete(qfilSource, cFileRoutine::ForegroundWindow);
+																	cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);
 																} else {
 																	// copy or move
 																	QDir qdDir;
@@ -236,7 +236,7 @@ void cFileOperation::ProcessQueue()
 															cdInQueue = cdDelete;
 															connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
 															qlDelete.append(cdDelete);
-															cdDelete->Delete(soOperation.qfilSource, cFileRoutine::BackgroundWindow);
+															cdDelete->Delete(soOperation.qfilSource, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
 															break;
 		} // switch
 	} // if

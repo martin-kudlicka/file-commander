@@ -30,9 +30,10 @@ class cDelete : public QThread
 																		/**< \param qmwParent parent window for foreground dialog
 																			  \param qhblOperations layout for background widget
 																			  \param csSettings application's configuration (Windows only)*/
-		void Delete(const QFileInfoList &qfilSource, const cFileRoutine::eWindow &eStyle);
+		void Delete(const QFileInfoList &qfilSource, const QString &qsFilter, const cFileRoutine::eWindow &eStyle);
 																			///< start of delete operation
 																			/**< \param qfilSource source file list
+																				  \param qsFilter filter for input files
 																				  \param eStyle foreground or background operation */
 
 	private:
@@ -52,6 +53,7 @@ class cDelete : public QThread
 #ifdef Q_WS_WIN
 		QSemaphore qsPause;										///< to wait for answer on dialog
 #endif
+		QString qsFilter;											///< filter for input files
 
 		void CreateWidget();										///< create widget for background operation
 		void run();													///< separate thread process

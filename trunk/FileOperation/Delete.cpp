@@ -33,9 +33,10 @@ void cDelete::CreateWidget()
 } // CreateWidget
 
 // start of delete operation
-void cDelete::Delete(const QFileInfoList &qfilSource, const cFileRoutine::eWindow &eStyle)
+void cDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilter, const cFileRoutine::eWindow &eStyle)
 {
 	this->qfilSource = qfilSource;
+	this->qsFilter = qsFilter;
 
 	if (eStyle == cFileRoutine::ForegroundWindow) {
 		cddDialog = new cDeleteDialog(qmwParent);
@@ -96,7 +97,7 @@ void cDelete::run()
 #endif
 
 	// gather source files
-	qfilSources = cFileRoutine::GetSources(qfilSource);
+	qfilSources = cFileRoutine::GetSources(qfilSource, true, qsFilter);
 	qi64TotalMaximum = qfilSources.count();
 
 	emit SetTotalMaximum(qi64TotalMaximum);
