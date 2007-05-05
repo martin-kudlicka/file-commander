@@ -15,7 +15,7 @@ cCopyMoveConflict::cCopyMoveConflict()
 // show conflict dialog
 void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
 {
-	cCopyMoveConflict::eChoice ecResponse;
+	eChoice ecResponse;
 	QMessageBox qmbDialog;
 	QPushButton *qpbAppend, *qpbCancel, *qpbOverwrite, *qpbOverwriteAll, *qpbOverwriteAllOlder, *qpbRename, *qpbSkip, *qpbSkipAll;
 

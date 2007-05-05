@@ -47,8 +47,8 @@ class cCopyMove : public QThread
 		cCopyMoveWidget *ccmwWidget;									///< copy/move widget
 		cFileRoutine::eOperation eoOperation;						///< copy or move operation
 #ifdef Q_WS_WIN
-		cPermission *cpPermission;										///< permission dialog
-		cPermissionDialog::eChoice ecPermissionCurrent;			///< current permission dialog user's response
+		cPermission cpPermission;										///< permission dialog
+		cPermission::eChoice ecPermissionCurrent;					///< current permission dialog user's response
 #endif
 		cRename *crRename;												///< rename dialog
 		cRetry *crRetry;													///< retry dialog
@@ -120,7 +120,7 @@ class cCopyMove : public QThread
 																				/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();					///< move operation to background
 #ifdef Q_WS_WIN
-		void on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse);
+		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
 																				///< permission dialog closed with user response
 																				/**< \param ecResponse dialog result */
 #endif

@@ -3,7 +3,6 @@
 #ifndef COPY_MOVE_CONFLICT_H
 #define COPY_MOVE_CONFLICT_H
 
-#include <QMainWindow>
 #include <QFileInfo>
 
 class cCopyMoveConflict : public QObject

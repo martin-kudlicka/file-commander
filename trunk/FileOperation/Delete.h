@@ -42,8 +42,8 @@ class cDelete : public QThread
 		cDeleteDialog *cddDialog;								///< delete dialog
 		cDeleteWidget *cdwWidget;								///< delete widget
 #ifdef Q_WS_WIN
-		cPermission *cpPermission;								///< permission dialog
-		cPermissionDialog::eChoice ecPermissionCurrent;	///< current permission dialog user's response
+		cPermission cpPermission;								///< permission dialog
+		cPermission::eChoice ecPermissionCurrent;			///< current permission dialog user's response
 #endif
 		cRetry *crRetry;											///< retry dialog
 		cRetryDialog::eChoice ecRetryCurrent;				///< current retry dialog user's response
@@ -84,7 +84,7 @@ class cDelete : public QThread
 		void on_cd_OperationCanceled();						///< delete operation was canceled
 		void on_cdDeleteDialog_Background();				///< delete operation to background
 #ifdef Q_WS_WIN
-		void on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse);
+		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
 																		///< permission dialog closed with user response
 																		/**< \param ecResponse dialog result */
 #endif

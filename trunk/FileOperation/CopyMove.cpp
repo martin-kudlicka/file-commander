@@ -100,9 +100,8 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	cpPermission = new cPermission(qmwParent);
-	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), cpPermission, SLOT(Show(const QString &, const QString &)));
-	connect(cpPermission, SIGNAL(Finished(const cPermissionDialog::eChoice &)), SLOT(on_cpPermission_Finished(const cPermissionDialog::eChoice &)));
+	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), &cpPermission, SLOT(Show(const QString &, const QString &)));
+	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
 	// retry dialog
@@ -207,7 +206,7 @@ void cCopyMove::on_ccmdCopyMoveDialog_Background()
 
 #ifdef Q_WS_WIN
 // permission dialog closed with user response
-void cCopyMove::on_cpPermission_Finished(const cPermissionDialog::eChoice &ecResponse)
+void cCopyMove::on_cpPermission_Finished(const cPermission::eChoice &ecResponse)
 {
 	ecPermissionCurrent = ecResponse;
 	qsPause.release();
@@ -233,7 +232,7 @@ void cCopyMove::run()
 {
 	cCopyMoveConflict::eChoice ecConflict;
 #ifdef Q_WS_WIN
-	cPermissionDialog::eChoice ecPermission;
+	cPermission::eChoice ecPermission;
 #endif
 	cRetryDialog::eChoice ecRetry;
 	int iI;
@@ -272,12 +271,12 @@ void cCopyMove::run()
 	// get default readonly overwrite permission
 	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
 	if (qsOverwrite == qsASK) {
-		ecPermission = cPermissionDialog::Ask;
+		ecPermission = cPermission::Ask;
 	} else {
 		if (qsOverwrite == qsYES_TO_ALL) {
-			ecPermission = cPermissionDialog::YesToAll;
+			ecPermission = cPermission::YesToAll;
 		} else {
-			ecPermission = cPermissionDialog::NoToAll;
+			ecPermission = cPermission::NoToAll;
 		} // if else
 	} // if else
 #endif
@@ -399,25 +398,24 @@ void cCopyMove::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecPermissionCurrent = cPermissionDialog::Ask;
+			ecPermissionCurrent = cPermission::Ask;
 			if (QFile::permissions(qsTarget) & QFile::ReadOther) {
-				if (ecPermission == cPermissionDialog::Ask) {
+				if (ecPermission == cPermission::Ask) {
 					emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
 					// wait for answer
 					qsPause.acquire();
 
 					switch (ecPermissionCurrent) {
-						case cPermissionDialog::YesToAll:	ecPermission = cPermissionDialog::YesToAll;
-																		break;
-						case cPermissionDialog::NoToAll:		ecPermission = cPermissionDialog::NoToAll;
-																		break;
+						case cPermission::YesToAll:	ecPermission = cPermission::YesToAll;
+																break;
+						case cPermission::NoToAll:		ecPermission = cPermission::NoToAll;
 					} // switch
 
-					if (ecPermissionCurrent == cPermissionDialog::Cancel) {
+					if (ecPermissionCurrent == cPermission::Cancel) {
 						break;
 					} // if
 				} // if
-				if (ecPermission == cPermissionDialog::NoToAll || ecPermissionCurrent == cPermissionDialog::No) {
+				if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
 					continue;
 				} else {
 					// remove target file readonly permission
@@ -513,6 +511,5 @@ void cCopyMove::run()
 		ccmwWidget->deleteLater();
 	} // if else
 	crRename->deleteLater();
-	cpPermission->deleteLater();
 	crRetry->deleteLater();
 } // run
