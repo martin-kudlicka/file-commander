@@ -41,8 +41,8 @@ class cCopyMove : public QThread
 		static const qint64 qi64BUFFER_SIZE = 16384;				///< buffer size for copy
 
 		bool bCanceled;													///< true if operation is canceled
-		cCopyMoveConflict *ccmcConflict;								///< conflict dialog
-		cCopyMoveConflictDialog::eChoice ecConflictCurrent;	///< current conflict user's response
+		cCopyMoveConflict ccmcConflict;								///< conflict dialog
+		cCopyMoveConflict::eChoice ecConflictCurrent;			///< current conflict user's response
 		cCopyMoveDialog *ccmdDialog;									///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;									///< copy/move widget
 		cFileRoutine::eOperation eoOperation;						///< copy or move operation
@@ -115,7 +115,7 @@ class cCopyMove : public QThread
 
 	private slots:
 		void on_ccm_OperationCanceled();								///< copy or move operation was canceled
-		void on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse);
+		void on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse);
 																				///< dialog closed with user response
 																				/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();					///< move operation to background

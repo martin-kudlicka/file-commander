@@ -4,7 +4,6 @@
 #define COPY_MOVE_CONFLICT_H
 
 #include <QMainWindow>
-#include "FileOperation/CopyMoveConflictDialog.h"
 #include <QFileInfo>
 
 class cCopyMoveConflict : public QObject
@@ -12,23 +11,30 @@ class cCopyMoveConflict : public QObject
 	Q_OBJECT
 
 	public:
-		cCopyMoveConflict(QMainWindow *qmwParent);	///< constructor
-																	/**< \param qmwParent parent window of conflict dialog */
-		~cCopyMoveConflict();								///< destructor
+		/// user response
+		enum eChoice {
+			Ask,																			///< no response yet
+			Overwrite,																	///< overwrite once
+			Cancel,																		///< cancel
+			OverwriteAll,																///< overwrite all
+			OverwriteAllOlder,														///< overwrite all older
+			Skip,																			///< skip once
+			SkipAll,																		///< skip all
+			Rename,																		///< rename
+			Append																		///< append to another file
+		};
 
-	private:
-		cCopyMoveConflictDialog *ccmcdDialog;			///< conflict dialog
+		cCopyMoveConflict();															///< constructor
 
 	signals:
-		void Finished(const cCopyMoveConflictDialog::eChoice &ecResponse);
-																	///< dialog closed with user response
-																	/**< \param ecResponse user's response */
+		void Finished(const cCopyMoveConflict::eChoice &ecResponse);	///< dialog closed with user response
+																							/**< \param ecResponse user's response */
 	private slots:
 		void Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
-																	///< show conflict dialog
-																	/**< \param qsOperation type of operation - copy or move
-																		  \param qfiSource source file information
-																		  \param qfiDestination destination file information */
+																							///< show conflict dialog
+																							/**< \param qsOperation type of operation - copy or move
+																								  \param qfiSource source file information
+																								  \param qfiDestination destination file information */
 }; // cCopyMoveConflict
 
 #endif

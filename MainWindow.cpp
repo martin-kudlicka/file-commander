@@ -422,7 +422,6 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 // new directory button is clicked on
 void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 {
-	bool bOk;
 	QString qsName;
 
 	qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"), QLineEdit::Normal);
