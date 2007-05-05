@@ -2,7 +2,6 @@ CONFIG += qt warn_on
 //RC_FILE = FileCommander.rc
 FORMS = MainWindow.ui \
 		  OptionsDialog.ui \
-		  Options/NewColumnSetDialog.ui \
 		  ListerMainWindow.ui \
 		  ListerMainWindow/FindDialog.ui \
 		  FindFilesDialog.ui \
@@ -17,7 +16,6 @@ FORMS = MainWindow.ui \
 		  FileOperation/DeleteWidget.ui
 HEADERS = MainWindow.h \
 		    OptionsDialog.h \
-		    Options/NewColumnSetDialog.h \
 			 ListerMainWindow.h \
 			 ListerMainWindow/FindDialog.h \
 			 FindFilesDialog.h \
@@ -56,7 +54,6 @@ win32 {
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 OptionsDialog.cpp \
-			 Options/NewColumnSetDialog.cpp \
 			 ListerMainWindow.cpp \
 			 ListerMainWindow/FindDialog.cpp \
 			 FindFilesDialog.cpp \
