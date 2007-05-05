@@ -186,18 +186,18 @@ bool cOptionsDialog::eventFilter(QObject *watched, QEvent *event)
 				qsKey = "Ctrl";
 			} // if
 			if (qkeKey->modifiers() & Qt::AltModifier) {
-				if (qsKey != "") {
+				if (!qsKey.isEmpty()) {
 					qsKey += "+";
 				} // if
 				qsKey += "Alt";
 			} // if
 			if (qkeKey->modifiers() & Qt::ShiftModifier) {
-				if (qsKey != "") {
+				if (!qsKey.isEmpty()) {
 					qsKey += "+";
 				} // if
 				qsKey += "Shift";
 			} // if
-			if (qsKey != "") {
+			if (!qsKey.isEmpty()) {
 				qsKey += "+";
 			} // if
 			/*if (qkeKey->modifiers() & Qt::KeypadModifier) {
@@ -476,7 +476,7 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 
 	qtwColumns->clear();
 
-	if (text == "") {
+	if (text.isEmpty()) {
 		qpbColumnSetRemove->setEnabled(false);
 	} else {
 		int iI;
@@ -561,7 +561,7 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 
 	qsFile = QFileDialog::getOpenFileName(this, tr("Select content plugin"), "/", "*.wdx");
 
-	if (qsFile != "") {
+	if (!qsFile.isEmpty()) {
 		cSettings::sPlugin spPlugin;
 
 		spPlugin.qsName = qsFile;
@@ -577,7 +577,7 @@ void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 
 	qsFile = QFileDialog::getOpenFileName(this, tr("Select lister plugin"), "/", "*.wlx");
 
-	if (qsFile != "") {
+	if (!qsFile.isEmpty()) {
 		cSettings::sPlugin spPlugin;
 
 		spPlugin.qsName = qsFile;
@@ -695,7 +695,7 @@ void cOptionsDialog::PrepareColumnsMenu()
 
 			qaField = qmFields->addAction(qhiPlugins.value().qlFields.at(iI).qsName);
 
-			if (qhiPlugins.value().qlFields.at(iI).qsUnits != "" && qhiPlugins.value().qlFields.at(iI).iType != ft_multiplechoice) {
+			if (!qhiPlugins.value().qlFields.at(iI).qsUnits.isEmpty() && qhiPlugins.value().qlFields.at(iI).iType != ft_multiplechoice) {
 				// column's units
 				int iJ;
 				QMenu *qmUnits;

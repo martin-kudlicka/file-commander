@@ -121,7 +121,7 @@ bool cFileRoutine::SuitsFilter(const QString &qsName, const QString &qsFilter, c
 	QStringList qslFilter;
 
 	qslFilter = qsFilter.split(';');
-	if (qslFilter.count() == 1 && qslFilter.at(0) == "" && !bRegularExpression) {
+	if (qslFilter.count() == 1 && qslFilter.at(0).isEmpty() && !bRegularExpression) {
 		qslFilter.append("*.*");
 	} // if
 #ifdef Q_WS_WIN

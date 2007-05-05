@@ -358,7 +358,7 @@ void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
 	QString qsFile;
 
 	qsFile = QFileDialog::getOpenFileName(this);
-	if (qsFile != "") {
+	if (!qsFile.isEmpty()) {
 		this->qsFile = qsFile;
 		ShowContent();
 	} // if
@@ -397,7 +397,7 @@ void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
 	QString qsFile;
 
 	qsFile = QFileDialog::getSaveFileName(this, tr("Save as"), QFileInfo(this->qsFile).path());
-	if (qsFile != "") {
+	if (!qsFile.isEmpty()) {
 		QFile::remove(qsFile);
 		QFile::copy(this->qsFile, qsFile);
 	} // if

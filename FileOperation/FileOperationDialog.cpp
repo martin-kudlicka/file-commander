@@ -19,7 +19,7 @@ void cFileOperationDialog::on_qpbBrowse_clicked(bool checked /* false */)
 	QString qsDirectory;
 
 	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select directory"), qcbDestination->currentText());
-	if (qsDirectory != "") {
+	if (!qsDirectory.isEmpty()) {
 		qcbDestination->setEditText(qsDirectory);
 	} // if
 } // on_qpbBrowse_clicked

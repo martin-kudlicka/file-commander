@@ -339,7 +339,7 @@ void cCopyMove::run()
 							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
 							// wait for answer
 							qsPause.acquire();
-							if (qsNewFilename != "") {
+							if (!qsNewFilename.isEmpty()) {
 								// new file name typed
 								qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
 								if (!QFile::exists(qsTarget)) {
