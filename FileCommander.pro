@@ -7,7 +7,6 @@ FORMS = MainWindow.ui \
 		  ListerMainWindow/FindDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
-		  FindFilesDialog/SaveFindSettingsDialog.ui \
 		  Panel/SelectDriveDialog.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FileOperation/FileOperationDialog.ui \
@@ -23,7 +22,6 @@ HEADERS = MainWindow.h \
 			 ListerMainWindow/FindDialog.h \
 			 FindFilesDialog.h \
 			 FindFilesDialog/DrivesDialog.h \
-			 FindFilesDialog/SaveFindSettingsDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/ShellMenu.h \
@@ -63,7 +61,6 @@ SOURCES = FileCommander.cpp \
 			 ListerMainWindow/FindDialog.cpp \
 			 FindFilesDialog.cpp \
 			 FindFilesDialog/DrivesDialog.cpp \
-			 FindFilesDialog/SaveFindSettingsDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/ShellMenu.cpp \
