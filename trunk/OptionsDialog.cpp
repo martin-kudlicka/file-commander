@@ -3,10 +3,10 @@
 #include <QFileDialog>
 #include <QAction>
 #include "Plugins/ContPlug.h"
-#include "Options/NewColumnSetDialog.h"
 #include <QSpinBox>
 #include <QHeaderView>
 #include <QKeyEvent>
+#include <QInputDialog>
 
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
@@ -610,12 +610,14 @@ void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 // column set add button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 {
-	cNewColumnSetDialog cncsdDialog(this);
+	QString qsName;
 
-	if (cncsdDialog.exec() == QDialog::Accepted) {
-		csSettings->CreateColumnSet(cncsdDialog.qleColumnSet->text());
-		qcbColumnSet->addItem(cncsdDialog.qleColumnSet->text());
-		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(cncsdDialog.qleColumnSet->text()));
+	qsName = QInputDialog::getText(this, tr("New column set"), NULL);
+
+	if (!qsName.isEmpty()) {
+		csSettings->CreateColumnSet(qsName);
+		qcbColumnSet->addItem(qsName);
+		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(qsName));
 	} // if
 } // on_qpbColumnSetAdd_clicked
 
