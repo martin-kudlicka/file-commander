@@ -45,8 +45,8 @@ class cDelete : public QThread
 		cPermission cpPermission;								///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;			///< current permission dialog user's response
 #endif
-		cRetry *crRetry;											///< retry dialog
-		cRetryDialog::eChoice ecRetryCurrent;				///< current retry dialog user's response
+		cRetry crRetry;											///< retry dialog
+		cRetry::eChoice ecRetryCurrent;						///< current retry dialog user's response
 #ifdef Q_WS_WIN
 		cSettings *csSettings;									///< application's configuration
 #endif
@@ -88,7 +88,7 @@ class cDelete : public QThread
 																		///< permission dialog closed with user response
 																		/**< \param ecResponse dialog result */
 #endif
-		void on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse);
+		void on_crRetry_Finished(const cRetry::eChoice &ecResponse);
 																		///< retry dialog closed with user response
 																		/**< \param ecResponse dialog result */
 }; // cDelete
