@@ -424,7 +424,7 @@ void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 {
 	QString qsName;
 
-	qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"), QLineEdit::Normal);
+	qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"));
 	if (!qsName.isEmpty()) {
 		QDir qdDir;
 		QString qsNewDirectory;

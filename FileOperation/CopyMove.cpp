@@ -94,9 +94,8 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
-	crRename = new cRename(qmwParent);
-	connect(this, SIGNAL(ShowRenameDialog(const QString &)), crRename, SLOT(Show(const QString &)));
-	connect(crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
+	connect(this, SIGNAL(ShowRenameDialog(const QString &)), &crRename, SLOT(Show(const QString &)));
+	connect(&crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
 
 #ifdef Q_WS_WIN
 	// permission dialog
@@ -510,6 +509,5 @@ void cCopyMove::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
-	crRename->deleteLater();
 	crRetry->deleteLater();
 } // run
