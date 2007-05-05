@@ -5,8 +5,8 @@
 #include <QTextDocument>
 #include <QTextCodec>
 #include <QTextCursor>
-#include "FindFilesDialog/SaveFindSettingsDialog.h"
 #include "ListerMainWindow.h"
+#include <QInputDialog>
 
 // constructor
 cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister)
@@ -443,13 +443,15 @@ void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */)
 // save find is clicked on
 void cFindFilesDialog::on_qpbSaveFind_clicked(bool checked /* false */)
 {
-	cSaveFindSettingsDialog csfsdDialog(this);
+	QString qsName;
 
-	if (csfsdDialog.exec() == QDialog::Accepted) {
+	qsName = QInputDialog::getText(this, tr("Save settings"), NULL);
+
+	if (!qsName.isEmpty()) {
 		cSettings::sFindSettings sfsFindSettings;
 
 		sfsFindSettings = GetSettings();
-		csSettings->SetFindSettings(csfsdDialog.qleName->text(), sfsFindSettings);
+		csSettings->SetFindSettings(qsName, sfsFindSettings);
 		RefreshSavedSettings();
 	} // if
 } // on_qpbSaveFind_clicked
