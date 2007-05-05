@@ -27,7 +27,7 @@ bool cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 	if (!qfSource.open(QIODevice::ReadOnly)) {
 		return false;
 	} // if
-	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
+	if (ecConflictCurrent == cCopyMoveConflict::Append) {
 		if (!qfDestination.open(QIODevice::Append)) {
 			return false;
 		} // if
@@ -90,9 +90,8 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	} // if else
 
 	// conflict dialog
-	ccmcConflict = new cCopyMoveConflict(qmwParent);
-	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
-	connect(ccmcConflict, SIGNAL(Finished(const cCopyMoveConflictDialog::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &)));
+	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), &ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
+	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
 	crRename = new cRename(qmwParent);
@@ -188,7 +187,7 @@ void cCopyMove::on_ccm_OperationCanceled()
 } // on_ccm_OperationCanceled
 
 // dialog closed with user response
-void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflictDialog::eChoice &ecResponse)
+void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse)
 {
 	ecConflictCurrent = ecResponse;
 	qsPause.release();
@@ -232,7 +231,7 @@ void cCopyMove::on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse)
 // thread code
 void cCopyMove::run()
 {
-	cCopyMoveConflictDialog::eChoice ecConflict;
+	cCopyMoveConflict::eChoice ecConflict;
 #ifdef Q_WS_WIN
 	cPermissionDialog::eChoice ecPermission;
 #endif
@@ -256,15 +255,15 @@ void cCopyMove::run()
 	// get default overwrite mode
 	qsOverwrite = csSettings->GetFileOverwrite();
 	if (qsOverwrite == qsASK) {
-		ecConflict = cCopyMoveConflictDialog::Ask;
+		ecConflict = cCopyMoveConflict::Ask;
 	} else {
 		if (qsOverwrite == qsOVERWRITE_ALL) {
-			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
+			ecConflict = cCopyMoveConflict::OverwriteAll;
 		} else {
 			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
-				ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
+				ecConflict = cCopyMoveConflict::OverwriteAllOlder;
 			} else {
-				ecConflict = cCopyMoveConflictDialog::SkipAll;
+				ecConflict = cCopyMoveConflict::SkipAll;
 			} // if else
 		} // if else
 	} // if else
@@ -312,9 +311,9 @@ void cCopyMove::run()
 			emit SetCurrentValue(0);
 
 			// conflict solving
-			ecConflictCurrent = cCopyMoveConflictDialog::Ask;
+			ecConflictCurrent = cCopyMoveConflict::Ask;
 			if (QFile::exists(qsTarget)) {
-				if (ecConflict == cCopyMoveConflictDialog::Ask) {
+				if (ecConflict == cCopyMoveConflict::Ask) {
 					while (true) {
 						// no permanent conflict answer yet
 						QString qsOperation;
@@ -330,16 +329,15 @@ void cCopyMove::run()
 						qsPause.acquire();
 						// solve conflict
 						switch (ecConflictCurrent) {
-							case cCopyMoveConflictDialog::SkipAll:					ecConflict = cCopyMoveConflictDialog::SkipAll;
-																								break;
-							case cCopyMoveConflictDialog::OverwriteAll:			ecConflict = cCopyMoveConflictDialog::OverwriteAll;
-																								break;
-							case cCopyMoveConflictDialog::OverwriteAllOlder:	ecConflict = cCopyMoveConflictDialog::OverwriteAllOlder;
-																								break;
+							case cCopyMoveConflict::SkipAll:					ecConflict = cCopyMoveConflict::SkipAll;
+																						break;
+							case cCopyMoveConflict::OverwriteAll:			ecConflict = cCopyMoveConflict::OverwriteAll;
+																						break;
+							case cCopyMoveConflict::OverwriteAllOlder:	ecConflict = cCopyMoveConflict::OverwriteAllOlder;
 						} // switch
 
 						// rename dialog
-						if (ecConflictCurrent == cCopyMoveConflictDialog::Rename) {
+						if (ecConflictCurrent == cCopyMoveConflict::Rename) {
 							// rename
 							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
 							// wait for answer
@@ -353,7 +351,7 @@ void cCopyMove::run()
 								} // if
 							} else {
 								// cancel
-								ecConflictCurrent = cCopyMoveConflictDialog::Cancel;
+								ecConflictCurrent = cCopyMoveConflict::Cancel;
 								break;
 							} // if else
 						} else {
@@ -361,21 +359,21 @@ void cCopyMove::run()
 							break;
 						} // if else
 					} // while
-					if (ecConflictCurrent == cCopyMoveConflictDialog::Cancel) {
+					if (ecConflictCurrent == cCopyMoveConflict::Cancel) {
 						// cancel
 						break;
 					} // if
 				} // if
 
-				if (ecConflict == cCopyMoveConflictDialog::SkipAll || ecConflictCurrent == cCopyMoveConflictDialog::Skip) {
+				if (ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
 					// skip or skip all -> move onto next file
 					continue;
 				} else {
-					if (ecConflict == cCopyMoveConflictDialog::OverwriteAll || ecConflictCurrent == cCopyMoveConflictDialog::Overwrite) {
+					if (ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
 						// overwrite, overwrite all -> delete target file
 						QFile::remove(qsTarget);
 					} else {
-						if (ecConflict == cCopyMoveConflictDialog::OverwriteAllOlder) {
+						if (ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
 							// overwrite all older
 							if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
 								// target file is older -> delete it
@@ -446,7 +444,7 @@ void cCopyMove::run()
 	#endif
 																	} // if else
 																	break;
-					case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
+					case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflict::Append) {
 																		bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
 																		if (bCopyMoveSuccess) {
 																			QFile::remove(qfilSources.at(iI).filePath());
@@ -514,7 +512,6 @@ void cCopyMove::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
-	ccmcConflict->deleteLater();
 	crRename->deleteLater();
 	cpPermission->deleteLater();
 	crRetry->deleteLater();
