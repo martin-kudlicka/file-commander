@@ -1,25 +1,17 @@
 #include "FileOperation/Rename.h"
 
-// destructor
-cRename::~cRename()
-{
-	crdDialog->deleteLater();
-} // ~cRename
-
-// constructor
-cRename::cRename(QMainWindow *qmwParent)
-{
-	crdDialog = new cRenameDialog(qmwParent);
-} // cRename
+#include <QInputDialog>
 
 // show conflict dialog
 void cRename::Show(const QString &qsOldFilename)
 {
-	crdDialog->qleFilename->setText(qsOldFilename);
+	QString qsNewName;
 
-	if (crdDialog->exec() == QDialog::Accepted) {
-		emit Finished(crdDialog->qleFilename->text());
-	} else {
+	qsNewName = QInputDialog::getText(NULL, tr("Rename"), tr("New filename:"));
+
+	if (qsNewName.isEmpty()) {
 		emit Finished(NULL);
+	} else {
+		emit Finished(qsNewName);
 	} // if else
 } // Show

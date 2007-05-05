@@ -13,7 +13,6 @@ FORMS = MainWindow.ui \
 		  FileOperation/FileOperationDialog.ui \
 		  FileOperation/CopyMoveDialog.ui \
 		  FileOperation/CopyMoveWidget.ui \
-		  FileOperation/RenameDialog.ui \
 		  FileOperation/QueueWidget.ui \
 		  FileOperation/DeleteDialog.ui \
 		  FileOperation/DeleteWidget.ui \
@@ -40,7 +39,6 @@ HEADERS = MainWindow.h \
 			 FileOperation/CopyMoveWidget.h \
 			 FileOperation/CopyMoveConflict.h \
 			 FileOperation/Rename.h \
-			 FileOperation/RenameDialog.h \
 			 FileOperation/Permission.h \
 			 FileOperation/QueueWidget.h \
 			 FileOperation/Delete.h \
@@ -82,7 +80,6 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/CopyMoveWidget.cpp \
 			 FileOperation/CopyMoveConflict.cpp \
 			 FileOperation/Rename.cpp \
-			 FileOperation/RenameDialog.cpp \
 			 FileOperation/Permission.cpp \
 			 FileOperation/QueueWidget.cpp \
 			 FileOperation/Delete.cpp \
