@@ -3,7 +3,6 @@ CONFIG += qt warn_on
 FORMS = MainWindow.ui \
 		  OptionsDialog.ui \
 		  Options/NewColumnSetDialog.ui \
-		  NewDirectoryDialog.ui \
 		  ListerMainWindow.ui \
 		  ListerMainWindow/FindDialog.ui \
 		  FindFilesDialog.ui \
@@ -24,7 +23,6 @@ FORMS = MainWindow.ui \
 HEADERS = MainWindow.h \
 		    OptionsDialog.h \
 		    Options/NewColumnSetDialog.h \
-			 NewDirectoryDialog.h \
 			 ListerMainWindow.h \
 			 ListerMainWindow/FindDialog.h \
 			 FindFilesDialog.h \
@@ -69,7 +67,6 @@ SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 OptionsDialog.cpp \
 			 Options/NewColumnSetDialog.cpp \
-			 NewDirectoryDialog.cpp \
 			 ListerMainWindow.cpp \
 			 ListerMainWindow/FindDialog.cpp \
 			 FindFilesDialog.cpp \

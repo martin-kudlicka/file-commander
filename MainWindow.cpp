@@ -2,12 +2,12 @@
 
 #include "Common/System.h"
 #include "FileOperation/FileRoutine.h"
-#include "NewDirectoryDialog.h"
 #include "OptionsDialog.h"
 #include "ListerMainWindow.h"
 #include "FindFilesDialog.h"
 #include "Panel/Process.h"
 #include <QKeyEvent>
+#include <QInputDialog>
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -422,9 +422,11 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 // new directory button is clicked on
 void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 {
-	cNewDirectoryDialog cnddNewDirectory(this);
+	bool bOk;
+	QString qsName;
 
-	if (cnddNewDirectory.exec() == QDialog::Accepted) {
+	qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"), QLineEdit::Normal);
+	if (!qsName.isEmpty()) {
 		QDir qdDir;
 		QString qsNewDirectory;
 
@@ -433,7 +435,7 @@ void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 		} else {
 			qsNewDirectory = cpRight->GetPath();
 		} // if else
-		qsNewDirectory += '/' + cnddNewDirectory.qleDirectory->text();
+		qsNewDirectory += '/' + qsName;
 		qdDir.mkpath(qsNewDirectory);
 	} // if
 } // on_qpbNewDirectory_clicked
