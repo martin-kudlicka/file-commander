@@ -1015,7 +1015,7 @@ void cPanel::SetTabText(const int &iTabIndex)
 	qdDir.setPath(qhTabs.value(iTabIndex).swWidgets->qsPath);
 
 	// tab bar
-	if (qdDir.dirName() == "") {
+	if (qdDir.dirName().isEmpty()) {
 		qtbTab->setTabText(iTabIndex, qdDir.path().at(0));
 	} else {
 		qtbTab->setTabText(iTabIndex, qdDir.dirName());
