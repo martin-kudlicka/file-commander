@@ -13,11 +13,10 @@ cRetry::cRetry(QMainWindow *qmwParent)
 } // cRetry
 
 // show retry dialog
-void cRetry::Show(QWidget *qwParent, const QString &qsInformation, const QString &qsFilename)
+void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
 {
 	cRetryDialog::eChoice ecResponse;
 
-	//crdDialog->setParent(qwParent);
 	crdDialog->qlInformation->setText(qsInformation);
 	crdDialog->qlFilename->setText(qsFilename);
 

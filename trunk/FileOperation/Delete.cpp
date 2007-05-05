@@ -62,7 +62,7 @@ void cDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilter, c
 
 	// retry dialog
 	crRetry = new cRetry(qmwParent);
-	connect(this, SIGNAL(ShowRetryDialog(QWidget *, const QString &, const QString &)), crRetry, SLOT(Show(QWidget *, const QString &, const QString &)));
+	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(crRetry, SIGNAL(Finished(const cRetryDialog::eChoice &)), SLOT(on_crRetry_Finished(const cRetryDialog::eChoice &)));
 
 	start();
@@ -186,20 +186,14 @@ void cDelete::run()
 			if (!bSuccess) {
 				if (ecRetry != cRetryDialog::SkipAll) {
 					QString qsInformation;
-					QWidget *qwParent;
 
-					if (cddDialog) {
-						qwParent = cddDialog;
-					} else {
-						qwParent = qmwParent;
-					} // if else
 					if (qfilSources.at(iI).isDir()) {
 						qsInformation = tr("Can't remove following directory:");
 					} else {
 						qsInformation = tr("Can't delete following file:");
 					} // if else
 
-					emit ShowRetryDialog(qwParent, qsInformation, qfilSources.at(iI).filePath());
+					emit ShowRetryDialog(qsInformation, qfilSources.at(iI).filePath());
 					// wait for answer
 					qsPause.acquire();
 

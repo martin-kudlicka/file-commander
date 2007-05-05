@@ -16,7 +16,7 @@ cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSetti
 } // cCopyMove
 
 // copy file
-void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue)
+bool cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue)
 {
 	QByteArray qbaData;
 	QFile qfDestination, qfSource;
@@ -24,11 +24,17 @@ void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 
 	qfSource.setFileName(qsSource);
 	qfDestination.setFileName(qsDestination);
-	qfSource.open(QIODevice::ReadOnly);
+	if (!qfSource.open(QIODevice::ReadOnly)) {
+		return false;
+	} // if
 	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
-		qfDestination.open(QIODevice::Append);
+		if (!qfDestination.open(QIODevice::Append)) {
+			return false;
+		} // if
 	} else {
-		qfDestination.open(QIODevice::WriteOnly);
+		if (!qfDestination.open(QIODevice::WriteOnly)) {
+			return false;
+		} // if
 	} // if else
 
 	// set progress bar
@@ -46,6 +52,8 @@ void cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 		emit SetTotalValue(*qi64TotalValue);
 		QApplication::processEvents();
 	} // while
+
+	return true;
 } // Copy
 
 // start of copy or move operation
@@ -97,6 +105,11 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(cpPermission, SIGNAL(Finished(const cPermissionDialog::eChoice &)), SLOT(on_cpPermission_Finished(const cPermissionDialog::eChoice &)));
 #endif
+
+	// retry dialog
+	crRetry = new cRetry(qmwParent);
+	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), crRetry, SLOT(Show(const QString &, const QString &)));
+	connect(crRetry, SIGNAL(Finished(const cRetryDialog::eChoice &)), SLOT(on_crRetry_Finished(const cRetryDialog::eChoice &)));
 
 	start();
 } // CopyMove
@@ -209,6 +222,13 @@ void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
 	qsPause.release();
 } // on_crRename_Finished
 
+// retry dialog closed with user response
+void cCopyMove::on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse)
+{
+	ecRetryCurrent = ecResponse;
+	qsPause.release();
+} // on_crRetry_Finished
+
 // thread code
 void cCopyMove::run()
 {
@@ -216,6 +236,7 @@ void cCopyMove::run()
 #ifdef Q_WS_WIN
 	cPermissionDialog::eChoice ecPermission;
 #endif
+	cRetryDialog::eChoice ecRetry;
 	int iI;
 	QDir qdDir;
 	QFileInfoList qfilSources;
@@ -261,6 +282,7 @@ void cCopyMove::run()
 		} // if else
 	} // if else
 #endif
+	ecRetry = cRetryDialog::Ask;
 
 	// main process
 	qdDir.setCurrent(qsSourcePath);
@@ -407,33 +429,77 @@ void cCopyMove::run()
 #endif
 
 			// copy/move file
-			switch (eoOperation) {
-				case cFileRoutine::CopyOperation:	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
-																if (bCanceled) {
-																	// delete unfinished file
-																	QFile::remove(qsTarget);
-																} else {
-																	// set target permissions as source permissions
-#ifdef Q_WS_WIN
-																	SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
-#else
-																	QFile::setPermissions(qsTarget, pPermissions);
-#endif
-																} // if else
-																break;
-				case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
-																	Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
-																	QFile::remove(qfilSources.at(iI).filePath());
-																} else {
-																	QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
-																	qi64TotalValue += qfilSources.at(iI).size();
-																	emit SetTotalValue(qi64TotalValue);
-																} // if else
-																if (qsSourcePath != qfilSources.at(iI).path()) {
-																	qdDir.rmdir(qfilSources.at(iI).path());
-																} // if
-																break;
-			} // switch
+			while (true) {
+				bool bCopyMoveSuccess;
+
+				switch (eoOperation) {
+					case cFileRoutine::CopyOperation:	bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
+																	if (bCanceled) {
+																		// delete unfinished file
+																		QFile::remove(qsTarget);
+																	} else {
+																		// set target permissions as source permissions
+	#ifdef Q_WS_WIN
+																		SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
+	#else
+																		QFile::setPermissions(qsTarget, pPermissions);
+	#endif
+																	} // if else
+																	break;
+					case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflictDialog::Append) {
+																		bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
+																		if (bCopyMoveSuccess) {
+																			QFile::remove(qfilSources.at(iI).filePath());
+																		} // if
+																	} else {
+																		bCopyMoveSuccess = QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
+																		if (bCopyMoveSuccess) {
+																			qi64TotalValue += qfilSources.at(iI).size();
+																			emit SetTotalValue(qi64TotalValue);
+																		} // if
+																	} // if else
+																	if (qsSourcePath != qfilSources.at(iI).path()) {
+																		qdDir.rmdir(qfilSources.at(iI).path());
+																	} // if
+																	break;
+				} // switch
+
+				if (!bCopyMoveSuccess) {
+					if (ecRetry != cRetryDialog::SkipAll) {
+						QString qsInformation;
+
+						if (eoOperation == cFileRoutine::CopyOperation) {
+							qsInformation = tr("Can't copy following file:");
+						} else {
+							qsInformation = tr("Can't move following file:");
+						} // if else
+
+						emit ShowRetryDialog(qsInformation, qfilSources.at(iI).filePath());
+						// wait for answer
+						qsPause.acquire();
+
+						if (ecRetryCurrent == cRetryDialog::SkipAll) {
+							// memorize permanent answer
+							ecRetry = cRetryDialog::SkipAll;
+						} // if
+					} // if
+					if (ecRetry == cRetryDialog::SkipAll || ecRetryCurrent == cRetryDialog::Skip || ecRetryCurrent == cRetryDialog::Abort) {
+						// skip this file
+						qi64TotalValue += qfilSources.at(iI).size();
+						emit SetTotalValue(qi64TotalValue);
+						break;
+					} // if
+					// else try once more
+				} else {
+					// successfuly copied/moved
+					break;
+				} // if else
+			} // while
+
+			if (ecRetryCurrent == cRetryDialog::Abort) {
+				// process aborted
+				break;
+			} // if
 		} // if else
 	} // for
 
@@ -451,4 +517,5 @@ void cCopyMove::run()
 	ccmcConflict->deleteLater();
 	crRename->deleteLater();
 	cpPermission->deleteLater();
+	crRetry->deleteLater();
 } // run

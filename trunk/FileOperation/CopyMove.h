@@ -16,6 +16,7 @@
 #ifdef Q_WS_WIN
 #include "FileOperation/Permission.h"
 #endif
+#include "FileOperation/Retry.h"
 
 class cCopyMove : public QThread
 {
@@ -50,6 +51,8 @@ class cCopyMove : public QThread
 		cPermissionDialog::eChoice ecPermissionCurrent;			///< current permission dialog user's response
 #endif
 		cRename *crRename;												///< rename dialog
+		cRetry *crRetry;													///< retry dialog
+		cRetryDialog::eChoice ecRetryCurrent;						///< current retry dialog user's response
 		cSettings *csSettings;											///< application's configuration
 		QHBoxLayout *qhblOperations;									///< layout for background operations
 		QFileInfoList qfilSource;										///< source file list
@@ -63,11 +66,12 @@ class cCopyMove : public QThread
 		QString qsSource;													///< currently copied/moved source file
 		QString qsTarget;													///< target of currently copied/moved file
 
-		void Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue);
+		bool Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue);
 																				///< copy file
 																				/**< \param qsSource source file
 																					  \param qsDestination destination file
-																					  \param qi64TotalValue total progress */
+																					  \param qi64TotalValue total progress
+																					  \return true if operation succesfull */
 		void CreateWidget();												///< create widget for background operation
 		QString GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination);
 																				///< return file name modified by wildcard
@@ -104,6 +108,10 @@ class cCopyMove : public QThread
 		void ShowRenameDialog(const QString &qsOldFilename);
 																				///< show rename dialog
 																				/**< \param qsOldFilename file to rename */
+		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename);
+																				///< show retry dialog
+																				/**< \param qsInformation question about file
+																					  \param qsFilename concerned file */
 
 	private slots:
 		void on_ccm_OperationCanceled();								///< copy or move operation was canceled
@@ -119,6 +127,9 @@ class cCopyMove : public QThread
 		void on_crRename_Finished(const QString &qsNewFilename);
 																				///< rename dialog closed with user's reponse
 																				/**< \param NewFilename new file name */
+		void on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse);
+																				///< retry dialog closed with user response
+																				/**< \param ecResponse dialog result */
 }; // cCopyMove
 
 #endif

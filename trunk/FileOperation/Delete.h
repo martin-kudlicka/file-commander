@@ -75,10 +75,9 @@ class cDelete : public QThread
 																		/**< \param qsFilename concerned file
 																			  \param qsInformation question about file */
 #endif
-		void ShowRetryDialog(QWidget *qwParent, const QString &qsInformation, const QString &qsFilename);
+		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename);
 																		///< show retry dialog
-																		/**< \param qsParent parent window
-																			  \param qsInformation question about file
+																		/**< \param qsInformation question about file
 																			  \param qsFilename concerned file */
 
 	private slots:
