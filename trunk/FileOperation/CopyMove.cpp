@@ -104,9 +104,8 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 #endif
 
 	// retry dialog
-	crRetry = new cRetry(qmwParent);
-	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), crRetry, SLOT(Show(const QString &, const QString &)));
-	connect(crRetry, SIGNAL(Finished(const cRetryDialog::eChoice &)), SLOT(on_crRetry_Finished(const cRetryDialog::eChoice &)));
+	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
+	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	start();
 } // CopyMove
@@ -220,7 +219,7 @@ void cCopyMove::on_crRename_Finished(const QString &qsNewFilename)
 } // on_crRename_Finished
 
 // retry dialog closed with user response
-void cCopyMove::on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse)
+void cCopyMove::on_crRetry_Finished(const cRetry::eChoice &ecResponse)
 {
 	ecRetryCurrent = ecResponse;
 	qsPause.release();
@@ -233,7 +232,7 @@ void cCopyMove::run()
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
-	cRetryDialog::eChoice ecRetry;
+	cRetry::eChoice ecRetry;
 	int iI;
 	QDir qdDir;
 	QFileInfoList qfilSources;
@@ -279,7 +278,7 @@ void cCopyMove::run()
 		} // if else
 	} // if else
 #endif
-	ecRetry = cRetryDialog::Ask;
+	ecRetry = cRetry::Ask;
 
 	// main process
 	qdDir.setCurrent(qsSourcePath);
@@ -460,7 +459,7 @@ void cCopyMove::run()
 				} // switch
 
 				if (!bCopyMoveSuccess) {
-					if (ecRetry != cRetryDialog::SkipAll) {
+					if (ecRetry != cRetry::SkipAll) {
 						QString qsInformation;
 
 						if (eoOperation == cFileRoutine::CopyOperation) {
@@ -473,12 +472,12 @@ void cCopyMove::run()
 						// wait for answer
 						qsPause.acquire();
 
-						if (ecRetryCurrent == cRetryDialog::SkipAll) {
+						if (ecRetryCurrent == cRetry::SkipAll) {
 							// memorize permanent answer
-							ecRetry = cRetryDialog::SkipAll;
+							ecRetry = cRetry::SkipAll;
 						} // if
 					} // if
-					if (ecRetry == cRetryDialog::SkipAll || ecRetryCurrent == cRetryDialog::Skip || ecRetryCurrent == cRetryDialog::Abort) {
+					if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
 						// skip this file
 						qi64TotalValue += qfilSources.at(iI).size();
 						emit SetTotalValue(qi64TotalValue);
@@ -491,7 +490,7 @@ void cCopyMove::run()
 				} // if else
 			} // while
 
-			if (ecRetryCurrent == cRetryDialog::Abort) {
+			if (ecRetryCurrent == cRetry::Abort) {
 				// process aborted
 				break;
 			} // if
@@ -509,5 +508,4 @@ void cCopyMove::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
-	crRetry->deleteLater();
 } // run

@@ -51,8 +51,8 @@ class cCopyMove : public QThread
 		cPermission::eChoice ecPermissionCurrent;					///< current permission dialog user's response
 #endif
 		cRename crRename;													///< rename dialog
-		cRetry *crRetry;													///< retry dialog
-		cRetryDialog::eChoice ecRetryCurrent;						///< current retry dialog user's response
+		cRetry crRetry;													///< retry dialog
+		cRetry::eChoice ecRetryCurrent;								///< current retry dialog user's response
 		cSettings *csSettings;											///< application's configuration
 		QHBoxLayout *qhblOperations;									///< layout for background operations
 		QFileInfoList qfilSource;										///< source file list
@@ -127,7 +127,7 @@ class cCopyMove : public QThread
 		void on_crRename_Finished(const QString &qsNewFilename);
 																				///< rename dialog closed with user's reponse
 																				/**< \param NewFilename new file name */
-		void on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse);
+		void on_crRetry_Finished(const cRetry::eChoice &ecResponse);
 																				///< retry dialog closed with user response
 																				/**< \param ecResponse dialog result */
 }; // cCopyMove

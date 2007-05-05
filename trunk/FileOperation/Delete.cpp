@@ -60,9 +60,8 @@ void cDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilter, c
 #endif
 
 	// retry dialog
-	crRetry = new cRetry(qmwParent);
-	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), crRetry, SLOT(Show(const QString &, const QString &)));
-	connect(crRetry, SIGNAL(Finished(const cRetryDialog::eChoice &)), SLOT(on_crRetry_Finished(const cRetryDialog::eChoice &)));
+	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
+	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	start();
 } // Delete
@@ -92,7 +91,7 @@ void cDelete::on_cpPermission_Finished(const cPermission::eChoice &ecResponse)
 #endif
 
 // retry dialog closed with user response
-void cDelete::on_crRetry_Finished(const cRetryDialog::eChoice &ecResponse)
+void cDelete::on_crRetry_Finished(const cRetry::eChoice &ecResponse)
 {
 	ecRetryCurrent = ecResponse;
 	qsPause.release();
@@ -104,7 +103,7 @@ void cDelete::run()
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
-	cRetryDialog::eChoice ecRetry;
+	cRetry::eChoice ecRetry;
 	int iI;
 	QFileInfoList qfilSources;
 #ifdef Q_WS_WIN
@@ -130,7 +129,7 @@ void cDelete::run()
 		} // if else
 	} // if else
 #endif
-	ecRetry = cRetryDialog::Ask;
+	ecRetry = cRetry::Ask;
 
 	// main process
 	for (iI = qfilSources.count() - 1; iI >= 0; iI--) {
@@ -182,7 +181,7 @@ void cDelete::run()
 			} // if else
 
 			if (!bSuccess) {
-				if (ecRetry != cRetryDialog::SkipAll) {
+				if (ecRetry != cRetry::SkipAll) {
 					QString qsInformation;
 
 					if (qfilSources.at(iI).isDir()) {
@@ -195,12 +194,12 @@ void cDelete::run()
 					// wait for answer
 					qsPause.acquire();
 
-					if (ecRetryCurrent == cRetryDialog::SkipAll) {
+					if (ecRetryCurrent == cRetry::SkipAll) {
 						// memorize permanent answer
-						ecRetry = cRetryDialog::SkipAll;
+						ecRetry = cRetry::SkipAll;
 					} // if
 				} // if
-				if (ecRetry == cRetryDialog::SkipAll || ecRetryCurrent == cRetryDialog::Skip || ecRetryCurrent == cRetryDialog::Abort) {
+				if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
 					// skip this file
 					break;
 				} // if
@@ -211,7 +210,7 @@ void cDelete::run()
 			} // if else
 		} // while
 
-		if (ecRetryCurrent == cRetryDialog::Abort) {
+		if (ecRetryCurrent == cRetry::Abort) {
 			// process aborted
 			break;
 		} // if
@@ -225,5 +224,4 @@ void cDelete::run()
 	} else {
 		cdwWidget->deleteLater();
 	} // if else
-	crRetry->deleteLater();
 } // run
