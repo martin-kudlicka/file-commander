@@ -202,6 +202,8 @@ class cSettings : private QObject
 		sLister GetListerSettings();									///< lister settings
 																				/**< \return lister settings */
 																				/**< \return file size unit */
+		bool GetNewTabByShortcutInForeground();					///< new tab by shortcut in foreground
+																				/** \return new tab by shortcut in foreground flag */
 		bool GetOpenNewTabNextToCurrentTab();						///< open new tab next to current tab
 																				/**< \return open new tab next to current tab flag */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
@@ -264,6 +266,9 @@ class cSettings : private QObject
 																					  \param sfsFindSettings settings for find files dialog */
 		void SetListerSettings(const sLister &slLister);		///< set default lister settings
 																				/**< \param slLister lister settings */
+		void SetNewTabByShortcutInForeground(const bool &bForeground);
+																				///< new tab by shortcut in foreground
+																				/**< \param bForeground new tab by shortcut in foreground flag */
 		void SetOpenNewTabNextToCurrentTab(const bool &bNextTo);
 																				///< open new tab next to current tab
 																				/**< \param bNextTo open new tab next to current tab flag */

@@ -55,7 +55,7 @@ void cPanel::ActualizeWidgets()
 } // ActualizeWidgets
 
 // add new tab with dir view
-void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
+int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
 	cTreeWidget *ctwTree;
 	int iIndex;
@@ -115,6 +115,8 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp 
 	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 
 	HideOrShowTabBar();
+
+	return iIndex;
 } // AddTab
 
 // close all other tabs than selected
@@ -224,7 +226,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 } // cPanel
 
 // create new tab by duplicate one
-void cPanel::DuplicateTab(const int &iTabIndex)
+int cPanel::DuplicateTab(const int &iTabIndex)
 {
 	cSettings::sTabInfo stiTabInfo;
 
@@ -234,7 +236,7 @@ void cPanel::DuplicateTab(const int &iTabIndex)
 	stiTabInfo.ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iTabIndex))->sortColumn();
 	stiTabInfo.ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iTabIndex))->header()->sortIndicatorOrder();
 
-	AddTab(stiTabInfo);
+	return AddTab(stiTabInfo);
 } // DuplicateTab
 
 // edit selected file in editor

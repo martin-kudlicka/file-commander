@@ -263,6 +263,7 @@ void cOptionsDialog::FillOptions()
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->setChecked(csSettings->GetShowTabBarWithOnlyOneTab());
 	qcbCloseTabOnDoubleClick->setChecked(csSettings->GetCloseTabOnDoubleClick());
+	qcbNewTabByShortcutInForeground->setChecked(csSettings->GetNewTabByShortcutInForeground());
 	qcbOpenNewTabNextToCurrentTab->setChecked(csSettings->GetOpenNewTabNextToCurrentTab());
 	qcbShowDriveLetter->setChecked(csSettings->GetShowDriveLetter());
 	// column sets
@@ -912,6 +913,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());
 	csSettings->SetCloseTabOnDoubleClick(qcbCloseTabOnDoubleClick->isChecked());
+	csSettings->SetNewTabByShortcutInForeground(qcbNewTabByShortcutInForeground->isChecked());
 	csSettings->SetOpenNewTabNextToCurrentTab(qcbOpenNewTabNextToCurrentTab->isChecked());
 	csSettings->SetShowDriveLetter(qcbShowDriveLetter->isChecked());
 

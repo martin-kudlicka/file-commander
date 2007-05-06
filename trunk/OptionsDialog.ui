@@ -242,19 +242,6 @@
           <attribute name="title" >
            <string>&amp;Tabs</string>
           </attribute>
-          <widget class="QCheckBox" name="checkBox_4" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>70</y>
-             <width>191</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>&amp;New tab by shotrcut in foreground</string>
-           </property>
-          </widget>
           <widget class="QCheckBox" name="qcbShowTabBarWithOnlyOneTab" >
            <property name="geometry" >
             <rect>
@@ -281,17 +268,17 @@
             <string>&amp;Confirm close of all other tabs</string>
            </property>
           </widget>
-          <widget class="QCheckBox" name="qcbCloseTabOnDoubleClick" >
+          <widget class="QCheckBox" name="qcbShowDriveLetter" >
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>50</y>
-             <width>141</width>
+             <y>110</y>
+             <width>111</width>
              <height>18</height>
             </rect>
            </property>
            <property name="text" >
-            <string>Close &amp;tab on double click</string>
+            <string>Show &amp;drive letter</string>
            </property>
           </widget>
           <widget class="QCheckBox" name="qcbOpenNewTabNextToCurrentTab" >
@@ -307,17 +294,30 @@
             <string>&amp;Open new tab next to current tab</string>
            </property>
           </widget>
-          <widget class="QCheckBox" name="qcbShowDriveLetter" >
+          <widget class="QCheckBox" name="qcbCloseTabOnDoubleClick" >
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>110</y>
-             <width>111</width>
+             <y>50</y>
+             <width>141</width>
              <height>18</height>
             </rect>
            </property>
            <property name="text" >
-            <string>Show &amp;drive letter</string>
+            <string>Close &amp;tab on double click</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbNewTabByShortcutInForeground" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>70</y>
+             <width>191</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;New tab by shotrcut in foreground</string>
            </property>
           </widget>
          </widget>
