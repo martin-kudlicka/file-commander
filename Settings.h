@@ -185,6 +185,8 @@ class cSettings : private QObject
 																				///< get column names in column set
 																				/**< \param qsColumnSet name of column set
 																					  \return list of columns in column set */
+		bool GetConfirmCloseOfAllTabs();								///< confirm close of all tabs in tab bar
+																				/**< return confirm close of all tabs flag */
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
@@ -238,6 +240,8 @@ class cSettings : private QObject
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
+		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs
+																				/**< \param bClose confirm close of all tabs flag */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
