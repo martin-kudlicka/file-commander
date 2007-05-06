@@ -73,6 +73,10 @@ void cMainWindow::ActualizeDrives()
 // assign shortcuts
 void cMainWindow::AssignShortcuts()
 {
+	// tabs
+	qaTabBarDuplicateTab->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__TABS__DUPLICATE_TAB)));
+	qaTabBarCloseTab->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__TABS__CLOSE_TAB)));
+	qaTabBarCloseAllOtherTabs->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS)));
 	// directory view
 	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT)), this);
 	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
@@ -153,6 +157,27 @@ cMainWindow::cMainWindow()
 	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
 	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
 
+	// create tab context menu
+	qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));
+	this->addAction(qaTabBarDuplicateTab);
+	qmTabBar.addSeparator();
+	qaTabBarCloseTab = qmTabBar.addAction(tr("&Close tab"));
+	this->addAction(qaTabBarCloseTab);
+	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
+	this->addAction(qaTabBarCloseAllOtherTabs);
+
+	iTabBarIndex = -1;
+
+	// shortcuts
+	AssignShortcuts();
+
+	// connections
+	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
+	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
+	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
+	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
+	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
+
 	ActualizeDrives();
 	show();
 	// load settings
@@ -161,13 +186,9 @@ cMainWindow::cMainWindow()
 	// right tabs
 	LoadTabs(cSettings::PositionRight);
 
+	// automatic actualizations
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
-
-	// shortcuts
-	AssignShortcuts();
-	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
-	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 
 	// set focus to left panel
 	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
@@ -342,6 +363,60 @@ void cMainWindow::on_qaSelectGroup_triggered(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource);
 	cpSource->Select(cSelectFilesDialog::Select, cpPlugins->clLister);
 } // on_qaSelectGroup_triggered
+
+// close all other tabs called
+void cMainWindow::on_qaTabBarCloseAllOtherTabs_triggered(bool checked /* false */)
+{
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+	} // if
+
+	cpTabBarAction->CloseAllOtherTabs(iTabBarIndex);
+	iTabBarIndex = -1;
+} // on_qaTabBarCloseAllOtherTabs_triggered
+
+// close tab called
+void cMainWindow::on_qaTabBarCloseTab_triggered(bool checked /* false */)
+{
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+	} // if
+
+	cpTabBarAction->CloseTab(iTabBarIndex);
+	iTabBarIndex = -1;
+} // on_qaTabBarCloseTab_triggered
+
+// duplicate tab called
+void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false */)
+{
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+	} // if
+
+	cpTabBarAction->DuplicateTab(iTabBarIndex);
+	iTabBarIndex = -1;
+} // on_qaTabBarDuplicateTab_triggered
 
 // unselect all selected
 void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */)
@@ -529,37 +604,24 @@ void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDes
 // show context menu for tab
 void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor)
 {
-	cPanel *cpSource;
-	int iTabIndex;
-	QAction *qaChoice;
-	QTabBar *qtbTabBar;
-
 	// source panel
 	if (epTab == cSettings::PositionLeft) {
-		cpSource = cpLeft;
+		cpTabBarAction = cpLeft;
 	} else {
-		cpSource = cpRight;
+		cpTabBarAction = cpRight;
 	} // if else
 
-	// get the tab index clicked on
-	if (epTab == cSettings::PositionLeft) {
-		qtbTabBar = &qtbLeft;
-	} else {
-		qtbTabBar = &qtbRight;
-	} // if else
-	iTabIndex = cpSource->GetTabIndex(qtbTabBar, qpCursor);
+	iTabBarIndex = cpTabBarAction->GetTabIndex(qpCursor);
 
-	if (iTabIndex != -1) {
-		QAction *qaTabBarCloseAllOtherTabs, *qaTabBarCloseTab, *qaTabBarDuplicateTab;
-		QMenu qmTabBar(this);
-
-		// create tab context menu
-		qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));
-		qmTabBar.addSeparator();
-		qaTabBarCloseTab = qmTabBar.addAction(tr("&Close tab"));
-		qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
+	if (iTabBarIndex != -1) {
+		QTabBar *qtbTabBar;
 
 		// disable close tab if only one tab is available
+		if (epTab == cSettings::PositionLeft) {
+			qtbTabBar = &qtbLeft;
+		} else {
+			qtbTabBar = &qtbRight;
+		} // if else
 		if (qtbTabBar->count() == 1) {
 			qaTabBarCloseTab->setEnabled(false);
 			qaTabBarCloseAllOtherTabs->setEnabled(false);
@@ -568,18 +630,6 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 			qaTabBarCloseAllOtherTabs->setEnabled(true);
 		} // if else
 
-		qaChoice = qmTabBar.exec(QCursor::pos());
-
-		if (qaChoice == qaTabBarDuplicateTab) {
-			cpSource->DuplicateTab(iTabIndex);
-		} else {
-			if (qaChoice == qaTabBarCloseAllOtherTabs) {
-				cpSource->CloseAllOtherTabs(iTabIndex);
-			} else {
-				if (qaChoice == qaTabBarCloseTab) {
-					cpSource->CloseTab(iTabIndex);
-				} // if
-			} // if else
-		} // if else
+		qmTabBar.popup(QCursor::pos());
 	} // if
 } // TabBarShowContextMenu

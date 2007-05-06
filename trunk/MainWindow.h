@@ -31,10 +31,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cFileOperation *cfoFileOperation;									///< handling file operations
 		cPanel *cpLeft;															///< left dir panel
 		cPanel *cpRight;															///< right dir panel
+		cPanel *cpTabBarAction;													///< selected tab bar for action with tabs
 		cPlugins *cpPlugins;														///< application's plugins
 		cSettings csSettings;													///< accessing application's settings
-		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
+		int iTabBarIndex;															///< selected tab for actions on tab bar
+		QAction *qaTabBarCloseAllOtherTabs;									///< close all other tabs
+		QAction *qaTabBarCloseTab;												///< close current tab
+		QAction *qaTabBarDuplicateTab;										///< duplicate current tab
 		QHBoxLayout *qhblBackgroundOperations;								///< layout for background operations
+		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
+		QMenu qmTabBar;															///< tab bar context menu
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
 		QShortcut *qsRightDrive;												///< right drive combo box shortcut
 		QTabBar qtbLeft;															///< left's panel tab bar
@@ -79,6 +85,14 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qaSelectAll_triggered(bool checked = false);			///< select all selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaSelectGroup_triggered(bool checked = false);		///< select group selected
+																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaTabBarCloseAllOtherTabs_triggered(bool checked = false);
+																						///< close all other tabs called
+																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaTabBarCloseTab_triggered(bool checked = false);	///< close tab called
+																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaTabBarDuplicateTab_triggered(bool checked = false);
+																						///< duplicate tab called
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaUnselectAll_triggered(bool checked = false);		///< unselect all selected
 																						/**< \param checked true if menu item is checkable and checked */

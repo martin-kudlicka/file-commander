@@ -151,18 +151,20 @@ void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 // close tab
 void cPanel::CloseTab(const int &iTabIndex)
 {
-	int iI;
+	if (qhTabs.count() > 1) {
+		int iI;
 
-	// reposition of tabs following remove tab
-	for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
-		qhTabs.insert(iI - 1, qhTabs.value(iI));
-	} // for
-	qhTabs.remove(qhTabs.count() - 1);
+		// reposition of tabs following remove tab
+		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
+			qhTabs.insert(iI - 1, qhTabs.value(iI));
+		} // for
+		qhTabs.remove(qhTabs.count() - 1);
 
-	qtbTab->removeTab(iTabIndex);
-	qswDir->removeWidget(qswDir->widget(iTabIndex));
+		qtbTab->removeTab(iTabIndex);
+		qswDir->removeWidget(qswDir->widget(iTabIndex));
 
-	HideOrShowTabBar();
+		HideOrShowTabBar();
+	} // if
 } // CloseTab
 
 // close tab
@@ -171,7 +173,7 @@ void cPanel::CloseTab(const QMouseEvent *qmeEvent)
 	if (csSettings->GetCloseTabOnDoubleClick() && qhTabs.count() > 1) {
 		int iTabIndex;
 
-		iTabIndex = GetTabIndex(qtbTab, qmeEvent->pos());
+		iTabIndex = GetTabIndex(qmeEvent->pos());
 		if (iTabIndex != -1) {
 			CloseTab(iTabIndex);
 		} // if
@@ -398,7 +400,7 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 } // GetSizeString
 
 // find out tab index in tab bar
-int cPanel::GetTabIndex(const QTabBar *qtbTab, const QPoint &qpPos)
+int cPanel::GetTabIndex(const QPoint &qpPos)
 {
 	int iI;
 
