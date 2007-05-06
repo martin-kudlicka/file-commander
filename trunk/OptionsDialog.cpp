@@ -257,6 +257,7 @@ void cOptionsDialog::FillOptions()
 	} // if else
 	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
 	// tabs
+	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->setChecked(csSettings->GetShowTabBarWithOnlyOneTab());
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
@@ -895,6 +896,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
 	// tabs
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
+	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());
 
 	// plugins
 	// content

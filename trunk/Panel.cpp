@@ -10,6 +10,7 @@
 #include "FindFilesDialog.h"
 #include <QMenu>
 #include <QUrl>
+#include <QMessageBox>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -107,16 +108,32 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 // close all other tabs than selected
 void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 {
-	int iI;
+	if (qhTabs.count() > 1) {
+		bool bCloseAllOtherTabs;
 
-	qhTabs.insert(0, qhTabs.value(iTabIndex));
-	qtbTab->setTabText(0, qtbTab->tabText(iTabIndex));
-	qswDir->insertWidget(0, qswDir->widget(iTabIndex));
-	for (iI = qhTabs.count() - 1; iI > 0; iI--) {
-		qhTabs.remove(iI);
-		qtbTab->removeTab(iI);
-		qswDir->removeWidget(qswDir->widget(iTabIndex));
-	} // for
+		if (csSettings->GetConfirmCloseOfAllTabs()) {
+			if (QMessageBox::question(qmwParent, tr("Close all other tabs"), tr("Continue?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+				bCloseAllOtherTabs = true;
+			} else {
+				bCloseAllOtherTabs = false;
+			} // if else
+		} else {
+			bCloseAllOtherTabs = true;
+		} // if else
+
+		if (bCloseAllOtherTabs) {
+			int iI;
+
+			qhTabs.insert(0, qhTabs.value(iTabIndex));
+			qtbTab->setTabText(0, qtbTab->tabText(iTabIndex));
+			qswDir->insertWidget(0, qswDir->widget(iTabIndex));
+			for (iI = qhTabs.count() - 1; iI > 0; iI--) {
+				qhTabs.remove(iI);
+				qtbTab->removeTab(iI);
+				qswDir->removeWidget(qswDir->widget(iTabIndex));
+			} // for
+		} // if
+	} // if
 } // CloseAllOtherTabs
 
 // close tab

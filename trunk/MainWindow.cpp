@@ -561,8 +561,10 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 		// disable close tab if only one tab is available
 		if (qtbTabBar->count() == 1) {
 			qaTabBarCloseTab->setEnabled(false);
+			qaTabBarCloseAllOtherTabs->setEnabled(false);
 		} else {
 			qaTabBarCloseTab->setEnabled(true);
+			qaTabBarCloseAllOtherTabs->setEnabled(true);
 		} // if else
 
 		qaChoice = qmTabBar.exec(QCursor::pos());
