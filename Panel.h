@@ -47,18 +47,20 @@ class cPanel : private QObject
 																								  \param cfoFileOperation handling file operations */
 		~cPanel();																		///< destructor
 
-		void AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
+		int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
 																							///< add new tab with dir view
 																							/**< \param stiTabInfo new tab description
-																								  \param bStartUp true if tab is added on application startup */
+																								  \param bStartUp true if tab is added on application startup
+																								  \return new tab index */
 		void CloseAllOtherTabs(const int &iTabIndex);						///< close all other tabs than selected
 																							/**< \param iTabIndex selected tab */
 		void CloseTab(const int &iTabIndex);									///< close tab
 																							/**< \param iTabIndex tab to close */
 		void CloseTab(const QMouseEvent *qmeEvent);							///< close tab
 																							/**< \param qeEvent description of tab to close */
-		void DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
-																							/**< \param iTabIndex tab to duplicate */
+		int DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
+																							/**< \param iTabIndex tab to duplicate
+																								  \return new tab index */
 		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */

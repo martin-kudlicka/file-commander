@@ -62,6 +62,7 @@ const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // Tabs
 const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
 const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
+const QString qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND = "Tabs/NewTabByShortcutInForeground";
 const QString qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB = "Tabs/OpenNewTabNextToCurrentTab";
 const QString qsTABS__SHOW_DRIVE_LETTER = "Tabs/ShowDriveLetter";
 const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
@@ -311,6 +312,12 @@ cSettings::sLister cSettings::GetListerSettings()
 
 	return slLister;
 } // GetListerSettings
+
+// new tab by shortcut in foreground
+bool cSettings::GetNewTabByShortcutInForeground()
+{
+	return qsSettings.value(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND).toBool();
+} // GetNewTabByShortcutInForeground
 
 // open new tab next to current tab
 bool cSettings::GetOpenNewTabNextToCurrentTab()
@@ -653,16 +660,6 @@ void cSettings::SetFileSizeIn(const QString &qsSize)
 	qsSettings.setValue(qsDISPLAY__FILE_SIZE_IN, qsSize);
 } // SetFileSizeIn
 
-// set default lister settings
-void cSettings::SetListerSettings(const sLister &slLister)
-{
-	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
-	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
-	qsSettings.setValue(qsWRAP_TEXT, slLister.bWrapText);
-	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);
-	qsSettings.endGroup();
-} // SetListerSettings
-
 // save find settings for find files dialog
 void cSettings::SetFindSettings(const QString &qsName, const sFindSettings &sfsFindSettings)
 {
@@ -700,6 +697,22 @@ void cSettings::SetFindSettings(const QString &qsName, const sFindSettings &sfsF
 	} // if
 	qsSettings.endGroup();
 } // SetFindSettings
+
+// set default lister settings
+void cSettings::SetListerSettings(const sLister &slLister)
+{
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
+	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
+	qsSettings.setValue(qsWRAP_TEXT, slLister.bWrapText);
+	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);
+	qsSettings.endGroup();
+} // SetListerSettings
+
+// new tab by shortcut in foreground
+void cSettings::SetNewTabByShortcutInForeground(const bool &bForeground)
+{
+	qsSettings.setValue(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND, bForeground);
+} // SetNewTabByShortcutInForeground
 
 // open new tab next to current tab
 void cSettings::SetOpenNewTabNextToCurrentTab(const bool &bNextTo)

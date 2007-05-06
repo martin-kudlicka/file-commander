@@ -403,6 +403,9 @@ void cMainWindow::on_qaTabBarCloseTab_triggered(bool checked /* false */)
 // duplicate tab called
 void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false */)
 {
+	bool bForeground;
+	int iNewTab;
+
 	if (iTabBarIndex == -1) {
 		// called by shortcut
 		if (qswLeft->currentWidget()->hasFocus()) {
@@ -412,10 +415,26 @@ void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false */)
 			cpTabBarAction = cpRight;
 			iTabBarIndex = qtbRight.currentIndex();
 		} // if else
-	} // if
 
-	cpTabBarAction->DuplicateTab(iTabBarIndex);
+		if (csSettings.GetNewTabByShortcutInForeground()) {
+			bForeground = true;
+		} else {
+			bForeground = false;
+		} // if else
+	} else {
+		bForeground = false;
+	} // if else
+
+	iNewTab = cpTabBarAction->DuplicateTab(iTabBarIndex);
 	iTabBarIndex = -1;
+
+	if (bForeground) {
+		if (cpTabBarAction == cpLeft) {
+			qtbLeft.setCurrentIndex(iNewTab);
+		} else {
+			qtbRight.setCurrentIndex(iNewTab);
+		} // if else
+	} // if
 } // on_qaTabBarDuplicateTab_triggered
 
 // unselect all selected
