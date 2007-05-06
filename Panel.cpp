@@ -504,7 +504,7 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 		} // if else
 	} else {
 		// double click on file -> execute it
-		cProcess::Execute(qfiFile.filePath());
+		cProcess::Execute(QString("\"%1\"").arg(qfiFile.filePath()));
 	} // if else
 } // on_ctwTree_itemActivated
 

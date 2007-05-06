@@ -4,8 +4,9 @@
 #define PROCESS_H
 
 #include <QString>
+#include <QObject>
 
-class cProcess
+class cProcess : public QObject
 {
 	public:
 		static void Execute(const QString &qsProcess, const QString &qsPath = NULL);	///< execute file
