@@ -49,6 +49,8 @@ class cPanel : private QObject
 
 		void AddTab(const cSettings::sTabInfo &stiTabInfo);
 																							///< add new tab with dir view
+		void CloseAllOtherTabs(const int &iTabIndex);						///< close all other tabs than selected
+																							/**< \param iTabIndex selected tab */
 		void CloseTab(const int &iTabIndex);									///< close tab
 																							/**< \param iTabIndex tab to close */
 		void DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one

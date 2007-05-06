@@ -549,12 +549,14 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 
 	if (iTabIndex != -1) {
 		cPanel *cpSource;
-		QAction *qaTabBarCloseTab, *qaTabBarDuplicateTab;
+		QAction *qaTabBarCloseAllOtherTabs, *qaTabBarCloseTab, *qaTabBarDuplicateTab;
 		QMenu qmTabBar(this);
 
 		// create tab context menu
 		qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));
+		qmTabBar.addSeparator();
 		qaTabBarCloseTab = qmTabBar.addAction(tr("&Close tab"));
+		qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 
 		// disable close tab if only one tab is available
 		if (qtbTabBar->count() == 1) {
@@ -574,9 +576,13 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 		if (qaChoice == qaTabBarDuplicateTab) {
 			cpSource->DuplicateTab(iTabIndex);
 		} else {
-			if (qaChoice == qaTabBarCloseTab) {
-				cpSource->CloseTab(iTabIndex);
-			} // if
+			if (qaChoice == qaTabBarCloseAllOtherTabs) {
+				cpSource->CloseAllOtherTabs(iTabIndex);
+			} else {
+				if (qaChoice == qaTabBarCloseTab) {
+					cpSource->CloseTab(iTabIndex);
+				} // if
+			} // if else
 		} // if else
 	} // if
 } // TabBarShowContextMenu
