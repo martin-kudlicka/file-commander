@@ -255,19 +255,6 @@
             <string>&amp;New tab by shotrcut in foreground</string>
            </property>
           </widget>
-          <widget class="QCheckBox" name="checkBox_6" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>110</y>
-             <width>111</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Show &amp;drive letter</string>
-           </property>
-          </widget>
           <widget class="QCheckBox" name="qcbShowTabBarWithOnlyOneTab" >
            <property name="geometry" >
             <rect>
@@ -318,6 +305,19 @@
            </property>
            <property name="text" >
             <string>&amp;Open new tab next to current tab</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbShowDriveLetter" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>110</y>
+             <width>111</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Show &amp;drive letter</string>
            </property>
           </widget>
          </widget>
