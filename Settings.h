@@ -75,6 +75,9 @@ const QString qsSHORTCUT__PANELS__MAIN_BUTTON__COPY = "Copy";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE = "Move";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY = "New directory";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE = "Delete";
+const QString qsSHORTCUT__PANELS__TABS__DUPLICATE_TAB = "Duplicate tab";
+const QString qsSHORTCUT__PANELS__TABS__CLOSE_TAB = "Close tab";
+const QString qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS = "Close all other tabs";
 
 class cSettings : private QObject
 {

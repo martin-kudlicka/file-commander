@@ -68,9 +68,8 @@ class cPanel : private QObject
 																							/**< \return dir info list about selected directories */
 		QFileInfoList GetSelectedItemsList();									///< get file infos of selected items
 																							/**< \return file info list about selected files */
-		int GetTabIndex(const QTabBar *qtbTab, const QPoint &qpPos);	///< find out tab index in tab bar
-																							/**< \param qtbTab tab bar
-																								  \param qpPos cursor position in tab bar
+		int GetTabIndex(const QPoint &qpPos);									///< find out tab index in tab bar
+																							/**< \param qpPos cursor position in tab bar
 																								  \return tab index */
 		void GoToFile(const QString &qsFile);									///< show dir view with specified file
 																							/**< \param qsFile file to find */
