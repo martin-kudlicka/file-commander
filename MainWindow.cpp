@@ -565,7 +565,11 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 
 		qaChoice = qmTabBar.exec(QCursor::pos());
 
-		SetSourceAndDestinationPanel(&cpSource);
+		if (epTab == cSettings::PositionLeft) {
+			cpSource = cpLeft;
+		} else {
+			cpSource = cpRight;
+		} // if else
 
 		if (qaChoice == qaTabBarDuplicateTab) {
 			cpSource->DuplicateTab(iTabIndex);
