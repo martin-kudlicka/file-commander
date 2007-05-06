@@ -678,7 +678,23 @@ bool cPanel::PathExists(const QString &qsPath)
 // refresh current dir view
 void cPanel::Refresh()
 {
+	QString qsFrom;
+
+	// remember file going from
+	qsFrom = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()).fileName();
+
 	RefreshContent(qswDir->currentIndex());
+
+	// find file went from and set it as current
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		if (qhiFile.value().fileName() == qsFrom) {
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->clearSelection();
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+			break;
+		} // if
+	} // while
 } // Refresh
 
 // refresh dir content
