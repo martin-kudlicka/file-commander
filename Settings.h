@@ -221,6 +221,8 @@ class cSettings : private QObject
 																					  \return shortcun key sequence */
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
 																				/**< \return show brackets around directory name flag */
+		bool GetShowDriveLetter();										///< show drive letter in tab
+																				/**< \return show drive letter in tab flag */
 		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
 																				/**< \return true if show hidden files */
 		bool GetShowSystemFiles();										///< show system files in dir view flag
@@ -282,6 +284,8 @@ class cSettings : private QObject
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
 																				///< square brackets around directory name
 																				/**< \param bShowBrackets show brackets around directory name flag */
+		void SetShowDriveLetter(const bool &bShow);				///< show drive letter in tab
+																				/**< \param bShow show drive letter in tab flag */
 		void SetShowHiddenFiles(const bool &bShowHidden);		///< set show hidden files in dir view
 																				/**< \param bShowHidden show hidden files in dir view flag */
 		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view

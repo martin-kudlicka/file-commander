@@ -63,6 +63,7 @@ const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
 const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
 const QString qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB = "Tabs/OpenNewTabNextToCurrentTab";
+const QString qsTABS__SHOW_DRIVE_LETTER = "Tabs/ShowDriveLetter";
 const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
@@ -522,6 +523,12 @@ bool cSettings::GetShowBracketsAroundDirectoryName()
 	return qsSettings.value(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, true).toBool();
 } // GetShowBracketsAroundDirectoryName
 
+// show drive letter in tab
+bool cSettings::GetShowDriveLetter()
+{
+	return qsSettings.value(qsTABS__SHOW_DRIVE_LETTER).toBool();
+} // GetShowDriveLetter
+
 // show hidden files in dir view flag
 bool cSettings::GetShowHiddenFiles()
 {
@@ -772,6 +779,12 @@ void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)
 {
 	qsSettings.setValue(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, bShowBrackets);
 } // SetShowBracketsAroundDirectoryName
+
+// show drive letter in tab
+void cSettings::SetShowDriveLetter(const bool &bShow)
+{
+	qsSettings.setValue(qsTABS__SHOW_DRIVE_LETTER, bShow);
+} // SetShowDriveLetter
 
 // set show hidden files in dir view
 void cSettings::SetShowHiddenFiles(const bool &bShowHidden)

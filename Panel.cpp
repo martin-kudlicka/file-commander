@@ -1127,15 +1127,22 @@ void cPanel::SetPath(const QString &qsPath)
 void cPanel::SetTabText(const int &iTabIndex)
 {
 	QDir qdDir;
+	QString qsTabText;
+
+	if (csSettings->GetShowDriveLetter()) {
+		qsTabText = qhTabs.value(iTabIndex).swWidgets->qsDrive + ": ";
+	} // if
 
 	qdDir.setPath(qhTabs.value(iTabIndex).swWidgets->qsPath);
 
 	// tab bar
 	if (qdDir.dirName().isEmpty()) {
-		qtbTab->setTabText(iTabIndex, qdDir.path().at(0));
+		qsTabText += qdDir.path().at(0);
 	} else {
-		qtbTab->setTabText(iTabIndex, qdDir.dirName());
+		qsTabText += qdDir.dirName();
 	} // if else
+
+	qtbTab->setTabText(iTabIndex, qsTabText);
 } // SetTabText
 
 // sort dir content and show
