@@ -104,6 +104,21 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	HideOrShowTabBar();
 } // AddTab
 
+// close all other tabs than selected
+void cPanel::CloseAllOtherTabs(const int &iTabIndex)
+{
+	int iI;
+
+	qhTabs.insert(0, qhTabs.value(iTabIndex));
+	qtbTab->setTabText(0, qtbTab->tabText(iTabIndex));
+	qswDir->insertWidget(0, qswDir->widget(iTabIndex));
+	for (iI = qhTabs.count() - 1; iI > 0; iI--) {
+		qhTabs.remove(iI);
+		qtbTab->removeTab(iI);
+		qswDir->removeWidget(qswDir->widget(iTabIndex));
+	} // for
+} // CloseAllOtherTabs
+
 // close tab
 void cPanel::CloseTab(const int &iTabIndex)
 {
