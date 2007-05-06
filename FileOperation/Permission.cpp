@@ -6,19 +6,9 @@
 void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
 {
 	eChoice ecResponse;
-	QMessageBox qmbDialog;
 
-	// prepare dialog
-	qmbDialog.setIcon(QMessageBox::Warning);
-	qmbDialog.setWindowTitle(tr("Permission"));
-	qmbDialog.setText(tr("File %1\n%2 Continue?").arg(qsFilename).arg(qsInformation));
-	qmbDialog.addButton(QMessageBox::Yes);
-	qmbDialog.addButton(QMessageBox::No);
-	qmbDialog.addButton(QMessageBox::YesToAll);
-	qmbDialog.addButton(QMessageBox::NoToAll);
-	qmbDialog.addButton(QMessageBox::Cancel);
-
-	switch (qmbDialog.exec()) {
+	switch (QMessageBox::warning(NULL, tr("Permission"), tr("File %1 %2 Continue?").arg(qsFilename).arg(qsInformation),
+										  QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll | QMessageBox::Cancel)) {
 		case QMessageBox::Yes:			ecResponse = Yes;
 												break;
 		case QMessageBox::No:			ecResponse = No;
