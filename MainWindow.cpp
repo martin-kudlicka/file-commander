@@ -223,12 +223,12 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 } // eventFilter
 
 // find active panel (left or right)
-QStackedWidget *cMainWindow::GetActivePanel()
+cPanel *cMainWindow::GetActivePanel()
 {
-	if (qswLeft->currentWidget()->hasFocus()) {
-		return qswLeft;
+	if (cpLeft->IsActive()) {
+		return cpLeft;
 	} else {
-		return qswRight;
+		return cpRight;
 	} // if else
 } // GetActivePanel
 
@@ -504,11 +504,7 @@ void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 		QDir qdDir;
 		QString qsNewDirectory;
 
-		if (GetActivePanel() == qswLeft) {
-			qsNewDirectory = cpLeft->GetPath();
-		} else {
-			qsNewDirectory = cpRight->GetPath();
-		} // if else
+		qsNewDirectory = GetActivePanel()->GetPath();
 		qsNewDirectory += '/' + qsName;
 		qdDir.mkpath(qsNewDirectory);
 	} // if
@@ -588,7 +584,7 @@ void cMainWindow::SaveSettings()
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
 {
-	if (qswLeft == GetActivePanel()) {
+	if (cpLeft == GetActivePanel()) {
 		*cpSource = cpLeft;
 		if (cpDestination) {
 			*cpDestination = cpRight;

@@ -53,7 +53,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param watched filtered object
 																							  \param event event description
 																							  \return true if event is handled */
-		QStackedWidget *GetActivePanel();									///< find active panel (left or right)
+		cPanel *GetActivePanel();												///< find active panel (left or right)
 																						/**< \return pointer to active panel */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
 																						/**< \param epPos means left or right TabBar */

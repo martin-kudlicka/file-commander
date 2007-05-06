@@ -76,6 +76,8 @@ class cPanel : private QObject
 		void GoToRootDir();															///< go to root directory
 		void GoToUpDir();																///< go up one level (directory)
 		void InvertSelection();														///< invert selection of files
+		bool IsActive();																///< active panel flag
+																							/**< \return true if panel is active */
 		void Refresh();																///< refresh current dir view
 		void SaveSettings(const cSettings::ePosition &epPosition);		///< save panel settings
 																							/**< \param epPosition panel's position */
