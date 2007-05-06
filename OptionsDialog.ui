@@ -49,7 +49,7 @@
           </rect>
          </property>
          <property name="currentIndex" >
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab" >
           <attribute name="title" >
@@ -235,6 +235,89 @@
            </property>
            <property name="text" >
             <string>Save settings on quit</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_8" >
+          <attribute name="title" >
+           <string>&amp;Tabs</string>
+          </attribute>
+          <widget class="QCheckBox" name="checkBox_2" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>141</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Confirm close of all tabs</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_3" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>141</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Close &amp;tab on double click</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_4" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>70</y>
+             <width>191</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;New tab by shotrcut in foreground</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_5" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>191</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Open new tab next to current tab</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_6" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>110</y>
+             <width>111</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Show &amp;drive letter</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbShowTabBarWithOnlyOneTab" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>171</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Show tab bar with only one tab</string>
            </property>
           </widget>
          </widget>
