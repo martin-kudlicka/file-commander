@@ -172,8 +172,10 @@ class cSettings : private QObject
 																				/**< \param epPosition left or right panel
 																					  \param uiIndex index of tab in tab bar
 																					  \param stiTab tab information */
-		QMap <QString, QString> GetAllSettings();				///< get all application's settings
+		QMap <QString, QString> GetAllSettings();					///< get all application's settings
 																				/**< \return list of whole settings file */
+		bool GetCloseTabOnDoubleClick();								///< close tab in tab bar on double click
+																				/**< \return true if can close on double click */
 		sColumn GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn);
 																				///< get some information about column
 																				/**< \param qsColumnSet column's column set
@@ -240,6 +242,8 @@ class cSettings : private QObject
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
+		void SetCloseTabOnDoubleClick(const bool &bClose);		///< close tab on double click
+																				/**< \param bClose can close tab on double click if true */
 		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs
 																				/**< \param bClose confirm close of all tabs flag */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour

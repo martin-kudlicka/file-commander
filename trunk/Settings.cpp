@@ -60,7 +60,8 @@ const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBrac
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // Tabs
-const QString qsTABS_CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
+const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
+const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
 const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
@@ -189,10 +190,16 @@ QMap <QString, QString> cSettings::GetAllSettings()
 	return qlSettings;
 } // GetAllSettings
 
+// close tab in tab bar on double click
+bool cSettings::GetCloseTabOnDoubleClick()
+{
+	return qsSettings.value(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, true).toBool();
+} // GetCloseTabOnDoubleClick
+
 // confirm close of all tabs in tab bar
 bool cSettings::GetConfirmCloseOfAllTabs()
 {
-	return qsSettings.value(qsTABS_CONFIRM_CLOSE_OF_ALL_TABS).toBool();
+	return qsSettings.value(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS).toBool();
 } // GetConfirmCloseOfAllTabs
 
 // get some information about column
@@ -602,10 +609,16 @@ void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
 	} // while
 } // RestoreSettings
 
+// close tab on double click
+void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)
+{
+	qsSettings.setValue(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, bClose);
+} // SetCloseTabOnDoubleClick
+
 // confirm close of all tabs
 void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)
 {
-	qsSettings.setValue(qsTABS_CONFIRM_CLOSE_OF_ALL_TABS, bClose);
+	qsSettings.setValue(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS, bClose);
 } // SetConfirmCloseOfAllTabs
 
 // set default overwrite behaviour
