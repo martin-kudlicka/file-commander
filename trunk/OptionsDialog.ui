@@ -255,19 +255,6 @@
             <string>&amp;New tab by shotrcut in foreground</string>
            </property>
           </widget>
-          <widget class="QCheckBox" name="checkBox_5" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>191</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>&amp;Open new tab next to current tab</string>
-           </property>
-          </widget>
           <widget class="QCheckBox" name="checkBox_6" >
            <property name="geometry" >
             <rect>
@@ -318,6 +305,19 @@
            </property>
            <property name="text" >
             <string>Close &amp;tab on double click</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbOpenNewTabNextToCurrentTab" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>191</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Open new tab next to current tab</string>
            </property>
           </widget>
          </widget>

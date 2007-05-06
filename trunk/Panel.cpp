@@ -55,7 +55,7 @@ void cPanel::ActualizeWidgets()
 } // ActualizeWidgets
 
 // add new tab with dir view
-void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
+void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
 	cTreeWidget *ctwTree;
 	int iIndex;
@@ -66,7 +66,11 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	ctwTree->setRootIsDecorated(false);
 	ctwTree->setContextMenuPolicy(Qt::CustomContextMenu);
 	ctwTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	iIndex = qswDir->addWidget(ctwTree);
+	if (bStartUp || !csSettings->GetOpenNewTabNextToCurrentTab()) {
+		iIndex = qswDir->addWidget(ctwTree);
+	} else {
+		iIndex = qswDir->insertWidget(qswDir->currentIndex() + 1, ctwTree);
+	} // if else
 
 	// connect signals to slots
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
@@ -84,10 +88,18 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 	stTab.swWidgets->qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
+	if (qhTabs.contains(iIndex)) {
+		// move tabs by one place
+		int iI;
+
+		for (iI = qhTabs.count() - 1; iI >= iIndex; iI--) {
+			qhTabs.insert(iI + 1, qhTabs.value(iI));
+		} // for
+	} // if
 	qhTabs.insert(iIndex, stTab);
 
 	// add new tab into GUI
-	qtbTab->addTab("");
+	qtbTab->insertTab(iIndex, "");
 	SetTabText(iIndex);
 
 	// add path to watcher

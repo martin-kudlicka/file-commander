@@ -260,6 +260,7 @@ void cOptionsDialog::FillOptions()
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->setChecked(csSettings->GetShowTabBarWithOnlyOneTab());
 	qcbCloseTabOnDoubleClick->setChecked(csSettings->GetCloseTabOnDoubleClick());
+	qcbOpenNewTabNextToCurrentTab->setChecked(csSettings->GetOpenNewTabNextToCurrentTab());
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qtwColumns->setHeaderLabels(QStringList() << tr("Type") << tr("Name") << tr("Unit") << tr("Show") << tr("Width"));
@@ -899,6 +900,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());
 	csSettings->SetCloseTabOnDoubleClick(qcbCloseTabOnDoubleClick->isChecked());
+	csSettings->SetOpenNewTabNextToCurrentTab(qcbOpenNewTabNextToCurrentTab->isChecked());
 
 	// plugins
 	// content
