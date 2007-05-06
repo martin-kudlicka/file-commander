@@ -53,6 +53,8 @@ class cPanel : private QObject
 																							/**< \param iTabIndex selected tab */
 		void CloseTab(const int &iTabIndex);									///< close tab
 																							/**< \param iTabIndex tab to close */
+		void CloseTab(const QMouseEvent *qmeEvent);							///< close tab
+																							/**< \param qeEvent description of tab to close */
 		void DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
 																							/**< \param iTabIndex tab to duplicate */
 		void EditFile();																///< edit selected file in editor
@@ -64,6 +66,10 @@ class cPanel : private QObject
 																							/**< \return dir info list about selected directories */
 		QFileInfoList GetSelectedItemsList();									///< get file infos of selected items
 																							/**< \return file info list about selected files */
+		int GetTabIndex(const QTabBar *qtbTab, const QPoint &qpPos);	///< find out tab index in tab bar
+																							/**< \param qtbTab tab bar
+																								  \param qpPos cursor position in tab bar
+																								  \return tab index */
 		void GoToFile(const QString &qsFile);									///< show dir view with specified file
 																							/**< \param qsFile file to find */
 		void GoToRootDir();															///< go to root directory

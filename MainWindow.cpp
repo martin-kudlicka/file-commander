@@ -529,9 +529,17 @@ void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDes
 // show context menu for tab
 void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor)
 {
-	int iI, iTabIndex;
+	cPanel *cpSource;
+	int iTabIndex;
 	QAction *qaChoice;
 	QTabBar *qtbTabBar;
+
+	// source panel
+	if (epTab == cSettings::PositionLeft) {
+		cpSource = cpLeft;
+	} else {
+		cpSource = cpRight;
+	} // if else
 
 	// get the tab index clicked on
 	if (epTab == cSettings::PositionLeft) {
@@ -539,16 +547,9 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 	} else {
 		qtbTabBar = &qtbRight;
 	} // if else
-	iTabIndex = -1;
-	for (iI = 0; iI < qtbTabBar->count(); iI++) {
-		if (qtbTabBar->tabRect(iI).contains(qpCursor)) {
-			iTabIndex = iI;
-			break;
-		} // if
-	} // for
+	iTabIndex = cpSource->GetTabIndex(qtbTabBar, qpCursor);
 
 	if (iTabIndex != -1) {
-		cPanel *cpSource;
 		QAction *qaTabBarCloseAllOtherTabs, *qaTabBarCloseTab, *qaTabBarDuplicateTab;
 		QMenu qmTabBar(this);
 
@@ -568,12 +569,6 @@ void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const
 		} // if else
 
 		qaChoice = qmTabBar.exec(QCursor::pos());
-
-		if (epTab == cSettings::PositionLeft) {
-			cpSource = cpLeft;
-		} else {
-			cpSource = cpRight;
-		} // if else
 
 		if (qaChoice == qaTabBarDuplicateTab) {
 			cpSource->DuplicateTab(iTabIndex);

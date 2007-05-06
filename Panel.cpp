@@ -153,6 +153,19 @@ void cPanel::CloseTab(const int &iTabIndex)
 	HideOrShowTabBar();
 } // CloseTab
 
+// close tab
+void cPanel::CloseTab(const QMouseEvent *qmeEvent)
+{
+	if (csSettings->GetCloseTabOnDoubleClick() && qhTabs.count() > 1) {
+		int iTabIndex;
+
+		iTabIndex = GetTabIndex(qtbTab, qmeEvent->pos());
+		if (iTabIndex != -1) {
+			CloseTab(iTabIndex);
+		} // if
+	} // if
+} // CloseTab
+
 // constructor
 cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation)
 {
@@ -176,8 +189,6 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 #endif
 	);
 
-	qcbCommand->installEventFilter(this);
-
 	// signals for controls
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
 	connect(qcbDrive, SIGNAL(currentIndexChanged(int)), SLOT(on_qcbDrive_currentIndexChanged(int)));
@@ -192,6 +203,10 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	ccdContentDelayed = new cContentDelayed(ccContent);
 	connect(ccdContentDelayed, SIGNAL(GotColumnValue(const cContentDelayed::sOutput &)), SLOT(on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccdContentDelayed, SLOT(on_InterruptContentDelayed()));
+
+	// event filters
+	qcbCommand->installEventFilter(this);
+	qtbTab->installEventFilter(this);
 } // cPanel
 
 // create new tab by duplicate one
@@ -227,6 +242,7 @@ void cPanel::EditFile()
 bool cPanel::eventFilter(QObject *watched, QEvent *event)
 {
 	if (watched == qcbCommand) {
+		// command combo box
 		if (event->type() == QEvent::KeyPress) {
 			if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Down || static_cast<QKeyEvent *>(event)->key() == Qt::Key_Up) {
 				if (qswLastActive == qswDir) {
@@ -240,7 +256,17 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 		} // if
 		return false;
 	} else {
-		return QObject::eventFilter(watched, event);
+		if (watched == qtbTab) {
+			// tab bar
+			if (event->type() == QEvent::MouseButtonDblClick) {
+				CloseTab(static_cast<QMouseEvent *>(event));
+				return true;
+			} else {
+				return false;
+			} // if else
+		} else {
+			return QObject::eventFilter(watched, event);
+		} // if else
 	} // if else
 } // eventFilter
 
@@ -358,6 +384,20 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 		} // if else
 	} // if else
 } // GetSizeString
+
+// find out tab index in tab bar
+int cPanel::GetTabIndex(const QTabBar *qtbTab, const QPoint &qpPos)
+{
+	int iI;
+
+	for (iI = 0; iI < qtbTab->count(); iI++) {
+		if (qtbTab->tabRect(iI).contains(qpPos)) {
+			return iI;
+		} // if
+	} // for
+
+	return -1;
+} // GetTabIndex
 
 // show dir view with specified file
 void cPanel::GoToFile(const QString &qsFile)
