@@ -215,7 +215,11 @@ class cSettings : private QObject
 		bool GetShowBracketsAroundDirectoryName();				///< square brackets around directory name
 																				/**< \return show brackets around directory name flag */
 		bool GetShowHiddenFiles();										///< show hidden files in dir view flag
+																				/**< \return true if show hidden files */
 		bool GetShowSystemFiles();										///< show system files in dir view flag
+																				/**< \return true if show system files */
+		bool GetShowTabBarWithOnlyOneTab();							///< show tab bar with only one tab flag
+																				/**< \return true if show tab bar with only tab */
 		sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
 																				///< get some information about tab
 																				/**< \param epPosition left or right panel
@@ -264,10 +268,12 @@ class cSettings : private QObject
 		void SetShowBracketsAroundDirectoryName(const bool &bShowBrackets);
 																				///< square brackets around directory name
 																				/**< \param bShowBrackets show brackets around directory name flag */
-		void SetShowHiddenFiles(const bool &bShowHidden);		///< set show hidden files in dir view flag
+		void SetShowHiddenFiles(const bool &bShowHidden);		///< set show hidden files in dir view
 																				/**< \param bShowHidden show hidden files in dir view flag */
-		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view flag
+		void SetShowSystemFiles(const bool &bShowSystem);		///< set show system files in dir view
 																				/**< \param bShowHidden show system files in dir view flag */
+		void SetShowTabBarWithOnlyOneTab(const bool &bShow);	///< show tab bar with only one tab
+																				/**< \param bShow show tab bar with only one tab flag */
 		void SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs);
 																				///< save tab settings
 																				/**< \param epPosition panel position

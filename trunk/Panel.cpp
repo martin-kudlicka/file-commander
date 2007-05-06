@@ -100,6 +100,8 @@ void cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo)
 
 	// connect signals to slots
 	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
+
+	HideOrShowTabBar();
 } // AddTab
 
 // close tab
@@ -115,6 +117,8 @@ void cPanel::CloseTab(const int &iTabIndex)
 
 	qtbTab->removeTab(iTabIndex);
 	qswDir->removeWidget(qswDir->widget(iTabIndex));
+
+	HideOrShowTabBar();
 } // CloseTab
 
 // constructor
@@ -376,6 +380,18 @@ void cPanel::GoToUpDir()
 		} // while
 	} // if
 } // GoToUpDir
+
+// hide or show tab bar as set in options
+void cPanel::HideOrShowTabBar()
+{
+	if (csSettings->GetShowTabBarWithOnlyOneTab()) {
+		if (qhTabs.count() == 1) {
+			qtbTab->hide();
+		} else {
+			qtbTab->show();
+		} // if else
+	} // if
+} // HideOrShowTabBar
 
 // invert selection of files
 void cPanel::InvertSelection()

@@ -228,12 +228,8 @@ void cOptionsDialog::FillOptions()
 
 	// panels
 	// display
-	if (csSettings->GetShowSystemFiles()) {
-		qcbShowSystemFiles->setChecked(true);
-	} // if
-	if (csSettings->GetShowHiddenFiles()) {
-		qcbShowHiddenFiles->setChecked(true);
-	} // if
+	qcbShowSystemFiles->setChecked(csSettings->GetShowSystemFiles());
+	qcbShowHiddenFiles->setChecked(csSettings->GetShowHiddenFiles());
 	qsValue = csSettings->GetFileSizeIn();
 	if (qsValue == qsBYTES) {
 		qrbSizeBytes->setChecked(true);
@@ -252,18 +248,16 @@ void cOptionsDialog::FillOptions()
 			} // if else
 		} // if else
 	} // if else
-	if (csSettings->GetShowBracketsAroundDirectoryName()) {
-		qcbSquareBracketsAroundDirectoryName->setChecked(true);
-	} // if
+	qcbSquareBracketsAroundDirectoryName->setChecked(csSettings->GetShowBracketsAroundDirectoryName());
 	qsValue = csSettings->GetSelectionMode();
 	if (qsValue == qsONLY_FILES) {
 		qrbSelectionOnlyFiles->setChecked(true);
 	} else {
 		qrbSelectionFilesAndDirectories->setChecked(true);
 	} // if else
-	if (csSettings->GetSaveSettingsOnQuit()) {
-		qcbSaveSettingsOnQuit->setChecked(true);
-	} // if
+	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
+	// tabs
+	qcbShowTabBarWithOnlyOneTab->setChecked(csSettings->GetShowTabBarWithOnlyOneTab());
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qtwColumns->setHeaderLabels(QStringList() << tr("Type") << tr("Name") << tr("Unit") << tr("Show") << tr("Width"));
@@ -359,12 +353,8 @@ void cOptionsDialog::FillOptions()
 			qrbListerVariableCharWidth->setChecked(true);
 		} // if else
 	} // if else
-	if (slLister.bWrapText) {
-		qcbListerWrapText->setChecked(true);
-	} // if
-	if (slLister.bFitImageToWindow) {
-		qcbListerFitImageToWindow->setChecked(true);
-	} // if
+	qcbListerWrapText->setChecked(slLister.bWrapText);
+	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
 	// content
 	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
 	// lister
@@ -903,6 +893,8 @@ void cOptionsDialog::SaveOptions()
 	} // if else
 	csSettings->SetSelectionMode(qsValue);
 	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
+	// tabs
+	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 
 	// plugins
 	// content

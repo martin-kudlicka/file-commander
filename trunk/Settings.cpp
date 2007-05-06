@@ -59,6 +59,8 @@ const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
+// Tabs
+const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
 // LeftPanel
@@ -511,6 +513,12 @@ bool cSettings::GetShowSystemFiles()
 	return qsSettings.value(qsDISPLAY__SHOW_SYSTEM_FILES).toBool();
 } // GetShowSystemFiles
 
+// show tab bar with only one tab flag
+bool cSettings::GetShowTabBarWithOnlyOneTab()
+{
+	return qsSettings.value(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB, true).toBool();
+} // GetShowTabBarWithOnlyOneTab
+
 ///< get some information about tab
 cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
@@ -726,17 +734,23 @@ void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)
 	qsSettings.setValue(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, bShowBrackets);
 } // SetShowBracketsAroundDirectoryName
 
-// set show hidden files in dir view flag
+// set show hidden files in dir view
 void cSettings::SetShowHiddenFiles(const bool &bShowHidden)
 {
 	qsSettings.setValue(qsDISPLAY__SHOW_HIDDEN_FILES, bShowHidden);
 } // SetShowHiddenFiles
 
-// set show system files in dir view flag
+// set show system files in dir view
 void cSettings::SetShowSystemFiles(const bool &bShowSystem)
 {
 	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, bShowSystem);
 } // SetShowSystemFiles
+
+// show tab bar with only one tab
+void cSettings::SetShowTabBarWithOnlyOneTab(const bool &bShow)
+{
+	qsSettings.setValue(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB, bShow);
+} // SetShowTabBarWithOnlyOneTab
 
 // save tab settings
 void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs)
