@@ -246,9 +246,9 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 
 		stiTabInfo = csSettings.GetTabInfo(epPosition, qslTabs.at(iI));
 		if (epPosition == cSettings::PositionLeft) {
-			cpLeft->AddTab(stiTabInfo);
+			cpLeft->AddTab(stiTabInfo, true);
 		} else {
-			cpRight->AddTab(stiTabInfo);
+			cpRight->AddTab(stiTabInfo, true);
 		} // if else
 	} // for
 } // LoadTabs

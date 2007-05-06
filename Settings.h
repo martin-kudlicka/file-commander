@@ -192,12 +192,15 @@ class cSettings : private QObject
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
+																				/**< \return file size unit */
 		sFindSettings GetFindSettings(const QString &qsName);	///< get find settings
 																				/**< \param qsName name of find settings set
 																					  \return find settings */
 		sLister GetListerSettings();									///< lister settings
 																				/**< \return lister settings */
 																				/**< \return file size unit */
+		bool GetOpenNewTabNextToCurrentTab();						///< open new tab next to current tab
+																				/**< \return open new tab next to current tab flag */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
@@ -256,6 +259,9 @@ class cSettings : private QObject
 																					  \param sfsFindSettings settings for find files dialog */
 		void SetListerSettings(const sLister &slLister);		///< set default lister settings
 																				/**< \param slLister lister settings */
+		void SetOpenNewTabNextToCurrentTab(const bool &bNextTo);
+																				///< open new tab next to current tab
+																				/**< \param bNextTo open new tab next to current tab flag */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type

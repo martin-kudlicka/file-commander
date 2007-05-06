@@ -47,8 +47,10 @@ class cPanel : private QObject
 																								  \param cfoFileOperation handling file operations */
 		~cPanel();																		///< destructor
 
-		void AddTab(const cSettings::sTabInfo &stiTabInfo);
+		void AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
 																							///< add new tab with dir view
+																							/**< \param stiTabInfo new tab description
+																								  \param bStartUp true if tab is added on application startup */
 		void CloseAllOtherTabs(const int &iTabIndex);						///< close all other tabs than selected
 																							/**< \param iTabIndex selected tab */
 		void CloseTab(const int &iTabIndex);									///< close tab

@@ -62,6 +62,7 @@ const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // Tabs
 const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
 const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
+const QString qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB = "Tabs/OpenNewTabNextToCurrentTab";
 const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
@@ -309,6 +310,12 @@ cSettings::sLister cSettings::GetListerSettings()
 
 	return slLister;
 } // GetListerSettings
+
+// open new tab next to current tab
+bool cSettings::GetOpenNewTabNextToCurrentTab()
+{
+	return qsSettings.value(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB).toBool();
+} // GetOpenNewTabNextToCurrentTab
 
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
@@ -680,6 +687,12 @@ void cSettings::SetFindSettings(const QString &qsName, const sFindSettings &sfsF
 	} // if
 	qsSettings.endGroup();
 } // SetFindSettings
+
+// open new tab next to current tab
+void cSettings::SetOpenNewTabNextToCurrentTab(const bool &bNextTo)
+{
+	qsSettings.setValue(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB, bNextTo);
+} // SetOpenNewTabNextToCurrentTab
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)
