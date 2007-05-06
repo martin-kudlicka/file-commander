@@ -508,6 +508,12 @@ bool cPanel::IsRootDirectory(const QString &qsDirectory)
 	} // if else
 } // IsRootDirectory
 
+// active panel flag
+bool cPanel::IsActive()
+{
+	return qswDir == qswLastActive;
+} // IsActive
+
 // got golumn value from plugin
 void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
 {
