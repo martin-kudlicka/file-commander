@@ -65,6 +65,8 @@ class cPanel : private QObject
 		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
+		QHash<QTreeWidgetItem *, QFileInfo> *GetDirContent();				///< get content of the directory view
+																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
 		QFileInfoList GetSelectedDirItemsList();								///< get dir infos of selected items

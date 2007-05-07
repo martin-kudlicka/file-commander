@@ -471,6 +471,9 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION) {
 													return "*";
 												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES) {
+													return "Shift+F2";
+												} // if
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
 													return "Alt+F7";
 												} // if

@@ -60,6 +60,7 @@ const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP = "Unselect group...";
 const QString qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL = "Select all";
 const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL = "Unselect all";
 const QString qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION = "Invert selection";
+const QString qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES = "Compare directories";
 const QString qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH = "Search...";
 const QString qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN = "Fullscreen";
 const QString qsSHORTCUT__MAIN_MENU__SHOW__REFRESH = "Refresh";
