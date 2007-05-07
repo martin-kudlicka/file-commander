@@ -483,6 +483,18 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN) {
 													return "F11";
 												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN) {
+													return "Ctrl+F3";
+												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN) {
+													return "Ctrl+F4";
+												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN) {
+													return "Ctrl+F5";
+												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN) {
+													return "Ctrl+F6";
+												} // if
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__REFRESH) {
 													return "Ctrl+R";
 												} // if
