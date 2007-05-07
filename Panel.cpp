@@ -313,7 +313,27 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 																							return false;
 																						} // if else
 														case Qt::Key_Up:			return !QuickSearch(NULL, SearchUp);
-														default:						return !QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
+														default:						if (static_cast<QKeyEvent *>(event)->text().isEmpty()) {
+																							// white char obtained
+																							return false;
+																						} else {
+																							bool bSearch;
+
+																							bSearch = QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
+
+																							if (qleQuickSearch->isVisible()) {
+																								// search in window
+																								return !bSearch;
+																							} else {
+																								// search without window -> set focus back to dir view
+																								if (qswLastActive == qswDir) {
+																									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+																									return true;
+																								} else {
+																									return false;
+																								} // if else
+																							} // if else
+																						} // if else
 													} // switch
 					default:						return false;
 				} // switch
@@ -843,10 +863,14 @@ bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection 
 	int iPos;
 	QString qsFilename;
 
+	if (!qleQuickSearch->isVisible()) {
+		// search for only one first character
+		qleQuickSearch->clear();
+	} // if
 	qsFilename = qleQuickSearch->text() + qsNextChar;
 
 	iPos = static_cast<QTreeWidget *>(qswDir->currentWidget())->indexOfTopLevelItem(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem());
-	if (qsNextChar.isEmpty()) {
+	if (qsNextChar.isEmpty() || !qleQuickSearch->isVisible()) {
 		if (eqsdDirection == SearchDown) {
 			iPos++;
 		} else {
