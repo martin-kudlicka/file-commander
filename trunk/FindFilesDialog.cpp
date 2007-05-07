@@ -601,7 +601,7 @@ void cFindFilesDialog::Start(const cSettings::sFindSettings &sfsCurrentSearch, c
 			} // for
 		} // while
 
-		if (sfsCurrentSearch.iSubdirectoryDepth < qsbSubdirectoryDepth->value()) {
+		if (iDepth < sfsCurrentSearch.iSubdirectoryDepth) {
 			qfilDirectories += qfilNextDirDepth;
 			iDepth++;
 		} else {
