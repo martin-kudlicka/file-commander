@@ -29,6 +29,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		static const int iTIMER_INTERVAL = 1000;							///< timer interval
 
 		cFileOperation *cfoFileOperation;									///< handling file operations
+		cPanel *cpActive;															///< last active panel
 		cPanel *cpLeft;															///< left dir panel
 		cPanel *cpRight;															///< right dir panel
 		cPanel *cpTabBarAction;													///< selected tab bar for action with tabs
@@ -38,6 +39,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QAction *qaTabBarCloseAllOtherTabs;									///< close all other tabs
 		QAction *qaTabBarCloseTab;												///< close current tab
 		QAction *qaTabBarDuplicateTab;										///< duplicate current tab
+		QActionGroup *qagSortBy;												///< sort by actions
 		QHBoxLayout *qhblBackgroundOperations;								///< layout for background operations
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
 		QMenu qmTabBar;															///< tab bar context menu
@@ -53,11 +55,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param watched filtered object
 																							  \param event event description
 																							  \return true if event is handled */
-		cPanel *GetActivePanel();												///< find active panel (left or right)
-																						/**< \return pointer to active panel */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
 																						/**< \param epPos means left or right TabBar */
 		void SaveSettings();														///< save dir view settings
+		void SetSortByActions();												///< set sort by actions for sorting columns
 		void SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination = NULL);
 																						///< set focused panel as source, other as destination
 																						/**< \param cpSource source panel
@@ -68,6 +69,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							  \param qpCursor cursor position on tab */
 
 	private slots:
+		void on_cpLeft_GotFocus();												///< left panel got focus
+		void on_cpRight_GotFocus();											///< right panel got focus
 		void on_qaBranchView_triggered(bool checked = false);			///< branch view is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaCompareDirectories_triggered(bool checked = false);
@@ -75,6 +78,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qagSortBy_triggered(QAction *action);					///< sort by action called
+																						/**< \param action column to sort by */
 		void on_qaInvertSelection_triggered(bool checked = false);	///< invert selection is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaOptions_triggered(bool checked = false);				///< options are selected

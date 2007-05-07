@@ -352,6 +352,12 @@ void cPanel::FeedToPanel(QFileInfoList &qfilFiles)
 	RefreshContent(qswDir->currentIndex(), qfilFiles);
 } // FeedToPanel
 
+// columns for current dir view
+QList<cSettings::sColumn> *cPanel::GetColumns()
+{
+	return qhTabs.value(qswDir->currentIndex()).qlColumns;
+} // GetColumns
+
 // get content of the directory view
 QHash<QTreeWidgetItem *, QFileInfo> *cPanel::GetDirContent()
 {
@@ -680,8 +686,11 @@ void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, con
 // dir view got focus
 void cPanel::on_ctwTree_GotFocus()
 {
-	qswLastActive = qswDir;
-	qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+	if (qswLastActive != qswDir) {
+		qswLastActive = qswDir;
+		qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+		emit GotFocus();
+	} // if
 } // on_ctwTree_GotFocus
 
 // double click in tree view
@@ -953,28 +962,6 @@ bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection 
 	} // while
 } // QuickSearch
 
-// refresh current dir view
-void cPanel::Refresh()
-{
-	QString qsFrom;
-
-	// remember file going from
-	qsFrom = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()).fileName();
-
-	RefreshContent(qswDir->currentIndex());
-
-	// find file went from and set it as current
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-		if (qhiFile.value().fileName() == qsFrom) {
-			static_cast<QTreeWidget *>(qswDir->currentWidget())->clearSelection();
-			static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
-			break;
-		} // if
-	} // while
-} // Refresh
-
 // refresh all dir views
 void cPanel::RefreshAllContents()
 {
@@ -995,17 +982,27 @@ void cPanel::RefreshAllHeaders()
 	} // for
 } // RefreshAllHeaders
 
-// refresh tabs
-void cPanel::RefreshTabs()
+// refresh current dir view
+void cPanel::RefreshContent()
 {
-	int iI;
+	QString qsFrom;
 
-	for (iI = 0; iI < qhTabs.count(); iI++) {
-		SetTabText(iI);
-	} // for
+	// remember file going from
+	qsFrom = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()).fileName();
 
-	HideOrShowTabBar();
-} // RefreshTabs
+	RefreshContent(qswDir->currentIndex());
+
+	// find file went from and set it as current
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		if (qhiFile.value().fileName() == qsFrom) {
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->clearSelection();
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+			break;
+		} // if
+	} // while
+} // RefreshContent
 
 // refresh dir content
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
@@ -1182,6 +1179,18 @@ void cPanel::RefreshHeader(const int &iIndex)
 	// refresh dir content according to new header
 	RefreshContent(iIndex);
 } // RefreshHeader
+
+// refresh tabs
+void cPanel::RefreshTabs()
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		SetTabText(iI);
+	} // for
+
+	HideOrShowTabBar();
+} // RefreshTabs
 
 // save panel settings
 void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
@@ -1406,6 +1415,28 @@ void cPanel::Sort(const int &iIndex)
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlDirectories);
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlFiles);
 } // Sort
+
+// sort by specified column
+void cPanel::SortBy(const int &iColumn)
+{
+	Qt::SortOrder soSortOrder;
+
+	// change sort order
+	if (static_cast<cTreeWidget *>(qswDir->currentWidget())->header()->sortIndicatorSection() == iColumn) {
+		soSortOrder = static_cast<cTreeWidget *>(qswDir->currentWidget())->header()->sortIndicatorOrder();
+		if (soSortOrder == Qt::AscendingOrder) {
+			soSortOrder = Qt::DescendingOrder;
+		} else {
+			soSortOrder = Qt::AscendingOrder;
+		} // if else
+	} else {
+		soSortOrder = Qt::AscendingOrder;
+	} // if else
+	static_cast<cTreeWidget *>(qswDir->currentWidget())->header()->setSortIndicator(iColumn, soSortOrder);
+
+	// sort again
+	Sort(qswDir->currentIndex());
+} // SortBy
 
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
