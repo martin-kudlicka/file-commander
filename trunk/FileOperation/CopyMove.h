@@ -17,6 +17,7 @@
 #include "FileOperation/Permission.h"
 #endif
 #include "FileOperation/Retry.h"
+#include "FileOperation/DiskSpace.h"
 
 class cCopyMove : public QThread
 {
@@ -45,6 +46,8 @@ class cCopyMove : public QThread
 		cCopyMoveConflict::eChoice ecConflictCurrent;			///< current conflict user's response
 		cCopyMoveDialog *ccmdDialog;									///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;									///< copy/move widget
+		cDiskSpace cdsDiskSpace;										///< disk space dialog
+		cDiskSpace::eChoice ecDiskSpaceCurrent;					///< current disk space user's response
 		cFileRoutine::eOperation eoOperation;						///< copy or move operation
 #ifdef Q_WS_WIN
 		cPermission cpPermission;										///< permission dialog
@@ -99,6 +102,11 @@ class cCopyMove : public QThread
 																				/**< \param qsOperation type of operation - copy or move
 																					  \param qfiSource source file information
 																					  \param qfiDestination destination file information */
+		void ShowDiskSpaceDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace);
+																				///< show disk space dialog
+																				/**< \param qsFilename concerned file
+																					  \param qi64FileSize file size
+																					  \param qi64FreeSpace free space on target disk */
 #ifdef Q_WS_WIN
 		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation);
 																				///< show permission dialog
@@ -116,9 +124,12 @@ class cCopyMove : public QThread
 	private slots:
 		void on_ccm_OperationCanceled();								///< copy or move operation was canceled
 		void on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse);
-																				///< dialog closed with user response
+																				///< conflict dialog closed with user response
 																				/**< \param ecResponse user's response */
 		void on_ccmdCopyMoveDialog_Background();					///< move operation to background
+		void on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &ecResponse);
+																				///< disk space dialog closed with user response
+																				/**< \param ecResponse dialog result */
 #ifdef Q_WS_WIN
 		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
 																				///< permission dialog closed with user response

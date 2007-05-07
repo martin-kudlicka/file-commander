@@ -107,6 +107,10 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
+	// disk space dialog
+	connect(this, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), &cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
+	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));
+
 	start();
 } // CopyMove
 
@@ -183,7 +187,7 @@ void cCopyMove::on_ccm_OperationCanceled()
 	bCanceled = true;
 } // on_ccm_OperationCanceled
 
-// dialog closed with user response
+// conflict dialog closed with user response
 void cCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse)
 {
 	ecConflictCurrent = ecResponse;
@@ -201,6 +205,13 @@ void cCopyMove::on_ccmdCopyMoveDialog_Background()
 	ccmdDialog->deleteLater();
 	ccmdDialog = NULL;
 } // on_ccmdCopyMoveDialog_Background
+
+// disk space dialog closed with user response
+void cCopyMove::on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &ecResponse)
+{
+	ecDiskSpaceCurrent = ecResponse;
+	qsPause.release();
+} // on_cdsDiskSpace_Finished
 
 #ifdef Q_WS_WIN
 // permission dialog closed with user response
@@ -229,6 +240,7 @@ void cCopyMove::on_crRetry_Finished(const cRetry::eChoice &ecResponse)
 void cCopyMove::run()
 {
 	cCopyMoveConflict::eChoice ecConflict;
+	cDiskSpace::eChoice ecDiskSpace;
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
@@ -279,6 +291,7 @@ void cCopyMove::run()
 	} // if else
 #endif
 	ecRetry = cRetry::Ask;
+	ecDiskSpace = cDiskSpace::Ask;
 
 	// main process
 	qdDir.setCurrent(qsSourcePath);
@@ -300,6 +313,7 @@ void cCopyMove::run()
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
 		} else {
+			cFileRoutine::sDiskSpace sdsDiskSpace;
 #ifdef Q_WS_WIN
 			DWORD dwAttributes;
 #else
@@ -307,9 +321,41 @@ void cCopyMove::run()
 #endif
 			emit SetCurrentValue(0);
 
+			// check disk space on target
+			sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
+			if (sdsDiskSpace.qi64Free < qfilSources.at(iI).size()) {
+				ecDiskSpaceCurrent = cDiskSpace::Ask;
+
+				if (ecDiskSpace == cDiskSpace::Ask) {
+					// disk space dialog
+					emit ShowDiskSpaceDialog(qsSource, qfilSources.at(iI).size(), sdsDiskSpace.qi64Free);
+					// wait for answer
+					qsPause.acquire();
+
+					// solve
+					switch (ecDiskSpaceCurrent) {
+						case cDiskSpace::YesToAll:	ecDiskSpace = cDiskSpace::YesToAll;
+															break;
+						case cDiskSpace::SkipAll:	ecDiskSpace = cDiskSpace::SkipAll;
+					} // switch
+				} // if
+
+				if (ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
+					// skip current file
+					qi64TotalValue += qfilSources.at(iI).size();
+					continue;
+				} else {
+					if (ecDiskSpaceCurrent == cDiskSpace::No) {
+						// cancel
+						break;
+					} // if
+				} // if else
+			} // if
+
 			// conflict solving
-			ecConflictCurrent = cCopyMoveConflict::Ask;
 			if (QFile::exists(qsTarget)) {
+				ecConflictCurrent = cCopyMoveConflict::Ask;
+
 				if (ecConflict == cCopyMoveConflict::Ask) {
 					while (true) {
 						// no permanent conflict answer yet
@@ -364,6 +410,7 @@ void cCopyMove::run()
 
 				if (ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
 					// skip or skip all -> move onto next file
+					qi64TotalValue += qfilSources.at(iI).size();
 					continue;
 				} else {
 					if (ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
@@ -377,6 +424,7 @@ void cCopyMove::run()
 								QFile::remove(qsTarget);
 							} else {
 								// target file is newer -> move onto next file
+								qi64TotalValue += qfilSources.at(iI).size();
 								continue;
 							} // if else
 						} // if
@@ -414,6 +462,7 @@ void cCopyMove::run()
 					} // if
 				} // if
 				if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+					qi64TotalValue += qfilSources.at(iI).size();
 					continue;
 				} else {
 					// remove target file readonly permission
@@ -433,11 +482,11 @@ void cCopyMove::run()
 																		QFile::remove(qsTarget);
 																	} else {
 																		// set target permissions as source permissions
-	#ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
 																		SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
-	#else
+#else
 																		QFile::setPermissions(qsTarget, pPermissions);
-	#endif
+#endif
 																	} // if else
 																	break;
 					case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflict::Append) {
