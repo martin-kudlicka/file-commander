@@ -477,10 +477,10 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
 													return "Alt+F7";
 												} // if
-												if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN) {
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN) {
 													return "F11";
 												} // if
-												if (qsShortcut == qsSHORTCUT__MAIN_MENU__SHOW__REFRESH) {
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__PANEL__REFRESH) {
 													return "Ctrl+R";
 												} // if
 												break;

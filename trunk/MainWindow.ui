@@ -413,33 +413,11 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuCommands" >
-    <property name="title" >
-     <string>&amp;Commands</string>
-    </property>
-    <addaction name="qaSearch" />
-   </widget>
-   <widget class="QMenu" name="menuShow" >
-    <property name="title" >
-     <string>&amp;Show</string>
-    </property>
-    <addaction name="qaFullScreen" />
-    <addaction name="separator" />
-    <addaction name="qaRefresh" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
     <addaction name="qaQuit" />
-   </widget>
-   <widget class="QMenu" name="menuConfiguration" >
-    <property name="title" >
-     <string>C&amp;onfiguration</string>
-    </property>
-    <addaction name="qaOptions" />
-    <addaction name="qaSavePosition" />
-    <addaction name="qaSaveSettings" />
    </widget>
    <widget class="QMenu" name="menu_Mark" >
     <property name="title" >
@@ -452,6 +430,28 @@
     <addaction name="qaInvertSelection" />
     <addaction name="separator" />
     <addaction name="qaCompareDirectories" />
+   </widget>
+   <widget class="QMenu" name="menuCommands" >
+    <property name="title" >
+     <string>&amp;Commands</string>
+    </property>
+    <addaction name="qaSearch" />
+    <addaction name="separator" />
+    <addaction name="qaFullScreen" />
+   </widget>
+   <widget class="QMenu" name="menuConfiguration" >
+    <property name="title" >
+     <string>C&amp;onfiguration</string>
+    </property>
+    <addaction name="qaOptions" />
+    <addaction name="qaSavePosition" />
+    <addaction name="qaSaveSettings" />
+   </widget>
+   <widget class="QMenu" name="menuShow" >
+    <property name="title" >
+     <string>&amp;Panel</string>
+    </property>
+    <addaction name="qaRefresh" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
