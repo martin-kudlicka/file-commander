@@ -731,46 +731,48 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 	qint64 qi64Size;
 
 	switch (qkeEvent->key()) {
-		case Qt::Key_Space:	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
+		case Qt::Key_Space:		qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
 
-									// refresh content plugin values
-									for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
-										if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
-											qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+										// refresh content plugin values
+										for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
+											if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
+												qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+											} // if
+										} // for
+
+										if (qfiFile.isFile()) {
+											// selected item is file
+											return;
 										} // if
-									} // for
 
-									if (qfiFile.isFile()) {
-										// selected item is file
-										return;
-									} // if
+										iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
+										if (iColumnExtension == -1) {
+											// no place to show occupied space
+											return;
+										} // if
 
-									iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
-									if (iColumnExtension == -1) {
-										// no place to show occupied space
-										return;
-									} // if
+										qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+										qi64Size = 0;
+										for (iI = 0; iI < qfilFiles.count(); iI++) {
+											qi64Size += qfilFiles.at(iI).size();
+										} // for
 
-									qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
-									qi64Size = 0;
-									for (iI = 0; iI < qfilFiles.count(); iI++) {
-										qi64Size += qfilFiles.at(iI).size();
-									} // for
-
-									qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
-									break;
-		default:					if (csSettings->GetQuickSearchEnabled() &&
-										 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
-										 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
-										 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
-										// quick search activated
-										qleQuickSearch->setFocus(Qt::OtherFocusReason);
-										QApplication::sendEvent(qleQuickSearch, qkeEvent);
-									} else {
-										// pass key to command line
-										QApplication::sendEvent(qcbCommand, qkeEvent);
-										qcbCommand->setFocus(Qt::OtherFocusReason);
-									} // if else
+										qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+										break;
+		case Qt::Key_Backspace:	GoToUpDir();
+										break;
+		default:						if (csSettings->GetQuickSearchEnabled() &&
+											 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
+											 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
+											 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
+											// quick search activated
+											qleQuickSearch->setFocus(Qt::OtherFocusReason);
+											QApplication::sendEvent(qleQuickSearch, qkeEvent);
+										} else {
+											// pass key to command line
+											QApplication::sendEvent(qcbCommand, qkeEvent);
+											qcbCommand->setFocus(Qt::OtherFocusReason);
+										} // if else
 	} // switch
 } // on_ctwTree_KeyPressed
 
