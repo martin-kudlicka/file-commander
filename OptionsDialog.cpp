@@ -36,9 +36,9 @@ const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__M
 																						 qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION;
-const QStringList qslSHORTCUTS__MAIN_MENU__COMMANDS = QStringList() << qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH;
-const QStringList qslSHORTCUTS__MAIN_MENU__SHOW = QStringList() << qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN <<
-																						 qsSHORTCUT__MAIN_MENU__SHOW__REFRESH;
+const QStringList qslSHORTCUTS__MAIN_MENU__COMMANDS = QStringList() << qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH <<
+																							  qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN;
+const QStringList qslSHORTCUTS__MAIN_MENU__PANEL = QStringList() << qsSHORTCUT__MAIN_MENU__PANEL__REFRESH;
 const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS <<
 																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION <<
 																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS;
@@ -345,9 +345,9 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutCommands = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutCommands->setText(0, tr("Commands"));
 	qtwiShortcutCommands->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
-	qtwiShortcutShow = new QTreeWidgetItem(qtwiShortcutMain);
-	qtwiShortcutShow->setText(0, tr("Show"));
-	qtwiShortcutShow->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
+	qtwiShortcutPanel = new QTreeWidgetItem(qtwiShortcutMain);
+	qtwiShortcutPanel->setText(0, tr("Panel"));
+	qtwiShortcutPanel->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
 	qtwiShortcutConfiguration = new QTreeWidgetItem(qtwiShortcutMain);
 	qtwiShortcutConfiguration->setText(0, tr("Configuration"));
 	qtwiShortcutConfiguration->setData(0, Qt::UserRole, cSettings::MainMenuCategory);
@@ -855,9 +855,9 @@ void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *
 				// main menu/commands
 				FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__COMMANDS);
 			} else {
-				if (current == qtwiShortcutShow) {
-					// main menu/show
-					FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__SHOW);
+				if (current == qtwiShortcutPanel) {
+					// main menu/panel
+					FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__PANEL);
 				} else {
 					if (current == qtwiShortcutConfiguration) {
 						// main menu/configuration
