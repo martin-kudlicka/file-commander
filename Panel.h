@@ -30,7 +30,7 @@ class cPanel : private QObject
 		static const qint64 qi64_KILOBYTE = 1024;								///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;							///< 1 megabyte in bytes
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
 																								  \param qswPanel panel for cTreeWidget
@@ -44,7 +44,8 @@ class cPanel : private QObject
 																								  \param qmDrives information about system drives
 																								  \param qlGlobalPath path visible in the bottom of main window
 																								  \param qcbCommand command combo box
-																								  \param cfoFileOperation handling file operations */
+																								  \param cfoFileOperation handling file operations
+																								  \param qleQuickSearch quick search window */
 		~cPanel();																		///< destructor
 
 		int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
@@ -96,6 +97,12 @@ class cPanel : private QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;								///< timer interval
 
+		///< quick search direction in directory view
+		enum eQuickSearchDirection {
+			SearchUp,																	///< search up
+			SearchDown																	///< search down
+		};
+
 		/// strings for widgets
 		struct sWidgets {
 			QString qsDrive;															///< selected drive
@@ -125,6 +132,7 @@ class cPanel : private QObject
 		QLabel *qlPath;																///< path
 		QLabel *qlDriveInfo;															///< drive info - label, used/free place
 		QLabel *qlSelected;															///< selected items
+		QLineEdit *qleQuickSearch;													///< quick search window
 		QMainWindow *qmwParent;														///< parent window for dialogs
 		QMap<QString, cFileRoutine::sDriveInfo> *qmDrives;					///< drives in system
 		QStackedWidget *qswDir;														///< directory view
@@ -158,6 +166,11 @@ class cPanel : private QObject
 																							/**< \param qsPath path to test
 																								  \return true if path exists and is accessible */
 #endif
+		bool QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection);
+																							///< search if quick searched file exists in current dir view
+																							/**< \param qsNextChar next filename character to search with
+																								  \param eqsdDirection direction of search
+																								  \return true if file found */
 		void RefreshContent(const int &iIndex, QFileInfoList &qfilFiles = QFileInfoList());
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view

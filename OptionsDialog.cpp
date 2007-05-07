@@ -297,6 +297,12 @@ void cOptionsDialog::FillOptions()
 	qtwColumns->header()->setResizeMode(iSHOW_COLUMN, QHeaderView::Stretch);
 	qtwColumns->header()->setStretchLastSection(false);
 	qcbColumnSet->addItems(csSettings->GetColumnSets());
+	// quick search
+	qgbQuickSearch->setChecked(csSettings->GetQuickSearchEnabled());
+	qcbQuickSearchCtrl->setChecked(csSettings->GetQuickSearchCtrl());
+	qcbQuickSearchAlt->setChecked(csSettings->GetQuickSearchAlt());
+	qcbQuickSearchShift->setChecked(csSettings->GetQuickSearchShift());
+	qcbQuickSearchShowWindow->setChecked(csSettings->GetQuickSearchShowSearchWindow());
 
 	// operations
 	// confirmation
@@ -1042,6 +1048,12 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetNewTabByShortcutInForeground(qcbNewTabByShortcutInForeground->isChecked());
 	csSettings->SetOpenNewTabNextToCurrentTab(qcbOpenNewTabNextToCurrentTab->isChecked());
 	csSettings->SetShowDriveLetter(qcbShowDriveLetter->isChecked());
+	// quick search
+	csSettings->SetQuickSearchEnabled(qgbQuickSearch->isChecked());
+	csSettings->SetQuickSearchCtrl(qcbQuickSearchCtrl->isChecked());
+	csSettings->SetQuickSearchAlt(qcbQuickSearchAlt->isChecked());
+	csSettings->SetQuickSearchShift(qcbQuickSearchShift->isChecked());
+	csSettings->SetQuickSearchShowSearchWindow(qcbQuickSearchShowWindow->isChecked());
 
 	// plugins
 	// content

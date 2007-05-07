@@ -11,6 +11,7 @@
 #include <QMenu>
 #include <QUrl>
 #include <QMessageBox>
+#include <QLineEdit>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -184,7 +185,7 @@ void cPanel::CloseTab(const QMouseEvent *qmeEvent)
 } // CloseTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -199,6 +200,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qlGlobalPath = qlGlobalPath;
 	this->qcbCommand = qcbCommand;
 	this->cfoFileOperation = cfoFileOperation;
+	this->qleQuickSearch = qleQuickSearch;
 
 	csmMenu = new cShellMenu(
 #ifdef Q_WS_WIN
@@ -224,6 +226,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	// event filters
 	qcbCommand->installEventFilter(this);
 	qtbTab->installEventFilter(this);
+	qleQuickSearch->installEventFilter(this);
 } // cPanel
 
 // create new tab by duplicate one
@@ -282,7 +285,40 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 				return false;
 			} // if else
 		} else {
-			return QObject::eventFilter(watched, event);
+			if (watched == qleQuickSearch) {
+				// quick search
+				switch (event->type()) {
+					case QEvent::FocusIn:	qleQuickSearch->clear();
+													qleQuickSearch->show();
+													return false;
+					case QEvent::FocusOut:	qleQuickSearch->hide();
+													return false;
+					case QEvent::KeyPress:	switch (static_cast<QKeyEvent *>(event)->key()) {
+														case Qt::Key_Backspace: return false;
+														case Qt::Key_Down:		return !QuickSearch(NULL, SearchDown);
+														case Qt::Key_Enter:
+														case Qt::Key_Return:		if (qswLastActive == qswDir) {
+																							qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+																							QApplication::sendEvent(qswLastActive->currentWidget(), event);
+																							return true;
+																						} else {
+																							return false;
+																						} // if else
+														case Qt::Key_Escape:		if (qswLastActive == qswDir) {
+																							qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+																							return true;
+																						} else {
+																							return false;
+																						} // if else
+														case Qt::Key_Up:			return !QuickSearch(NULL, SearchUp);
+														default:						return !QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
+													} // switch
+					default:						return false;
+				} // switch
+			} else {
+				// the rest
+				return QObject::eventFilter(watched, event);
+			} // if else
 		} // if else
 	} // if else
 } // eventFilter
@@ -701,8 +737,18 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 
 									qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
 									break;
-		default:					QApplication::sendEvent(qcbCommand, qkeEvent);
-									qcbCommand->setFocus(Qt::OtherFocusReason);
+		default:					if (csSettings->GetQuickSearchEnabled() &&
+										 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
+										 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
+										 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
+										// quick search activated
+										qleQuickSearch->setFocus(Qt::OtherFocusReason);
+										QApplication::sendEvent(qleQuickSearch, qkeEvent);
+									} else {
+										// pass key to command line
+										QApplication::sendEvent(qcbCommand, qkeEvent);
+										qcbCommand->setFocus(Qt::OtherFocusReason);
+									} // if else
 	} // switch
 } // on_ctwTree_KeyPressed
 
@@ -787,6 +833,59 @@ bool cPanel::PathExists(const QString &qsPath)
 	return bResult;
 } // PathExists
 #endif
+
+// search if quick searched file exists in current dir view
+bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection)
+{
+	bool bOnStart;
+	int iPos;
+	QString qsFilename;
+
+	qsFilename = qleQuickSearch->text() + qsNextChar;
+
+	iPos = static_cast<QTreeWidget *>(qswDir->currentWidget())->indexOfTopLevelItem(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem());
+	if (qsNextChar.isEmpty()) {
+		if (eqsdDirection == SearchDown) {
+			iPos++;
+		} else {
+			iPos--;
+		} // if else
+	} // if
+
+	bOnStart = false;
+	while (true) {
+		// correct position
+		if (iPos > static_cast<QTreeWidget *>(qswDir->currentWidget())->topLevelItemCount()) {
+			iPos = 0;
+		} else {
+			if (iPos < 0) {
+				iPos = static_cast<QTreeWidget *>(qswDir->currentWidget())->topLevelItemCount() - 1;
+			} // if
+		} // if else
+
+		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<QTreeWidget *>(qswDir->currentWidget())->topLevelItem(iPos)).fileName().startsWith(qsFilename)) {
+			// found
+			static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(static_cast<QTreeWidget *>(qswDir->currentWidget())->topLevelItem(iPos));
+			return true;
+		} // if
+
+		if (static_cast<QTreeWidget *>(qswDir->currentWidget())->topLevelItem(iPos) == static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()) {
+			// on item started from
+			if (bOnStart) {
+				return false;
+			} else {
+				bOnStart = true;
+			} // if else
+		} // if
+
+		// move onto next item
+		if (eqsdDirection == SearchDown) {
+			iPos++;
+		} else {
+			iPos--;
+		} // if else
+	} // while
+} // QuickSearch
 
 // refresh current dir view
 void cPanel::Refresh()

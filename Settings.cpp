@@ -66,6 +66,13 @@ const QString qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND = "Tabs/NewTabByShortcut
 const QString qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB = "Tabs/OpenNewTabNextToCurrentTab";
 const QString qsTABS__SHOW_DRIVE_LETTER = "Tabs/ShowDriveLetter";
 const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
+// Quick search
+const QString qsQUICK_SEARCH__ALT = "QuickSearch/Alt";
+const QString qsQUICK_SEARCH__CTRL = "QuickSearch/Ctrl";
+const QString qsQUICK_SEARCH__ENABLED = "QuickSearch/Enabled";
+const QString qsQUICK_SEARCH__SHIFT = "QuickSearch/Shift";
+const QString qsQUICK_SEARCH__SHOW_SEARCH_WINDOW = "QuickSearch/ShowSearchWindow";
+
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
 // LeftPanel
@@ -363,6 +370,36 @@ QString cSettings::GetPluginTimeDisplay()
 {
 	return qsSettings.value(qsPLUGINS__TIME_DISPLAY, "%h:%m:%s").toString();
 } // GetPluginTimeDisplay
+
+// alt key activity in quick search
+bool cSettings::GetQuickSearchAlt()
+{
+	return qsSettings.value(qsQUICK_SEARCH__ALT, true).toBool();
+} // GetQuickSearchAlt
+
+// ctrl key activity in quick search
+bool cSettings::GetQuickSearchCtrl()
+{
+	return qsSettings.value(qsQUICK_SEARCH__CTRL, true).toBool();
+} // GetQuickSearchCtrl
+
+// enabled/disabled quick search
+bool cSettings::GetQuickSearchEnabled()
+{
+	return qsSettings.value(qsQUICK_SEARCH__ENABLED, true).toBool();
+} // GetQuickSearchEnabled
+
+// shift key activity in quick search
+bool cSettings::GetQuickSearchShift()
+{
+	return qsSettings.value(qsQUICK_SEARCH__SHIFT).toBool();
+} // GetQuickSearchShift
+
+// quick search window visibility
+bool cSettings::GetQuickSearchShowSearchWindow()
+{
+	return qsSettings.value(qsQUICK_SEARCH__SHOW_SEARCH_WINDOW, true).toBool();
+} // GetQuickSearchShowSearchWindow
 
 // find out readonly file overwrite mode
 QString cSettings::GetReadonlyFileOverwrite()
@@ -756,6 +793,36 @@ void cSettings::SetPluginTimeDisplay(const QString &qsTime)
 {
 	qsSettings.setValue(qsPLUGINS__TIME_DISPLAY, qsTime);
 } // SetPluginTimeDisplay
+
+// alt key activity in quick search
+void cSettings::SetQuickSearchAlt(const bool &bAlt)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__ALT, bAlt);
+} // SetQuickSearchAlt
+
+// ctrl key activity in quick search
+void cSettings::SetQuickSearchCtrl(const bool &bCtrl)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__CTRL, bCtrl);
+} // SetQuickSearchCtrl
+
+// enabled/disabled quick search
+void cSettings::SetQuickSearchEnabled(const bool &bEnable)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__ENABLED, bEnable);
+} // SetQuickSearchEnabled
+
+// shift key activity in quick search
+void cSettings::SetQuickSearchShift(const bool &bShift)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__SHIFT, bShift);
+} // SetQuickSearchShift
+
+// quick search window visibility
+void cSettings::SetQuickSearchShowSearchWindow(const bool &bShow)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__SHOW_SEARCH_WINDOW, bShow);
+} // SetQuickSearchShowSearchWindow
 
 // set default readonly overwrite behaviour
 void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
