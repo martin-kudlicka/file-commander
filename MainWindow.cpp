@@ -109,6 +109,10 @@ void cMainWindow::AssignShortcuts()
 	qaOptions->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS)));
 	qaSavePosition->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION)));
 	qaSaveSettings->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS)));
+	// sort by
+	if (qagSortBy->actions().count() > 0) {
+		SetSortByActions();
+	} // if
 } // AssignShortcuts
 
 // create of main window
@@ -743,14 +747,27 @@ void cMainWindow::SetSortByActions()
 	qlColumns = cpActive->GetColumns();
 
 	for (iI = 0; iI < qlColumns->count(); iI++) {
-		new QAction(qlColumns->at(iI).qsName, qagSortBy);
+		QAction *qaSortBy;
+
+		qaSortBy = new QAction(qlColumns->at(iI).qsName, qagSortBy);
+
+		// set shortcuts
+		switch (iI) {
+			case 0:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN)));
+						break;
+			case 1:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN)));
+						break;
+			case 2:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN)));
+						break;
+			case 3:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN)));
+		} // switch
 	} // for
 
 	qmPanel->insertActions(qaColumnsSeparator, qagSortBy->actions());
 } // SetSortByActions
 
 // set focused panel as source, other as destination
-void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
+void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* NULL */)
 {
 	if (cpLeft == cpActive) {
 		*cpSource = cpLeft;
