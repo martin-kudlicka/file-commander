@@ -467,6 +467,23 @@ QString cPanel::GetSizeString(const qint64 &qi64Size)
 	} // if else
 } // GetSizeString
 
+// filters for file query
+QDir::Filters cPanel::GetStandardFilters()
+{
+	QDir::Filters fFilters;
+
+	fFilters = QDir::Dirs | QDir::Files;
+
+	if (csSettings->GetShowSystemFiles()) {
+		fFilters |= QDir::System;
+	} // if
+	if (csSettings->GetShowHiddenFiles()) {
+		fFilters |= QDir::Hidden;
+	} // if
+
+	return fFilters;
+} // GetStandardFilters
+
 // find out tab index in tab bar
 int cPanel::GetTabIndex(const QPoint &qpPos)
 {
@@ -994,7 +1011,6 @@ void cPanel::RefreshTabs()
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 {
 	int iI;
-	QDir::Filters fFilters;
 	QList<cContentDelayed::sParameters> qlParameters;
 
 	// interrupt delayed content processing
@@ -1004,21 +1020,13 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 	qhTabs.value(iIndex).qhFiles->clear();
 
 	if (qfilFiles.count() == 0) {
-		// get file list
-		fFilters = QDir::Dirs | QDir::Files;
-		if (csSettings->GetShowSystemFiles()) {
-			fFilters |= QDir::System;
-		} // if
-		if (csSettings->GetShowHiddenFiles()) {
-			fFilters |= QDir::Hidden;
-		} // if
 		// check path
 		if (!PathExists(qhTabs.value(iIndex).swWidgets->qsPath)) {
 			SetPath(qhTabs.value(iIndex).swWidgets->qsPath);
 			return;
 		} // if
 		// get files
-		qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, fFilters);
+		qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).swWidgets->qsPath, GetStandardFilters());
 	} // if
 
 	// go through files and add them into file list
@@ -1112,6 +1120,12 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 		// start thread to query content plugins values
 		ccdContentDelayed->Start(qlParameters);
 	} // if
+} // RefreshContent
+
+// refresh current dir view with custom files
+void cPanel::RefreshContent(QFileInfoList &qfilFiles)
+{
+	RefreshContent(qswDir->currentIndex(), qfilFiles);
 } // RefreshContent
 
 // refresh column's header

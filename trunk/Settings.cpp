@@ -477,6 +477,9 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH) {
 													return "Alt+F7";
 												} // if
+												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW) {
+													return "Ctrl+B";
+												} // if
 												if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN) {
 													return "F11";
 												} // if
