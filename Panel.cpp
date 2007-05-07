@@ -162,12 +162,13 @@ void cPanel::CloseTab(const int &iTabIndex)
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
 		} // for
 		qhTabs.remove(qhTabs.count() - 1);
-
 		qtbTab->removeTab(iTabIndex);
 		qswDir->removeWidget(qswDir->widget(iTabIndex));
 
 		HideOrShowTabBar();
 		ActualizeWidgets();
+
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->setFocus(Qt::OtherFocusReason);
 	} // if
 } // CloseTab
 
