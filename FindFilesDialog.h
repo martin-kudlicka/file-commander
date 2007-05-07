@@ -67,10 +67,10 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																								/**< \param state search between dates/time flag */
 		void on_qcbFileSize_stateChanged(int state);								///< search files by their size
 																								/**< \param state search by size flag */
-		void on_qcbSearchForText_stateChanged(int state);						///< search for text in files
-																								/**< \param state search for text flag */
 		void on_qcbSearchInSelectedDirectories_stateChanged(int state);	///< search only in selected directories
 																								/**< \param state type of search */
+		void on_qgbFullText_toggled(bool on);										///< search for text in files
+																								/**< \param on search for text flag */
 		void on_qpbBrowse_clicked(bool checked = false);						///< browse button is clicked on
 																								/**< \param checked true if button is checkable and checked */
 		void on_qpbDeleteFind_clicked(bool checked = false);					///< delete find is clicked on

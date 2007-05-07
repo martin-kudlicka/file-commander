@@ -6,61 +6,19 @@
     <x>0</x>
     <y>0</y>
     <width>423</width>
-    <height>554</height>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Find files</string>
   </property>
-  <widget class="QPushButton" name="qpbStart" >
-   <property name="geometry" >
-    <rect>
-     <x>170</x>
-     <y>520</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Start</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbStop" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="geometry" >
-    <rect>
-     <x>250</x>
-     <y>520</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>S&amp;top</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="qpbCancel" >
-   <property name="geometry" >
-    <rect>
-     <x>330</x>
-     <y>520</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Cancel</string>
-   </property>
-  </widget>
   <widget class="QTabWidget" name="tabWidget" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>10</y>
      <width>401</width>
-     <height>341</height>
+     <height>331</height>
     </rect>
    </property>
    <property name="currentIndex" >
@@ -70,128 +28,6 @@
     <attribute name="title" >
      <string>General</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="geometry" >
-      <rect>
-       <x>10</x>
-       <y>170</y>
-       <width>371</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="title" >
-      <string>Full text</string>
-     </property>
-     <widget class="QCheckBox" name="qcbFullTextWholeWords" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>91</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Whole words</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbFullTextCaseSensitive" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>91</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Case sensitive</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbFullTextNotContainingText" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>121</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Not containing text</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbSearchForText" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Search for text</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbFullTextRegularExpression" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>140</x>
-        <y>90</y>
-        <width>121</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Regular expression</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="qcbFullTextHex" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>140</x>
-        <y>70</y>
-        <width>71</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text" >
-       <string>Hex</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="qcbFullText" >
-      <property name="enabled" >
-       <bool>false</bool>
-      </property>
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>351</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="editable" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox" >
      <property name="geometry" >
       <rect>
@@ -344,6 +180,103 @@
       </property>
       <property name="autoDefault" >
        <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="qgbFullText" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>371</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="title" >
+      <string>Full text</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <widget class="QComboBox" name="qcbFullText" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>351</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="editable" >
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextWholeWords" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>91</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Whole words</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextCaseSensitive" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>91</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Case sensitive</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextNotContainingText" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>121</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Not containing text</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextHex" >
+      <property name="geometry" >
+       <rect>
+        <x>140</x>
+        <y>60</y>
+        <width>71</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Hex</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="qcbFullTextRegularExpression" >
+      <property name="geometry" >
+       <rect>
+        <x>140</x>
+        <y>80</y>
+        <width>121</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Regular expression</string>
       </property>
      </widget>
     </widget>
@@ -522,19 +455,6 @@
     <attribute name="title" >
      <string>Load/save</string>
     </attribute>
-    <widget class="QPushButton" name="qpbSaveFind" >
-     <property name="geometry" >
-      <rect>
-       <x>90</x>
-       <y>280</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text" >
-      <string>Save</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="qpbDeleteFind" >
      <property name="enabled" >
       <bool>false</bool>
@@ -542,7 +462,7 @@
      <property name="geometry" >
       <rect>
        <x>170</x>
-       <y>280</y>
+       <y>270</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -558,7 +478,7 @@
      <property name="geometry" >
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>270</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -567,13 +487,26 @@
       <string>Load</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="qpbSaveFind" >
+     <property name="geometry" >
+      <rect>
+       <x>90</x>
+       <y>270</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>Save</string>
+     </property>
+    </widget>
     <widget class="QTreeWidget" name="qtwSavedFinds" >
      <property name="geometry" >
       <rect>
        <x>10</x>
        <y>10</y>
        <width>371</width>
-       <height>261</height>
+       <height>251</height>
       </rect>
      </property>
      <property name="rootIsDecorated" >
@@ -586,7 +519,7 @@
    <property name="geometry" >
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>350</y>
      <width>401</width>
      <height>151</height>
     </rect>
@@ -656,6 +589,48 @@
     </property>
    </widget>
   </widget>
+  <widget class="QPushButton" name="qpbStart" >
+   <property name="geometry" >
+    <rect>
+     <x>170</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Start</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbStop" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>250</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>S&amp;top</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>330</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>qcbSearchFor</tabstop>
@@ -665,7 +640,6 @@
   <tabstop>qpbDrives</tabstop>
   <tabstop>qcbSearchInSelectedDirectories</tabstop>
   <tabstop>qsbSubdirectoryDepth</tabstop>
-  <tabstop>qcbSearchForText</tabstop>
   <tabstop>qcbFullText</tabstop>
   <tabstop>qcbFullTextWholeWords</tabstop>
   <tabstop>qcbFullTextCaseSensitive</tabstop>

@@ -224,8 +224,8 @@ cSettings::sFindSettings cFindFilesDialog::GetSettings()
 	sfsFindSettings.bSearchForRegularExpression = qcbSearchForRegularExpression->isChecked();
 	sfsFindSettings.qsSearchIn = qcbSearchIn->currentText();
 	sfsFindSettings.iSubdirectoryDepth = qsbSubdirectoryDepth->value();
-	sfsFindSettings.bSearchForText = qcbSearchForText->isChecked();
-	if (qcbSearchForText->isChecked()) {
+	sfsFindSettings.bSearchForText = qgbFullText->isChecked();
+	if (qgbFullText->isChecked()) {
 		sfsFindSettings.qsFullText = qcbFullText->currentText();
 		sfsFindSettings.bFulTextWholeWords = qcbFullTextWholeWords->isChecked();
 		sfsFindSettings.bFullTextCaseSensitive = qcbFullTextCaseSensitive->isChecked();
@@ -304,27 +304,6 @@ void cFindFilesDialog::on_qcbFileSize_stateChanged(int state)
 	} // if else
 } // on_qcbFileSize_stateChanged
 
-// search for text in files
-void cFindFilesDialog::on_qcbSearchForText_stateChanged(int state)
-{
-	if (state == Qt::Checked) {
-		qcbFullText->setEnabled(true);
-		qcbFullTextWholeWords->setEnabled(true);
-		qcbFullTextCaseSensitive->setEnabled(true);
-		qcbFullTextNotContainingText->setEnabled(true);
-		qcbFullTextHex->setEnabled(true);
-		qcbFullTextRegularExpression->setEnabled(true);
-		qcbFullText->setFocus(Qt::OtherFocusReason);
-	} else {
-		qcbFullText->setEnabled(false);
-		qcbFullTextWholeWords->setEnabled(false);
-		qcbFullTextCaseSensitive->setEnabled(false);
-		qcbFullTextNotContainingText->setEnabled(false);
-		qcbFullTextHex->setEnabled(false);
-		qcbFullTextRegularExpression->setEnabled(false);
-	} // if else
-} // on_qcbSearchForText_stateChanged
-
 // search only in selected directories
 void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
 {
@@ -340,6 +319,14 @@ void cFindFilesDialog::on_qcbSearchInSelectedDirectories_stateChanged(int state)
 		qpbSaveFind->setEnabled(true);
 	} // if else
 } // on_qcbSearchInSelectedDirectories_stateChanged
+
+// search for text in files
+void cFindFilesDialog::on_qgbFullText_toggled(bool on)
+{
+	if (on) {
+		qcbFullText->setFocus(Qt::OtherFocusReason);
+	} // if
+} // on_qgbFullText_toggled
 
 // browse button is clicked on
 void cFindFilesDialog::on_qpbBrowse_clicked(bool checked /* false */)
@@ -420,7 +407,7 @@ void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */)
 	qcbSearchForRegularExpression->setChecked(sfsFindSettings.bSearchForRegularExpression);
 	qcbSearchIn->setEditText(sfsFindSettings.qsSearchIn);
 	qsbSubdirectoryDepth->setValue(sfsFindSettings.iSubdirectoryDepth);
-	qcbSearchForText->setChecked(sfsFindSettings.bSearchForText);
+	qgbFullText->setChecked(sfsFindSettings.bSearchForText);
 	qcbFullText->setEditText(sfsFindSettings.qsFullText);
 	qcbFullTextWholeWords->setChecked(sfsFindSettings.bFulTextWholeWords);
 	qcbFullTextCaseSensitive->setChecked(sfsFindSettings.bFullTextCaseSensitive);
