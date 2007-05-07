@@ -289,7 +289,9 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 				// quick search
 				switch (event->type()) {
 					case QEvent::FocusIn:	qleQuickSearch->clear();
-													qleQuickSearch->show();
+													if (csSettings->GetQuickSearchShowSearchWindow()) {
+														qleQuickSearch->show();
+													} // if
 													return false;
 					case QEvent::FocusOut:	qleQuickSearch->hide();
 													return false;
