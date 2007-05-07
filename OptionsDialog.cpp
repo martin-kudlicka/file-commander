@@ -107,6 +107,8 @@ void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTree
 {
 	QTreeWidgetItem *qtwiItem;
 
+	qtwTree->blockSignals(true);
+
 	// name
 	qtwiItem = new QTreeWidgetItem(qtwTree);
 	qtwiItem->setText(iPLUGIN_NAME_COLUMN, spPlugin.qsName);
@@ -118,6 +120,8 @@ void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTree
 	} // if else
 
 	qtwTree->resizeColumnToContents(iPLUGIN_NAME_COLUMN);
+
+	qtwTree->blockSignals(false);
 } // AddPluginIntoTree
 
 // constructor
@@ -231,27 +235,43 @@ void cOptionsDialog::FillOptions()
 
 	// panels
 	// display
+	qcbShowSystemFiles->blockSignals(true);
 	qcbShowSystemFiles->setChecked(csSettings->GetShowSystemFiles());
+	qcbShowSystemFiles->blockSignals(false);
+	qcbShowHiddenFiles->blockSignals(true);
 	qcbShowHiddenFiles->setChecked(csSettings->GetShowHiddenFiles());
+	qcbShowHiddenFiles->blockSignals(false);
 	qsValue = csSettings->GetFileSizeIn();
 	if (qsValue == qsBYTES) {
+		qrbSizeBytes->blockSignals(true);
 		qrbSizeBytes->setChecked(true);
+		qrbSizeBytes->blockSignals(false);
 	} else {
 		if (qsValue == qsKILOBYTES) {
+			qrbSizeKilobytes->blockSignals(true);
 			qrbSizeKilobytes->setChecked(true);
+			qrbSizeKilobytes->blockSignals(false);
 		} else {
 			if (qsValue == qsMEGABYTES) {
+				qrbSizeMegabytes->blockSignals(true);
 				qrbSizeMegabytes->setChecked(true);
+				qrbSizeMegabytes->blockSignals(false);
 			} else {
 				if (qsValue == qsGIGABYTES) {
+					qrbSizeGigabytes->blockSignals(true);
 					qrbSizeGigabytes->setChecked(true);
+					qrbSizeGigabytes->blockSignals(false);
 				} else {
+					qrbSizeDynamic->blockSignals(true);
 					qrbSizeDynamic->setChecked(true);
+					qrbSizeDynamic->blockSignals(false);
 				} // if else
 			} // if else
 		} // if else
 	} // if else
+	qcbSquareBracketsAroundDirectoryName->blockSignals(true);
 	qcbSquareBracketsAroundDirectoryName->setChecked(csSettings->GetShowBracketsAroundDirectoryName());
+	qcbSquareBracketsAroundDirectoryName->blockSignals(false);
 	qsValue = csSettings->GetSelectionMode();
 	if (qsValue == qsONLY_FILES) {
 		qrbSelectionOnlyFiles->setChecked(true);
@@ -261,11 +281,15 @@ void cOptionsDialog::FillOptions()
 	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
 	// tabs
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
+	qcbShowTabBarWithOnlyOneTab->blockSignals(true);
 	qcbShowTabBarWithOnlyOneTab->setChecked(csSettings->GetShowTabBarWithOnlyOneTab());
+	qcbShowTabBarWithOnlyOneTab->blockSignals(false);
 	qcbCloseTabOnDoubleClick->setChecked(csSettings->GetCloseTabOnDoubleClick());
 	qcbNewTabByShortcutInForeground->setChecked(csSettings->GetNewTabByShortcutInForeground());
 	qcbOpenNewTabNextToCurrentTab->setChecked(csSettings->GetOpenNewTabNextToCurrentTab());
+	qcbShowDriveLetter->blockSignals(true);
 	qcbShowDriveLetter->setChecked(csSettings->GetShowDriveLetter());
+	qcbShowDriveLetter->blockSignals(false);
 	// column sets
 	qtwColumns->setColumnCount(iCOLUMNS);
 	qtwColumns->setHeaderLabels(QStringList() << tr("Type") << tr("Name") << tr("Unit") << tr("Show") << tr("Width"));
@@ -353,7 +377,9 @@ void cOptionsDialog::FillOptions()
 
 	// plugins
 	// general
+	qlePluginTimeDisplay->blockSignals(true);
 	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
+	qlePluginTimeDisplay->blockSignals(false);
 	slLister = csSettings->GetListerSettings();
 	if (slLister.qsCharSet == qsANSI) {
 		qrbListerANSI->setChecked(true);
@@ -493,24 +519,62 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 	} // if else
 } // on_qcbColumnSet_currentIndexChanged
 
+// change of show drive letter in tab bar
+void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
+{
+	qfTodo |= RefreshTabs;
+} // on_qcbShowDriveLetter_stateChanged
+
+// change of show hidden files
+void cOptionsDialog::on_qcbShowHiddenFiles_stateChanged(int state)
+{
+	qfTodo |= RefreshContent;
+} // on_qcbShowHiddenFiles_stateChanged
+
+// change of show system files
+void cOptionsDialog::on_qcbShowSystemFiles_stateChanged(int state)
+{
+	qfTodo |= RefreshContent;
+} // on_qcbShowSystemFiles_stateChanged
+
+// change of show tab bar with only one tab
+void cOptionsDialog::on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state)
+{
+	qfTodo |= RefreshTabs;
+} // on_qcbShowTabBarWithOnlyOneTab_stateChanged
+
+// change of show square brackets around directory name
+void cOptionsDialog::on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state)
+{
+	qfTodo |= RefreshContent;
+} // on_qcbSquareBracketsAroundDirectoryName_stateChanged
+
 // changes accepted
 void cOptionsDialog::on_qdbbResponse_accepted()
 {
 	SaveOptions();
-	accept();
+	done(qfTodo);
 } // on_qdbbResponse_accepted
 
 void cOptionsDialog::on_qdbbResponse_rejected()
 {
 	csSettings->RestoreSettings(qlOldOptions);
-	reject();
+	done(Nothing);
 } // on_qdbbResponse_rejected
+
+// time format by plugin changed
+void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
+{
+	qfTodo |= RefreshContent;
+} // on_qlePluginTimeDisplay_textEdited
 
 // shortcut changed
 void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 {
 	qtwShortcutItem->currentItem()->setText(1, text);
 	csSettings->SetShortcut(static_cast<cSettings::eShortcutCategory>(qtwShortcutCategory->currentItem()->data(0, Qt::UserRole).toInt()), qtwShortcutItem->currentItem()->text(0), text);
+
+	qfTodo |= ReassignShortcuts;
 } // on_qleShortcut_textEdited
 
 // column selected into column set
@@ -553,6 +617,8 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 	qtwColumns->setCurrentItem(qtwiNewColumn);
 
 	SaveOption(Columns);
+
+	qfTodo |= RefreshTabs;
 } // on_qmColumns_triggered
 
 // add button is clicked on in content plugins
@@ -568,6 +634,8 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 		spPlugin.qsName = qsFile;
 		spPlugin.bEnabled = true;
 		AddPluginIntoTree(spPlugin, qtwContentPlugins);
+
+		qfTodo |= ReloadPlugins;
 	} // if
 } // on_qpbAddContentPlugin_clicked
 
@@ -584,6 +652,8 @@ void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 		spPlugin.qsName = qsFile;
 		spPlugin.bEnabled = true;
 		AddPluginIntoTree(spPlugin, qtwListerPlugins);
+
+		qfTodo |= ReloadPlugins;
 	} // if
 } // on_qpbAddListerPlugin_clicked
 
@@ -599,6 +669,8 @@ void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 	qtwColumns->setCurrentItem(AddColumnToColumns(scColumn, iIndex + 1));
 
 	SaveOption(Columns);
+
+	qfTodo |= RefreshHeader;
 } // on_qpbColumnDown_clicked
 
 // column remove button is clicked on in columns view
@@ -606,6 +678,8 @@ void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 {
 	delete qtwColumns->currentItem();
 	SaveOption(Columns);
+
+	qfTodo |= RefreshHeader;
 } // on_qpbColumnRemove_clicked
 
 // column set add button is clicked on in columns view
@@ -619,6 +693,8 @@ void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 		csSettings->CreateColumnSet(qsName);
 		qcbColumnSet->addItem(qsName);
 		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(qsName));
+
+		qfTodo |= RefreshHeader;
 	} // if
 } // on_qpbColumnSetAdd_clicked
 
@@ -627,6 +703,8 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 {
 	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
 	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
+
+	qfTodo |= RefreshHeader;
 } // on_qpbColumnSetRemove_clicked
 
 // column up button is clicked on in columns view
@@ -641,19 +719,199 @@ void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 	qtwColumns->setCurrentItem(AddColumnToColumns(scColumn, iIndex - 1));
 
 	SaveOption(Columns);
+
+	qfTodo |= RefreshHeader;
 } // on_qpbColumnUp_clicked
 
 // remove content plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 {
 	delete qtwContentPlugins->selectedItems().at(0);
+
+	qfTodo |= ReloadPlugins;
 } // on_qpbRemoveContentPlugin_clicked
 
 // remove lister plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 {
 	delete qtwListerPlugins->selectedItems().at(0);
+
+	qfTodo |= ReloadPlugins;
 } // on_qpbRemoveListerPlugin_clicked
+
+// size in bytes status change
+void cOptionsDialog::on_qrbSizeBytes_toggled(bool checked)
+{
+	qfTodo |= RefreshContent;
+} // on_qrbSizeBytes_toggled
+
+// dynamic size status change
+void cOptionsDialog::on_qrbSizeDynamic_toggled(bool checked)
+{
+	qfTodo |= RefreshContent;
+} // on_qrbSizeDynamic_toggled
+
+// size in gigabytes status change
+void cOptionsDialog::on_qrbSizeGigabytes_toggled(bool checked)
+{
+	qfTodo |= RefreshContent;
+} // on_qrbSizeGigabytes_toggled
+
+// size in kilobytes status change
+void cOptionsDialog::on_qrbSizeKilobytes_toggled(bool checked)
+{
+	qfTodo |= RefreshContent;
+} // on_qrbSizeKilobytes_toggled
+
+// size in megabytes status change
+void cOptionsDialog::on_qrbSizeMegabytes_toggled(bool checked)
+{
+	qfTodo |= RefreshContent;
+} // on_qrbSizeMegabytes_toggled
+
+// changed width of column
+void cOptionsDialog::on_qsbWidth_valueChanged(int val)
+{
+	SaveOption(Columns);
+} // on_qsbWidth_valueChanged
+
+// selected cell changed
+void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) > 0) {
+			qpbColumnUp->setEnabled(true);
+	} else {
+		qpbColumnUp->setEnabled(false);
+	} // if else
+	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) < qtwColumns->topLevelItemCount() - 1) {
+		qpbColumnDown->setEnabled(true);
+	} else {
+		qpbColumnDown->setEnabled(false);
+	} // if else
+} // on_qtwColumns_currentItemChanged
+
+// selected column changed
+void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
+{
+	if (qtwColumns->selectedItems().count() > 0) {
+		qpbColumnRemove->setEnabled(true);
+	} else {
+		qpbColumnRemove->setEnabled(false);
+	} // if else
+} // on_qtwColumns_itemSelectionChanged
+
+// selected content plugin changed
+void cOptionsDialog::on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column)
+{
+	qfTodo |= ReloadPlugins;
+} // on_qtwContentPlugins_itemChanged
+
+// selected content plugin changed
+void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
+{
+	if (qtwContentPlugins->selectedItems().count() > 0) {
+		qpbRemoveContentPlugin->setEnabled(true);
+	} else {
+		qpbRemoveContentPlugin->setEnabled(false);
+	} // if else
+} // on_qtwContentPlugins_itemSelectionChanged
+
+// selected lister plugin changed
+void cOptionsDialog::on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column)
+{
+	qfTodo |= ReloadPlugins;
+} // on_qtwListerPlugins_itemSelectionChanged
+
+// selected lister plugin changed
+void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
+{
+	if (qtwListerPlugins->selectedItems().count() > 0) {
+		qpbRemoveListerPlugin->setEnabled(true);
+	} else {
+		qpbRemoveListerPlugin->setEnabled(false);
+	} // if else
+} // on_qtwListerPlugins_itemSelectionChanged
+
+// selected shortcut category changed
+void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	qtwShortcutItem->clear();
+
+	if (current == qtwiShortcutFile) {
+		// main menu/file
+		FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__FILE);
+	} else {
+		if (current == qtwiShortcutMark) {
+			// main menu/mark
+			FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__MARK);
+		} else {
+			if (current == qtwiShortcutCommands) {
+				// main menu/commands
+				FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__COMMANDS);
+			} else {
+				if (current == qtwiShortcutShow) {
+					// main menu/show
+					FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__SHOW);
+				} else {
+					if (current == qtwiShortcutConfiguration) {
+						// main menu/configuration
+						FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__CONFIGURATION);
+					} else {
+						if (current == qtwiShortcutTabs) {
+							// panels/tabs
+							FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__TABS);
+						} else {
+							if (current == qtwiShortcutDirectoryView) {
+								// panels/directory view
+								FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__DIRECTORY_VIEW);
+							} else {
+								if (current == qtwiShortcutMainButtons) {
+									// panels/main buttons
+									FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__MAIN_BUTTON);
+								} else {
+									if (current == qtwiShortcutOperationsDialog) {
+										// operations/dialog
+										FillShortcutItems(cSettings::OperationsCategory, qslSHORTCUTS__OPERATIONS__DIALOG);
+									} else {
+										if (current == qtwiShortcutListerFile) {
+											// lister/file
+											FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__FILE);
+										} else {
+											if (current == qtwiShortcutListerEdit) {
+												// lister/edit
+												FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__EDIT);
+											} else {
+												if (current == qtwiShortcutListerOptions) {
+													// lister/options
+													FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__OPTIONS);
+												} // if
+											} // if else
+										} // if else
+									} // if else
+								} // if else
+							} // if else
+						} // if else
+					} // if else
+				} // if else
+			} // if else
+		} // if else
+	} // if else
+} // on_qtwShortcutCategory_itemSelectionChanged
+
+// selected shortcut changed
+void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	// set shortcut line edit
+	qleShortcut->blockSignals(true);
+	if (current) {
+		qleShortcut->setText(current->text(1));
+		qleShortcut->setEnabled(true);
+	} else {
+		qleShortcut->clear();
+		qleShortcut->setEnabled(false);
+	} // if else
+	qleShortcut->blockSignals(false);
+} // on_qtwShortcutItem_currentItemChanged
 
 // prepare context plugin menu
 void cOptionsDialog::PrepareColumnsMenu()
@@ -721,138 +979,6 @@ void cOptionsDialog::PrepareColumnsMenu()
 	} // while
 	qaPlugins->setMenu(qmPlugins);
 } // PrepareColumnsMenu
-
-// changed width of column
-void cOptionsDialog::on_qsbWidth_valueChanged(int val)
-{
-	SaveOption(Columns);
-} // on_qsbWidth_valueChanged
-
-// selected cell changed
-void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) > 0) {
-			qpbColumnUp->setEnabled(true);
-	} else {
-		qpbColumnUp->setEnabled(false);
-	} // if else
-	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) < qtwColumns->topLevelItemCount() - 1) {
-		qpbColumnDown->setEnabled(true);
-	} else {
-		qpbColumnDown->setEnabled(false);
-	} // if else
-} // on_qtwColumns_currentItemChanged
-
-// selected column changed
-void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
-{
-	if (qtwColumns->selectedItems().count() > 0) {
-		qpbColumnRemove->setEnabled(true);
-	} else {
-		qpbColumnRemove->setEnabled(false);
-	} // if else
-} // on_qtwColumns_itemSelectionChanged
-
-// selected content plugin changed
-void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
-{
-	if (qtwContentPlugins->selectedItems().count() > 0) {
-		qpbRemoveContentPlugin->setEnabled(true);
-	} else {
-		qpbRemoveContentPlugin->setEnabled(false);
-	} // if else
-} // on_qtwContentPlugins_itemSelectionChanged
-
-// selected lister plugin changed
-void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
-{
-	if (qtwListerPlugins->selectedItems().count() > 0) {
-		qpbRemoveListerPlugin->setEnabled(true);
-	} else {
-		qpbRemoveListerPlugin->setEnabled(false);
-	} // if else
-} // on_qtwListerPlugins_itemSelectionChanged
-
-// selected shortcut category changed
-void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-	qtwShortcutItem->clear();
-
-	if (current == qtwiShortcutFile) {
-		// main menu/file
-		FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__FILE);
-	} else {
-		if (current == qtwiShortcutMark) {
-			// main menu/mark
-			FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__MARK);
-		} else {
-			if (current == qtwiShortcutCommands) {
-				// main menu/commands
-				FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__COMMANDS);
-			} else {
-				if (current == qtwiShortcutShow) {
-					// main menu/show
-					FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__SHOW);
-				} else {
-					if (current == qtwiShortcutConfiguration) {
-						// main menu/configuration
-						FillShortcutItems(cSettings::MainMenuCategory, qslSHORTCUTS__MAIN_MENU__CONFIGURATION);
-					} else {
-						if (current = qtwiShortcutTabs) {
-							// panels/tabs
-							FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__TABS);
-						} else {
-							if (current == qtwiShortcutDirectoryView) {
-								// panels/directory view
-								FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__DIRECTORY_VIEW);
-							} else {
-								if (current == qtwiShortcutMainButtons) {
-									// panels/main buttons
-									FillShortcutItems(cSettings::PanelsCategory, qslSHORTCUTS__PANELS__MAIN_BUTTON);
-								} else {
-									if (current == qtwiShortcutOperationsDialog) {
-										// operations/dialog
-										FillShortcutItems(cSettings::OperationsCategory, qslSHORTCUTS__OPERATIONS__DIALOG);
-									} else {
-										if (current == qtwiShortcutListerFile) {
-											// lister/file
-											FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__FILE);
-										} else {
-											if (current == qtwiShortcutListerEdit) {
-												// lister/edit
-												FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__EDIT);
-											} else {
-												if (current == qtwiShortcutListerOptions) {
-													// lister/options
-													FillShortcutItems(cSettings::ListerCategory, qslSHORTCUTS__LISTER__OPTIONS);
-												} // if
-											} // if else
-										} // if else
-									} // if else
-								} // if else
-							} // if else
-						} // if else
-					} // if else
-				} // if else
-			} // if else
-		} // if else
-	} // if else
-} // on_qtwShortcutCategory_itemSelectionChanged
-
-// selected shortcut changed
-void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
-{
-	// set shortcut line edit
-	qleShortcut->blockSignals(true);
-	if (current) {
-		qleShortcut->setText(current->text(1));
-		qleShortcut->setEnabled(true);
-	} else {
-		qleShortcut->clear();
-		qleShortcut->setEnabled(false);
-	} // if else
-	qleShortcut->blockSignals(false);
-} // on_qtwShortcutItem_currentItemChanged
 
 // save specific changes into settings file
 void cOptionsDialog::SaveOption(const eOption &eoType)

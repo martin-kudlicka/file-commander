@@ -57,6 +57,7 @@ class cLister
 
 		QHash<QString, sPluginInfo> GetPluginsInfo();					///< retrieve lister plugin info
 		void Load();																///< loads lister plugins
+		void Unload();																///< unloads lister plugins
 
 	private:
 		cSettings *csSettings;													///< main settings "file"

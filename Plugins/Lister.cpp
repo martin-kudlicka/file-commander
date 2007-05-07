@@ -64,3 +64,9 @@ void cLister::Load()
 		} // if
 	} // for
 } // Load
+
+// unloads lister plugins
+void cLister::Unload()
+{
+	qhPlugins.clear();
+} // Unload

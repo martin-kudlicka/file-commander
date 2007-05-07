@@ -11,16 +11,7 @@ const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 4;
 // destructor
 cContent::~cContent()
 {
-	// unload plugins
-	QHashIterator<QString, sPluginInfo> qhiPlugins(qhPlugins);
-
-	while (qhiPlugins.hasNext()) {
-		qhiPlugins.next();
-
-		if (qhiPlugins.value().tcpuContentPluginUnloading) {
-			qhiPlugins.value().tcpuContentPluginUnloading();
-		} // if
-	} // while
+	Unload();
 } // ~cContent
 
 // constructor
@@ -157,6 +148,22 @@ bool cContent::Loaded(const QString &qsName)
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
+
+// unloads content plugins
+void cContent::Unload()
+{
+	QHashIterator<QString, sPluginInfo> qhiPlugins(qhPlugins);
+
+	while (qhiPlugins.hasNext()) {
+		qhiPlugins.next();
+
+		if (qhiPlugins.value().tcpuContentPluginUnloading) {
+			qhiPlugins.value().tcpuContentPluginUnloading();
+		} // if
+	} // while
+
+	qhPlugins.clear();
+} // Unload
 
 // "converts" plugin's returned value to QString
 QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)

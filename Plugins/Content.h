@@ -62,6 +62,7 @@ class cContent
 		bool Loaded(const QString &qsName);									///< checks if plugin qsName has been succesfully loaded
 																						/**< \param qsName plugin name
 																							  \return true if plugin was succesfully loaded and can be used */
+		void Unload();																///< unloads content plugins
 
 	private:
 		typedef int (__stdcall *tContentGetSupportedField)(int iFieldIndex, char *cFieldName, char *cUnits, int iMaxLen);

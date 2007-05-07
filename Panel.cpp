@@ -474,12 +474,14 @@ void cPanel::GoToUpDir()
 void cPanel::HideOrShowTabBar()
 {
 	if (csSettings->GetShowTabBarWithOnlyOneTab()) {
+		qtbTab->show();
+	} else {
 		if (qhTabs.count() == 1) {
 			qtbTab->hide();
 		} else {
 			qtbTab->show();
 		} // if else
-	} // if
+	} // if else
 } // HideOrShowTabBar
 
 // invert selection of files
@@ -807,6 +809,38 @@ void cPanel::Refresh()
 		} // if
 	} // while
 } // Refresh
+
+// refresh all dir views
+void cPanel::RefreshAllContents()
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		RefreshContent(iI);
+	} // for
+} // RefreshAllContents
+
+// refresh all dir view headers
+void cPanel::RefreshAllHeaders()
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		RefreshHeader(iI);
+	} // for
+} // RefreshAllHeaders
+
+// refresh tabs
+void cPanel::RefreshTabs()
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		SetTabText(iI);
+	} // for
+
+	HideOrShowTabBar();
+} // RefreshTabs
 
 // refresh dir content
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)

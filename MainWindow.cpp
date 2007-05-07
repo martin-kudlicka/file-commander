@@ -293,8 +293,30 @@ void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
 	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccContent);
+	QFlags<cOptionsDialog::eToDo> qfTodo;
 
-	codOptions.exec();
+	qfTodo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
+
+	if (qfTodo & cOptionsDialog::ReassignShortcuts) {
+		retranslateUi(this);
+		AssignShortcuts();
+	} // if
+	if (qfTodo & cOptionsDialog::ReloadPlugins) {
+		cpPlugins->Unload();
+		cpPlugins->Load();
+	} // if
+	if (qfTodo & cOptionsDialog::RefreshContent) {
+		cpLeft->RefreshAllContents();
+		cpRight->RefreshAllContents();
+	} // if
+	if (qfTodo & cOptionsDialog::RefreshHeader) {
+		cpLeft->RefreshAllHeaders();
+		cpRight->RefreshAllHeaders();
+	} // if
+	if (qfTodo & cOptionsDialog::RefreshTabs) {
+		cpLeft->RefreshTabs();
+		cpRight->RefreshTabs();
+	} // if
 } // on_qaOptions_triggered
 
 ///< refresh is selected
