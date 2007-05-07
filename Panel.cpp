@@ -166,6 +166,7 @@ void cPanel::CloseTab(const int &iTabIndex)
 		qswDir->removeWidget(qswDir->widget(iTabIndex));
 
 		HideOrShowTabBar();
+		ActualizeWidgets();
 	} // if
 } // CloseTab
 
