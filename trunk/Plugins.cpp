@@ -21,3 +21,10 @@ void cPlugins::Load()
 	ccContent->Load();
 	clLister->Load();
 } // Load
+
+// unload all plugins
+void cPlugins::Unload()
+{
+	ccContent->Unload();
+	clLister->Unload();
+} // Unload

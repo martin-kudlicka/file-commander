@@ -18,6 +18,7 @@ class cPlugins
 		~cPlugins();							///< destructor
 
 		void Load();							///< loads all plugins
+		void Unload();							///< unload all plugins
 
 	private:
 		cSettings *csSettings;				///< main settings

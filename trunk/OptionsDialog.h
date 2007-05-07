@@ -15,6 +15,17 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 	Q_OBJECT
 
 	public:
+		/// actions after confirmation changes
+		enum eToDo {
+			Nothing = 0,															///< no action
+			ReassignShortcuts = 1,												///< shortcut change
+			ReloadPlugins = 2,													///< plugins change
+			RefreshContent = 4,													///< dir view content change
+			RefreshHeader = 8,													///< dir view header change
+			RefreshTabs = 16														///< tab change
+		};
+		Q_DECLARE_FLAGS(ToDo, eToDo);
+
 		cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContent *ccContent);
 																						///< constructor
 																						/**< \param qmwParent parent widget (window) of this dialog
@@ -51,6 +62,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QAction *qaPanels;														///< panels options
 		QAction *qaPlugins;														///< plugins options
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
+		QFlags<eToDo> qfTodo;													///< actions after confirmation changes
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
 		QMenu qmColumns;															///< columns menu
 		QMenu *qmNative;															///< native part of columns menu
@@ -111,8 +123,23 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qcbColumnSet_currentIndexChanged(const QString &text);
 																						///< column set changed
 																						/**< \param text new selected column set */
+		void on_qcbShowDriveLetter_stateChanged(int state);			///< change of show drive letter in tab bar
+																						/**< \param state show drive letter in tab bar flag */
+		void on_qcbShowHiddenFiles_stateChanged(int state);			///< change of show hidden files
+																						/**< \param state show hidden files flag */
+		void on_qcbShowSystemFiles_stateChanged(int state);			///< change of show system files
+																						/**< \param state show system files flag */
+		void on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state);
+																						///< change of show tab bar with only one tab
+																						/**< \param state show tab bar with only one tab flag */
+		void on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state);
+																						///< change of show square brackets around directory name
+																						/**< \param state show square brackets around directory name flag */
 		void on_qdbbResponse_accepted();										///< changes accepted
 		void on_qdbbResponse_rejected();										///< changes rejected
+		void on_qlePluginTimeDisplay_textEdited(const QString &text);
+																						///< time format by plugin changed
+																						/**< \param text new time format */
 		void on_qleShortcut_textChanged(const QString &text);			///< shortcut changed
 																						/**< \param text new shortcut key sequence */
 		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
@@ -137,6 +164,16 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbRemoveListerPlugin_clicked(bool checked = false);
 																						///< remove lister plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qrbSizeBytes_toggled(bool checked);						///< size in bytes status change
+																						/**< \param checked size in bytes flag */
+		void on_qrbSizeDynamic_toggled(bool checked);					///< dynamic size status change
+																						/**< \param checked dynamic size flag */
+		void on_qrbSizeGigabytes_toggled(bool checked);					///< size in gigabytes status change
+																						/**< \param checked size in gigabytes flag */
+		void on_qrbSizeKilobytes_toggled(bool checked);					///< size in kilobytes status change
+																						/**< \param checked size in kilobytes flag */
+		void on_qrbSizeMegabytes_toggled(bool checked);					///< size in megabytes status change
+																						/**< \param checked size in megabytes flag */
 		void on_qsbWidth_valueChanged(int val);							///< changed width of column
 																						/**< \param val new column width */
 		void on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
@@ -144,7 +181,15 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param current actually selected item
 																							  \param previously selected item */
 		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
+		void on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column);
+																						///< selected content plugin changed
+																						/**< \param item selected content plugin
+																							  \param column changed column of plugin list */
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
+		void on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column);
+																						///< selected lister plugin changed
+																						/**< \param item selected lister plugin
+																							  \param column changed column of plugin list */
 		void on_qtwListerPlugins_itemSelectionChanged();				///< selected lister plugin changed
 		void on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< selected shortcut category changed
@@ -155,5 +200,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param current current shortcut
 																							  \param previous old shortcut */
 }; // cOptionsDialog
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(cOptionsDialog::ToDo)
 
 #endif
