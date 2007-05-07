@@ -68,8 +68,10 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, 
 	// filter sources
 	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
 		if (qfilFileAndDirList.at(iI).isDir()) {
-			qfilDirectories.append(qfilFileAndDirList.at(iI));
 			qfilSources.append(qfilFileAndDirList.at(iI));
+			if (qfilFileAndDirList.at(iI).fileName() != "." && qfilFileAndDirList.at(iI).fileName() != "..") {
+				qfilDirectories.append(qfilFileAndDirList.at(iI));
+			} // if
 		} else {
 			if (SuitsFilter(qfilFileAndDirList.at(iI).fileName(), qsFilter)) {
 				qfilSources.append(qfilFileAndDirList.at(iI));

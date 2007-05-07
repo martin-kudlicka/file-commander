@@ -73,6 +73,8 @@ class cPanel : private QObject
 																							/**< \return dir info list about selected directories */
 		QFileInfoList GetSelectedItemsList();									///< get file infos of selected items
 																							/**< \return file info list about selected files */
+		QDir::Filters GetStandardFilters();										///< filters for file query
+																							/**< \return filter for file query */
 		int GetTabIndex(const QPoint &qpPos);									///< find out tab index in tab bar
 																							/**< \param qpPos cursor position in tab bar
 																								  \return tab index */
@@ -84,6 +86,8 @@ class cPanel : private QObject
 		bool IsActive();																///< active panel flag
 																							/**< \return true if panel is active */
 		void Refresh();																///< refresh current dir view
+		void RefreshContent(QFileInfoList &qfilFiles);						///< refresh current dir view with custom files
+																							/**< \param qfilFiles custom list of files */
 		void RefreshAllContents();													///< refresh all dir views
 		void RefreshAllHeaders();													///< refresh all dir view headers
 		void RefreshTabs();															///< refresh tabs

@@ -102,6 +102,7 @@ void cMainWindow::AssignShortcuts()
 	qaInvertSelection->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION)));
 	qaCompareDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES)));
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
+	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
 	qaRefresh->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REFRESH)));
 	qaOptions->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS)));
@@ -277,6 +278,16 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} // if else
 	} // for
 } // LoadTabs
+
+// branch view is selected
+void cMainWindow::on_qaBranchView_triggered(bool checked /* false */)
+{
+	QFileInfoList qfilSource;
+
+	qfilSource = cFileRoutine::GetDirectoryContent(GetActivePanel()->GetPath(), cpLeft->GetStandardFilters());
+	qfilSource = cFileRoutine::GetSources(qfilSource);
+	GetActivePanel()->RefreshContent(qfilSource);
+} // on_qaBranchView_triggered
 
 // compare directories is selected
 void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
