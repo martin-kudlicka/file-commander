@@ -21,7 +21,7 @@
 #include "Panel/SelectFilesDialog.h"
 #include "FileOperation.h"
 
-class cPanel : private QObject
+class cPanel : public QObject
 {
 	Q_OBJECT
 
@@ -65,6 +65,8 @@ class cPanel : private QObject
 		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
+		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view
+																							/**< \return columns for current dir view */
 		QHash<QTreeWidgetItem *, QFileInfo> *GetDirContent();				///< get content of the directory view
 																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
@@ -85,7 +87,7 @@ class cPanel : private QObject
 		void InvertSelection();														///< invert selection of files
 		bool IsActive();																///< active panel flag
 																							/**< \return true if panel is active */
-		void Refresh();																///< refresh current dir view
+		void RefreshContent();														///< refresh current dir view
 		void RefreshContent(QFileInfoList &qfilFiles);						///< refresh current dir view with custom files
 																							/**< \param qfilFiles custom list of files */
 		void RefreshAllContents();													///< refresh all dir views
@@ -98,6 +100,8 @@ class cPanel : private QObject
 																							/**< \param estType select/unselect mode
 																								  \param clLister lister plugins */
 		void SelectAll();																///< select all files
+		void SortBy(const int &iColumn);											///< sort by specified column
+																							/**< \param iColumn column position to sort by */
 		void UnselectAll();															///< unselect all files
 
 	private:
@@ -195,6 +199,7 @@ class cPanel : private QObject
 																								  \param qtwiItem2 2nd item */
 
 	signals:
+		void GotFocus();																///< panel got focus
 		void InterruptContentDelayed();											///< interrupt delayed content processing before refresh dir view content
 
 	private slots:

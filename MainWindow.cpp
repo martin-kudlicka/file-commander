@@ -20,9 +20,10 @@ cMainWindow::~cMainWindow()
 	delete qsRightDrive;
 	delete cfoFileOperation;
 	delete qhblBackgroundOperations;
-	delete cpLeft;
-	delete cpRight;
+	cpLeft->deleteLater();
+	cpRight->deleteLater();
 	delete cpPlugins;
+	qagSortBy->deleteLater();
 } // cMainWindow
 
 // drive lists actualization
@@ -134,7 +135,6 @@ cMainWindow::cMainWindow()
 			setWindowState(Qt::WindowFullScreen);
 		} // if
 	} // if else
-	qcbCommand->installEventFilter(this);
 	// add left tab
 	qtbLeft.setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(&qtbLeft, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_qtbLeft_customContextMenuRequested(const QPoint &)));
@@ -171,17 +171,22 @@ cMainWindow::cMainWindow()
 	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 	this->addAction(qaTabBarCloseAllOtherTabs);
 
+	qagSortBy = new QActionGroup(this);
 	iTabBarIndex = -1;
+	qcbCommand->installEventFilter(this);
 
 	// shortcuts
 	AssignShortcuts();
 
 	// connections
+	connect(cpLeft, SIGNAL(GotFocus()), SLOT(on_cpLeft_GotFocus()));
+	connect(cpRight, SIGNAL(GotFocus()), SLOT(on_cpRight_GotFocus()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
+	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
 
 	ActualizeDrives();
 	show();
@@ -227,16 +232,6 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 	} // if else
 } // eventFilter
 
-// find active panel (left or right)
-cPanel *cMainWindow::GetActivePanel()
-{
-	if (cpLeft->IsActive()) {
-		return cpLeft;
-	} else {
-		return cpRight;
-	} // if else
-} // GetActivePanel
-
 // load tabs from qsSettings
 void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 {
@@ -279,14 +274,28 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 	} // for
 } // LoadTabs
 
+// left panel got focus
+void cMainWindow::on_cpLeft_GotFocus()
+{
+	cpActive = cpLeft;
+	SetSortByActions();
+} // on_cpLeft_GotFocus
+
+// right panel got focus
+void cMainWindow::on_cpRight_GotFocus()
+{
+	cpActive = cpRight;
+	SetSortByActions();
+} // on_cpRight_GotFocus
+
 // branch view is selected
 void cMainWindow::on_qaBranchView_triggered(bool checked /* false */)
 {
 	QFileInfoList qfilSource;
 
-	qfilSource = cFileRoutine::GetDirectoryContent(GetActivePanel()->GetPath(), cpLeft->GetStandardFilters());
+	qfilSource = cFileRoutine::GetDirectoryContent(cpActive->GetPath(), cpLeft->GetStandardFilters());
 	qfilSource = cFileRoutine::GetSources(qfilSource);
-	GetActivePanel()->RefreshContent(qfilSource);
+	cpActive->RefreshContent(qfilSource);
 } // on_qaBranchView_triggered
 
 // compare directories is selected
@@ -363,6 +372,21 @@ void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
 	setWindowState(windowState() ^ Qt::WindowFullScreen);
 } // on_qaFullScreen_triggered
 
+// sort by action called
+void cMainWindow::on_qagSortBy_triggered(QAction *action)
+{
+	int iSortBy;
+
+	// find column to sort by
+	for (iSortBy = 0; iSortBy < qagSortBy->actions().count(); iSortBy++) {
+		if (qagSortBy->actions().at(iSortBy) == action) {
+			break;
+		} // if
+	} // for
+
+	cpActive->SortBy(iSortBy);
+} // on_qagSortBy_triggered
+
 // invert selection is selected
 void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
 {
@@ -408,7 +432,7 @@ void cMainWindow::on_qaRefresh_triggered(bool checked /* false */)
 	cPanel *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cpSource->Refresh();
+	cpSource->RefreshContent();
 } // on_qaRefresh_triggered
 
 // save position is selected
@@ -628,7 +652,7 @@ void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 		QDir qdDir;
 		QString qsNewDirectory;
 
-		qsNewDirectory = GetActivePanel()->GetPath();
+		qsNewDirectory = cpActive->GetPath();
 		qsNewDirectory += '/' + qsName;
 		qdDir.mkpath(qsNewDirectory);
 	} // if
@@ -705,10 +729,30 @@ void cMainWindow::SaveSettings()
 	cpRight->SaveSettings(cSettings::PositionRight);
 } // SaveSettings
 
+// set sort by actions for sorting columns
+void cMainWindow::SetSortByActions()
+{
+	int iI;
+	QList<cSettings::sColumn> *qlColumns;
+
+	for (iI = 0; iI < qagSortBy->actions().count(); iI++) {
+		qagSortBy->actions().at(iI)->deleteLater();
+	} // for
+	qagSortBy->actions().clear();
+
+	qlColumns = cpActive->GetColumns();
+
+	for (iI = 0; iI < qlColumns->count(); iI++) {
+		new QAction(qlColumns->at(iI).qsName, qagSortBy);
+	} // for
+
+	qmPanel->insertActions(qaColumnsSeparator, qagSortBy->actions());
+} // SetSortByActions
+
 // set focused panel as source, other as destination
 void cMainWindow::SetSourceAndDestinationPanel(cPanel **cpSource, cPanel **cpDestination /* = NULL */)
 {
-	if (cpLeft == GetActivePanel()) {
+	if (cpLeft == cpActive) {
 		*cpSource = cpLeft;
 		if (cpDestination) {
 			*cpDestination = cpRight;

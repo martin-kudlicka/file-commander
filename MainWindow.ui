@@ -431,20 +431,6 @@
     <addaction name="separator" />
     <addaction name="qaCompareDirectories" />
    </widget>
-   <widget class="QMenu" name="menuConfiguration" >
-    <property name="title" >
-     <string>C&amp;onfiguration</string>
-    </property>
-    <addaction name="qaOptions" />
-    <addaction name="qaSavePosition" />
-    <addaction name="qaSaveSettings" />
-   </widget>
-   <widget class="QMenu" name="menuShow" >
-    <property name="title" >
-     <string>&amp;Panel</string>
-    </property>
-    <addaction name="qaRefresh" />
-   </widget>
    <widget class="QMenu" name="menuCommands" >
     <property name="title" >
      <string>&amp;Commands</string>
@@ -455,10 +441,26 @@
     <addaction name="separator" />
     <addaction name="qaFullScreen" />
    </widget>
+   <widget class="QMenu" name="menuConfiguration" >
+    <property name="title" >
+     <string>C&amp;onfiguration</string>
+    </property>
+    <addaction name="qaOptions" />
+    <addaction name="qaSavePosition" />
+    <addaction name="qaSaveSettings" />
+   </widget>
+   <widget class="QMenu" name="qmPanel" >
+    <property name="title" >
+     <string>&amp;Panel</string>
+    </property>
+    <addaction name="qaColumnsSeparator" />
+    <addaction name="separator" />
+    <addaction name="qaRefresh" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
    <addaction name="menuCommands" />
-   <addaction name="menuShow" />
+   <addaction name="qmPanel" />
    <addaction name="menuConfiguration" />
   </widget>
   <action name="qaQuit" >
@@ -529,6 +531,14 @@
   <action name="qaBranchView" >
    <property name="text" >
     <string>&amp;Branch view</string>
+   </property>
+  </action>
+  <action name="qaColumnsSeparator" >
+   <property name="text" >
+    <string>ColumnsSeparator</string>
+   </property>
+   <property name="visible" >
+    <bool>false</bool>
    </property>
   </action>
  </widget>
