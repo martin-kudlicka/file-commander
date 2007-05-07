@@ -100,6 +100,7 @@ void cMainWindow::AssignShortcuts()
 	qaSelectAll->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL)));
 	qaUnselectAll->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL)));
 	qaInvertSelection->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION)));
+	qaCompareDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES)));
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__SHOW__FULLSCREEN)));
 	qaRefresh->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__SHOW__REFRESH)));
@@ -276,6 +277,74 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} // if else
 	} // for
 } // LoadTabs
+
+// compare directories is selected
+void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
+{
+	QHash<QTreeWidgetItem *, QFileInfo> *qhFilesLeft, *qhFilesRight;
+
+	qhFilesLeft = cpLeft->GetDirContent();
+	qhFilesRight = cpRight->GetDirContent();
+
+	// mark first all files in the right panel, unmark directories
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFilesRight(*qhFilesRight);
+	while (qhiFilesRight.hasNext()) {
+		qhiFilesRight.next();
+		if (qhiFilesRight.value().isFile()) {
+			qhiFilesRight.key()->setSelected(true);
+		} else {
+			qhiFilesRight.key()->setSelected(false);
+		} // if else
+	} // while
+
+	// go through left panel files and compare with right
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFilesLeft(*qhFilesLeft);
+	while (qhiFilesLeft.hasNext()) {
+		qhiFilesLeft.next();
+
+		if (qhiFilesLeft.value().isFile()) {
+			bool bFound;
+
+			bFound = false;
+
+			qhiFilesRight.toFront();
+			while (qhiFilesRight.hasNext()) {
+				qhiFilesRight.next();
+
+				if (qhiFilesRight.value().isFile()) {
+					if (qhiFilesLeft.value().fileName() == qhiFilesRight.value().fileName()) {
+						bFound = true;
+
+						if (qhiFilesLeft.value().lastModified() == qhiFilesRight.value().lastModified()) {
+							// files are the same - clear mark of both files
+							qhiFilesLeft.key()->setSelected(false);
+							qhiFilesRight.key()->setSelected(false);
+						} else {
+							if (qhiFilesLeft.value().lastModified() > qhiFilesRight.value().lastModified()) {
+								// newer file on the left panel
+								qhiFilesLeft.key()->setSelected(true);
+								qhiFilesRight.key()->setSelected(false);
+							} else {
+								// newer file on the right panel
+								qhiFilesLeft.key()->setSelected(false);
+							} // if else
+						} // if else
+
+						break;
+					} // if
+				} // if
+			} // while
+
+			if (!bFound) {
+				// file on the left is not on the right panel
+				qhiFilesLeft.key()->setSelected(true);
+			} // if
+		} else {
+			// unmark directories on the left
+			qhiFilesLeft.key()->setSelected(false);
+		} // if else
+	} // while
+} // on_qaCompareDirectories_triggered
 
 // full screen mode is selected
 void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)

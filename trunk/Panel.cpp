@@ -352,6 +352,12 @@ void cPanel::FeedToPanel(QFileInfoList &qfilFiles)
 	RefreshContent(qswDir->currentIndex(), qfilFiles);
 } // FeedToPanel
 
+// get content of the directory view
+QHash<QTreeWidgetItem *, QFileInfo> *cPanel::GetDirContent()
+{
+	return qhTabs.value(qswDir->currentIndex()).qhFiles;
+} // GetDirContent
+
 // find index of native column
 int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
 {

@@ -25,7 +25,7 @@
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="" >
+      <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -155,7 +155,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="" >
+      <widget class="QWidget" name="layoutWidget" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -433,6 +433,14 @@
     </property>
     <addaction name="qaQuit" />
    </widget>
+   <widget class="QMenu" name="menuConfiguration" >
+    <property name="title" >
+     <string>C&amp;onfiguration</string>
+    </property>
+    <addaction name="qaOptions" />
+    <addaction name="qaSavePosition" />
+    <addaction name="qaSaveSettings" />
+   </widget>
    <widget class="QMenu" name="menu_Mark" >
     <property name="title" >
      <string>&amp;Mark</string>
@@ -442,14 +450,8 @@
     <addaction name="qaSelectAll" />
     <addaction name="qaUnselectAll" />
     <addaction name="qaInvertSelection" />
-   </widget>
-   <widget class="QMenu" name="menuConfiguration" >
-    <property name="title" >
-     <string>C&amp;onfiguration</string>
-    </property>
-    <addaction name="qaOptions" />
-    <addaction name="qaSavePosition" />
-    <addaction name="qaSaveSettings" />
+    <addaction name="separator" />
+    <addaction name="qaCompareDirectories" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
@@ -515,6 +517,11 @@
   <action name="qaSaveSettings" >
    <property name="text" >
     <string>Save &amp;settings</string>
+   </property>
+  </action>
+  <action name="qaCompareDirectories" >
+   <property name="text" >
+    <string>&amp;Compare directories</string>
    </property>
   </action>
  </widget>

@@ -68,6 +68,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							  \param qpCursor cursor position on tab */
 
 	private slots:
+		void on_qaCompareDirectories_triggered(bool checked = false);
+																						///< compare directories is selected
+																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaInvertSelection_triggered(bool checked = false);	///< invert selection is selected
