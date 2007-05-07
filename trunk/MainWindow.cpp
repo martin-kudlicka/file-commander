@@ -154,8 +154,11 @@ cMainWindow::cMainWindow()
 	// file operations class initizalization
 	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 	// panels
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
+	// quick searches
+	qleLeftQuickSearch->hide();
+	qleRightQuickSearch->hide();
 
 	// create tab context menu
 	qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));

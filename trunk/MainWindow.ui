@@ -21,11 +21,14 @@
      <number>6</number>
     </property>
     <item>
-     <widget class="QSplitter" name="qsSplitter" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="layoutWidget" >
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -134,15 +137,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="qlLeftSelected" >
-          <property name="text" >
-           <string>TextLabel</string>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
           </property>
-         </widget>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="qlLeftSelected" >
+            <property name="text" >
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="qleLeftQuickSearch" />
+          </item>
+         </layout>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget" >
+      </item>
+      <item>
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -251,15 +267,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="qlRightSelected" >
-          <property name="text" >
-           <string>TextLabel</string>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
           </property>
-         </widget>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="qlRightSelected" >
+            <property name="text" >
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="qleRightQuickSearch" />
+          </item>
+         </layout>
         </item>
        </layout>
-      </widget>
-     </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" >

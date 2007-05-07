@@ -455,6 +455,92 @@
            </property>
           </widget>
          </widget>
+         <widget class="QWidget" name="tab_9" >
+          <attribute name="title" >
+           <string>&amp;Quick search</string>
+          </attribute>
+          <widget class="QCheckBox" name="qcbQuickSearchShowWindow" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>110</y>
+             <width>121</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Show search window</string>
+           </property>
+          </widget>
+          <widget class="QGroupBox" name="qgbQuickSearch" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>120</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Activate with</string>
+           </property>
+           <property name="checkable" >
+            <bool>true</bool>
+           </property>
+           <widget class="QCheckBox" name="qcbQuickSearchAlt" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>71</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Alt</string>
+            </property>
+           </widget>
+           <widget class="QCheckBox" name="qcbQuickSearchShift" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>71</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Shift</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_4" >
+            <property name="geometry" >
+             <rect>
+              <x>70</x>
+              <y>40</y>
+              <width>46</width>
+              <height>14</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>+ letter</string>
+            </property>
+           </widget>
+           <widget class="QCheckBox" name="qcbQuickSearchCtrl" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>71</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Ctrl</string>
+            </property>
+           </widget>
+          </widget>
+         </widget>
         </widget>
        </widget>
        <widget class="QWidget" name="page_3" >

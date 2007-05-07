@@ -211,6 +211,16 @@ class cSettings : private QObject
 																					  \return plugin list */
 		QString GetPluginTimeDisplay();								///< plugin time display format
 																				/**< \return plugin time display format */
+		bool GetQuickSearchAlt();										///< alt key activity in quick search
+																				/**< \return alt key activity flag */
+		bool GetQuickSearchCtrl();										///< ctrl key activity in quick search
+																				/**< \return ctrl key activity flag */
+		bool GetQuickSearchEnabled();									///< enabled/disabled quick search
+																				/**< \return enable/disable quick search flag */
+		bool GetQuickSearchShift();									///< shift key activity in quick search
+																				/**< \return shift key activity flag */
+		bool GetQuickSearchShowSearchWindow();						///< quick search window visibility
+																				/**< \return quick search window visibility flag */
 		QString GetReadonlyFileOverwrite();							///< find out readonly file overwrite mode
 																				/**< \return default readonly file overwrite mode */
 		QStringList GetSavedFinds();									///< list of saved find settings for find files dialog
@@ -278,6 +288,17 @@ class cSettings : private QObject
 																					  \param qlPlugins plugin list */
 		void SetPluginTimeDisplay(const QString &qsTime);		///< plugin time display format
 																				/**< \param qsTime user defined time display format */
+		void SetQuickSearchAlt(const bool &bAlt);					///< alt key activity in quick search
+																				/**< \param bAlt alt key activity flag */
+		void SetQuickSearchCtrl(const bool &bCtrl);				///< ctrl key activity in quick search
+																				/**< \param bCtrl ctrl key activity flag */
+		void SetQuickSearchEnabled(const bool &bEnable);		///< enabled/disabled quick search
+																				/**< \param bEnable enable/disable quick search flag */
+		void SetQuickSearchShift(const bool &bShift);			///< shift key activity in quick search
+																				/**< \param bShift shift key activity flag */
+		void SetQuickSearchShowSearchWindow(const bool &bShow);
+																				///< quick search window visibility
+																				/**< \param bShow quick search window visibility flag */
 		void SetReadonlyFileOverwrite(const QString &qsMode);	///< set default readonly overwrite behaviour
 																				/**< \param qsMode readonly overwrite mode */
 		void SetSaveSettingsOnQuit(const bool &bSave);			///< save settings on quit option
