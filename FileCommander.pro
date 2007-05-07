@@ -40,6 +40,7 @@ HEADERS = MainWindow.h \
 			 FileOperation/DeleteDialog.h \
 			 FileOperation/DeleteWidget.h \
 			 FileOperation/Retry.h \
+			 FileOperation/DiskSpace.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
@@ -78,6 +79,7 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/DeleteDialog.cpp \
 			 FileOperation/DeleteWidget.cpp \
 			 FileOperation/Retry.cpp \
+			 FileOperation/DiskSpace.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \
