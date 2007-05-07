@@ -729,8 +729,11 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 	QFileInfo qfiFile;
 	QFileInfoList qfilFiles;
 	qint64 qi64Size;
+	QString qsName;
 
 	switch (qkeEvent->key()) {
+		case Qt::Key_Backspace:	GoToUpDir();
+										break;
 		case Qt::Key_Space:		qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
 
 										// refresh content plugin values
@@ -759,7 +762,18 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 
 										qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
 										break;
-		case Qt::Key_Backspace:	GoToUpDir();
+		case Qt::Key_Enter:
+		case Qt::Key_Return:		if (static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) && static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
+											// ctrl+shift+enter -> copy filePath to command line
+											qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).filePath();
+										} else {
+											qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).fileName();
+											// ctrl+enter -> copy fileName to command line
+										} // if else
+										if (qsName.contains(' ')) {
+											qsName = '"' + qsName + '"';
+										} // if
+										qcbCommand->setEditText(qcbCommand->currentText() + qsName);
 										break;
 		default:						if (csSettings->GetQuickSearchEnabled() &&
 											 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
