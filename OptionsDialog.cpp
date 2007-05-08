@@ -632,7 +632,7 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 
 	SaveOption(Columns);
 
-	qfTodo |= RefreshTabs;
+	qfTodo |= RefreshHeader;
 } // on_qmColumns_triggered
 
 // add button is clicked on in content plugins
@@ -971,50 +971,58 @@ void cOptionsDialog::PrepareColumnsMenu()
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsEXTENSION));
 	qaAction = qmNative->addAction(qsDATE);
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsDATE));
+#ifdef Q_WS_WIN
+	qaAction = qmNative->addAction(qsATTRIBUTES);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsATTRIBUTES));
+#endif
 	qaNative->setMenu(qmNative);
 
 	// plugins sub menu
 	qmPlugins = new QMenu(&qmColumns);
 	qhPlugins = ccContent->GetPluginsInfo();
-	QHashIterator<QString, cContent::sPluginInfo> qhiPlugins(qhPlugins);
-	while (qhiPlugins.hasNext()) {
-		int iI;
-		QAction *qaPlugin;
-		QMenu *qmFields;
+	if (qhPlugins.count() == 0) {
+		qmPlugins->setEnabled(false);
+	} else {
+		QHashIterator<QString, cContent::sPluginInfo> qhiPlugins(qhPlugins);
+		while (qhiPlugins.hasNext()) {
+			int iI;
+			QAction *qaPlugin;
+			QMenu *qmFields;
 
-		qhiPlugins.next();
-		qaPlugin = qmPlugins->addAction(qhiPlugins.key());
+			qhiPlugins.next();
+			qaPlugin = qmPlugins->addAction(qhiPlugins.key());
 
-		qmFields = new QMenu(qmPlugins);
-		for (iI = 0; iI < qhiPlugins.value().qlFields.count() && qhiPlugins.value().qlFields.at(iI).iType != ft_fulltext; iI++) {
-			// plugin's fields (columns)
-			QAction *qaField;
+			qmFields = new QMenu(qmPlugins);
+			for (iI = 0; iI < qhiPlugins.value().qlFields.count() && qhiPlugins.value().qlFields.at(iI).iType != ft_fulltext; iI++) {
+				// plugin's fields (columns)
+				QAction *qaField;
 
-			qaField = qmFields->addAction(qhiPlugins.value().qlFields.at(iI).qsName);
+				qaField = qmFields->addAction(qhiPlugins.value().qlFields.at(iI).qsName);
 
-			if (!qhiPlugins.value().qlFields.at(iI).qsUnits.isEmpty() && qhiPlugins.value().qlFields.at(iI).iType != ft_multiplechoice) {
-				// column's units
-				int iJ;
-				QMenu *qmUnits;
-				QStringList qslUnits;
+				if (!qhiPlugins.value().qlFields.at(iI).qsUnits.isEmpty() && qhiPlugins.value().qlFields.at(iI).iType != ft_multiplechoice) {
+					// column's units
+					int iJ;
+					QMenu *qmUnits;
+					QStringList qslUnits;
 
-				qslUnits = qhiPlugins.value().qlFields.at(iI).qsUnits.split('|');
+					qslUnits = qhiPlugins.value().qlFields.at(iI).qsUnits.split('|');
 
-				qmUnits = new QMenu(qmFields);
-				for (iJ = 0; iJ < qslUnits.count(); iJ++) {
-					QAction *qaUnit;
+					qmUnits = new QMenu(qmFields);
+					for (iJ = 0; iJ < qslUnits.count(); iJ++) {
+						QAction *qaUnit;
 
-					qaUnit = qmUnits->addAction(qslUnits.at(iJ));
-					qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName).arg(qslUnits.at(iJ)));
-				} // for
+						qaUnit = qmUnits->addAction(qslUnits.at(iJ));
+						qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName).arg(qslUnits.at(iJ)));
+					} // for
 
-				qaField->setMenu(qmUnits);
-			} else {
-				qaField->setData(QString("%1|%2|%3").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName));
-			} // if else
-		} // for
-		qaPlugin->setMenu(qmFields);
-	} // while
+					qaField->setMenu(qmUnits);
+				} else {
+					qaField->setData(QString("%1|%2|%3").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName));
+				} // if else
+			} // for
+			qaPlugin->setMenu(qmFields);
+		} // while
+	} // if else
 	qaPlugins->setMenu(qmPlugins);
 } // PrepareColumnsMenu
 

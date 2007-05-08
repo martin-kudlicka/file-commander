@@ -68,6 +68,8 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	ctwTree->setRootIsDecorated(false);
 	ctwTree->setContextMenuPolicy(Qt::CustomContextMenu);
 	ctwTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	ctwTree->header()->setSortIndicatorShown(true);
+	ctwTree->header()->setClickable(true);
 	if (bStartUp || !csSettings->GetOpenNewTabNextToCurrentTab()) {
 		iIndex = qswDir->addWidget(ctwTree);
 	} else {
@@ -1107,8 +1109,39 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 									qtwiFile->setText(iJ, GetSizeString(qfilFiles.at(iI).size()));
 								} // if else
 							} else {
-								// date
-								qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
+								if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsDATE) {
+									// date
+									qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
+								}
+#ifdef Q_WS_WIN
+								else {
+									// attributes
+									DWORD dwAttributes;
+									QString qsAttributes;
+
+									dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilFiles.at(iI).filePath().unicode()));
+									if (dwAttributes & FILE_ATTRIBUTE_READONLY) {
+										qsAttributes = 'r';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_ARCHIVE) {
+										qsAttributes += 'a';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_HIDDEN) {
+										qsAttributes += 'h';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_SYSTEM) {
+										qsAttributes += 's';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_COMPRESSED) {
+										qsAttributes += 'c';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_ENCRYPTED) {
+										qsAttributes += 'e';
+									} // if
+
+									qtwiFile->setText(iJ, qsAttributes);
+								} // if else
+#endif
 							} // if else
 						} // if else
 					} // if else
@@ -1193,24 +1226,27 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
 		qtwiHeader->setText(iI, qhTabs.value(iIndex).qlColumns->at(iI).qsName);
 	} // for
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setColumnCount(qhTabs.value(iIndex).qlColumns->count());
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->setHeaderItem(qtwiHeader);
-	bAutoStretch = false;
+
+	// customize header
+	// autostretch last section
+	bAutoStretch = true;
+	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count() - 1; iI++) {
+		if (qhTabs.value(iIndex).qlColumns->at(iI).iWidth == 0) {
+			bAutoStretch = false;
+			break;
+		} // if
+	} // for
+	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setStretchLastSection(bAutoStretch);
 	// set columns width
 	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
 		if (qhTabs.value(iIndex).qlColumns->at(iI).iWidth == 0) {
 			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setResizeMode(iI, QHeaderView::Stretch);
-			bAutoStretch = true;
 		} else {
 			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->resizeSection(iI, qhTabs.value(iIndex).qlColumns->at(iI).iWidth);
 		} // if else
 	} // for
-	if (bAutoStretch) {
-		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setStretchLastSection(false);
-	} // if
-	// show sort order
-	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setSortIndicatorShown(true);
-	// clickable flag
-	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setClickable(true);
 
 	if (bContent) {
 		// refresh dir content according to new header

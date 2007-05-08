@@ -158,8 +158,16 @@ void cSettings::CreateDefaultColumnSet()
 	scColumn.qsIdentifier = qsDATE;
 	scColumn.qsName = tr("Date");
 	scColumn.qsPlugin = qsNO;
-	scColumn.iWidth = 50;
+	scColumn.iWidth = 60;
 	qlColumns.append(scColumn);
+#ifdef Q_WS_WIN
+	// attributes
+	scColumn.qsIdentifier = qsATTRIBUTES;
+	scColumn.qsName = tr("Attributes");
+	scColumn.qsPlugin = qsNO;
+	scColumn.iWidth = 40;
+	qlColumns.append(scColumn);
+#endif
 
 	CreateColumnSet(qsFULL, qlColumns);
 } // CreateDefaultColumnSet
