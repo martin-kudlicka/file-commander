@@ -62,7 +62,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QAction *qaPanels;														///< panels options
 		QAction *qaPlugins;														///< plugins options
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
-		QFlags<eToDo> qfTodo;													///< actions after confirmation changes
+		QFlags<eToDo> qfToDo;													///< actions after confirmation changes
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
 		QMenu qmColumns;															///< columns menu
 		QMenu *qmNative;															///< native part of columns menu
