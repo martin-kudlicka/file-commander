@@ -93,6 +93,7 @@ class cPanel : public QObject
 		void RefreshAllContents();													///< refresh all dir views
 		void RefreshAllHeaders();													///< refresh all dir view headers
 		void RefreshTabs();															///< refresh tabs
+		void ReverseOrder();															///< reverse sort order
 		void SaveSettings(const cSettings::ePosition &epPosition);		///< save panel settings
 																							/**< \param epPosition panel's position */
 		void Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister);

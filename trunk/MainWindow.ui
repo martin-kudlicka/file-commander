@@ -455,6 +455,8 @@
     </property>
     <addaction name="qaColumnsSeparator" />
     <addaction name="separator" />
+    <addaction name="qaReverseOrder" />
+    <addaction name="separator" />
     <addaction name="qaRefresh" />
    </widget>
    <addaction name="menuFile" />
@@ -539,6 +541,11 @@
    </property>
    <property name="visible" >
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="qaReverseOrder" >
+   <property name="text" >
+    <string>Reverse &amp;order</string>
    </property>
   </action>
  </widget>

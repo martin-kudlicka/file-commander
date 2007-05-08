@@ -105,6 +105,7 @@ void cMainWindow::AssignShortcuts()
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
 	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
+	qaReverseOrder->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER)));
 	qaRefresh->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REFRESH)));
 	qaOptions->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS)));
 	qaSavePosition->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION)));
@@ -438,6 +439,12 @@ void cMainWindow::on_qaRefresh_triggered(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource);
 	cpSource->RefreshContent();
 } // on_qaRefresh_triggered
+
+// reverse order is selected
+void cMainWindow::on_qaReverseOrder_triggered(bool checked /* false */)
+{
+	cpActive->ReverseOrder();
+} // on_qaReverseOrder_triggered
 
 // save position is selected
 void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)

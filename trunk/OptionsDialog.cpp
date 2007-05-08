@@ -43,6 +43,7 @@ const QStringList qslSHORTCUTS__MAIN_MENU__PANEL = QStringList() << qsSHORTCUT__
 																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN <<
 																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN <<
 																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN <<
+																						  qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER <<
 																						  qsSHORTCUT__MAIN_MENU__PANEL__REFRESH;
 const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS <<
 																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION <<

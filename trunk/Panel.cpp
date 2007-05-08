@@ -1208,6 +1208,12 @@ void cPanel::RefreshTabs()
 	HideOrShowTabBar();
 } // RefreshTabs
 
+// reverse sort order
+void cPanel::ReverseOrder()
+{
+	SortBy(static_cast<cTreeWidget *>(qswDir->currentWidget())->header()->sortIndicatorSection());
+} // ReverseOrder
+
 // save panel settings
 void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 {
