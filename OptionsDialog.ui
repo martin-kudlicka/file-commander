@@ -705,6 +705,40 @@
            </widget>
           </widget>
          </widget>
+         <widget class="QWidget" name="tab_12" >
+          <attribute name="title" >
+           <string>&amp;Copy/move</string>
+          </attribute>
+          <widget class="QLabel" name="label_5" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>12</y>
+             <width>55</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Buffer size:</string>
+           </property>
+          </widget>
+          <widget class="QSpinBox" name="qsbCopyMoveBufferSize" >
+           <property name="geometry" >
+            <rect>
+             <x>70</x>
+             <y>10</y>
+             <width>51</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="suffix" >
+            <string> kB</string>
+           </property>
+           <property name="minimum" >
+            <number>1</number>
+           </property>
+          </widget>
+         </widget>
          <widget class="QWidget" name="tab_6" >
           <attribute name="title" >
            <string>&amp;Confirmation</string>

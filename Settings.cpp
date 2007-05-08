@@ -6,6 +6,7 @@
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsASCENDING = "ascending";
+const QString qsBUFFER_SIZE = "BufferSize";
 const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsDATE_TIME_BETWEEN = "DateTimeBetween";
@@ -262,6 +263,12 @@ QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 
 	return qslColumns;
 } // GetColumnsInSet
+
+// copy/move buffer size
+int cSettings::GetCopyMoveBufferSize()
+{
+	return qsSettings.value(qsOPERATIONS__ + qsBUFFER_SIZE, 32).toInt();
+} // GetCopyMoveBufferSize
 
 // external editor
 QString cSettings::GetExternalEditor()
@@ -732,6 +739,12 @@ void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)
 {
 	qsSettings.setValue(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS, bClose);
 } // SetConfirmCloseOfAllTabs
+
+// copy/move buffer size
+void cSettings::SetCopyMoveBufferSize(const int &iSize)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsBUFFER_SIZE, iSize);
+} // SetCopyMoveBufferSize
 
 // external editor
 void cSettings::SetExternalEditor(const QString &qsEditor)

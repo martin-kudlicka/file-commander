@@ -204,6 +204,8 @@ class cSettings : private QObject
 																					  \return list of columns in column set */
 		bool GetConfirmCloseOfAllTabs();								///< confirm close of all tabs in tab bar
 																				/**< return confirm close of all tabs flag */
+		int GetCopyMoveBufferSize();									///< copy/move buffer size
+																				/**< \return copy/move buffer size in kilobytes */
 		QString GetExternalEditor();									///< external editor
 																				/**< \return external editor command line */
 		QString GetExternalViewer();									///< external viewer
@@ -284,6 +286,8 @@ class cSettings : private QObject
 																				/**< \param bClose can close tab on double click if true */
 		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs
 																				/**< \param bClose confirm close of all tabs flag */
+		void SetCopyMoveBufferSize(const int &iSize);			///< copy/move buffer size
+																				/**< \param iSize copy/move buffer size in kilobytes */
 		void SetExternalEditor(const QString &qsEditor);		///< external editor
 																				/**< \param qsEditor external editor command line */
 		void SetExternalViewer(const QString &qsViewer);		///< external viewer
