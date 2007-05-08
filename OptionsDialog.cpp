@@ -751,6 +751,12 @@ void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 	qfTodo |= ReloadPlugins;
 } // on_qpbRemoveListerPlugin_clicked
 
+// shortcut clear button is clicked on
+void cOptionsDialog::on_qpbShortcutClear_clicked(bool checked /* false */)
+{
+	qleShortcut->clear();
+} // on_qpbShortcutClear_clicked
+
 // size in bytes status change
 void cOptionsDialog::on_qrbSizeBytes_toggled(bool checked)
 {

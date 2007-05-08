@@ -941,7 +941,7 @@
              <x>10</x>
              <y>10</y>
              <width>120</width>
-             <height>161</height>
+             <height>151</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -957,11 +957,24 @@
            </property>
            <property name="geometry" >
             <rect>
-             <x>340</x>
-             <y>180</y>
+             <x>250</x>
+             <y>170</y>
              <width>113</width>
              <height>20</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbShortcutClear" >
+           <property name="geometry" >
+            <rect>
+             <x>370</x>
+             <y>170</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Clear</string>
            </property>
           </widget>
           <widget class="QTreeWidget" name="qtwShortcutItem" >
@@ -970,7 +983,7 @@
              <x>140</x>
              <y>10</y>
              <width>311</width>
-             <height>161</height>
+             <height>151</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
