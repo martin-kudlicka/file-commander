@@ -9,6 +9,9 @@
 const QString qsANSI = "ANSI";
 const QString qsASCII = "ASCII";
 const QString qsASK = "Ask";
+#ifdef Q_WS_WIN
+const QString qsATTRIBUTES = "Attributes";
+#endif
 const QString qsBYTES = "Bytes";
 const QString qsBYTES2 = "byte(s)";
 const QString qsDATE = "Date";
