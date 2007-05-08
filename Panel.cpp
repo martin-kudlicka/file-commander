@@ -254,23 +254,6 @@ int cPanel::DuplicateTab(const int &iTabIndex)
 	return AddTab(stiTabInfo);
 } // DuplicateTab
 
-// edit selected file in editor
-void cPanel::EditFile()
-{
-	QFileInfo qfiFile;
-
-	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem());
-
-	if (qfiFile.isFile()) {
-		QString qsCommand;
-
-		qsCommand = csSettings->GetExternalEditor();
-		qsCommand = qsCommand.replace("%1", qfiFile.filePath());
-
-		cProcess::Execute(qsCommand);
-	} // if
-} // EditFile
-
 // event filter
 bool cPanel::eventFilter(QObject *watched, QEvent *event)
 {
