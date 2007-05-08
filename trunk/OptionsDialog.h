@@ -34,8 +34,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		~cOptionsDialog();														///< destructor
 
 	private:
-		static const int iCOLUMNS = 5;										///< columns count in column view
-
 		static const int iPANELS_TAB = 0;									///< tab number of panels options
 		static const int iOPERATIONS_TAB = 1;								///< tab number of operations options
 		static const int iPLUGINS_TAB = 2;									///< tab number of plugins options
@@ -142,6 +140,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param text new time format */
 		void on_qleShortcut_textChanged(const QString &text);			///< shortcut changed
 																						/**< \param text new shortcut key sequence */
+		void on_qleShow_textEdited(const QString &text);				///< changed column name visible in dir view
+																						/**< \param text new column name */
 		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
 																						/**< \param action selected column (or column's unit) */
 		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
