@@ -325,19 +325,6 @@
           <attribute name="title" >
            <string>&amp;Column sets</string>
           </attribute>
-          <widget class="QTreeWidget" name="qtwColumns" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>60</y>
-             <width>411</width>
-             <height>101</height>
-            </rect>
-           </property>
-           <property name="rootIsDecorated" >
-            <bool>false</bool>
-           </property>
-          </widget>
           <widget class="QPushButton" name="qpbColumnAdd" >
            <property name="geometry" >
             <rect>
@@ -453,6 +440,47 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+          </widget>
+          <widget class="QTreeWidget" name="qtwColumns" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>60</y>
+             <width>411</width>
+             <height>101</height>
+            </rect>
+           </property>
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <property name="columnCount" >
+            <number>5</number>
+           </property>
+           <column>
+            <property name="text" >
+             <string>1</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>1</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>2</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>3</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>4</string>
+            </property>
+           </column>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_9" >

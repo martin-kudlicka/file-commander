@@ -73,6 +73,7 @@ cOptionsDialog::~cOptionsDialog()
 // add new column to current column set
 QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos /* INT_MAX */)
 {
+	QLineEdit *qleShow;
 	QSpinBox *qsbWidth;
 	QTreeWidgetItem *qtwiItem;
 
@@ -94,7 +95,10 @@ QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &sc
 	// unit
 	qtwiItem->setText(iUNIT_COLUMN, scColumn.qsUnit);
 	// show
-	qtwiItem->setText(iSHOW_COLUMN, scColumn.qsName);
+	qleShow = new QLineEdit(qtwColumns);
+	qleShow->setText(scColumn.qsName);
+	qtwColumns->setItemWidget(qtwiItem, iSHOW_COLUMN, qleShow);
+	connect(qleShow, SIGNAL(textEdited(const QString &)), SLOT(on_qleShow_textEdited(const QString &)));
 	// width
 	qsbWidth = new QSpinBox(qtwColumns);
 	qsbWidth->setValue(scColumn.iWidth);
@@ -297,7 +301,6 @@ void cOptionsDialog::FillOptions()
 	qcbShowDriveLetter->setChecked(csSettings->GetShowDriveLetter());
 	qcbShowDriveLetter->blockSignals(false);
 	// column sets
-	qtwColumns->setColumnCount(iCOLUMNS);
 	qtwColumns->setHeaderLabels(QStringList() << tr("Type") << tr("Name") << tr("Unit") << tr("Show") << tr("Width"));
 	qtwColumns->header()->setResizeMode(iNAME_COLUMN, QHeaderView::Stretch);
 	qtwColumns->header()->setResizeMode(iSHOW_COLUMN, QHeaderView::Stretch);
@@ -461,7 +464,7 @@ cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
 	// unit
 	scColumn.qsUnit = qtwiItem->text(iUNIT_COLUMN);
 	// show
-	scColumn.qsName = qtwiItem->text(iSHOW_COLUMN);
+	scColumn.qsName = static_cast<QLineEdit *>(qtwColumns->itemWidget(qtwiItem, iSHOW_COLUMN))->text();
 	// width
 	scColumn.iWidth = static_cast<QSpinBox *>(qtwColumns->itemWidget(qtwiItem, iWIDTH_COLUMN))->value();
 
@@ -590,6 +593,14 @@ void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 
 	qfToDo |= ReassignShortcuts;
 } // on_qleShortcut_textEdited
+
+// changed column name visible in dir view
+void cOptionsDialog::on_qleShow_textEdited(const QString &text)
+{
+	SaveOption(Columns);
+
+	qfToDo |= RefreshHeader;
+} // on_qleShow_textEdited
 
 // column selected into column set
 void cOptionsDialog::on_qmColumns_triggered(QAction *action)
