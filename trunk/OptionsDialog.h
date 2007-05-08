@@ -164,6 +164,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbRemoveListerPlugin_clicked(bool checked = false);
 																						///< remove lister plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbShortcutClear_clicked(bool checked = false);		///< shortcut clear button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qrbSizeBytes_toggled(bool checked);						///< size in bytes status change
 																						/**< \param checked size in bytes flag */
 		void on_qrbSizeDynamic_toggled(bool checked);					///< dynamic size status change
