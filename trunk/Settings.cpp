@@ -347,7 +347,7 @@ cSettings::sLister cSettings::GetListerSettings()
 // new tab by shortcut in foreground
 bool cSettings::GetNewTabByShortcutInForeground()
 {
-	return qsSettings.value(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND).toBool();
+	return qsSettings.value(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND, true).toBool();
 } // GetNewTabByShortcutInForeground
 
 // open new tab next to current tab
