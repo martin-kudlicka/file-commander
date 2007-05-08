@@ -29,11 +29,12 @@ void cPanel::ActualizeVolumeInfo()
 	cFileRoutine::sDiskSpace sdsInfo;
 	QString qsName;
 
-#ifdef Q_WS_WIN
-	if (qhTabs.count() == 0) {
-		// do not show information before at least one tab is created to prevent main window resizing
+	if (qhTabs.count() == 0 || !*qhTabs.value(qswDir->currentIndex()).bValid) {
+		// no tab created or not valid dir
 		return;
 	} // if
+
+#ifdef Q_WS_WIN
 	qsName = cFileRoutine::GetVolumeName(qmDrives->value(qcbDrive->currentText()).qsPath);
 #else
 	qsName = qcbDrive->currentText();
@@ -1305,13 +1306,12 @@ void cPanel::SelectAll()
 void cPanel::SetPath(const QString &qsPath)
 {
 	// remove old path from watcher
+	*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = false;
 	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 
 #ifdef Q_WS_WIN
 	// check new path
 	if (!PathExists(qsPath)) {
-		qlDriveInfo->hide();
-
 		if (IsRootDirectory(qsPath)) {
 			// invalid drive
 			QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
@@ -1326,11 +1326,16 @@ void cPanel::SetPath(const QString &qsPath)
 				qcbDrive->blockSignals(false);
 				qcbDrive->setCurrentIndex(qcbDrive->findText(csddDrive.qcbDrive->currentText()));
 			} else {
-				// try to change to previous path
+				// stay in previous path if exists
 				qcbDrive->blockSignals(true);
 				qcbDrive->setCurrentIndex(qcbDrive->findText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive));
 				qcbDrive->blockSignals(false);
-				SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+				if (PathExists(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath)) {
+					qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+					*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = true;
+				} else {
+					SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+				} // if
 			} // if else
 		} else {
 			// maybe valid drive but invalid path
@@ -1340,17 +1345,16 @@ void cPanel::SetPath(const QString &qsPath)
 			qdDir.cdUp();
 			if (qdDir.path() == qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath) {
 				// unsuccessful try to change to subdirectory
-				qlDriveInfo->show();
+				qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+				*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = true;
 			} else {
 				// bad directory, try to go one dir up
 				GoToUpDir();
 			} // if else
 		} // if else
-	} else {
-		// path ok
-		qlDriveInfo->show();
+	} else {		
 #endif
-
+		// path ok
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsDrive = qcbDrive->currentText();
 		qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = QDir::cleanPath(qsPath);
 		// add new path to watcher
