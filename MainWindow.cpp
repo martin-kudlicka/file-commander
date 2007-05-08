@@ -226,7 +226,7 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 												qcbCommand->insertItem(0, qcbCommand->currentText());
 											} // if
 											qcbCommand->setCurrentIndex(-1);
-											qcbCommand->setEditText("");
+											qcbCommand->clearEditText();
 											return true;
 			} // switch
 		} // if
