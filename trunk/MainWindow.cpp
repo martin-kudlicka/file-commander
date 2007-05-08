@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QInputDialog>
 #include <QHeaderView>
+#include "Common/About.h"
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -306,6 +307,14 @@ void cMainWindow::on_cpRight_GotFocus()
 	cpActive = cpRight;
 	SetSortByActions();
 } // on_cpRight_GotFocus
+
+// about is selected
+void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
+{
+	cAbout caAbout(this, qsAPPLICATION, qsVERSION);
+
+	caAbout.exec();
+} // on_qaAbout_triggered
 
 // branch view is selected
 void cMainWindow::on_qaBranchView_triggered(bool checked /* false */)

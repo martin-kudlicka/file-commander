@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/About" >
+        <file>Isshou.jpg</file>
+    </qresource>
+</RCC>
