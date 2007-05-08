@@ -161,6 +161,7 @@ void cPanel::CloseTab(const int &iTabIndex)
 	if (qhTabs.count() > 1) {
 		int iI;
 
+		delete qhTabs.value(iTabIndex).bValid;
 		// reposition of tabs following remove tab
 		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
@@ -232,6 +233,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	qcbCommand->installEventFilter(this);
 	qtbTab->installEventFilter(this);
 	qleQuickSearch->installEventFilter(this);
+	qcbDrive->view()->installEventFilter(this);
 } // cPanel
 
 // create new tab by duplicate one
@@ -301,7 +303,7 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 													} // if
 													return false;
 					case QEvent::FocusOut:	qleQuickSearch->hide();
-													return false;
+													return true;
 					case QEvent::KeyPress:	switch (static_cast<QKeyEvent *>(event)->key()) {
 														case Qt::Key_Backspace: return false;
 														case Qt::Key_Down:		return !QuickSearch(NULL, SearchDown);
@@ -322,7 +324,7 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 														case Qt::Key_Up:			return !QuickSearch(NULL, SearchUp);
 														default:						if (static_cast<QKeyEvent *>(event)->text().isEmpty()) {
 																							// white char obtained
-																							return false;
+																							return true;
 																						} else {
 																							bool bSearch;
 
@@ -345,8 +347,21 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 					default:						return false;
 				} // switch
 			} else {
-				// the rest
-				return QObject::eventFilter(watched, event);
+				if (watched == qcbDrive->view()) {
+					// drives list
+					if (event->type() == QEvent::KeyPress) {
+						// if exists same drive as key pressed activate it
+						if (qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()) != -1) {
+							qcbDrive->setCurrentIndex(qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()));
+							qcbDrive->hidePopup();
+						} // if
+						return true;
+					} // if
+					return false;
+				} else {
+					// the rest
+					return QObject::eventFilter(watched, event);
+				} // if else
 			} // if else
 		} // if else
 	} // if else

@@ -8,6 +8,7 @@
 #include "Panel/Process.h"
 #include <QKeyEvent>
 #include <QInputDialog>
+#include <QHeaderView>
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -24,13 +25,15 @@ cMainWindow::~cMainWindow()
 	cpRight->deleteLater();
 	delete cpPlugins;
 	qagSortBy->deleteLater();
+	qtwLeftDrives->deleteLater();
+	qtwRightDrives->deleteLater();
 } // cMainWindow
 
 // drive lists actualization
 void cMainWindow::ActualizeDrives()
 {
 	qmDrives = cFileRoutine::GetDrives();
-	if (qcbLeftDrive->count() != qmDrives.count()) {
+	if (qtwLeftDrives->topLevelItemCount() != qmDrives.count()) {
 		// assume drives have changed
 		QString qsLeftDrive, qsRightDrive;
 
@@ -39,34 +42,34 @@ void cMainWindow::ActualizeDrives()
 
 		qcbLeftDrive->blockSignals(true);
 		qcbRightDrive->blockSignals(true);
-		qcbLeftDrive->clear();
-		qcbRightDrive->clear();
+		qtwLeftDrives->clear();
+		qtwRightDrives->clear();
 
 		QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
 		while (qmiDrives.hasNext()) {
 			qmiDrives.next();
-			qcbLeftDrive->addItem(qmiDrives.key());
-			qcbRightDrive->addItem(qmiDrives.key());
+			qtwLeftDrives->addTopLevelItem(new QTreeWidgetItem(QStringList() << qmiDrives.key()));
+			qtwRightDrives->addTopLevelItem(new QTreeWidgetItem(QStringList() << qmiDrives.key()));
 		} // while
 
 		// check for selected drive change, changes are handled in Panel class
-		if (qcbLeftDrive->findText(qsLeftDrive) != -1) {
+		if (qtwLeftDrives->findItems(qcbLeftDrive->currentText(), Qt::MatchExactly).count() == 0) {
+			// selected drive changed
+			qcbLeftDrive->blockSignals(false);
+			qcbLeftDrive->setCurrentIndex(-1);
+		} else {
 			// selected drive not changed
 			qcbLeftDrive->setCurrentIndex(qcbLeftDrive->findText(qsLeftDrive));
 			qcbLeftDrive->blockSignals(false);
-		} else {
-			qcbLeftDrive->blockSignals(false);
-			qcbLeftDrive->setCurrentIndex(-1);
-			// selected drive changed
 		} // if else
-		if (qcbRightDrive->findText(qsLeftDrive) != -1) {
-			// selected drive not changed
-			qcbRightDrive->setCurrentIndex(qcbRightDrive->findText(qsLeftDrive));
-			qcbRightDrive->blockSignals(false);
-		} else {
+		if (qtwRightDrives->findItems(qcbRightDrive->currentText(), Qt::MatchExactly).count() == 0) {
 			// selected drive changed
 			qcbRightDrive->blockSignals(false);
 			qcbRightDrive->setCurrentIndex(-1);
+		} else {
+			// selected drive not changed
+			qcbRightDrive->setCurrentIndex(qcbRightDrive->findText(qsRightDrive));
+			qcbRightDrive->blockSignals(false);
 		} // if else
 	} // if
 } // ActualizeDrives
@@ -161,7 +164,17 @@ cMainWindow::cMainWindow()
 	// file operations class initizalization
 	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 	// panels
+	qtwLeftDrives = new QTreeWidget(qcbLeftDrive);
+	qtwLeftDrives->setRootIsDecorated(false);
+	qtwLeftDrives->header()->hide();
+	qcbLeftDrive->setModel(qtwLeftDrives->model());
+	qcbLeftDrive->setView(qtwLeftDrives);
 	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
+	qtwRightDrives = new QTreeWidget(qcbRightDrive);
+	qtwRightDrives->setRootIsDecorated(false);
+	qtwRightDrives->header()->hide();
+	qcbRightDrive->setModel(qtwRightDrives->model());
+	qcbRightDrive->setView(qtwRightDrives);
 	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
 	// quick searches
 	qleLeftQuickSearch->hide();
@@ -176,6 +189,7 @@ cMainWindow::cMainWindow()
 	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 	this->addAction(qaTabBarCloseAllOtherTabs);
 
+	// variables initialization
 	qagSortBy = new QActionGroup(this);
 	iTabBarIndex = -1;
 	qcbCommand->installEventFilter(this);
