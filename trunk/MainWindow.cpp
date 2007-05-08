@@ -716,11 +716,19 @@ void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		if (qfilFiles.at(iI).isFile()) {
-			cListerMainWindow *clmwLister;
+			if (csSettings.GetViewerType() == qsINTERNAL) {
+				cListerMainWindow *clmwLister;
 
-			clmwLister = new cListerMainWindow(&csSettings, cpPlugins->clLister, qfilFiles.at(iI).filePath());
+				clmwLister = new cListerMainWindow(&csSettings, cpPlugins->clLister, qfilFiles.at(iI).filePath());
+				clmwLister->show();
+			} else {
+				QString qsCommand;
 
-			clmwLister->show();
+				qsCommand = csSettings.GetExternalViewer();
+				qsCommand = qsCommand.replace("%1", qfilFiles.at(iI).filePath());
+
+				cProcess::Execute(qsCommand);
+			} // if else
 		} // if
 	} // for
 } // on_qpbView_clicked

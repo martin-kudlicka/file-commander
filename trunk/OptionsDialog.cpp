@@ -314,6 +314,13 @@ void cOptionsDialog::FillOptions()
 	qcbQuickSearchShowWindow->setChecked(csSettings->GetQuickSearchShowSearchWindow());
 
 	// operations
+	// viewer
+	if (csSettings->GetViewerType() == qsINTERNAL) {
+		qrbViewerInternal->setChecked(true);
+	} else {
+		qrbViewerExternal->setChecked(true);
+	} // if else
+	qleExternalViewer->setText(csSettings->GetExternalViewer());
 	// editor
 	qleExternalEditor->setText(csSettings->GetExternalEditor());
 	// confirmation
@@ -766,6 +773,24 @@ void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */
 	} // if
 } // on_qpbExternalEditorBrowse_clicked
 
+// external viewer browse button is clicked on
+void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */)
+{
+	QString qsViewer;
+
+	// TODO on_qpbExternalViewerBrowse_clicked other OS than Windows
+#ifdef Q_WS_WIN
+	qsViewer = QFileDialog::getOpenFileName(this, tr("Select viewer"), "/", "*.exe");
+#endif
+
+	if (!qsViewer.isEmpty()) {
+		if (qsViewer.contains(' ')) {
+			qsViewer = '"' + qsViewer + '"';
+		} // if
+		qleExternalViewer->setText(qsViewer + " %1");
+	} // if
+} // on_qpbExternalViewerBrowse_clicked
+
 // remove content plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 {
@@ -1109,6 +1134,13 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetQuickSearchShowSearchWindow(qcbQuickSearchShowWindow->isChecked());
 
 	// operations
+	// viewer
+	if (qrbViewerInternal->isChecked()) {
+		csSettings->SetViewerType(qsINTERNAL);
+	} else {
+		csSettings->SetViewerType(qsEXTERNAL);
+	} // if else
+	csSettings->SetExternalViewer(qleExternalViewer->text());
 	// editor
 	csSettings->SetExternalEditor(qleExternalEditor->text());
 	// confirmation
