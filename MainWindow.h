@@ -48,6 +48,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTabBar qtbLeft;															///< left's panel tab bar
 		QTabBar qtbRight;															///< right's panel tab bar
 		QTimer qtTimer;															///< timer for requesting changeable informations
+		QTreeWidget *qtwLeftDrives;											///< drives list for left drive combo box
+		QTreeWidget *qtwRightDrives;											///< drives list for right drive combo box
 
 		void ActualizeDrives();													///< drive lists actualization
 		void AssignShortcuts();													///< assign shortcuts
