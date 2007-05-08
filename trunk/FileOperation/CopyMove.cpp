@@ -1,7 +1,7 @@
 #include "FileOperation/CopyMove.h"
 
 #ifdef Q_WS_WIN
-#include <Windows.h>
+#include <windows.h>
 #endif
 #include <QDateTime>
 
@@ -11,8 +11,10 @@ cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSetti
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
+
 	bCanceled = false;
 	qi64TotalMaximum = 0;
+	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 } // cCopyMove
 
 // copy file
@@ -44,7 +46,7 @@ bool cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint
 	// copy
 	qi64CurrentValue = 0;
 	while(!qfSource.atEnd() && !bCanceled) {
-		qbaData = qfSource.read(qi64BUFFER_SIZE);
+		qbaData = qfSource.read(iBufferSize);
 		qfDestination.write(qbaData);
 		qi64CurrentValue += qbaData.size();
 		*qi64TotalValue += qbaData.size();

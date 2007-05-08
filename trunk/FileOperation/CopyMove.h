@@ -39,8 +39,6 @@ class cCopyMove : public QThread
 																					  \param eStyle foreground or background operation */
 
 	private:
-		static const qint64 qi64BUFFER_SIZE = 16384;				///< buffer size for copy
-
 		bool bCanceled;													///< true if operation is canceled
 		cCopyMoveConflict ccmcConflict;								///< conflict dialog
 		cCopyMoveConflict::eChoice ecConflictCurrent;			///< current conflict user's response
@@ -57,6 +55,7 @@ class cCopyMove : public QThread
 		cRetry crRetry;													///< retry dialog
 		cRetry::eChoice ecRetryCurrent;								///< current retry dialog user's response
 		cSettings *csSettings;											///< application's configuration
+		int iBufferSize;													///< buffer for copy/move file
 		QHBoxLayout *qhblOperations;									///< layout for background operations
 		QFileInfoList qfilSource;										///< source file list
 		qint64 qi64CurrentMaximum;										///< size of currently copied/moved file

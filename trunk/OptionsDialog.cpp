@@ -323,6 +323,8 @@ void cOptionsDialog::FillOptions()
 	qleExternalViewer->setText(csSettings->GetExternalViewer());
 	// editor
 	qleExternalEditor->setText(csSettings->GetExternalEditor());
+	// copy/move
+	qsbCopyMoveBufferSize->setValue(csSettings->GetCopyMoveBufferSize());
 	// confirmation
 	qsValue = csSettings->GetFileOverwrite();
 	if (qsValue == qsASK) {
@@ -1143,6 +1145,8 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetExternalViewer(qleExternalViewer->text());
 	// editor
 	csSettings->SetExternalEditor(qleExternalEditor->text());
+	// copy/move
+	csSettings->SetCopyMoveBufferSize(qsbCopyMoveBufferSize->value());
 	// confirmation
 	if (qrbOverwriteAsk->isChecked()) {
 		qsValue = qsASK;
