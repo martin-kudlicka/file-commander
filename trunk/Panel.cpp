@@ -89,6 +89,7 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	stTab.swWidgets->qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
+	stTab.bValid = new bool();
 	if (qhTabs.contains(iIndex)) {
 		// move tabs by one place
 		int iI;
@@ -100,14 +101,16 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	qhTabs.insert(iIndex, stTab);
 
 	// add new tab into GUI
+	qtbTab->blockSignals(true);
 	qtbTab->insertTab(iIndex, "");
+	qtbTab->blockSignals(false);
 	SetTabText(iIndex);
 
 	// add path to watcher
 	qfswWatcher.addPath(stiTabInfo.qsPath);
 
-	// set header
-	RefreshHeader(iIndex);
+	// set header, refresh content only in first added tab
+	RefreshHeader(iIndex, qhTabs.count() == 1);
 
 	// set sorting
 	ctwTree->header()->setSortIndicator(stiTabInfo.ssSort.iSortedColumn, stiTabInfo.ssSort.soSortOrder);
@@ -876,6 +879,9 @@ void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 void cPanel::on_qtbTab_currentChanged(int index)
 {
 	qswDir->setCurrentIndex(index);
+	if (!*qhTabs.value(index).bValid) {
+		RefreshContent();
+	} // if
 	ActualizeWidgets();
 } // on_qtbTab_currentChanged
 
@@ -978,7 +984,11 @@ void cPanel::RefreshAllHeaders()
 	int iI;
 
 	for (iI = 0; iI < qhTabs.count(); iI++) {
-		RefreshHeader(iI);
+		if (qswDir->currentIndex() == iI) {
+			RefreshHeader(iI, true);
+		} else {
+			RefreshHeader(iI);
+		} // if else
 	} // for
 } // RefreshAllHeaders
 
@@ -1107,6 +1117,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 
 	// sort and show files
 	Sort(iIndex);
+	*const_cast<sTab *>(&qhTabs.value(iIndex))->bValid = true;
 
 	if (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
 		// focus to the first item
@@ -1126,12 +1137,15 @@ void cPanel::RefreshContent(QFileInfoList &qfilFiles)
 } // RefreshContent
 
 // refresh column's header
-void cPanel::RefreshHeader(const int &iIndex)
+void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 {
 	bool bAutoStretch;
 	int iI;
 	QStringList qslColumns;
 	QTreeWidgetItem *qtwiHeader;
+
+	// invalidate content of tab
+	*const_cast<sTab *>(&qhTabs.value(iIndex))->bValid = false;
 
 	// clear previous header contents and fill new information
 	qhTabs.value(iIndex).qlColumns->clear();
@@ -1176,8 +1190,10 @@ void cPanel::RefreshHeader(const int &iIndex)
 	// clickable flag
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->setClickable(true);
 
-	// refresh dir content according to new header
-	RefreshContent(iIndex);
+	if (bContent) {
+		// refresh dir content according to new header
+		RefreshContent(iIndex);
+	} // if
 } // RefreshHeader
 
 // refresh tabs

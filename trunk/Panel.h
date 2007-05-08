@@ -121,6 +121,7 @@ class cPanel : public QObject
 		};
 		/// tab information
 		struct sTab {
+			bool *bValid;																///< tab content is validated flag
 			QHash<QTreeWidgetItem *, QFileInfo> *qhFiles;					///< info about files listed in dir panel
 			QList<cSettings::sColumn> *qlColumns;								///< columns in specified tab
 			QString qsColumnSet;														///< column set for tab
@@ -185,8 +186,10 @@ class cPanel : public QObject
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view
 																								  \param qfilFiles custom list of files */
-		void RefreshHeader(const int &iIndex);									///< refresh column's header
-																							/**< \param iIndex index of dir view */
+		void RefreshHeader(const int &iIndex, const bool &bContent = false);
+																							///< refresh column's header
+																							/**< \param iIndex index of dir view
+																								  \param bContent refresh content too flag */
 		void SetPath(const QString &qsPath);									///< set new path for current dir view
 																							/**< \param qsPath new path */
 		void SetTabText(const int &iTabIndex);									///< set text in tab bar
