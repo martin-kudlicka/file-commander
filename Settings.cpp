@@ -16,6 +16,7 @@ const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsEXTERNAL_EDITOR = "ExternalEditor";
+const QString qsEXTERNAL_VIEWER = "ExternalViewer";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsFILE_SIZE = "FileSize";
 const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
@@ -47,6 +48,7 @@ const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsSUBDIRECTORY_DEPTH = "SubdirectoryDepth";
 const QString qsUNIT = "Unit";
+const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
 const QString qsWINDOW_STATE = "WindowState";
 const QString qsWRAP_TEXT = "WrapText";
@@ -267,6 +269,12 @@ QString cSettings::GetExternalEditor()
 	// TODO GetExternalEditor other OS than Windows
 	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_EDITOR, "notepad %1").toString();
 } // GetExternalEditor
+
+// external viewer
+QString cSettings::GetExternalViewer()
+{
+	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_VIEWER).toString();
+} // GetExternalViewer
 
 // find out file overwrite mode
 QString cSettings::GetFileOverwrite()
@@ -653,6 +661,12 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	return stiTabInfo;
 } // GetTabInfo
 
+// viewer type
+QString cSettings::GetViewerType()
+{
+	return qsSettings.value(qsOPERATIONS__ + qsVIEWER_TYPE, qsINTERNAL).toString();
+} // GetViewerType
+
 // retrieve startup main window parameters
 cSettings::sMainWindowState cSettings::GetWindowState()
 {
@@ -724,6 +738,12 @@ void cSettings::SetExternalEditor(const QString &qsEditor)
 {
 	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_EDITOR, qsEditor);
 } // SetExternalEditor
+
+// external viewer
+void cSettings::SetExternalViewer(const QString &qsViewer)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_VIEWER, qsViewer);
+} // SetExternalViewer
 
 // set default overwrite behaviour
 void cSettings::SetFileOverwrite(const QString &qsMode)
@@ -948,8 +968,13 @@ void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTa
 	for (iI = 0; iI < qlTabs.count(); iI++) {
 		CreateTab(epPosition, iI, qlTabs.at(iI));
 	} // for
-
 } // SetTabs
+
+// viewer type
+void cSettings::SetViewerType(const QString &qsType)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsVIEWER_TYPE, qsType);
+} // SetViewerType
 
 // set startup main window state
 void cSettings::SetWindowState(const sMainWindowState &smwsState)

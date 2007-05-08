@@ -584,6 +584,86 @@
          <property name="currentIndex" >
           <number>0</number>
          </property>
+         <widget class="QWidget" name="tab_11" >
+          <attribute name="title" >
+           <string>&amp;Viewer</string>
+          </attribute>
+          <widget class="QGroupBox" name="groupBox_9" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>120</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Type</string>
+           </property>
+           <widget class="QRadioButton" name="qrbViewerInternal" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Internal</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbViewerExternal" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>83</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>External</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_10" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>90</y>
+             <width>441</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>External viewer</string>
+           </property>
+           <widget class="QLineEdit" name="qleExternalViewer" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>331</width>
+              <height>20</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="qpbExternalViewerBrowse" >
+            <property name="geometry" >
+             <rect>
+              <x>350</x>
+              <y>20</y>
+              <width>75</width>
+              <height>23</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>&amp;Browse</string>
+            </property>
+           </widget>
+          </widget>
+         </widget>
          <widget class="QWidget" name="tab_10" >
           <attribute name="title" >
            <string>&amp;Editor</string>

@@ -17,12 +17,14 @@ const QString qsBYTES2 = "byte(s)";
 const QString qsDATE = "Date";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
+const QString qsEXTERNAL = "External";
 const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
 const QString qsFULL = "Full";										///< full dir panel view (icon, filename, extension, date)
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsGIGABYTES = "Gigabytes";
 const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
+const QString qsINTERNAL = "Internal";
 const QString qsKILOBYTES = "Kilobytes";
 const QString qsMAXIMIZED = "Maximized";
 const QString qsMEGABYTES = "Megabytes";
@@ -204,6 +206,8 @@ class cSettings : private QObject
 																				/**< return confirm close of all tabs flag */
 		QString GetExternalEditor();									///< external editor
 																				/**< \return external editor command line */
+		QString GetExternalViewer();									///< external viewer
+																				/**< \return external viewer command line */
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
@@ -264,6 +268,8 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
+		QString GetViewerType();										///< viewer type
+																				/**< \return internal or external viewer */
 		sMainWindowState GetWindowState();							///< retrieve startup main window parameters
 																				/**< \return startup main window parameters */
 		void RemoveColumnSet(const QString &qsColumnSet);		///< remove column set
@@ -280,6 +286,8 @@ class cSettings : private QObject
 																				/**< \param bClose confirm close of all tabs flag */
 		void SetExternalEditor(const QString &qsEditor);		///< external editor
 																				/**< \param qsEditor external editor command line */
+		void SetExternalViewer(const QString &qsViewer);		///< external viewer
+																				/**< \param qsViewer external viewer command line */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
@@ -339,6 +347,8 @@ class cSettings : private QObject
 																				///< save tab settings
 																				/**< \param epPosition panel position
 																					  \param qlTabs tab settings */
+		void SetViewerType(const QString &qsType);				///< viewer type
+																				/**< \param qsType internal or external viewer */
 		void SetWindowState(const sMainWindowState &smwsState);
 																				///< set startup main window state
 																				/**< \param smwsState window state information */

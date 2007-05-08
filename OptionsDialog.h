@@ -161,6 +161,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbExternalEditorBrowse_clicked(bool checked = false);
 																						///< external editor browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbExternalViewerBrowse_clicked(bool checked = false);
+																						///< external viewer browse button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
