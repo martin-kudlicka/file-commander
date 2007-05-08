@@ -62,7 +62,6 @@ class cPanel : public QObject
 		int DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
 																							/**< \param iTabIndex tab to duplicate
 																								  \return new tab index */
-		void EditFile();																///< edit selected file in editor
 		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
 		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view

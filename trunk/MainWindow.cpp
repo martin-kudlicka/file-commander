@@ -646,9 +646,22 @@ void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
 void cMainWindow::on_qpbEdit_clicked(bool checked /* false */)
 {
 	cPanel *cpSource;
+	int iI;
+	QFileInfoList qfilFiles;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cpSource->EditFile();
+	qfilFiles = cpSource->GetSelectedItemsList();
+
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		if (qfilFiles.at(iI).isFile()) {
+			QString qsCommand;
+
+			qsCommand = csSettings.GetExternalEditor();
+			qsCommand = qsCommand.replace("%1", qfilFiles.at(iI).filePath());
+
+			cProcess::Execute(qsCommand);
+		} // if
+	} // for
 } // on_qpbEdit_clicked
 
 // left root dir button is clicked on
