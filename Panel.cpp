@@ -233,7 +233,9 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	qcbCommand->installEventFilter(this);
 	qtbTab->installEventFilter(this);
 	qleQuickSearch->installEventFilter(this);
+#ifdef Q_WS_WIN
 	qcbDrive->view()->installEventFilter(this);
+#endif
 } // cPanel
 
 // create new tab by duplicate one
@@ -347,6 +349,7 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 					default:						return false;
 				} // switch
 			} else {
+#ifdef Q_WS_WIN
 				if (watched == qcbDrive->view()) {
 					// drives list
 					if (event->type() == QEvent::KeyPress) {
@@ -359,6 +362,7 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 					} // if
 					return false;
 				} else {
+#endif
 					// the rest
 					return QObject::eventFilter(watched, event);
 				} // if else
