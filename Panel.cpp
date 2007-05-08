@@ -359,8 +359,8 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 						if (qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()) != -1) {
 							qcbDrive->setCurrentIndex(qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()));
 							qcbDrive->hidePopup();
+							return true;
 						} // if
-						return true;
 					} // if
 					return false;
 				} else {
