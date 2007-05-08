@@ -13,7 +13,8 @@ FORMS = MainWindow.ui \
 		  FileOperation/CopyMoveWidget.ui \
 		  FileOperation/QueueWidget.ui \
 		  FileOperation/DeleteDialog.ui \
-		  FileOperation/DeleteWidget.ui
+		  FileOperation/DeleteWidget.ui \
+		  Common/About.ui
 HEADERS = MainWindow.h \
 		    OptionsDialog.h \
 			 ListerMainWindow.h \
@@ -48,7 +49,8 @@ HEADERS = MainWindow.h \
 			 Plugins/ContPlug.h \
 			 Plugins/Lister.h \
 			 Plugins/TotalCommanderInterface.h \
-			 Common/System.h
+			 Common/System.h \
+			 Common/About.h
 win32 {
 	 HEADERS += Panel/Win32/ShellContextMenu.h
 }
@@ -85,7 +87,8 @@ SOURCES = FileCommander.cpp \
 			 Plugins/Content.cpp \
 			 Plugins/ContentDelayed.cpp \
 			 Plugins/Lister.cpp \
-			 Common/System.cpp
+			 Common/System.cpp \
+			 Common/About.cpp
 win32 {
 	 SOURCES += Panel/Win32/ShellContextMenu.cpp
 }

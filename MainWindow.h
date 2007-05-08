@@ -73,6 +73,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	private slots:
 		void on_cpLeft_GotFocus();												///< left panel got focus
 		void on_cpRight_GotFocus();											///< right panel got focus
+		void on_qaAbout_triggered(bool checked = false);				///< about is selected
+																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaBranchView_triggered(bool checked = false);			///< branch view is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaCompareDirectories_triggered(bool checked = false);

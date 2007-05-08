@@ -459,11 +459,18 @@
     <addaction name="separator" />
     <addaction name="qaRefresh" />
    </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="qaAbout" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
    <addaction name="menuCommands" />
    <addaction name="qmPanel" />
    <addaction name="menuConfiguration" />
+   <addaction name="menuHelp" />
   </widget>
   <action name="qaQuit" >
    <property name="text" >
@@ -546,6 +553,11 @@
   <action name="qaReverseOrder" >
    <property name="text" >
     <string>Reverse &amp;order</string>
+   </property>
+  </action>
+  <action name="qaAbout" >
+   <property name="text" >
+    <string>&amp;About</string>
    </property>
   </action>
  </widget>
