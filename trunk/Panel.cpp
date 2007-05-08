@@ -1365,11 +1365,15 @@ void cPanel::SetTabText(const int &iTabIndex)
 void cPanel::Sort(const int &iIndex)
 {
 	int iColumnName, iI;
-	QList<QTreeWidgetItem *> qlDirectories, qlFiles;
+	QList<QTreeWidgetItem *> qlDirectories, qlFiles, qlMarked;
 
-	// clear tree (can't use QTreeWidget::clear because it deletes objects too)
+	// clear tree (can't use QTreeWidget::clear because it deletes objects too) and remember marked items
 	while (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
-		static_cast<cTreeWidget *>(qswDir->widget(iIndex))->takeTopLevelItem(0);
+		if (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItem(0)->isSelected()) {
+			qlMarked.append(static_cast<cTreeWidget *>(qswDir->widget(iIndex))->takeTopLevelItem(0));
+		} else {
+			static_cast<cTreeWidget *>(qswDir->widget(iIndex))->takeTopLevelItem(0);
+		} // if else
 	} // while
 
 	// split directories and files
@@ -1414,6 +1418,11 @@ void cPanel::Sort(const int &iIndex)
 	// show the result
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlDirectories);
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlFiles);
+
+	// mark items again
+	for (iI = 0; iI < qlMarked.count(); iI++) {
+		qlMarked.at(iI)->setSelected(true);
+	} // for
 } // Sort
 
 // sort by specified column
