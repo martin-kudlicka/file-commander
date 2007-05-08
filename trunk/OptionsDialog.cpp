@@ -536,38 +536,38 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 // change of show drive letter in tab bar
 void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
 {
-	qfTodo |= RefreshTabs;
+	qfToDo |= RefreshTabs;
 } // on_qcbShowDriveLetter_stateChanged
 
 // change of show hidden files
 void cOptionsDialog::on_qcbShowHiddenFiles_stateChanged(int state)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qcbShowHiddenFiles_stateChanged
 
 // change of show system files
 void cOptionsDialog::on_qcbShowSystemFiles_stateChanged(int state)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qcbShowSystemFiles_stateChanged
 
 // change of show tab bar with only one tab
 void cOptionsDialog::on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state)
 {
-	qfTodo |= RefreshTabs;
+	qfToDo |= RefreshTabs;
 } // on_qcbShowTabBarWithOnlyOneTab_stateChanged
 
 // change of show square brackets around directory name
 void cOptionsDialog::on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qcbSquareBracketsAroundDirectoryName_stateChanged
 
 // changes accepted
 void cOptionsDialog::on_qdbbResponse_accepted()
 {
 	SaveOptions();
-	done(qfTodo);
+	done(qfToDo);
 } // on_qdbbResponse_accepted
 
 void cOptionsDialog::on_qdbbResponse_rejected()
@@ -579,7 +579,7 @@ void cOptionsDialog::on_qdbbResponse_rejected()
 // time format by plugin changed
 void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qlePluginTimeDisplay_textEdited
 
 // shortcut changed
@@ -588,7 +588,7 @@ void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 	qtwShortcutItem->currentItem()->setText(1, text);
 	csSettings->SetShortcut(static_cast<cSettings::eShortcutCategory>(qtwShortcutCategory->currentItem()->data(0, Qt::UserRole).toInt()), qtwShortcutItem->currentItem()->text(0), text);
 
-	qfTodo |= ReassignShortcuts;
+	qfToDo |= ReassignShortcuts;
 } // on_qleShortcut_textEdited
 
 // column selected into column set
@@ -632,7 +632,7 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 
 	SaveOption(Columns);
 
-	qfTodo |= RefreshHeader;
+	qfToDo |= RefreshHeader;
 } // on_qmColumns_triggered
 
 // add button is clicked on in content plugins
@@ -649,7 +649,7 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 		spPlugin.bEnabled = true;
 		AddPluginIntoTree(spPlugin, qtwContentPlugins);
 
-		qfTodo |= ReloadPlugins;
+		qfToDo |= ReloadPlugins;
 	} // if
 } // on_qpbAddContentPlugin_clicked
 
@@ -667,7 +667,7 @@ void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 		spPlugin.bEnabled = true;
 		AddPluginIntoTree(spPlugin, qtwListerPlugins);
 
-		qfTodo |= ReloadPlugins;
+		qfToDo |= ReloadPlugins;
 	} // if
 } // on_qpbAddListerPlugin_clicked
 
@@ -684,7 +684,7 @@ void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 
 	SaveOption(Columns);
 
-	qfTodo |= RefreshHeader;
+	qfToDo |= RefreshHeader;
 } // on_qpbColumnDown_clicked
 
 // column remove button is clicked on in columns view
@@ -693,7 +693,7 @@ void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 	delete qtwColumns->currentItem();
 	SaveOption(Columns);
 
-	qfTodo |= RefreshHeader;
+	qfToDo |= RefreshHeader;
 } // on_qpbColumnRemove_clicked
 
 // column set add button is clicked on in columns view
@@ -708,7 +708,7 @@ void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 		qcbColumnSet->addItem(qsName);
 		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(qsName));
 
-		qfTodo |= RefreshHeader;
+		qfToDo |= RefreshHeader;
 	} // if
 } // on_qpbColumnSetAdd_clicked
 
@@ -718,7 +718,7 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
 	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
 
-	qfTodo |= RefreshHeader;
+	qfToDo |= RefreshHeader;
 } // on_qpbColumnSetRemove_clicked
 
 // column up button is clicked on in columns view
@@ -734,7 +734,7 @@ void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 
 	SaveOption(Columns);
 
-	qfTodo |= RefreshHeader;
+	qfToDo |= RefreshHeader;
 } // on_qpbColumnUp_clicked
 
 // external editor browse button is clicked on
@@ -760,7 +760,7 @@ void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 {
 	delete qtwContentPlugins->selectedItems().at(0);
 
-	qfTodo |= ReloadPlugins;
+	qfToDo |= ReloadPlugins;
 } // on_qpbRemoveContentPlugin_clicked
 
 // remove lister plugin button is clicked on
@@ -768,7 +768,7 @@ void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 {
 	delete qtwListerPlugins->selectedItems().at(0);
 
-	qfTodo |= ReloadPlugins;
+	qfToDo |= ReloadPlugins;
 } // on_qpbRemoveListerPlugin_clicked
 
 // shortcut clear button is clicked on
@@ -780,37 +780,39 @@ void cOptionsDialog::on_qpbShortcutClear_clicked(bool checked /* false */)
 // size in bytes status change
 void cOptionsDialog::on_qrbSizeBytes_toggled(bool checked)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qrbSizeBytes_toggled
 
 // dynamic size status change
 void cOptionsDialog::on_qrbSizeDynamic_toggled(bool checked)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qrbSizeDynamic_toggled
 
 // size in gigabytes status change
 void cOptionsDialog::on_qrbSizeGigabytes_toggled(bool checked)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qrbSizeGigabytes_toggled
 
 // size in kilobytes status change
 void cOptionsDialog::on_qrbSizeKilobytes_toggled(bool checked)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qrbSizeKilobytes_toggled
 
 // size in megabytes status change
 void cOptionsDialog::on_qrbSizeMegabytes_toggled(bool checked)
 {
-	qfTodo |= RefreshContent;
+	qfToDo |= RefreshContent;
 } // on_qrbSizeMegabytes_toggled
 
 // changed width of column
 void cOptionsDialog::on_qsbWidth_valueChanged(int val)
 {
 	SaveOption(Columns);
+
+	qfToDo |= RefreshHeader;
 } // on_qsbWidth_valueChanged
 
 // selected cell changed
@@ -841,7 +843,7 @@ void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
 // selected content plugin changed
 void cOptionsDialog::on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column)
 {
-	qfTodo |= ReloadPlugins;
+	qfToDo |= ReloadPlugins;
 } // on_qtwContentPlugins_itemChanged
 
 // selected content plugin changed
@@ -857,7 +859,7 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 // selected lister plugin changed
 void cOptionsDialog::on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column)
 {
-	qfTodo |= ReloadPlugins;
+	qfToDo |= ReloadPlugins;
 } // on_qtwListerPlugins_itemSelectionChanged
 
 // selected lister plugin changed
