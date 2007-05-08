@@ -158,6 +158,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnUp_clicked(bool checked = false);				///< column up button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbExternalEditorBrowse_clicked(bool checked = false);
+																						///< external editor browse button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */

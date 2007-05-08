@@ -311,6 +311,8 @@ void cOptionsDialog::FillOptions()
 	qcbQuickSearchShowWindow->setChecked(csSettings->GetQuickSearchShowSearchWindow());
 
 	// operations
+	// editor
+	qleExternalEditor->setText(csSettings->GetExternalEditor());
 	// confirmation
 	qsValue = csSettings->GetFileOverwrite();
 	if (qsValue == qsASK) {
@@ -735,6 +737,24 @@ void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 	qfTodo |= RefreshHeader;
 } // on_qpbColumnUp_clicked
 
+// external editor browse button is clicked on
+void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */)
+{
+	QString qsEditor;
+
+	// TODO on_qpbExternalEditorBrowse_clicked other OS than Windows
+#ifdef Q_WS_WIN
+	qsEditor = QFileDialog::getOpenFileName(this, tr("Select editor"), "/", "*.exe");
+#endif
+
+	if (!qsEditor.isEmpty()) {
+		if (qsEditor.contains(' ')) {
+			qsEditor = '"' + qsEditor + '"';
+		} // if
+		qleExternalEditor->setText(qsEditor + " %1");
+	} // if
+} // on_qpbExternalEditorBrowse_clicked
+
 // remove content plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 {
@@ -1067,27 +1087,10 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetQuickSearchShift(qcbQuickSearchShift->isChecked());
 	csSettings->SetQuickSearchShowSearchWindow(qcbQuickSearchShowWindow->isChecked());
 
-	// plugins
-	// content
-	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
-	// lister
-	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
-	// general
-	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
-	if (qrbListerANSI->isChecked()) {
-		slLister.qsCharSet = qsANSI;
-	} else {
-		if (qrbListerASCII->isChecked()) {
-			slLister.qsCharSet = qsASCII;
-		} else {
-			slLister.qsCharSet = qsVARIABLE_CHAR_WIDTH;
-		} // if else
-	} // if else
-	slLister.bWrapText = qcbListerWrapText->isChecked();
-	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
-	csSettings->SetListerSettings(slLister);
-
-	// others
+	// operations
+	// editor
+	csSettings->SetExternalEditor(qleExternalEditor->text());
+	// confirmation
 	if (qrbOverwriteAsk->isChecked()) {
 		qsValue = qsASK;
 	} else {
@@ -1112,4 +1115,24 @@ void cOptionsDialog::SaveOptions()
 		} // if else
 	} // if else
 	csSettings->SetReadonlyFileOverwrite(qsValue);
+
+	// plugins
+	// content
+	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
+	// lister
+	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
+	// general
+	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
+	if (qrbListerANSI->isChecked()) {
+		slLister.qsCharSet = qsANSI;
+	} else {
+		if (qrbListerASCII->isChecked()) {
+			slLister.qsCharSet = qsASCII;
+		} else {
+			slLister.qsCharSet = qsVARIABLE_CHAR_WIDTH;
+		} // if else
+	} // if else
+	slLister.bWrapText = qcbListerWrapText->isChecked();
+	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
+	csSettings->SetListerSettings(slLister);
 } // SaveOptions

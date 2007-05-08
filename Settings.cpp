@@ -15,6 +15,7 @@ const QString qsDESCENDING = "descending";
 const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
+const QString qsEXTERNAL_EDITOR = "ExternalEditor";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsFILE_SIZE = "FileSize";
 const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
@@ -251,6 +252,13 @@ QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 
 	return qslColumns;
 } // GetColumnsInSet
+
+// external editor
+QString cSettings::GetExternalEditor()
+{
+	// TODO GetExternalEditor other OS than Windows
+	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_EDITOR, "notepad %1").toString();
+} // GetExternalEditor
 
 // find out file overwrite mode
 QString cSettings::GetFileOverwrite()
@@ -702,6 +710,12 @@ void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)
 {
 	qsSettings.setValue(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS, bClose);
 } // SetConfirmCloseOfAllTabs
+
+// external editor
+void cSettings::SetExternalEditor(const QString &qsEditor)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_EDITOR, qsEditor);
+} // SetExternalEditor
 
 // set default overwrite behaviour
 void cSettings::SetFileOverwrite(const QString &qsMode)

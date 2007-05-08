@@ -255,10 +255,12 @@ void cPanel::EditFile()
 	qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem());
 
 	if (qfiFile.isFile()) {
-		// TODO EditFile other OS than Windows
-#ifdef Q_WS_WIN
-		QProcess::startDetached("notepad.exe", QStringList() << qfiFile.filePath());
-#endif
+		QString qsCommand;
+
+		qsCommand = csSettings->GetExternalEditor();
+		qsCommand = qsCommand.replace("%1", qfiFile.filePath());
+
+		cProcess::Execute(qsCommand);
 	} // if
 } // EditFile
 
