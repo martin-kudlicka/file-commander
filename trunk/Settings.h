@@ -199,6 +199,8 @@ class cSettings : private QObject
 																					  \return list of columns in column set */
 		bool GetConfirmCloseOfAllTabs();								///< confirm close of all tabs in tab bar
 																				/**< return confirm close of all tabs flag */
+		QString GetExternalEditor();									///< external editor
+																				/**< \return external editor command line */
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
@@ -273,6 +275,8 @@ class cSettings : private QObject
 																				/**< \param bClose can close tab on double click if true */
 		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs
 																				/**< \param bClose confirm close of all tabs flag */
+		void SetExternalEditor(const QString &qsEditor);		///< external editor
+																				/**< \param qsEditor external editor command line */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
