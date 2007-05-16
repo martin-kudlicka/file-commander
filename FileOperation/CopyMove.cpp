@@ -500,11 +500,42 @@ void cCopyMove::run()
 							// delete unfinished file
 							QFile::remove(qsTarget);
 						} else {
+#ifdef Q_WS_WIN
+							FILETIME ftCreated, ftLastModified;
+							HANDLE hDestination;
+							SYSTEMTIME stCreated, stLastModified;
+#endif
 							// set target permissions as source permissions
 #ifdef Q_WS_WIN
 							SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
 #else
 							QFile::setPermissions(qsTarget, pPermissions);
+#endif
+
+							// set last modified date/time as source file
+#ifdef Q_WS_WIN
+							stCreated.wYear = qfilSources.at(iI).created().toUTC().date().year();
+							stCreated.wMonth = qfilSources.at(iI).created().toUTC().date().month();
+							stCreated.wDayOfWeek = qfilSources.at(iI).created().toUTC().date().dayOfWeek();
+							stCreated.wDay = qfilSources.at(iI).created().toUTC().date().day();
+							stCreated.wHour = qfilSources.at(iI).created().toUTC().time().hour();
+							stCreated.wMinute = qfilSources.at(iI).created().toUTC().time().minute();
+							stCreated.wSecond = qfilSources.at(iI).created().toUTC().time().second();
+							stCreated.wMilliseconds = qfilSources.at(iI).created().toUTC().time().msec();
+							stLastModified.wYear = qfilSources.at(iI).lastModified().toUTC().date().year();
+							stLastModified.wMonth = qfilSources.at(iI).lastModified().toUTC().date().month();
+							stLastModified.wDayOfWeek = qfilSources.at(iI).lastModified().toUTC().date().dayOfWeek();
+							stLastModified.wDay = qfilSources.at(iI).lastModified().toUTC().date().day();
+							stLastModified.wHour = qfilSources.at(iI).lastModified().toUTC().time().hour();
+							stLastModified.wMinute = qfilSources.at(iI).lastModified().toUTC().time().minute();
+							stLastModified.wSecond = qfilSources.at(iI).lastModified().toUTC().time().second();
+							stLastModified.wMilliseconds = qfilSources.at(iI).lastModified().toUTC().time().msec();
+
+							SystemTimeToFileTime(&stCreated, &ftCreated);
+							SystemTimeToFileTime(&stLastModified, &ftLastModified);
+							hDestination = CreateFile(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), FILE_WRITE_ATTRIBUTES, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+							SetFileTime(hDestination, &ftCreated, NULL, &ftLastModified);
+							CloseHandle(hDestination);
 #endif
 						} // if else
 						break;
