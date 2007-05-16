@@ -170,6 +170,10 @@ void cPanel::CloseTab(const int &iTabIndex)
 		qtbTab->removeTab(iTabIndex);
 		qswDir->removeWidget(qswDir->widget(iTabIndex));
 
+		if (!qhTabs.value(iTabIndex).bValid) {
+			RefreshContent();
+		} // if
+
 		HideOrShowTabBar();
 		ActualizeWidgets();
 
