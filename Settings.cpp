@@ -1,6 +1,6 @@
 #include "Settings.h"
 
-#include <QStringList>
+#include <QtCore/QStringList>
 #include "FileOperation/FileRoutine.h"
 
 // general

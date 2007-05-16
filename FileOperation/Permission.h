@@ -3,7 +3,7 @@
 #ifndef PERMISSION_H
 #define PERMISSION_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class cPermission : public QObject
 {

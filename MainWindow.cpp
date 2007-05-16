@@ -6,9 +6,9 @@
 #include "ListerMainWindow.h"
 #include "FindFilesDialog.h"
 #include "Panel/Process.h"
-#include <QKeyEvent>
-#include <QInputDialog>
-#include <QHeaderView>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QInputDialog>
+#include <QtGui/QHeaderView>
 #include "Common/About.h"
 
 // destructor

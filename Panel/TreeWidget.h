@@ -3,7 +3,7 @@
 #ifndef TREE_WIDGET_H
 #define TREE_WIDGET_H
 
-#include <QTreeWidget>
+#include <QtGui/QTreeWidget>
 
 class cTreeWidget : public QTreeWidget
 {

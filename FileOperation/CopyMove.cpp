@@ -3,7 +3,7 @@
 #ifdef Q_WS_WIN
 #include <windows.h>
 #endif
-#include <QDateTime>
+#include <QtCore/QDateTime>
 
 // constructor
 cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -73,7 +73,7 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 			case cFileRoutine::CopyOperation:	ccmdDialog->setWindowTitle(tr("Copy"));
 															break;
 			case cFileRoutine::MoveOperation:	ccmdDialog->setWindowTitle(tr("Move"));
-															break;
+			default:										;
 		} // switch
 		ccmdDialog->setModal(true);
 		ccmdDialog->show();
@@ -339,6 +339,7 @@ void cCopyMove::run()
 						case cDiskSpace::YesToAll:	ecDiskSpace = cDiskSpace::YesToAll;
 															break;
 						case cDiskSpace::SkipAll:	ecDiskSpace = cDiskSpace::SkipAll;
+						default:							;
 					} // switch
 				} // if
 
@@ -379,6 +380,7 @@ void cCopyMove::run()
 							case cCopyMoveConflict::OverwriteAll:			ecConflict = cCopyMoveConflict::OverwriteAll;
 																						break;
 							case cCopyMoveConflict::OverwriteAllOlder:	ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+							default:													;
 						} // switch
 
 						// rename dialog
@@ -457,6 +459,7 @@ void cCopyMove::run()
 						case cPermission::YesToAll:	ecPermission = cPermission::YesToAll;
 																break;
 						case cPermission::NoToAll:		ecPermission = cPermission::NoToAll;
+						default:								;
 					} // switch
 
 					if (ecPermissionCurrent == cPermission::Cancel) {
@@ -506,7 +509,7 @@ void cCopyMove::run()
 																	if (qsSourcePath != qfilSources.at(iI).path()) {
 																		qdDir.rmdir(qfilSources.at(iI).path());
 																	} // if
-																	break;
+					default:										;
 				} // switch
 
 				if (!bCopyMoveSuccess) {

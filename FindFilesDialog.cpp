@@ -1,12 +1,12 @@
 #include "FindFilesDialog.h"
 
 #include "FindFilesDialog/DrivesDialog.h"
-#include <QFileDialog>
-#include <QTextDocument>
-#include <QTextCodec>
-#include <QTextCursor>
+#include <QtGui/QFileDialog>
+#include <QtGui/QTextDocument>
+#include <QtCore/QTextCodec>
+#include <QtGui/QTextCursor>
 #include "ListerMainWindow.h"
-#include <QInputDialog>
+#include <QtGui/QInputDialog>
 
 // constructor
 cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister)

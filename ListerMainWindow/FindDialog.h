@@ -5,7 +5,7 @@
 
 #include "ui_FindDialog.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 class cFindDialog : public QDialog, public Ui::qdFind
 {

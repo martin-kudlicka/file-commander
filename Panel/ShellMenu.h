@@ -3,7 +3,7 @@
 #ifndef SHELL_MENU_H
 #define SHELL_MENU_H
 
-#include <QPoint>
+#include <QtCore/QPoint>
 #ifdef Q_WS_WIN
 #include "Panel/Win32/ShellContextMenu.h"
 #endif

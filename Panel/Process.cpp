@@ -2,10 +2,10 @@
 
 #ifdef Q_WS_WIN
 #include <windows.h>
-#include <QDir>
-#include <QMessageBox>
+#include <QtCore/QDir>
+#include <QtGui/QMessageBox>
 #else
-#include <QProcess>
+#include <QtCore/QProcess>
 #endif
 
 // execute file

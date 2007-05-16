@@ -1,6 +1,6 @@
 #include "FileOperation/Rename.h"
 
-#include <QInputDialog>
+#include <QtGui/QInputDialog>
 
 // show conflict dialog
 void cRename::Show(const QString &qsOldFilename)

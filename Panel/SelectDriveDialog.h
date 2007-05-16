@@ -5,7 +5,7 @@
 
 #include "ui_SelectDriveDialog.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #include "FileOperation/FileRoutine.h"
 
 class cSelectDriveDialog : public QDialog, public Ui::qdSelectDrive

@@ -3,7 +3,7 @@
 #ifndef RENAME_H
 #define RENAME_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class cRename : public QObject
 {

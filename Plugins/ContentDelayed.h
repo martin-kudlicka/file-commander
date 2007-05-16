@@ -3,8 +3,8 @@
 #ifndef CONTENT_DELAYED_H
 #define CONTENT_DELAYED_H
 
-#include <QThread>
-#include <QTreeWidgetItem>
+#include <QtCore/QThread>
+#include <QtGui/QTreeWidgetItem>
 #include "Plugins/Content.h"
 
 class cContentDelayed : public QThread

@@ -5,7 +5,7 @@
 
 #include "ui_CopyMoveDialog.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
 {

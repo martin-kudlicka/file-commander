@@ -5,7 +5,7 @@
 
 #include "ui_SelectFilesDialog.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #include "Settings.h"
 #include "Plugins/Lister.h"
 

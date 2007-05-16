@@ -156,6 +156,7 @@ void cDelete::run()
 					case cPermission::YesToAll:	ecPermission = cPermission::YesToAll;
 															break;
 					case cPermission::NoToAll:		ecPermission = cPermission::NoToAll;
+					default:								;
 				} // switch
 
 				if (ecPermissionCurrent == cPermission::Cancel) {

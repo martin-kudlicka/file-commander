@@ -5,7 +5,7 @@
 
 #include "ui_DeleteDialog.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 class cDeleteDialog : public QDialog, private Ui::qdDelete
 {

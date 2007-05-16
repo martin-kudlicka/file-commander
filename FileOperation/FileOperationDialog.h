@@ -6,7 +6,7 @@
 #include "ui_FileOperationDialog.h"
 
 #include "FileOperation/FileRoutine.h"
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #include "Settings.h"
 
 class cFileOperationDialog : public QDialog, private Ui::qdFileOperation

@@ -5,7 +5,7 @@
 
 #include "Settings.h"
 #include "Plugins/ListPlug.h"
-#include <QHash>
+#include <QtCore/QHash>
 
 class cLister
 {

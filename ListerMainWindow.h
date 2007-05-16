@@ -6,8 +6,8 @@
 #include "ui_ListerMainWindow.h"
 
 #include "Plugins/Lister.h"
-#include <QTextEdit>
-#include <QPrinter>
+#include <QtGui/QTextEdit>
+#include <QtGui/QPrinter>
 
 class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 {

@@ -6,9 +6,9 @@
 #include "ui_OptionsDialog.h"
 
 #include "Settings.h"
-#include <QMenu>
+#include <QtGui/QMenu>
 #include "Plugins/Content.h"
-#include <QToolBar>
+#include <QtGui/QToolBar>
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
 {

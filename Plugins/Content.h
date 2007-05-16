@@ -3,7 +3,7 @@
 #ifndef CONTENT_H
 #define CONTENT_H
 
-#include <QHash>
+#include <QtCore/QHash>
 #include "Settings.h"
 #include "Plugins/ContPlug.h"
 

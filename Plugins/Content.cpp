@@ -1,9 +1,9 @@
 #include "Plugins/Content.h"
 
-#include <QLibrary>
-#include <QStringList>
-#include <QFileInfo>
-#include <QDir>
+#include <QtCore/QLibrary>
+#include <QtCore/QStringList>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
 const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 4;

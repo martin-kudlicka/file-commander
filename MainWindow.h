@@ -7,8 +7,8 @@
 #include "Panel.h"
 #include "Settings.h"
 #include "FileOperation.h"
-#include <QTimer>
-#include <QShortcut>
+#include <QtCore/QTimer>
+#include <QtGui/QShortcut>
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1";

@@ -1,8 +1,8 @@
 #include "Plugins/Lister.h"
 
-#include <QLibrary>
-#include <QFileInfo>
-#include <QDir>
+#include <QtCore/QLibrary>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
 const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 3;

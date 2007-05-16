@@ -1,7 +1,7 @@
 #include "FileOperation/Retry.h"
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 
 // show retry dialog
 void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
@@ -36,4 +36,4 @@ void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
 	} // if else
 
 	emit Finished(ecResponse);
-} // Show		
+} // Show

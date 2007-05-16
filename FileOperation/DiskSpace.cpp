@@ -1,7 +1,7 @@
 #include "FileOperation/DiskSpace.h"
 
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 
 // show retry dialog
 void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
@@ -41,4 +41,4 @@ void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, con
 	} // if else
 
 	emit Finished(ecResponse);
-} // Show		
+} // Show

@@ -1,12 +1,12 @@
 #include "OptionsDialog.h"
 
-#include <QFileDialog>
-#include <QAction>
+#include <QtGui/QFileDialog>
+#include <QtGui/QAction>
 #include "Plugins/ContPlug.h"
-#include <QSpinBox>
-#include <QHeaderView>
-#include <QKeyEvent>
-#include <QInputDialog>
+#include <QtGui/QSpinBox>
+#include <QtGui/QHeaderView>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QInputDialog>
 
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");

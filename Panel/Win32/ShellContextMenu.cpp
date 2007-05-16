@@ -2,6 +2,31 @@
 
 #include "Panel/Win32/ShellContextMenu.h"
 
+#include <ole2.h>
+
+// for uuidof() instead of Microsoft __uuidof()
+template <typename T> struct UUID_Traits;
+
+#define DEFINE_IID_TRAITS(interface)	template<> struct UUID_Traits<interface> \
+													{	\
+														static REFIID GetIID()	\
+														{	\
+															return IID_ ## interface;	\
+														}	\
+													};
+
+DEFINE_IID_TRAITS(IShellFolder)
+
+template <typename T> inline REFIID uuidof(T&)
+{
+	return UUID_Traits<T>::GetIID();
+}
+
+template <typename T> inline REFIID uuidof(T*)
+{
+	return UUID_Traits<T>::GetIID();
+}
+
 IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;
 
@@ -292,7 +317,7 @@ HRESULT cShellContextMenu::SHBindToParentEx (LPCITEMIDLIST pidl, REFIID riid, VO
 	pidlParent = CopyPIDL (pidl, pRel - (LPBYTE) pidl);
 	IShellFolder * psfFolder = NULL;
 	
-	if ((hr = psfDesktop->BindToObject (pidlParent, NULL, __uuidof (psfFolder), (void **) &psfFolder)) != S_OK)
+	if ((hr = psfDesktop->BindToObject (pidlParent, NULL, uuidof(psfFolder), (void **) &psfFolder)) != S_OK)
 	{
 		free (pidlParent);
 		psfDesktop->Release ();

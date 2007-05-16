@@ -3,7 +3,7 @@
 #ifndef DISK_SPACE_H
 #define DISK_SPACE_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class cDiskSpace : public QObject
 {
