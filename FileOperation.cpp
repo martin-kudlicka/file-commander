@@ -29,12 +29,14 @@ void cFileOperation::Enque(const cFileRoutine::eOperation &eoOperation, const QF
 	sOperation soOperation;
 
 	switch (eoOperation) {
-		case cFileRoutine::CopyOperation:	qsItem = tr("copy");
-														break;
-		case cFileRoutine::DeleteOperation:	qsItem = tr("del");
-														break;
-		case cFileRoutine::MoveOperation:	qsItem = tr("move");
-														break;
+		case cFileRoutine::CopyOperation:
+			qsItem = tr("copy");
+			break;
+		case cFileRoutine::DeleteOperation:
+			qsItem = tr("del");
+			break;
+		case cFileRoutine::MoveOperation:
+			qsItem = tr("move");
 	} // switch
 	qsItem += ": " + qfilSource.at(0).path() + " -> " + qsDestination;
 
@@ -159,52 +161,49 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 	soObjects = GetCount(qfilSource);
 
 	switch (eoOperation) {
-		case cFileRoutine::DeleteOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
-																									 tr("&Delete %1 files and %2 directories.").arg(soObjects.Files).arg(soObjects.Directories),
-																									 &qsDestination,
-																									 &qsFilter);
-														break;
-		case cFileRoutine::CopyOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
-																									 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
-																									 &qsDestination,
-																									 &qsFilter);
-														break;
-		case cFileRoutine::MoveOperation:	euaAction = cfodDialog.ShowDialog(eoOperation,
-																									 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories),
-																									 &qsDestination,
-																									 &qsFilter);
-														break;
+		case cFileRoutine::DeleteOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation,
+			tr("&Delete %1 files and %2 directories.").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
+			break;
+		case cFileRoutine::CopyOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation,
+			tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
+			break;
+		case cFileRoutine::MoveOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation,
+			tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
 	} // switch
 
 	switch (euaAction) {
-		case cFileOperationDialog::CancelAction:	return;
-		case cFileOperationDialog::OkAction:		if (eoOperation == cFileRoutine::DeleteOperation) {
-																	// delete
-																	cdDelete = new cDelete(qmwParent, qhblOperations
+		case cFileOperationDialog::CancelAction:
+			return;
+		case cFileOperationDialog::OkAction:
+			if (eoOperation == cFileRoutine::DeleteOperation) {
+				// delete
+				cdDelete = new cDelete(qmwParent, qhblOperations
 #ifdef Q_WS_WIN
-																		, csSettings);
-#else
-																		);
+					, csSettings
 #endif
-																	connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
-																	qlDelete.append(cdDelete);
-																	cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);
-																} else {
-																	// copy or move
-																	QDir qdDir;
+					);
+				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
+				qlDelete.append(cdDelete);
+				cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);
+			} else {
+				// copy or move
+				QDir qdDir;
 
-																	qdDir.setPath(qsDestination);
-																	if (qdDir.exists()) {
-																		qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
-																	} // if
-																	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
-																	connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
-																	qlCopyMove.append(ccmCopyMove);
-																	ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
-																} // if else
-																break;
-		case cFileOperationDialog::EnqueueAction:	Enque(eoOperation, qfilSource, qsDestination, qsFilter);
-																break;
+				qdDir.setPath(qsDestination);
+				if (qdDir.exists()) {
+					qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
+				} // if
+				ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
+				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+				qlCopyMove.append(ccmCopyMove);
+				ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
+			} // if else
+			break;
+		case cFileOperationDialog::EnqueueAction:
+			Enque(eoOperation, qfilSource, qsDestination, qsFilter);
 	} // if
 } // Operate
 
@@ -221,23 +220,23 @@ void cFileOperation::ProcessQueue()
 
 		switch (soOperation.eoOperation) {
 			case cFileRoutine::CopyOperation:
-			case cFileRoutine::MoveOperation:	ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
-															ccmInQueue = ccmCopyMove;
-															connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
-															qlCopyMove.append(ccmCopyMove);
-															ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
-															break;
-			case cFileRoutine::DeleteOperation:	cdDelete = new cDelete(qmwParent, qhblOperations
+			case cFileRoutine::MoveOperation:
+				ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
+				ccmInQueue = ccmCopyMove;
+				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+				qlCopyMove.append(ccmCopyMove);
+				ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
+				break;
+			case cFileRoutine::DeleteOperation:
+				cdDelete = new cDelete(qmwParent, qhblOperations
 #ifdef Q_WS_WIN
-																, csSettings);
-#else
-																);
+					, csSettings
 #endif
-															cdInQueue = cdDelete;
-															connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
-															qlDelete.append(cdDelete);
-															cdDelete->Delete(soOperation.qfilSource, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
-															break;
+					);
+				cdInQueue = cdDelete;
+				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
+				qlDelete.append(cdDelete);
+				cdDelete->Delete(soOperation.qfilSource, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
 		} // switch
 	} // if
 

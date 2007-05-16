@@ -282,54 +282,64 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 			if (watched == qleQuickSearch) {
 				// quick search
 				switch (event->type()) {
-					case QEvent::FocusIn:	qleQuickSearch->clear();
-													if (csSettings->GetQuickSearchShowSearchWindow()) {
-														qleQuickSearch->show();
-													} // if
-													return false;
-					case QEvent::FocusOut:	qleQuickSearch->hide();
-													return true;
-					case QEvent::KeyPress:	switch (static_cast<QKeyEvent *>(event)->key()) {
-														case Qt::Key_Backspace: return false;
-														case Qt::Key_Down:		return !QuickSearch(NULL, SearchDown);
-														case Qt::Key_Enter:
-														case Qt::Key_Return:		if (qswLastActive == qswDir) {
-																							qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
-																							QApplication::sendEvent(qswLastActive->currentWidget(), event);
-																							return true;
-																						} else {
-																							return false;
-																						} // if else
-														case Qt::Key_Escape:		if (qswLastActive == qswDir) {
-																							qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
-																							return true;
-																						} else {
-																							return false;
-																						} // if else
-														case Qt::Key_Up:			return !QuickSearch(NULL, SearchUp);
-														default:						if (static_cast<QKeyEvent *>(event)->text().isEmpty()) {
-																							// white char obtained
-																							return true;
-																						} else {
-																							bool bSearch;
+					case QEvent::FocusIn:
+						qleQuickSearch->clear();
+						if (csSettings->GetQuickSearchShowSearchWindow()) {
+							qleQuickSearch->show();
+						} // if
+						return false;
+					case QEvent::FocusOut:
+						qleQuickSearch->hide();
+						return true;
+					case QEvent::KeyPress:
+						switch (static_cast<QKeyEvent *>(event)->key()) {
+							case Qt::Key_Backspace:
+								return false;
+							case Qt::Key_Down:
+								return !QuickSearch(NULL, SearchDown);
+							case Qt::Key_Enter:
+							case Qt::Key_Return:
+								if (qswLastActive == qswDir) {
+									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+									QApplication::sendEvent(qswLastActive->currentWidget(), event);
+									return true;
+								} else {
+									return false;
+								} // if else
+							case Qt::Key_Escape:
+								if (qswLastActive == qswDir) {
+									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+									return true;
+								} else {
+									return false;
+								} // if else
+							case Qt::Key_Up:
+								return !QuickSearch(NULL, SearchUp);
+							default:
+								if (static_cast<QKeyEvent *>(event)->text().isEmpty()) {
+									// white char obtained
+									return true;
+								} else {
+									bool bSearch;
 
-																							bSearch = QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
+									bSearch = QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
 
-																							if (qleQuickSearch->isVisible()) {
-																								// search in window
-																								return !bSearch;
-																							} else {
-																								// search without window -> set focus back to dir view
-																								if (qswLastActive == qswDir) {
-																									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
-																									return true;
-																								} else {
-																									return false;
-																								} // if else
-																							} // if else
-																						} // if else
-													} // switch
-					default:						return false;
+									if (qleQuickSearch->isVisible()) {
+										// search in window
+										return !bSearch;
+									} else {
+										// search without window -> set focus back to dir view
+										if (qswLastActive == qswDir) {
+											qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+											return true;
+										} else {
+											return false;
+										} // if else
+									} // if else
+								} // if else
+						} // switch
+					default:
+						return false;
 				} // switch
 			} else {
 #ifdef Q_WS_WIN
@@ -773,61 +783,65 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 	QString qsName;
 
 	switch (qkeEvent->key()) {
-		case Qt::Key_Backspace:	GoToUpDir();
-										break;
-		case Qt::Key_Space:		qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
+		case Qt::Key_Backspace:
+			GoToUpDir();
+			break;
+		case Qt::Key_Space:
+			qfiFile = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem);
 
-										// refresh content plugin values
-										for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
-											if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
-												qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
-											} // if
-										} // for
+			// refresh content plugin values
+			for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
+				if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
+					qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+				} // if
+			} // for
 
-										if (qfiFile.isFile()) {
-											// selected item is file
-											return;
-										} // if
+			if (qfiFile.isFile()) {
+				// selected item is file
+				return;
+			} // if
 
-										iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
-										if (iColumnExtension == -1) {
-											// no place to show occupied space
-											return;
-										} // if
+			iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
+			if (iColumnExtension == -1) {
+				// no place to show occupied space
+				return;
+			} // if
 
-										qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
-										qi64Size = 0;
-										for (iI = 0; iI < qfilFiles.count(); iI++) {
-											qi64Size += qfilFiles.at(iI).size();
-										} // for
+			qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+			qi64Size = 0;
+			for (iI = 0; iI < qfilFiles.count(); iI++) {
+				qi64Size += qfilFiles.at(iI).size();
+			} // for
 
-										qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
-										break;
+			qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+			break;
 		case Qt::Key_Enter:
-		case Qt::Key_Return:		if (static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) && static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
-											// ctrl+shift+enter -> copy filePath to command line
-											qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).filePath();
-										} else {
-											qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).fileName();
-											// ctrl+enter -> copy fileName to command line
-										} // if else
-										if (qsName.contains(' ')) {
-											qsName = '"' + qsName + '"';
-										} // if
-										qcbCommand->setEditText(qcbCommand->currentText() + qsName);
-										break;
-		default:						if (csSettings->GetQuickSearchEnabled() &&
-											 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
-											 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
-											 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
-											// quick search activated
-											qleQuickSearch->setFocus(Qt::OtherFocusReason);
-											QApplication::sendEvent(qleQuickSearch, qkeEvent);
-										} else {
-											// pass key to command line
-											QApplication::sendEvent(qcbCommand, qkeEvent);
-											qcbCommand->setFocus(Qt::OtherFocusReason);
-										} // if else
+		case Qt::Key_Return:
+			if (static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) && static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
+				// ctrl+shift+enter -> copy filePath to command line
+				qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).filePath();
+			} else {
+				qsName = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiItem).fileName();
+				// ctrl+enter -> copy fileName to command line
+			} // if else
+			if (qsName.contains(' ')) {
+				qsName = '"' + qsName + '"';
+			} // if
+			qcbCommand->setEditText(qcbCommand->currentText() + qsName);
+			break;
+		default:
+			if (csSettings->GetQuickSearchEnabled() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
+				// quick search activated
+				qleQuickSearch->setFocus(Qt::OtherFocusReason);
+				QApplication::sendEvent(qleQuickSearch, qkeEvent);
+			} else {
+				// pass key to command line
+				QApplication::sendEvent(qcbCommand, qkeEvent);
+				qcbCommand->setFocus(Qt::OtherFocusReason);
+			} // if else
 	} // switch
 } // on_ctwTree_KeyPressed
 

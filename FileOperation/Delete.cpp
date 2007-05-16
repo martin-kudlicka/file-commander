@@ -153,10 +153,13 @@ void cDelete::run()
 				qsPause.acquire();
 
 				switch (ecPermissionCurrent) {
-					case cPermission::YesToAll:	ecPermission = cPermission::YesToAll;
-															break;
-					case cPermission::NoToAll:		ecPermission = cPermission::NoToAll;
-					default:								;
+					case cPermission::YesToAll:
+						ecPermission = cPermission::YesToAll;
+						break;
+					case cPermission::NoToAll:
+						ecPermission = cPermission::NoToAll;
+					default:
+						;
 				} // switch
 
 				if (ecPermissionCurrent == cPermission::Cancel) {

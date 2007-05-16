@@ -233,17 +233,18 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 				int iCommandPos;
 
 				case Qt::Key_Enter:
-				case Qt::Key_Return:	cProcess::Execute(qcbCommand->currentText(), qlGlobalPath->text());
-											iCommandPos = qcbCommand->findText(qcbCommand->currentText());
-											if (iCommandPos > 0) {
-												qcbCommand->removeItem(iCommandPos);
-											} // if
-											if (iCommandPos != 0) {
-												qcbCommand->insertItem(0, qcbCommand->currentText());
-											} // if
-											qcbCommand->setCurrentIndex(-1);
-											qcbCommand->clearEditText();
-											return true;
+				case Qt::Key_Return:
+					cProcess::Execute(qcbCommand->currentText(), qlGlobalPath->text());
+					iCommandPos = qcbCommand->findText(qcbCommand->currentText());
+					if (iCommandPos > 0) {
+						qcbCommand->removeItem(iCommandPos);
+					} // if
+					if (iCommandPos != 0) {
+						qcbCommand->insertItem(0, qcbCommand->currentText());
+					} // if
+					qcbCommand->setCurrentIndex(-1);
+					qcbCommand->clearEditText();
+					return true;
 			} // switch
 		} // if
 		return false;
@@ -804,13 +805,17 @@ void cMainWindow::SetSortByActions()
 
 		// set shortcuts
 		switch (iI) {
-			case 0:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN)));
-						break;
-			case 1:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN)));
-						break;
-			case 2:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN)));
-						break;
-			case 3:	qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN)));
+			case 0:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN)));
+				break;
+			case 1:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN)));
+				break;
+			case 2:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN)));
+				break;
+			case 3:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN)));
 		} // switch
 	} // for
 

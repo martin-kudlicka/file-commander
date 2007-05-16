@@ -1073,15 +1073,15 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 	QList<cSettings::sColumn> qlColumns;
 
 	switch (eoType) {
-		case Columns:	for (iI = 0; iI < qtwColumns->topLevelItemCount(); iI++) {
-								cSettings::sColumn scColumn;
+		case Columns:
+			for (iI = 0; iI < qtwColumns->topLevelItemCount(); iI++) {
+				cSettings::sColumn scColumn;
 
-								scColumn = GetColumnInfo(qtwColumns->topLevelItem(iI));
-								qlColumns.append(scColumn);
-							} // for
+				scColumn = GetColumnInfo(qtwColumns->topLevelItem(iI));
+				qlColumns.append(scColumn);
+			} // for
 
-							csSettings->CreateColumnSet(qcbColumnSet->currentText(), qlColumns);
-							break;
+			csSettings->CreateColumnSet(qcbColumnSet->currentText(), qlColumns);
 	} // switch
 } // SaveOption
 
