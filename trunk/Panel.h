@@ -100,6 +100,7 @@ class cPanel : public QObject
 																							/**< \param estType select/unselect mode
 																								  \param clLister lister plugins */
 		void SelectAll();																///< select all files
+		void SetFocus();																///< set focus to current directory view
 		void SortBy(const int &iColumn);											///< sort by specified column
 																							/**< \param iColumn column position to sort by */
 		void UnselectAll();															///< unselect all files
