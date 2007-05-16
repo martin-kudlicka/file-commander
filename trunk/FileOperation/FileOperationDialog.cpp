@@ -49,12 +49,14 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 
 	// prepare dialog
 	switch (eoOperation) {
-		case cFileRoutine::DeleteOperation:	setWindowTitle(tr("Delete"));
-														break;
-		case cFileRoutine::CopyOperation:	setWindowTitle(tr("Copy"));
-														break;
-		case cFileRoutine::MoveOperation:	setWindowTitle(tr("Move"));
-														break;
+		case cFileRoutine::DeleteOperation:
+			setWindowTitle(tr("Delete"));
+			break;
+		case cFileRoutine::CopyOperation:
+			setWindowTitle(tr("Copy"));
+			break;
+		case cFileRoutine::MoveOperation:
+			setWindowTitle(tr("Move"));
 	} // switch
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);

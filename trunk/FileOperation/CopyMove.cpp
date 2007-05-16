@@ -70,10 +70,13 @@ void cCopyMove::CopyMove(const cFileRoutine::eOperation &eoOperation, const QFil
 	if (eStyle == cFileRoutine::ForegroundWindow) {
 		ccmdDialog = new cCopyMoveDialog(qmwParent);
 		switch (eoOperation) {
-			case cFileRoutine::CopyOperation:	ccmdDialog->setWindowTitle(tr("Copy"));
-															break;
-			case cFileRoutine::MoveOperation:	ccmdDialog->setWindowTitle(tr("Move"));
-			default:										;
+			case cFileRoutine::CopyOperation:
+				ccmdDialog->setWindowTitle(tr("Copy"));
+				break;
+			case cFileRoutine::MoveOperation:
+				ccmdDialog->setWindowTitle(tr("Move"));
+			default:
+				;
 		} // switch
 		ccmdDialog->setModal(true);
 		ccmdDialog->show();
@@ -336,10 +339,13 @@ void cCopyMove::run()
 
 					// solve
 					switch (ecDiskSpaceCurrent) {
-						case cDiskSpace::YesToAll:	ecDiskSpace = cDiskSpace::YesToAll;
-															break;
-						case cDiskSpace::SkipAll:	ecDiskSpace = cDiskSpace::SkipAll;
-						default:							;
+						case cDiskSpace::YesToAll:
+							ecDiskSpace = cDiskSpace::YesToAll;
+							break;
+						case cDiskSpace::SkipAll:
+							ecDiskSpace = cDiskSpace::SkipAll;
+						default:
+							;
 					} // switch
 				} // if
 
@@ -375,12 +381,16 @@ void cCopyMove::run()
 						qsPause.acquire();
 						// solve conflict
 						switch (ecConflictCurrent) {
-							case cCopyMoveConflict::SkipAll:					ecConflict = cCopyMoveConflict::SkipAll;
-																						break;
-							case cCopyMoveConflict::OverwriteAll:			ecConflict = cCopyMoveConflict::OverwriteAll;
-																						break;
-							case cCopyMoveConflict::OverwriteAllOlder:	ecConflict = cCopyMoveConflict::OverwriteAllOlder;
-							default:													;
+							case cCopyMoveConflict::SkipAll:
+								ecConflict = cCopyMoveConflict::SkipAll;
+								break;
+							case cCopyMoveConflict::OverwriteAll:
+								ecConflict = cCopyMoveConflict::OverwriteAll;
+								break;
+							case cCopyMoveConflict::OverwriteAllOlder:
+								ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+							default:
+								;
 						} // switch
 
 						// rename dialog
@@ -456,10 +466,13 @@ void cCopyMove::run()
 					qsPause.acquire();
 
 					switch (ecPermissionCurrent) {
-						case cPermission::YesToAll:	ecPermission = cPermission::YesToAll;
-																break;
-						case cPermission::NoToAll:		ecPermission = cPermission::NoToAll;
-						default:								;
+						case cPermission::YesToAll:
+							ecPermission = cPermission::YesToAll;
+							break;
+						case cPermission::NoToAll:
+							ecPermission = cPermission::NoToAll;
+						default:
+							;
 					} // switch
 
 					if (ecPermissionCurrent == cPermission::Cancel) {
@@ -481,35 +494,38 @@ void cCopyMove::run()
 				bool bCopyMoveSuccess;
 
 				switch (eoOperation) {
-					case cFileRoutine::CopyOperation:	bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
-																	if (bCanceled) {
-																		// delete unfinished file
-																		QFile::remove(qsTarget);
-																	} else {
-																		// set target permissions as source permissions
+					case cFileRoutine::CopyOperation:
+						bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
+						if (bCanceled) {
+							// delete unfinished file
+							QFile::remove(qsTarget);
+						} else {
+							// set target permissions as source permissions
 #ifdef Q_WS_WIN
-																		SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
+							SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes | FILE_ATTRIBUTE_ARCHIVE);
 #else
-																		QFile::setPermissions(qsTarget, pPermissions);
+							QFile::setPermissions(qsTarget, pPermissions);
 #endif
-																	} // if else
-																	break;
-					case cFileRoutine::MoveOperation:	if (ecConflictCurrent == cCopyMoveConflict::Append) {
-																		bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
-																		if (bCopyMoveSuccess) {
-																			QFile::remove(qfilSources.at(iI).filePath());
-																		} // if
-																	} else {
-																		bCopyMoveSuccess = QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
-																		if (bCopyMoveSuccess) {
-																			qi64TotalValue += qfilSources.at(iI).size();
-																			emit SetTotalValue(qi64TotalValue);
-																		} // if
-																	} // if else
-																	if (qsSourcePath != qfilSources.at(iI).path()) {
-																		qdDir.rmdir(qfilSources.at(iI).path());
-																	} // if
-					default:										;
+						} // if else
+						break;
+					case cFileRoutine::MoveOperation:
+						if (ecConflictCurrent == cCopyMoveConflict::Append) {
+							bCopyMoveSuccess = Copy(qfilSources.at(iI).filePath(), qsTarget, &qi64TotalValue);
+							if (bCopyMoveSuccess) {
+								QFile::remove(qfilSources.at(iI).filePath());
+							} // if
+						} else {
+							bCopyMoveSuccess = QFile::rename(qfilSources.at(iI).filePath(), qsTarget);
+							if (bCopyMoveSuccess) {
+								qi64TotalValue += qfilSources.at(iI).size();
+								emit SetTotalValue(qi64TotalValue);
+							} // if
+						} // if else
+						if (qsSourcePath != qfilSources.at(iI).path()) {
+							qdDir.rmdir(qfilSources.at(iI).path());
+						} // if
+					default:
+						;
 				} // switch
 
 				if (!bCopyMoveSuccess) {

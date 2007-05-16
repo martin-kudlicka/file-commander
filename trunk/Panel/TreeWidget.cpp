@@ -47,20 +47,23 @@ void cTreeWidget::focusInEvent(QFocusEvent *event)
 void cTreeWidget::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key()) {
-		case Qt::Key_Insert:	setSelectionMode(MultiSelection);
-									setCurrentItem(topLevelItem(indexOfTopLevelItem(currentItem()) + 1));
-									setSelectionMode(ExtendedSelection);
-									break;
-		case Qt::Key_Space:	currentItem()->setSelected(!currentItem()->isSelected());
-									emit KeyPressed(event, currentItem());
-									break;
-		default:					if (((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-										  && !(event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier))
-										 || event->text().isEmpty()) {
-										QTreeWidget::keyPressEvent(event);
-									} else {
-										emit KeyPressed(event, currentItem());
-									} // if else
+		case Qt::Key_Insert:
+			setSelectionMode(MultiSelection);
+			setCurrentItem(topLevelItem(indexOfTopLevelItem(currentItem()) + 1));
+			setSelectionMode(ExtendedSelection);
+			break;
+		case Qt::Key_Space:
+			currentItem()->setSelected(!currentItem()->isSelected());
+			emit KeyPressed(event, currentItem());
+			break;
+		default:
+			if (((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+				  && !(event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier))
+				 || event->text().isEmpty()) {
+				QTreeWidget::keyPressEvent(event);
+			} else {
+				emit KeyPressed(event, currentItem());
+			} // if else
 	} // switch
 } // keyPressEvent
 
