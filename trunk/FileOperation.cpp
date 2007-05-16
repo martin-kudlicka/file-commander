@@ -130,7 +130,7 @@ void cFileOperation::on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *> qlIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // prepare operation
-void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString &qsDestination /* NULL */)
+void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString qsDestination /* QString() */)
 {
 	cCopyMove *ccmCopyMove;
 	cDelete *cdDelete;

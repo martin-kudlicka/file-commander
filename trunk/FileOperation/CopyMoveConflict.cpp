@@ -1,9 +1,9 @@
 #include "FileOperation/CopyMoveConflict.h"
 
-#include <QDateTime>
-#include <QMessageBox>
-#include <QMetaType>
-#include <QPushButton>
+#include <QtCore/QDateTime>
+#include <QtGui/QMessageBox>
+#include <QtCore/QMetaType>
+#include <QtGui/QPushButton>
 
 // constructor
 cCopyMoveConflict::cCopyMoveConflict()

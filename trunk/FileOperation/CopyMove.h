@@ -3,14 +3,14 @@
 #ifndef COPY_MOVE_H
 #define COPY_MOVE_H
 
-#include <QHBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include "FileOperation/CopyMoveDialog.h"
 #include "FileOperation/CopyMoveWidget.h"
-#include <QThread>
+#include <QtCore/QThread>
 #include "FileOperation/FileRoutine.h"
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #include "FileOperation/CopyMoveConflict.h"
-#include <QSemaphore>
+#include <QtCore/QSemaphore>
 #include "FileOperation/Rename.h"
 #include "Settings.h"
 #ifdef Q_WS_WIN

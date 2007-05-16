@@ -1,6 +1,6 @@
 #include "FileOperation/Permission.h"
 
-#include <QMessageBox>
+#include <QtGui/QMessageBox>
 
 // show conflict dialog
 void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
@@ -18,7 +18,7 @@ void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
 		case QMessageBox::NoToAll:		ecResponse = NoToAll;
 												break;
 		case QMessageBox::Cancel:		ecResponse = Cancel;
-												break;
+		default:								;
 	} // switch
 
 	emit Finished(ecResponse);

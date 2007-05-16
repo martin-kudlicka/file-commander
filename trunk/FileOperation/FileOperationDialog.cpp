@@ -1,6 +1,6 @@
 #include "FileOperation/FileOperationDialog.h"
 
-#include <QFileDialog>
+#include <QtGui/QFileDialog>
 
 // constructor
 cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *csSettings)

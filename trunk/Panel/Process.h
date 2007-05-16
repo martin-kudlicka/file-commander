@@ -3,8 +3,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-#include <QString>
-#include <QObject>
+#include <QtCore/QString>
+#include <QtCore/QObject>
 
 class cProcess : public QObject
 {

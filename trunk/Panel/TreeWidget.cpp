@@ -1,8 +1,8 @@
 #include "Panel/TreeWidget.h"
 
-#include <QKeyEvent>
-#include <QUrl>
-#include <QApplication>
+#include <QtGui/QKeyEvent>
+#include <QtCore/QUrl>
+#include <QtGui/QApplication>
 
 // constructor
 cTreeWidget::cTreeWidget()

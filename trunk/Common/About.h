@@ -5,7 +5,7 @@
 
 #include "ui_About.h"
 
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 
 class cAbout : public QDialog, public Ui::qdAbout
 {

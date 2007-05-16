@@ -3,8 +3,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QSettings>
-#include <QDateTime>
+#include <QtCore/QSettings>
+#include <QtCore/QDateTime>
 
 const QString qsANSI = "ANSI";
 const QString qsASCII = "ASCII";

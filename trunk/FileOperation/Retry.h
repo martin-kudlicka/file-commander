@@ -3,7 +3,7 @@
 #ifndef RETRY_H
 #define RETRY_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class cRetry : public QObject
 {

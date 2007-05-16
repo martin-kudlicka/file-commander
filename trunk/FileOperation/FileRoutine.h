@@ -3,9 +3,9 @@
 #ifndef FILE_ROUTINE_H
 #define FILE_ROUTINE_H
 
-#include <QFileInfoList>
-#include <QDir>
-#include <QMap>
+#include <QtCore/QFileInfoList>
+#include <QtCore/QDir>
+#include <QtCore/QMap>
 
 class cFileRoutine
 {

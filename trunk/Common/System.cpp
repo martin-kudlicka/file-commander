@@ -1,7 +1,7 @@
 #include "Common/System.h"
 
-#include <QSettings>
-#include <QDir>
+#include <QtCore/QSettings>
+#include <QtCore/QDir>
 
 // settings path for application
 QString cSystem::GetApplicationSettingsPath(const QString &qsApplication)

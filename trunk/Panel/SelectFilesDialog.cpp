@@ -1,6 +1,6 @@
 #include "Panel/SelectFilesDialog.h"
 
-#include <QHeaderView>
+#include <QtGui/QHeaderView>
 #include "FindFilesDialog.h"
 
 // constructor

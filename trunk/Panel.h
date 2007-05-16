@@ -3,21 +3,21 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include <QComboBox>
-#include <QLabel>
-#include <QStackedWidget>
+#include <QtGui/QComboBox>
+#include <QtGui/QLabel>
+#include <QtGui/QStackedWidget>
 #include "Settings.h"
-#include <QHash>
+#include <QtCore/QHash>
 #include "Plugins/Content.h"
-#include <QFileInfo>
-#include <QFileIconProvider>
+#include <QtCore/QFileInfo>
+#include <QtGui/QFileIconProvider>
 #include "Panel/ShellMenu.h"
-#include <QFileSystemWatcher>
+#include <QtCore/QFileSystemWatcher>
 #include "FileOperation/FileRoutine.h"
 #include "Panel/TreeWidget.h"
-#include <QTimer>
+#include <QtCore/QTimer>
 #include "Plugins/ContentDelayed.h"
-#include <QMainWindow>
+#include <QtGui/QMainWindow>
 #include "Panel/SelectFilesDialog.h"
 #include "FileOperation.h"
 
@@ -121,7 +121,7 @@ class cPanel : public QObject
 		};
 		/// tab information
 		struct sTab {
-			bool *bValid;																///< tab content is validated flag
+			bool bValid;																///< tab content is validated flag
 			QHash<QTreeWidgetItem *, QFileInfo> *qhFiles;					///< info about files listed in dir panel
 			QList<cSettings::sColumn> *qlColumns;								///< columns in specified tab
 			QString qsColumnSet;														///< column set for tab
@@ -182,7 +182,7 @@ class cPanel : public QObject
 																							/**< \param qsNextChar next filename character to search with
 																								  \param eqsdDirection direction of search
 																								  \return true if file found */
-		void RefreshContent(const int &iIndex, QFileInfoList &qfilFiles = QFileInfoList());
+		void RefreshContent(const int &iIndex, QFileInfoList qfilFiles = QFileInfoList());
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view
 																								  \param qfilFiles custom list of files */

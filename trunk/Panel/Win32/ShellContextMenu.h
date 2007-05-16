@@ -9,7 +9,7 @@
 
 #include <shlobj.h>
 #include <malloc.h>
-#include <QStringList>
+#include <QtCore/QStringList>
 
 class cShellContextMenu  
 {

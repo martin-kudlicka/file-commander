@@ -3,16 +3,16 @@
 #ifndef DELETE_H
 #define DELETE_H
 
-#include <QThread>
-#include <QMainWindow>
-#include <QHBoxLayout>
+#include <QtCore/QThread>
+#include <QtGui/QMainWindow>
+#include <QtGui/QHBoxLayout>
 #include "FileOperation/FileRoutine.h"
 #include "FileOperation/DeleteDialog.h"
 #include "FileOperation/DeleteWidget.h"
 #ifdef Q_WS_WIN
 #include "Settings.h"
 #include "FileOperation/Permission.h"
-#include <QSemaphore>
+#include <QtCore/QSemaphore>
 #endif
 #include "FileOperation/Retry.h"
 

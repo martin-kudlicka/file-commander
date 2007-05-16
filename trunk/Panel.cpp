@@ -1,17 +1,17 @@
 #include "Panel.h"
 
-#include <QDir>
-#include <QDateTime>
+#include <QtCore/QDir>
+#include <QtCore/QDateTime>
 #include "Panel/Process.h"
-#include <QHeaderView>
-#include <QProcess>
+#include <QtGui/QHeaderView>
+#include <QtCore/QProcess>
 #include "Panel/SelectDriveDialog.h"
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include "FindFilesDialog.h"
-#include <QMenu>
-#include <QUrl>
-#include <QMessageBox>
-#include <QLineEdit>
+#include <QtGui/QMenu>
+#include <QtCore/QUrl>
+#include <QtGui/QMessageBox>
+#include <QtGui/QLineEdit>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -29,7 +29,7 @@ void cPanel::ActualizeVolumeInfo()
 	cFileRoutine::sDiskSpace sdsInfo;
 	QString qsName;
 
-	if (qhTabs.count() == 0 || !*qhTabs.value(qswDir->currentIndex()).bValid) {
+	if (qhTabs.count() == 0 || !qhTabs.value(qswDir->currentIndex()).bValid) {
 		// no tab created or not valid dir
 		return;
 	} // if
@@ -92,7 +92,6 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	stTab.swWidgets->qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets->qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
-	stTab.bValid = new bool();
 	if (qhTabs.contains(iIndex)) {
 		// move tabs by one place
 		int iI;
@@ -163,7 +162,6 @@ void cPanel::CloseTab(const int &iTabIndex)
 	if (qhTabs.count() > 1) {
 		int iI;
 
-		delete qhTabs.value(iTabIndex).bValid;
 		// reposition of tabs following remove tab
 		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
@@ -886,7 +884,7 @@ void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 void cPanel::on_qtbTab_currentChanged(int index)
 {
 	qswDir->setCurrentIndex(index);
-	if (!*qhTabs.value(index).bValid) {
+	if (!qhTabs.value(index).bValid) {
 		RefreshContent();
 	} // if
 	ActualizeWidgets();
@@ -1022,7 +1020,7 @@ void cPanel::RefreshContent()
 } // RefreshContent
 
 // refresh dir content
-void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
+void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 {
 	int iI;
 	QList<cContentDelayed::sParameters> qlParameters;
@@ -1155,7 +1153,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList &qfilFiles)
 
 	// sort and show files
 	Sort(iIndex);
-	*const_cast<sTab *>(&qhTabs.value(iIndex))->bValid = true;
+	qhTabs[iIndex].bValid = true;
 
 	if (static_cast<cTreeWidget *>(qswDir->widget(iIndex))->topLevelItemCount() > 0) {
 		// focus to the first item
@@ -1183,7 +1181,7 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 	QTreeWidgetItem *qtwiHeader;
 
 	// invalidate content of tab
-	*const_cast<sTab *>(&qhTabs.value(iIndex))->bValid = false;
+	qhTabs[iIndex].bValid = false;
 
 	// clear previous header contents and fill new information
 	qhTabs.value(iIndex).qlColumns->clear();
@@ -1344,7 +1342,7 @@ void cPanel::SelectAll()
 void cPanel::SetPath(const QString &qsPath)
 {
 	// remove old path from watcher
-	*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = false;
+	qhTabs[qswDir->currentIndex()].bValid = false;
 	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 
 #ifdef Q_WS_WIN
@@ -1370,7 +1368,7 @@ void cPanel::SetPath(const QString &qsPath)
 				qcbDrive->blockSignals(false);
 				if (PathExists(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath)) {
 					qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-					*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = true;
+					qhTabs[qswDir->currentIndex()].bValid = true;
 				} else {
 					SetPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 				} // if
@@ -1384,7 +1382,7 @@ void cPanel::SetPath(const QString &qsPath)
 			if (qdDir.path() == qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath) {
 				// unsuccessful try to change to subdirectory
 				qfswWatcher.addPath(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
-				*const_cast<sTab *>(&qhTabs.value(qswDir->currentIndex()))->bValid = true;
+				qhTabs[qswDir->currentIndex()].bValid = true;
 			} else {
 				// bad directory, try to go one dir up
 				GoToUpDir();

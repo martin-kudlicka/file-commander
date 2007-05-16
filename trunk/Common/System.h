@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#include <QString>
+#include <QtCore/QString>
 
 const QString qsCOMPANY = "Isshou";
 

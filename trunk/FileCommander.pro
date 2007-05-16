@@ -92,6 +92,3 @@ SOURCES = FileCommander.cpp \
 win32 {
 	 SOURCES += Panel/Win32/ShellContextMenu.cpp
 }
-win32 {
-	 LIBS += User32.lib shell32.lib
-}

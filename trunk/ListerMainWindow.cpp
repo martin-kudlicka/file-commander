@@ -1,10 +1,10 @@
 #include "ListerMainWindow.h"
 
-#include <QFileInfo>
-#include <QTextCodec>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextCodec>
 #include "ListerMainWindow/FindDialog.h"
-#include <QPageSetupDialog>
-#include <QFileDialog>
+#include <QtGui/QPageSetupDialog>
+#include <QtGui/QFileDialog>
 
 // destructor
 cListerMainWindow::~cListerMainWindow()

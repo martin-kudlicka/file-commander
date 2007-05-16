@@ -3,9 +3,9 @@
 #ifndef FILE_OPERATION_H
 #define FILE_OPERATION_H
 
-#include <QMainWindow>
-#include <QHBoxLayout>
-#include <QQueue>
+#include <QtGui/QMainWindow>
+#include <QtGui/QHBoxLayout>
+#include <QtCore/QQueue>
 #include "FileOperation/CopyMove.h"
 #include "FileOperation/QueueWidget.h"
 #include "FileOperation/Delete.h"
@@ -21,7 +21,7 @@ class cFileOperation : private QObject
 																				  \param qbnlOperations layout for bacground and queued windows
 																				  \param csSettings application's configuration */
 
-		void Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString &qsDestination = QString());
+		void Operate(const cFileRoutine::eOperation &eoOperation, const QFileInfoList &qfilSource, QString qsDestination = QString());
 																			///< prepare operation
 																			/**< \param eoOperation operation type
 																				  \param qfilSource source file list
