@@ -245,6 +245,10 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 					qcbCommand->setCurrentIndex(-1);
 					qcbCommand->clearEditText();
 					return true;
+				case Qt::Key_Escape:
+					qcbCommand->clearEditText();
+					cpActive->SetFocus();
+					return true;
 			} // switch
 		} // if
 		return false;

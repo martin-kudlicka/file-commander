@@ -1356,6 +1356,12 @@ void cPanel::SelectAll()
 	} // if else
 } // SelectAll
 
+// set focus to current directory view
+void cPanel::SetFocus()
+{
+	qswDir->currentWidget()->setFocus(Qt::OtherFocusReason);
+} // SetFocus
+
 // set new path for current dir view
 void cPanel::SetPath(const QString &qsPath)
 {
