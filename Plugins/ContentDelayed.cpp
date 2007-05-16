@@ -15,7 +15,9 @@ void cContentDelayed::on_InterruptContentDelayed()
 	bStop = true;
 	qhPlugins = ccContent->GetPluginsInfo();
 	if (isRunning()) {
-		qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
+		if (qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue) {
+			qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
+		} // if
 	} // if
 } // on_InterruptContentDelayed
 
