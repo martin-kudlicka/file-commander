@@ -155,6 +155,9 @@ class cPanel : public QObject
 
 		void ActualizeVolumeInfo();												///< actualize volume information - disk name and space
 		void ActualizeWidgets();													///< actualize widgets with info about current directory view
+		QString DateTime(const QDateTime &qdtDateTime);						///< convert QDateTime to user defined format
+																							/**< \param qdtDateTime date/time to convert
+																								  \return formatted date/time string */
 		bool eventFilter(QObject *watched, QEvent *event);					///< event filter
 																							/**< \param watched filtered object
 																								  \param event event description

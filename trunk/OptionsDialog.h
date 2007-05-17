@@ -135,8 +135,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param state show square brackets around directory name flag */
 		void on_qdbbResponse_accepted();										///< changes accepted
 		void on_qdbbResponse_rejected();										///< changes rejected
+		void on_qleDateTimeDisplay_textEdited(const QString &text);	///< date/time format changed
+																						/**< \param text new date/time format */
 		void on_qlePluginTimeDisplay_textEdited(const QString &text);
-																						///< time format by plugin changed
+																						///< time format for plugin changed
 																						/**< \param text new time format */
 		void on_qleShortcut_textChanged(const QString &text);			///< shortcut changed
 																						/**< \param text new shortcut key sequence */

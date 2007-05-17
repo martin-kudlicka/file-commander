@@ -242,6 +242,23 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 #endif
 } // cPanel
 
+// convert QDateTime to user defined format
+QString cPanel::DateTime(const QDateTime &qdtDateTime)
+{
+	QString qsDateTime;
+	
+	qsDateTime = csSettings->GetDateTimeDisplay();
+	
+	qsDateTime.replace("%d", QString("%1").arg(qdtDateTime.date().day(), 2, 10, QChar('0')));
+	qsDateTime.replace("%o", QString("%1").arg(qdtDateTime.date().month(), 2, 10, QChar('0')));
+	qsDateTime.replace("%y", QString("%1").arg(qdtDateTime.date().year()));
+	qsDateTime.replace("%h", QString("%1").arg(qdtDateTime.time().hour(), 2, 10, QChar('0')));
+	qsDateTime.replace("%m", QString("%1").arg(qdtDateTime.time().minute(), 2, 10, QChar('0')));
+	qsDateTime.replace("%s", QString("%1").arg(qdtDateTime.time().second(), 2, 10, QChar('0')));
+	
+	return qsDateTime;
+} // DateTime
+
 // create new tab by duplicate one
 int cPanel::DuplicateTab(const int &iTabIndex)
 {
@@ -1108,9 +1125,9 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 									qtwiFile->setText(iJ, GetSizeString(qfilFiles.at(iI).size()));
 								} // if else
 							} else {
-								if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsDATE) {
-									// date
-									qtwiFile->setText(iJ, qfilFiles.at(iI).lastModified().toString());
+								if (qhTabs.value(iIndex).qlColumns->at(iJ).qsIdentifier == qsDATE_TIME) {
+									// date/time
+									qtwiFile->setText(iJ, DateTime(qfilFiles.at(iI).lastModified()));
 								}
 #ifdef Q_WS_WIN
 								else {

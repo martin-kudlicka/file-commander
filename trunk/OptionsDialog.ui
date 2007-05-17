@@ -227,8 +227,8 @@
           <widget class="QCheckBox" name="qcbSaveSettingsOnQuit" >
            <property name="geometry" >
             <rect>
-             <x>280</x>
-             <y>10</y>
+             <x>330</x>
+             <y>170</y>
              <width>121</width>
              <height>18</height>
             </rect>
@@ -236,6 +236,61 @@
            <property name="text" >
             <string>Save settings on quit</string>
            </property>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_11" >
+           <property name="geometry" >
+            <rect>
+             <x>280</x>
+             <y>10</y>
+             <width>171</width>
+             <height>121</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Date/time display</string>
+           </property>
+           <widget class="QLabel" name="label_8" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>131</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>%d - day, %o - month, %y - year</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_7" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>50</y>
+              <width>131</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>%h - hours, %m - minutes, %s - seconds</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="qleDateTimeDisplay" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>131</width>
+              <height>20</height>
+             </rect>
+            </property>
+           </widget>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_8" >
@@ -877,55 +932,6 @@
           <attribute name="title" >
            <string>&amp;General</string>
           </attribute>
-          <widget class="QGroupBox" name="groupBox_4" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>151</width>
-             <height>91</height>
-            </rect>
-           </property>
-           <property name="title" >
-            <string>Time display</string>
-           </property>
-           <widget class="QLabel" name="label_3" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>40</y>
-              <width>65</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>%s - seconds</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_2" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>20</y>
-              <width>131</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>%h - hours, %m - minutes,</string>
-            </property>
-           </widget>
-           <widget class="QLineEdit" name="qlePluginTimeDisplay" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>131</width>
-              <height>20</height>
-             </rect>
-            </property>
-           </widget>
-          </widget>
           <widget class="QGroupBox" name="groupBox_6" >
            <property name="geometry" >
             <rect>
@@ -1001,6 +1007,45 @@
             </property>
             <property name="text" >
              <string>ASCII (DOS char set)</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_4" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>151</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Time display</string>
+           </property>
+           <widget class="QLabel" name="label_2" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>131</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>%h - hours, %m - minutes, %s - seconds</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="qlePluginTimeDisplay" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>131</width>
+              <height>20</height>
+             </rect>
             </property>
            </widget>
           </widget>

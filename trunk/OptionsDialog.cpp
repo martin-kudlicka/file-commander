@@ -289,6 +289,7 @@ void cOptionsDialog::FillOptions()
 		qrbSelectionFilesAndDirectories->setChecked(true);
 	} // if else
 	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
+	qleDateTimeDisplay->setText(csSettings->GetDateTimeDisplay());
 	// tabs
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->blockSignals(true);
@@ -588,7 +589,13 @@ void cOptionsDialog::on_qdbbResponse_rejected()
 	done(Nothing);
 } // on_qdbbResponse_rejected
 
-// time format by plugin changed
+// date/time format changed
+void cOptionsDialog::on_qleDateTimeDisplay_textEdited(const QString &text)
+{
+	qfToDo |= RefreshContent;
+} // on_qleDateTimeDisplay_textEdited
+
+// time format for plugin changed
 void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
 {
 	qfToDo |= RefreshContent;
@@ -1009,8 +1016,8 @@ void cOptionsDialog::PrepareColumnsMenu()
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsNAME));
 	qaAction = qmNative->addAction(qsEXTENSION);
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsEXTENSION));
-	qaAction = qmNative->addAction(qsDATE);
-	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsDATE));
+	qaAction = qmNative->addAction(qsDATE_TIME);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsDATE_TIME));
 #ifdef Q_WS_WIN
 	qaAction = qmNative->addAction(qsATTRIBUTES);
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsATTRIBUTES));
@@ -1121,6 +1128,7 @@ void cOptionsDialog::SaveOptions()
 	} // if else
 	csSettings->SetSelectionMode(qsValue);
 	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
+	csSettings->SetDateTimeDisplay(qleDateTimeDisplay->text());
 	// tabs
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());
