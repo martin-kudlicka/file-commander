@@ -174,6 +174,15 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 			tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
 	} // switch
 
+	if (eoOperation == cFileRoutine::CopyOperation || eoOperation == cFileRoutine::MoveOperation) {
+		QDir qdDir;
+
+		qdDir.setPath(qsDestination);
+		if (qdDir.exists()) {
+			qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
+		} // if
+	} // if
+
 	switch (euaAction) {
 		case cFileOperationDialog::CancelAction:
 			return;
@@ -190,12 +199,6 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 				cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);
 			} else {
 				// copy or move
-				QDir qdDir;
-
-				qdDir.setPath(qsDestination);
-				if (qdDir.exists()) {
-					qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
-				} // if
 				ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
 				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
 				qlCopyMove.append(ccmCopyMove);
