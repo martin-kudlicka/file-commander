@@ -9,12 +9,6 @@
     <height>96</height>
    </rect>
   </property>
-  <property name="minimumSize" >
-   <size>
-    <width>150</width>
-    <height>96</height>
-   </size>
-  </property>
   <property name="maximumSize" >
    <size>
     <width>16777215</width>
@@ -25,6 +19,9 @@
    <string>Form</string>
   </property>
   <widget class="QPushButton" name="qpbRemove" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="geometry" >
     <rect>
      <x>130</x>

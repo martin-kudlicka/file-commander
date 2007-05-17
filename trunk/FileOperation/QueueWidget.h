@@ -20,6 +20,7 @@ class cQueueWidget : public QWidget, private Ui::qwQueueWidget
 		void on_cFileOperation_AddIntoQueueList(QListWidgetItem *qlwiItem);
 																						///< add new item into list
 																						/**< \param qlwiItem new item (operation) */
+		void on_qlwOperations_itemSelectionChanged();					///< different queued operations selected
 		void on_qpbRemove_clicked(bool checked = false);				///< - button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 }; // cQueueWidget
