@@ -63,6 +63,7 @@ const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
+const QString qsDISPLAY__DATE_TIME_DISPLAY = "Display/DateTimeDisplay";
 // Tabs
 const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
 const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
@@ -158,10 +159,10 @@ void cSettings::CreateDefaultColumnSet()
 	scColumn.iWidth = 50;
 	qlColumns.append(scColumn);
 	// date
-	scColumn.qsIdentifier = qsDATE;
+	scColumn.qsIdentifier = qsDATE_TIME;
 	scColumn.qsName = tr("Date");
 	scColumn.qsPlugin = qsNO;
-	scColumn.iWidth = 60;
+	scColumn.iWidth = 99;
 	qlColumns.append(scColumn);
 #ifdef Q_WS_WIN
 	// attributes
@@ -269,6 +270,12 @@ int cSettings::GetCopyMoveBufferSize()
 {
 	return qsSettings.value(qsOPERATIONS__ + qsBUFFER_SIZE, 32).toInt();
 } // GetCopyMoveBufferSize
+
+// date/time display format
+QString cSettings::GetDateTimeDisplay()
+{
+	return qsSettings.value(qsDISPLAY__DATE_TIME_DISPLAY, "%d.%o.%y %h:%m").toString();
+} // GetDateTimeDisplay
 
 // external editor
 QString cSettings::GetExternalEditor()
@@ -755,6 +762,12 @@ void cSettings::SetCopyMoveBufferSize(const int &iSize)
 {
 	qsSettings.setValue(qsOPERATIONS__ + qsBUFFER_SIZE, iSize);
 } // SetCopyMoveBufferSize
+
+// date/time display format
+void cSettings::SetDateTimeDisplay(const QString &qsDateTime)
+{
+	qsSettings.setValue(qsDISPLAY__DATE_TIME_DISPLAY, qsDateTime);
+} // SetDateTimeDisplay
 
 // external editor
 void cSettings::SetExternalEditor(const QString &qsEditor)

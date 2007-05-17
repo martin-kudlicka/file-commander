@@ -14,7 +14,7 @@ const QString qsATTRIBUTES = "Attributes";
 #endif
 const QString qsBYTES = "Bytes";
 const QString qsBYTES2 = "byte(s)";
-const QString qsDATE = "Date";
+const QString qsDATE_TIME = "DateTime";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
 const QString qsEXTERNAL = "External";
@@ -206,6 +206,8 @@ class cSettings : private QObject
 																				/**< return confirm close of all tabs flag */
 		int GetCopyMoveBufferSize();									///< copy/move buffer size
 																				/**< \return copy/move buffer size in kilobytes */
+		QString GetDateTimeDisplay();									///< date/time display format
+																				/**< \return date/time display format */
 		QString GetExternalEditor();									///< external editor
 																				/**< \return external editor command line */
 		QString GetExternalViewer();									///< external viewer
@@ -288,6 +290,8 @@ class cSettings : private QObject
 																				/**< \param bClose confirm close of all tabs flag */
 		void SetCopyMoveBufferSize(const int &iSize);			///< copy/move buffer size
 																				/**< \param iSize copy/move buffer size in kilobytes */
+		void SetDateTimeDisplay(const QString &qsDateTime);	///< date/time display format
+																				/**< \param qsDateTime user defined date/time display format */
 		void SetExternalEditor(const QString &qsEditor);		///< external editor
 																				/**< \param qsEditor external editor command line */
 		void SetExternalViewer(const QString &qsViewer);		///< external viewer
