@@ -162,6 +162,7 @@ cMainWindow::cMainWindow()
 	// background operations layout
 	qhblBackgroundOperations = new QHBoxLayout(qpbCopy->parentWidget()->layout()->parentWidget());
 	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
+	qhblBackgroundOperations->addStretch();
 	// file operations class initizalization
 	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 	// panels
