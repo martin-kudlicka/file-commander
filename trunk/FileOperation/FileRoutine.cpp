@@ -110,8 +110,8 @@ QString cFileRoutine::GetVolumeName(const QString &qsRootPath)
 {
 	QString qsName;
 
-	qsName.fill(32, uiVOLUME_NAME * 2);
-	GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName.data()), qsName.size() / 2, NULL, NULL, NULL, NULL, 0);
+	qsName.fill(32, uiVOLUME_NAME * sizeof(WCHAR));
+	GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName.data()), qsName.size() / sizeof(WCHAR), NULL, NULL, NULL, NULL, 0);
 	return qsName.left(qsName.trimmed().size() - 1);
 } // GetVolumeName
 #endif

@@ -181,7 +181,22 @@ void cDelete::run()
 			if (qfilSources.at(iI).isDir()) {
 				bSuccess = qdSource.rmdir(qfilSources.at(iI).filePath());
 			} else {
+#ifdef Q_WS_WIN
+				SHFILEOPSTRUCT shfsRemove;
+				TCHAR tcSource[MAX_PATH + 1];
+
+				memset(tcSource, 0, MAX_PATH + 1);
+				memcpy(tcSource, QDir::toNativeSeparators(qfilSources.at(iI).filePath()).unicode(), qfilSources.at(iI).filePath().length() * sizeof(WCHAR)); 
+
+				shfsRemove.wFunc = FO_DELETE;
+				shfsRemove.pFrom = tcSource;
+				shfsRemove.pTo = NULL;
+				shfsRemove.fFlags |= FOF_ALLOWUNDO;
+				
+				bSuccess = !SHFileOperation(&shfsRemove);
+#else
 				bSuccess = qdSource.remove(qfilSources.at(iI).filePath());
+#endif
 			} // if else
 
 			if (!bSuccess) {
