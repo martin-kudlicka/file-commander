@@ -827,7 +827,7 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				return;
 			} // if
 
-			iColumnExtension = GetNativeColumnIndex(qsEXTENSION, qswDir->currentIndex());
+			iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
 			if (iColumnExtension == -1) {
 				// no place to show occupied space
 				return;
