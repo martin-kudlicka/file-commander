@@ -156,6 +156,11 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 	connect(&qmColumns, SIGNAL(triggered(QAction *)), SLOT(on_qmColumns_triggered(QAction *)));
 
 	qleShortcut->installEventFilter(this);
+
+	// hide unrelated pages
+#ifndef Q_WS_WIN
+	qtwOperations->removeTab(iOPERATIONS_DELETE_TAB_INDEX);
+#endif
 } // cConfigurationDialog
 
 // create left toolbar for navigation
@@ -326,6 +331,10 @@ void cOptionsDialog::FillOptions()
 	qleExternalEditor->setText(csSettings->GetExternalEditor());
 	// copy/move
 	qsbCopyMoveBufferSize->setValue(csSettings->GetCopyMoveBufferSize());
+	// delete
+#ifdef Q_WS_WIN
+	qcbDeleteToRecycleBin->setChecked(csSettings->GetDeleteToRecycleBin());
+#endif
 	// confirmation
 	qsValue = csSettings->GetFileOverwrite();
 	if (qsValue == qsASK) {
@@ -1155,6 +1164,10 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetExternalEditor(qleExternalEditor->text());
 	// copy/move
 	csSettings->SetCopyMoveBufferSize(qsbCopyMoveBufferSize->value());
+	// delete
+#ifdef Q_WS_WIN
+	csSettings->SetDeleteToRecycleBin(qcbDeleteToRecycleBin->isChecked());
+#endif
 	// confirmation
 	if (qrbOverwriteAsk->isChecked()) {
 		qsValue = qsASK;
