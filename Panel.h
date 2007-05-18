@@ -70,10 +70,10 @@ class cPanel : public QObject
 																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
-		QFileInfoList GetSelectedDirItemsList();								///< get dir infos of selected items
-																							/**< \return dir info list about selected directories */
-		QFileInfoList GetSelectedItemsList();									///< get file infos of selected items
-																							/**< \return file info list about selected files */
+		QFileInfoList GetSelectedItemsList(const QDir::Filters &qfType = QDir::Dirs | QDir::Files);
+																							///< get file infos of selected items
+																							/**< \param qfType type of files to retreive info about
+																								  \return file info list about selected files */
 		QDir::Filters GetStandardFilters();										///< filters for file query
 																							/**< \return filter for file query */
 		int GetTabIndex(const QPoint &qpPos);									///< find out tab index in tab bar

@@ -423,40 +423,25 @@ QString cPanel::GetPath()
 	return qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath;
 } // GetPath
 
-// get dir infos of selected items
-QFileInfoList cPanel::GetSelectedDirItemsList()
-{
-	int iI;
-	QFileInfoList qfilDirectories;
-	QList<QTreeWidgetItem *> qlSelected;
-
-	qlSelected = static_cast<cTreeWidget *>(qswDir->currentWidget())->selectedItems();
-	for (iI = 0; iI < qlSelected.count(); iI++) {
-		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != ".." && qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).isDir()) {
-			// ignore ".." directories
-			qfilDirectories.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
-		} // if
-	} // for
-
-	return qfilDirectories;
-} // GetSelectedDirItemsList
-
 // get file infos of selected items
-QFileInfoList cPanel::GetSelectedItemsList()
+QFileInfoList cPanel::GetSelectedItemsList(const QDir::Filters &qfType /* QDir::Dirs | QDir::Files */)
 {
 	int iI;
-	QFileInfoList qfilFiles;
+	QFileInfoList qfilItems;
 	QList<QTreeWidgetItem *> qlSelected;
 
 	qlSelected = static_cast<cTreeWidget *>(qswDir->currentWidget())->selectedItems();
 	for (iI = 0; iI < qlSelected.count(); iI++) {
 		if (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).fileName() != "..") {
 			// ignore ".." directories
-			qfilFiles.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+			if ((qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).isDir() && (qfType & QDir::Dirs))
+				 || (qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)).isFile() && (qfType & QDir::Files))) {
+				qfilItems.append(qhTabs.value(qswDir->currentIndex()).qhFiles->value(qlSelected.at(iI)));
+			} // if
 		} // if
 	} // for
 
-	return qfilFiles;
+	return qfilItems;
 } // GetSelectedItemsList
 
 // get selected files and directories from current dir view
@@ -677,6 +662,7 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 
 		qmdMimeData = new QMimeData();
 		qmdMimeData->setUrls(qlUrls);
+
 		qdDrag = new QDrag(ctwSource);
 		qdDrag->setMimeData(qmdMimeData);
 		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
