@@ -47,6 +47,10 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																											  \return true if suitable plugin found */
 		int GetSendCommandParameters();														///< parameters for plugin
 																										/**< \return parameters for plugin */
+#ifdef Q_WS_WIN
+		void keyPressEvent(QKeyEvent *event);												///< key pressed in lister
+																										/**< \param event key press event description */
+#endif
 		void PermitMenuActions();																///< enable/disable menu actions
 		void resizeEvent(QResizeEvent *event);												///< resize of lister window occurs
 																										/**< \param event resize parameters */

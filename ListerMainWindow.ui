@@ -13,6 +13,9 @@
    <string>Lister</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="focusPolicy" >
+    <enum>Qt::TabFocus</enum>
+   </property>
    <layout class="QHBoxLayout" >
     <property name="margin" >
      <number>9</number>
@@ -31,22 +34,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuOptions" >
-    <property name="title" >
-     <string>Options</string>
-    </property>
-    <addaction name="qaText" />
-    <addaction name="qaBinary" />
-    <addaction name="qaHex" />
-    <addaction name="qaMultimedia" />
-    <addaction name="separator" />
-    <addaction name="qaANSI" />
-    <addaction name="qaASCII" />
-    <addaction name="qaVariableCharWidth" />
-    <addaction name="separator" />
-    <addaction name="qaWrapText" />
-    <addaction name="qaFitImageToWindow" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>Edit</string>
@@ -67,6 +54,22 @@
     <addaction name="qaPrintSetup" />
     <addaction name="separator" />
     <addaction name="qaClose" />
+   </widget>
+   <widget class="QMenu" name="menuOptions" >
+    <property name="title" >
+     <string>Options</string>
+    </property>
+    <addaction name="qaText" />
+    <addaction name="qaBinary" />
+    <addaction name="qaHex" />
+    <addaction name="qaMultimedia" />
+    <addaction name="separator" />
+    <addaction name="qaANSI" />
+    <addaction name="qaASCII" />
+    <addaction name="qaVariableCharWidth" />
+    <addaction name="separator" />
+    <addaction name="qaWrapText" />
+    <addaction name="qaFitImageToWindow" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
