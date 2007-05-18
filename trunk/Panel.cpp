@@ -850,6 +850,9 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 			} // if
 			qcbCommand->setEditText(qcbCommand->currentText() + qsName);
 			break;
+		case Qt::Key_Delete:
+			emit Delete();
+			break;
 		default:
 			if (csSettings->GetQuickSearchEnabled() &&
 				 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
