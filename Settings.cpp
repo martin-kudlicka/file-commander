@@ -2,6 +2,7 @@
 
 #include <QtCore/QStringList>
 #include "FileOperation/FileRoutine.h"
+#include <QtGui/QFont>
 
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
@@ -27,6 +28,7 @@ const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
 const QString qsFILE_SIZE_TYPE = "FileSizeType";
 const QString qsFILE_SIZE_VALUE = "FileSizeValue";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
+const QString qsFONT = "Font";
 const QString qsFULL_TEXT = "FullText";
 const QString qsHEIGHT = "Height";
 const QString qsLISTER = "Lister";
@@ -93,7 +95,7 @@ const QString qsOPERATIONS__ = "Operations/";
 // Others/Shortcuts
 const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
-const QString qsPLUGINS__LISTER__SETTINGS = "Plugins/Lister/Settings";
+const QString qsPLUGINS__LISTER__SETTINGS__ = "Plugins/Lister/Settings/";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
@@ -355,12 +357,22 @@ cSettings::sFindSettings cSettings::GetFindSettings(const QString &qsName)
 	return sfsFindSettings;
 } // GetFindSettings
 
+// font used in lister
+QFont cSettings::GetListerFont()
+{
+	QFont qfFont;
+
+	qfFont.fromString(qsSettings.value(qsPLUGINS__LISTER__SETTINGS__ + qsFONT).toString());
+
+	return qfFont;
+} // GetListerFont
+
 // lister settings
 cSettings::sLister cSettings::GetListerSettings()
 {
 	sLister slLister;
 
-	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS__);
 	slLister.qsCharSet = qsSettings.value(qsCHAR_SET, qsANSI).toString();
 	slLister.bWrapText = qsSettings.value(qsWRAP_TEXT, true).toBool();
 	slLister.bFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW).toBool();
@@ -850,10 +862,16 @@ void cSettings::SetFindSettings(const QString &qsName, const sFindSettings &sfsF
 	qsSettings.endGroup();
 } // SetFindSettings
 
+// font used in lister
+void cSettings::SetListerFont(const QFont &qfFont)
+{
+	qsSettings.setValue(qsPLUGINS__LISTER__SETTINGS__ + qsFONT, qfFont.toString());
+} // SetListerFont
+
 // set default lister settings
 void cSettings::SetListerSettings(const sLister &slLister)
 {
-	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS);
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS__);
 	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
 	qsSettings.setValue(qsWRAP_TEXT, slLister.bWrapText);
 	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);

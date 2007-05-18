@@ -546,6 +546,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		qbaFile = qfFile.readAll();
 		if (qaText->isChecked() || qaBinary->isChecked()) {
 			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
+			qtdDocument.setDefaultFont(csSettings->GetListerFont());
 			qteContent->setDocument(&qtdDocument);
 		} else {
 			// TODO ShowContent Hex

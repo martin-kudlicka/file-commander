@@ -223,6 +223,8 @@ class cSettings : private QObject
 		sFindSettings GetFindSettings(const QString &qsName);	///< get find settings
 																				/**< \param qsName name of find settings set
 																					  \return find settings */
+		QFont GetListerFont();											///< font used in lister
+																				/**< \return user defined font for lister */
 		sLister GetListerSettings();									///< lister settings
 																				/**< \return lister settings */
 																				/**< \return file size unit */
@@ -312,6 +314,8 @@ class cSettings : private QObject
 																				///< save find settings for find files dialog
 																				/**< \param qsName name of find settings
 																					  \param sfsFindSettings settings for find files dialog */
+		void SetListerFont(const QFont &qfFont);					///< font used in lister
+																				/**< \param qfFont user defined font for lister */
 		void SetListerSettings(const sLister &slLister);		///< set default lister settings
 																				/**< \param slLister lister settings */
 		void SetNewTabByShortcutInForeground(const bool &bForeground);
