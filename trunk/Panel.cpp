@@ -164,16 +164,13 @@ void cPanel::CloseTab(const int &iTabIndex)
 		int iI;
 
 		// reposition of tabs following remove tab
+		bool a = qhTabs[iTabIndex + 1].bValid;
 		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
 		} // for
 		qhTabs.remove(qhTabs.count() - 1);
-		qtbTab->removeTab(iTabIndex);
 		qswDir->removeWidget(qswDir->widget(iTabIndex));
-
-		if (!qhTabs.value(iTabIndex).bValid) {
-			RefreshContent();
-		} // if
+		qtbTab->removeTab(iTabIndex);
 
 		HideOrShowTabBar();
 		ActualizeWidgets();
