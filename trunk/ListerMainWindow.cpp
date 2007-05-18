@@ -5,6 +5,9 @@
 #include "ListerMainWindow/FindDialog.h"
 #include <QtGui/QPageSetupDialog>
 #include <QtGui/QFileDialog>
+#ifdef Q_WS_WIN
+#include <QtGui/QKeyEvent>
+#endif
 
 // destructor
 cListerMainWindow::~cListerMainWindow()
@@ -81,7 +84,7 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 // lister window close
 void cListerMainWindow::closeEvent(QCloseEvent *event)
 {
-	deleteLater();
+	delete this;
 } // closeEvent
 
 // destroy of plugin's window
@@ -187,6 +190,33 @@ int cListerMainWindow::GetSendCommandParameters()
 
 	return iParameters;
 } // GetSendCommandParameters
+
+#ifdef Q_WS_WIN
+// key pressed in lister
+void cListerMainWindow::keyPressEvent(QKeyEvent *event)
+{
+	// send key only once (plugin sends some key back again?)
+	if (hwPlugin && event->nativeScanCode()) {
+		if (event->modifiers() & Qt::AltModifier) {
+			if (event->key() != Qt::Key_Alt) {
+				// not only Alt key
+				BYTE bNewKeys[256], bOldKeys[256];
+
+				memset(&bNewKeys, 0, 256);
+				GetKeyboardState(static_cast<PBYTE>(bOldKeys));
+				bNewKeys[VK_MENU] = 0x80;
+				SetKeyboardState(bNewKeys);
+				PostMessage(hwPlugin, WM_SYSKEYDOWN, event->nativeVirtualKey(), 0x20000000);
+				PostMessage(hwPlugin, WM_SYSKEYUP, event->nativeVirtualKey(), 0xE0000000);
+				SetKeyboardState(bOldKeys);
+			} // if
+		} else {
+			PostMessage(hwPlugin, WM_KEYDOWN, event->nativeVirtualKey(), 0);
+			PostMessage(hwPlugin, WM_KEYUP, event->nativeVirtualKey(), 0xC0000000);
+		} // if else
+	} // if
+} // keyPressEvent
+#endif
 
 // ANSI char set selected
 void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
