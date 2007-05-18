@@ -7,6 +7,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QInputDialog>
+#include <QtGui/QFontDialog>
 
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
@@ -412,7 +413,10 @@ void cOptionsDialog::FillOptions()
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
 
 	// plugins
-	// general
+	// content
+	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
+	// lister
+	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
 	qlePluginTimeDisplay->blockSignals(true);
 	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
 	qlePluginTimeDisplay->blockSignals(false);
@@ -428,10 +432,7 @@ void cOptionsDialog::FillOptions()
 	} // if else
 	qcbListerWrapText->setChecked(slLister.bWrapText);
 	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
-	// content
-	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
-	// lister
-	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
+	qfListerFont = csSettings->GetListerFont();
 } // FillOptions
 
 // fills plugin information into tree
@@ -808,6 +809,19 @@ void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */
 		qleExternalViewer->setText(qsViewer + " %1");
 	} // if
 } // on_qpbExternalViewerBrowse_clicked
+
+// change font in lister button is clicked on
+void cOptionsDialog::on_qpbListerChangeFont_clicked(bool checked /* false */)
+{
+	bool bOK;
+	QFont qfFont;
+
+	qfFont = QFontDialog::getFont(&bOK, qfListerFont, this, tr("Font"));
+
+	if (bOK) {
+		qfListerFont = qfFont;
+	} // if
+} // on_qpbListerChangeFont_clicked
 
 // remove content plugin button is clicked on
 void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
@@ -1199,7 +1213,6 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
 	// lister
 	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
-	// general
 	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	if (qrbListerANSI->isChecked()) {
 		slLister.qsCharSet = qsANSI;
@@ -1213,4 +1226,5 @@ void cOptionsDialog::SaveOptions()
 	slLister.bWrapText = qcbListerWrapText->isChecked();
 	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
 	csSettings->SetListerSettings(slLister);
+	csSettings->SetListerFont(qfListerFont);
 } // SaveOptions

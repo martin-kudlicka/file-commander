@@ -1159,6 +1159,19 @@
             <bool>false</bool>
            </property>
           </widget>
+          <widget class="QPushButton" name="qpbListerChangeFont" >
+           <property name="geometry" >
+            <rect>
+             <x>190</x>
+             <y>80</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Change font</string>
+           </property>
+          </widget>
          </widget>
         </widget>
        </widget>

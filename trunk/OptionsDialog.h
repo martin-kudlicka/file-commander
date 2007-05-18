@@ -65,6 +65,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QAction *qaPlugins;														///< plugins options
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
 		QFlags<eToDo> qfToDo;													///< actions after confirmation changes
+		QFont qfListerFont;														///< lister font
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
 		QMenu qmColumns;															///< columns menu
 		QMenu *qmNative;															///< native part of columns menu
@@ -169,6 +170,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbExternalViewerBrowse_clicked(bool checked = false);
 																						///< external viewer browse button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbListerChangeFont_clicked(bool checked = false);	///< change font in lister button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
