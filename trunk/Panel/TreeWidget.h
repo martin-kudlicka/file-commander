@@ -18,7 +18,11 @@ class cTreeWidget : public QTreeWidget
 
 		cTreeWidget();																		///< constructor
 
+		void StartDragFromPanel();														///< dragging will start from directory view
+		void StopDragFromPanel();														///< dragging from directory view ended
+
 	private:
+		bool bDraggingFromPanel;														///< dragging from directory view flag
 		QPoint qpDragStart;																///< drag start position
 
 		void dragEnterEvent(QDragEnterEvent *event);								///< drag enter event
