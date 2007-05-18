@@ -150,6 +150,7 @@ class cPanel : public QObject
 		QStackedWidget *qswDir;														///< directory view
 		QTabBar *qtbTab;																///< tabs for dir view
 		QTimer qtTimer;																///< timer for requesting changeable informations
+		QTreeWidgetItem *qtwiLastMovedOver;										///< last item moved over when dragging
 		static cSettings::sSort ssSort;											///< sort information
 		static QStackedWidget *qswLastActive;									///< last active panel
 
@@ -235,6 +236,8 @@ class cPanel : public QObject
 																							///< space pressed in dir view
 																							/**< \param qkeEvent key event description
 																								  \param qtwiItem item space pressed on */
+		void on_ctwTree_MoveEvent(QTreeWidgetItem *qtwiMovedOver);		///< dragging items
+																							/**< \param qtwiMovedOver dragging over qtwiMovedOver item */
 		void on_qcbDrive_activated(int index);									///< drive selected
 																							/**< \param index index of selected drive */
 		void on_qcbDrive_currentIndexChanged(int index);					///< selected drive changes
