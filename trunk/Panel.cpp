@@ -82,7 +82,7 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
-	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &)));
+	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(DragEvent(cTreeWidget *)), SLOT(on_ctwTree_DragEvent(cTreeWidget *)));
 
 	// set tab properties
@@ -672,11 +672,12 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 } // on_ctwTree_DragEvent
 
 // drop event occured
-void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls)
+void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, QTreeWidgetItem *qtwiDroppedOn)
 {
 	cFileRoutine::eOperation eoOperation;
 	int iI;
 	QFileInfoList qfilFiles;
+	QString qsDestination;
 
 	if (edaAction == cTreeWidget::CopyDropAction) {
 		eoOperation = cFileRoutine::CopyOperation;
@@ -707,7 +708,13 @@ void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, con
 		qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
 	} // for
 
-	cfoFileOperation->Operate(eoOperation, qfilFiles, GetPath());
+	if (qtwiDroppedOn && qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiDroppedOn).isDir()) {
+		qsDestination = qhTabs.value(qswDir->currentIndex()).qhFiles->value(qtwiDroppedOn).filePath();
+	} else {
+		qsDestination = GetPath();
+	} // if else
+
+	cfoFileOperation->Operate(eoOperation, qfilFiles, qsDestination);
 } // on_ctwTree_DropEvent
 
 // dir view got focus

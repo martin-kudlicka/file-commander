@@ -35,9 +35,9 @@ void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
 void cTreeWidget::dropEvent(QDropEvent *event)
 {
 	if (event->mouseButtons() == Qt::LeftButton) {
-		emit DropEvent(CopyDropAction, event->mimeData()->urls());
+		emit DropEvent(CopyDropAction, event->mimeData()->urls(), itemAt(event->pos()));
 	} else {
-		emit DropEvent(ChooseDropAction, event->mimeData()->urls());
+		emit DropEvent(ChooseDropAction, event->mimeData()->urls(), itemAt(event->pos()));
 	} // if else
 	event->acceptProposedAction();
 } // dropEvent
