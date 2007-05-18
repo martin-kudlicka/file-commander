@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>294</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -45,7 +45,7 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>231</height>
+           <height>251</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -211,32 +211,6 @@
             </property>
            </widget>
           </widget>
-          <widget class="QCheckBox" name="qcbSquareBracketsAroundDirectoryName" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>170</y>
-             <width>211</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Square brackets around directory name</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="qcbSaveSettingsOnQuit" >
-           <property name="geometry" >
-            <rect>
-             <x>330</x>
-             <y>170</y>
-             <width>121</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Save settings on quit</string>
-           </property>
-          </widget>
           <widget class="QGroupBox" name="groupBox_11" >
            <property name="geometry" >
             <rect>
@@ -291,6 +265,32 @@
              </rect>
             </property>
            </widget>
+          </widget>
+          <widget class="QCheckBox" name="qcbSaveSettingsOnQuit" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>200</y>
+             <width>121</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Save settings on quit</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbSquareBracketsAroundDirectoryName" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>180</y>
+             <width>211</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Square brackets around directory name</string>
+           </property>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_8" >
@@ -380,19 +380,6 @@
           <attribute name="title" >
            <string>&amp;Column sets</string>
           </attribute>
-          <widget class="QPushButton" name="qpbColumnAdd" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>170</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Add</string>
-           </property>
-          </widget>
           <widget class="QPushButton" name="qpbColumnSetAdd" >
            <property name="geometry" >
             <rect>
@@ -430,22 +417,6 @@
              <width>67</width>
              <height>22</height>
             </rect>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="qpbColumnRemove" >
-           <property name="enabled" >
-            <bool>false</bool>
-           </property>
-           <property name="geometry" >
-            <rect>
-             <x>90</x>
-             <y>170</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text" >
-            <string>Remove</string>
            </property>
           </widget>
           <widget class="QPushButton" name="qpbColumnUp" >
@@ -496,13 +467,42 @@
             <string>Remove</string>
            </property>
           </widget>
+          <widget class="QPushButton" name="qpbColumnAdd" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>190</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbColumnRemove" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>90</x>
+             <y>190</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
           <widget class="QTreeWidget" name="qtwColumns" >
            <property name="geometry" >
             <rect>
              <x>10</x>
              <y>60</y>
              <width>411</width>
-             <height>101</height>
+             <height>121</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -633,7 +633,7 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>231</height>
+           <height>251</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -943,91 +943,16 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>231</height>
+           <height>251</height>
           </rect>
          </property>
-         <widget class="QWidget" name="tab_3" >
+         <property name="currentIndex" >
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_4" >
           <attribute name="title" >
-           <string>&amp;General</string>
+           <string>&amp;Content</string>
           </attribute>
-          <widget class="QGroupBox" name="groupBox_6" >
-           <property name="geometry" >
-            <rect>
-             <x>170</x>
-             <y>10</y>
-             <width>161</width>
-             <height>141</height>
-            </rect>
-           </property>
-           <property name="title" >
-            <string>Lister</string>
-           </property>
-           <widget class="QRadioButton" name="qrbListerANSI" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>20</y>
-              <width>141</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>ANSI (Windows char set)</string>
-            </property>
-           </widget>
-           <widget class="QCheckBox" name="qcbListerFitImageToWindow" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>110</y>
-              <width>121</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Fit image to window</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbListerVariableCharWidth" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>111</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Variable char width</string>
-            </property>
-           </widget>
-           <widget class="QCheckBox" name="qcbListerWrapText" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>90</y>
-              <width>81</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Wrap text</string>
-            </property>
-           </widget>
-           <widget class="QRadioButton" name="qrbListerASCII" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>40</y>
-              <width>131</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>ASCII (DOS char set)</string>
-            </property>
-           </widget>
-          </widget>
           <widget class="QGroupBox" name="groupBox_4" >
            <property name="geometry" >
             <rect>
@@ -1067,16 +992,11 @@
             </property>
            </widget>
           </widget>
-         </widget>
-         <widget class="QWidget" name="tab_4" >
-          <attribute name="title" >
-           <string>&amp;Content</string>
-          </attribute>
           <widget class="QPushButton" name="qpbAddContentPlugin" >
            <property name="geometry" >
             <rect>
              <x>290</x>
-             <y>170</y>
+             <y>190</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1092,7 +1012,7 @@
            <property name="geometry" >
             <rect>
              <x>370</x>
-             <y>170</y>
+             <y>190</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1105,9 +1025,9 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>10</y>
+             <y>110</y>
              <width>441</width>
-             <height>151</height>
+             <height>71</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1119,27 +1039,89 @@
           <attribute name="title" >
            <string>&amp;Lister</string>
           </attribute>
-          <widget class="QPushButton" name="qpbRemoveListerPlugin" >
-           <property name="enabled" >
-            <bool>false</bool>
-           </property>
+          <widget class="QGroupBox" name="groupBox_6" >
            <property name="geometry" >
             <rect>
-             <x>370</x>
-             <y>170</y>
-             <width>75</width>
-             <height>23</height>
+             <x>10</x>
+             <y>10</y>
+             <width>161</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Char set</string>
+           </property>
+           <widget class="QRadioButton" name="qrbListerANSI" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>141</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>ANSI (Windows char set)</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbListerVariableCharWidth" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>111</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Variable char width</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="qrbListerASCII" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>131</width>
+              <height>18</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>ASCII (DOS char set)</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QCheckBox" name="qcbListerFitImageToWindow" >
+           <property name="geometry" >
+            <rect>
+             <x>190</x>
+             <y>30</y>
+             <width>121</width>
+             <height>18</height>
             </rect>
            </property>
            <property name="text" >
-            <string>Remove</string>
+            <string>Fit image to window</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbListerWrapText" >
+           <property name="geometry" >
+            <rect>
+             <x>190</x>
+             <y>10</y>
+             <width>81</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Wrap text</string>
            </property>
           </widget>
           <widget class="QPushButton" name="qpbAddListerPlugin" >
            <property name="geometry" >
             <rect>
              <x>290</x>
-             <y>170</y>
+             <y>190</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1148,13 +1130,29 @@
             <string>Add</string>
            </property>
           </widget>
+          <widget class="QPushButton" name="qpbRemoveListerPlugin" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>370</x>
+             <y>190</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
           <widget class="QTreeWidget" name="qtwListerPlugins" >
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>10</y>
+             <y>109</y>
              <width>441</width>
-             <height>151</height>
+             <height>71</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1171,7 +1169,7 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>231</height>
+           <height>251</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -1181,22 +1179,6 @@
           <attribute name="title" >
            <string>&amp;Shortcuts</string>
           </attribute>
-          <widget class="QTreeWidget" name="qtwShortcutCategory" >
-           <property name="geometry" >
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>120</width>
-             <height>151</height>
-            </rect>
-           </property>
-           <property name="rootIsDecorated" >
-            <bool>false</bool>
-           </property>
-           <property name="itemsExpandable" >
-            <bool>false</bool>
-           </property>
-          </widget>
           <widget class="QLineEdit" name="qleShortcut" >
            <property name="enabled" >
             <bool>false</bool>
@@ -1204,7 +1186,7 @@
            <property name="geometry" >
             <rect>
              <x>250</x>
-             <y>170</y>
+             <y>190</y>
              <width>113</width>
              <height>20</height>
             </rect>
@@ -1214,7 +1196,7 @@
            <property name="geometry" >
             <rect>
              <x>370</x>
-             <y>170</y>
+             <y>190</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1229,10 +1211,26 @@
              <x>140</x>
              <y>10</y>
              <width>311</width>
-             <height>151</height>
+             <height>171</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QTreeWidget" name="qtwShortcutCategory" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>120</width>
+             <height>171</height>
+            </rect>
+           </property>
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <property name="itemsExpandable" >
             <bool>false</bool>
            </property>
           </widget>

@@ -81,7 +81,7 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 // lister window close
 void cListerMainWindow::closeEvent(QCloseEvent *event)
 {
-	deleteLater();;
+	deleteLater();
 } // closeEvent
 
 // destroy of plugin's window
