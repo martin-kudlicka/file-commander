@@ -201,7 +201,9 @@ cMainWindow::cMainWindow()
 
 	// connections
 	connect(cpLeft, SIGNAL(GotFocus()), SLOT(on_cpLeft_GotFocus()));
+	connect(cpLeft, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
 	connect(cpRight, SIGNAL(GotFocus()), SLOT(on_cpRight_GotFocus()));
+	connect(cpRight, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
@@ -306,6 +308,12 @@ void cMainWindow::on_cpLeft_GotFocus()
 	cpActive = cpLeft;
 	SetSortByActions();
 } // on_cpLeft_GotFocus
+
+// delete marked files
+void cMainWindow::on_cpPanel_Delete()
+{
+	qpbDelete->animateClick();
+} // on_cpPanel_Delete
 
 // right panel got focus
 void cMainWindow::on_cpRight_GotFocus()
