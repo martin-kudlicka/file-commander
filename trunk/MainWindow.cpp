@@ -640,7 +640,7 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 	QString qsDestination;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	qfilSource = cpSource->GetSelectedItemsList();
+	qfilSource = cpSource->GetSelectedItemsFileList();
 	qsDestination = cpDestination->GetPath();
 	cfoFileOperation->Operate(cFileRoutine::CopyOperation, qfilSource, qsDestination);
 } // on_qpbCopy_clicked
@@ -652,7 +652,7 @@ void cMainWindow::on_qpbDelete_clicked(bool checked /* false */)
 	QFileInfoList qfilSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	qfilSource = cpSource->GetSelectedItemsList();
+	qfilSource = cpSource->GetSelectedItemsFileList();
 	cfoFileOperation->Operate(cFileRoutine::DeleteOperation, qfilSource);
 } // on_qpbDelete_clicked
 
@@ -664,7 +664,7 @@ void cMainWindow::on_qpbEdit_clicked(bool checked /* false */)
 	QFileInfoList qfilFiles;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	qfilFiles = cpSource->GetSelectedItemsList();
+	qfilFiles = cpSource->GetSelectedItemsFileList();
 
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		if (qfilFiles.at(iI).isFile()) {
@@ -698,7 +698,7 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 	QString qsDestination;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	qfilSource = cpSource->GetSelectedItemsList();
+	qfilSource = cpSource->GetSelectedItemsFileList();
 	qsDestination = cpDestination->GetPath();
 	cfoFileOperation->Operate(cFileRoutine::MoveOperation, qfilSource, qsDestination);
 } // on_qpbMove_clicked
@@ -739,7 +739,7 @@ void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 	QFileInfoList qfilFiles;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	qfilFiles = cpSource->GetSelectedItemsList();
+	qfilFiles = cpSource->GetSelectedItemsFileList();
 
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		if (qfilFiles.at(iI).isFile()) {

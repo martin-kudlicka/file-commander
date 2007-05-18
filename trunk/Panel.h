@@ -70,7 +70,7 @@ class cPanel : public QObject
 																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
-		QFileInfoList GetSelectedItemsList(const QDir::Filters &qfType = QDir::Dirs | QDir::Files);
+		QFileInfoList GetSelectedItemsFileList(const QDir::Filters &qfType = QDir::Dirs | QDir::Files);
 																							///< get file infos of selected items
 																							/**< \param qfType type of files to retreive info about
 																								  \return file info list about selected files */
