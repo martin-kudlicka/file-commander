@@ -43,10 +43,11 @@ class cTreeWidget : public QTreeWidget
 	signals:
 		void DragEvent(cTreeWidget *ctwSource);									///< start dragging of selected objects
 																								/**< \param ctwSource source dir view */
-		void DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls);
+		void DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, QTreeWidgetItem *qtwiDroppedOn);
 																								///< drop event occured
 																								/**< \param edaAction action to do in this event with source
-																									  \param clUrls source objects location */
+																									  \param clUrls source objects location
+																									  \param qtwiDroppedOn item dropped on */
 		void GotFocus();																	///< dir view got focus
 		void itemSelectionChanged(const cTreeWidget *ctwTree);				///< selection changed it directory view
 																								/**< \param ctwTree tree that changes selection */
