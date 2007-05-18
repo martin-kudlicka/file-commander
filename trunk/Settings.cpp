@@ -12,6 +12,9 @@ const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsDATE_TIME_BETWEEN = "DateTimeBetween";
 const QString qsDATE_TIME_FROM = "DateTimeFrom";
 const QString qsDATE_TIME_TO = "DateTimeTo";
+#ifdef Q_WS_WIN
+const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
+#endif
 const QString qsDESCENDING = "descending";
 const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
@@ -276,6 +279,14 @@ QString cSettings::GetDateTimeDisplay()
 {
 	return qsSettings.value(qsDISPLAY__DATE_TIME_DISPLAY, "%d.%o.%y %h:%m").toString();
 } // GetDateTimeDisplay
+
+#ifdef Q_WS_WIN
+// delete files to recycle bin
+bool cSettings::GetDeleteToRecycleBin()
+{
+	return qsSettings.value(qsOPERATIONS__ + qsDELETE_TO_RECYCLE_BIN, true).toBool();
+} // GetDeleteToRecycleBin
+#endif
 
 // external editor
 QString cSettings::GetExternalEditor()
@@ -768,6 +779,14 @@ void cSettings::SetDateTimeDisplay(const QString &qsDateTime)
 {
 	qsSettings.setValue(qsDISPLAY__DATE_TIME_DISPLAY, qsDateTime);
 } // SetDateTimeDisplay
+
+#ifdef Q_WS_WIN
+// delete files to recycle bin
+void cSettings::SetDeleteToRecycleBin(const bool &bRecycleBin)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsDELETE_TO_RECYCLE_BIN, bRecycleBin);
+} // SetDeleteToRecycleBin
+#endif
 
 // external editor
 void cSettings::SetExternalEditor(const QString &qsEditor)

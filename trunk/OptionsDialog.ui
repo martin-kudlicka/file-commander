@@ -627,7 +627,7 @@
         </widget>
        </widget>
        <widget class="QWidget" name="page_3" >
-        <widget class="QTabWidget" name="tabWidget_3" >
+        <widget class="QTabWidget" name="qtwOperations" >
          <property name="geometry" >
           <rect>
            <x>0</x>
@@ -791,6 +791,24 @@
            </property>
            <property name="minimum" >
             <number>1</number>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_13" >
+          <attribute name="title" >
+           <string>&amp;Delete</string>
+          </attribute>
+          <widget class="QCheckBox" name="qcbDeleteToRecycleBin" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>121</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Delete to recycle bin</string>
            </property>
           </widget>
          </widget>

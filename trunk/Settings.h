@@ -208,6 +208,10 @@ class cSettings : private QObject
 																				/**< \return copy/move buffer size in kilobytes */
 		QString GetDateTimeDisplay();									///< date/time display format
 																				/**< \return date/time display format */
+#ifdef Q_WS_WIN
+		bool GetDeleteToRecycleBin();									///< delete files to recycle bin
+																				/**< \return true if delete to recycle bin */
+#endif
 		QString GetExternalEditor();									///< external editor
 																				/**< \return external editor command line */
 		QString GetExternalViewer();									///< external viewer
@@ -292,6 +296,10 @@ class cSettings : private QObject
 																				/**< \param iSize copy/move buffer size in kilobytes */
 		void SetDateTimeDisplay(const QString &qsDateTime);	///< date/time display format
 																				/**< \param qsDateTime user defined date/time display format */
+#ifdef Q_WS_WIN
+		void SetDeleteToRecycleBin(const bool &bRecycleBin);	///< delete files to recycle bin
+																				/**< \param bRecycleBin true if delete to recycle bin */
+#endif
 		void SetExternalEditor(const QString &qsEditor);		///< external editor
 																				/**< \param qsEditor external editor command line */
 		void SetExternalViewer(const QString &qsViewer);		///< external viewer
