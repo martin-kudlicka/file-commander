@@ -30,7 +30,7 @@ void cTreeWidget::dragLeaveEvent(QDragLeaveEvent *event)
 void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
 {
 	if (bDraggingFromPanel
-		 && (qlDragStart.contains(itemAt(event->pos())) || !itemAt(event->pos()))) {
+		 && (qlDragStart.contains(itemAt(event->pos())) || !itemAt(event->pos()) || qlIgnore.contains(itemAt(event->pos())))) {
 		event->ignore(visualItemRect(itemAt(event->pos())));
 	} else {
 		event->acceptProposedAction();
@@ -108,10 +108,11 @@ void cTreeWidget::on_ctwTree_itemSelectionChanged()
 } // on_ctwTree_itemSelectionChanged
 
 // dragging will start from directory view
-void cTreeWidget::StartDragFromPanel()
+void cTreeWidget::StartDragFromPanel(const QList<QTreeWidgetItem *> &qlIgnore)
 {
 	bDraggingFromPanel = true;
 	qlDragStart = selectedItems();
+	this->qlIgnore = qlIgnore;
 } // StartDragFromPanel
 
 // dragging from directory view ended

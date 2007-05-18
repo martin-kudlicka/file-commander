@@ -18,13 +18,16 @@ class cTreeWidget : public QTreeWidget
 
 		cTreeWidget();																		///< constructor
 
-		void StartDragFromPanel();														///< dragging will start from directory view
+		void StartDragFromPanel(const QList<QTreeWidgetItem *> &qlIgnore);
+																								///< dragging will start from directory view
+																								/**< \param qtwiIgnore items to ignore drag move on */
 		void StopDragFromPanel();														///< dragging from directory view ended
 
 	private:
 		bool bDraggingFromPanel;														///< dragging from directory view flag
 		QPoint qpDragStart;																///< drag start position
-		QList <QTreeWidgetItem *> qlDragStart;										///< marked items on drag start
+		QList<QTreeWidgetItem *> qlDragStart;										///< marked items on drag start
+		QList<QTreeWidgetItem *> qlIgnore;											///< items to ignore drag move on
 
 		void dragEnterEvent(QDragEnterEvent *event);								///< drag enter event
 																								/**< \param event event description */

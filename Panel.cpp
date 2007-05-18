@@ -425,7 +425,7 @@ QString cPanel::GetPath()
 } // GetPath
 
 // get file infos of selected items
-QFileInfoList cPanel::GetSelectedItemsList(const QDir::Filters &qfType /* QDir::Dirs | QDir::Files */)
+QFileInfoList cPanel::GetSelectedItemsFileList(const QDir::Filters &qfType /* QDir::Dirs | QDir::Files */)
 {
 	int iI;
 	QFileInfoList qfilItems;
@@ -443,7 +443,7 @@ QFileInfoList cPanel::GetSelectedItemsList(const QDir::Filters &qfType /* QDir::
 	} // for
 
 	return qfilItems;
-} // GetSelectedItemsList
+} // GetSelectedItemsFileList
 
 // get selected files and directories from current dir view
 QStringList cPanel::GetSelectedItemsStringList()
@@ -654,6 +654,7 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 	if (qfilFiles.count() > 0) {
 		int iI;
 		QDrag *qdDrag;
+		QList<QTreeWidgetItem *> qlFiles;
 		QList<QUrl> qlUrls;
 		QMimeData *qmdMimeData;
 
@@ -666,7 +667,17 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 
 		qdDrag = new QDrag(ctwSource);
 		qdDrag->setMimeData(qmdMimeData);
-		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel();
+
+		// get files from current directory to not be able drag on them
+		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(*qhTabs.value(qswDir->currentIndex()).qhFiles);
+		while (qhiFiles.hasNext()) {
+			qhiFiles.next();
+			if (qhiFiles.value().isFile()) {
+				qlFiles.append(qhiFiles.key());
+			} // if
+		} // while
+
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel(qlFiles);
 		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
 		static_cast<cTreeWidget *>(qswDir->currentWidget())->StopDragFromPanel();
 		qtwiLastMovedOver = NULL;
