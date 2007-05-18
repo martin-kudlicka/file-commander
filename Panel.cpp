@@ -665,7 +665,9 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 
 		qdDrag = new QDrag(ctwSource);
 		qdDrag->setMimeData(qmdMimeData);
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel();
 		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->StopDragFromPanel();
 	} // if
 } // on_ctwTree_DragEvent
 

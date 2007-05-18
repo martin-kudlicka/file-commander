@@ -9,6 +9,7 @@ cTreeWidget::cTreeWidget()
 {
 	connect(this, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
 	setDragDropMode(QAbstractItemView::DragDrop);
+	bDraggingFromPanel = false;
 } // cTreeWidget
 
 // drag enter event
@@ -22,7 +23,12 @@ void cTreeWidget::dragEnterEvent(QDragEnterEvent *event)
 // drag move event
 void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
 {
-	event->acceptProposedAction();
+	if (bDraggingFromPanel
+		 && (selectedItems().contains(itemAt(event->pos())) || !itemAt(event->pos()))) {
+		event->ignore(visualItemRect(itemAt(event->pos())));
+	} else {
+		event->acceptProposedAction();
+	} // if else
 } // dragMoveEvent
 
 // drop of object in dir view
@@ -92,3 +98,15 @@ void cTreeWidget::on_ctwTree_itemSelectionChanged()
 {
 	emit itemSelectionChanged(this);
 } // on_ctwTree_itemSelectionChanged
+
+// dragging will start from directory view
+void cTreeWidget::StartDragFromPanel()
+{
+	bDraggingFromPanel = true;
+} // StartDragFromPanel
+
+// dragging from directory view ended
+void cTreeWidget::StopDragFromPanel()
+{
+	bDraggingFromPanel = false;
+} // StopDragFromPanel
