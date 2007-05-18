@@ -21,7 +21,7 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings
 
 	if (cpPanel) {
 		// find files called from application's main menu
-		qfilSelectedDirectories = cpPanel->GetSelectedDirItemsList();
+		qfilSelectedDirectories = cpPanel->GetSelectedItemsList(QDir::Dirs);
 		qcbSearchIn->insertItem(0, cpPanel->GetPath());
 	} else {
 		// find files called from file marking
