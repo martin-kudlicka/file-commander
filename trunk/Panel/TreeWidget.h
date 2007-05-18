@@ -24,8 +24,11 @@ class cTreeWidget : public QTreeWidget
 	private:
 		bool bDraggingFromPanel;														///< dragging from directory view flag
 		QPoint qpDragStart;																///< drag start position
+		QList <QTreeWidgetItem *> qlDragStart;										///< marked items on drag start
 
 		void dragEnterEvent(QDragEnterEvent *event);								///< drag enter event
+																								/**< \param event event description */
+		void dragLeaveEvent(QDragLeaveEvent *event);								///< drag leave event
 																								/**< \param event event description */
 		void dragMoveEvent(QDragMoveEvent *event);								///< drag move event
 																								/**< \param event event description */
@@ -53,6 +56,8 @@ class cTreeWidget : public QTreeWidget
 																								/**< \param ctwTree tree that changes selection */
 		void KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiItem);	///< key pressed in dir view
 																								/**< \param qtwiItem item space pressed on */
+		void MoveEvent(QTreeWidgetItem *qtwiMovedOver);					///< dragging items
+																								/**< \param qtwiMovedOver dragging over qtwiMovedOver item */
 
 	private slots:
 		void on_ctwTree_itemSelectionChanged();									///< selection changed it directory view

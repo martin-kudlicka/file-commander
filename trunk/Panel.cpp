@@ -84,6 +84,7 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(DragEvent(cTreeWidget *)), SLOT(on_ctwTree_DragEvent(cTreeWidget *)));
+	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));
 
 	// set tab properties
 	stTab.qhFiles = new QHash<QTreeWidgetItem *, QFileInfo>;
@@ -668,6 +669,7 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel();
 		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
 		static_cast<cTreeWidget *>(qswDir->currentWidget())->StopDragFromPanel();
+		qtwiLastMovedOver = NULL;
 	} // if
 } // on_ctwTree_DragEvent
 
@@ -863,6 +865,24 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 			} // if else
 	} // switch
 } // on_ctwTree_KeyPressed
+
+// dragging items
+void cPanel::on_ctwTree_MoveEvent(QTreeWidgetItem *qtwiMovedOver)
+{
+	// unselect last item moved over
+	if (static_cast<cTreeWidget *>(qswDir->currentWidget())->indexOfTopLevelItem(qtwiLastMovedOver) != -1) {
+		qtwiLastMovedOver->setSelected(false);
+	} // if
+
+	// memorize current
+	if (qtwiMovedOver && !qtwiMovedOver->isSelected()) {
+		qtwiMovedOver->setSelected(true);
+		qtwiLastMovedOver = qtwiMovedOver;
+	} else {
+		// will not be unselected next time
+		qtwiLastMovedOver = NULL;
+	} // if else
+} // on_ctwTree_MoveEvent
 
 // drive selected
 void cPanel::on_qcbDrive_activated(int index)
