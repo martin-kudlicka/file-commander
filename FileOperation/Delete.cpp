@@ -192,7 +192,7 @@ void cDelete::run()
 					shfsRemove.wFunc = FO_DELETE;
 					shfsRemove.pFrom = tcSource;
 					shfsRemove.pTo = NULL;
-					shfsRemove.fFlags |= FOF_ALLOWUNDO;
+					shfsRemove.fFlags |= FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_SILENT;
 					
 					bSuccess = !SHFileOperation(&shfsRemove);
 				} else {
