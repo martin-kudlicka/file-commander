@@ -183,7 +183,7 @@ QString cCopyMove::GetWildcardedName(const QFileInfo &qfiFile, const QString &qs
 	} // for
 
 	qsNewFilename = qfiFile.path() + '/' + qslOutputs[0] + '.' + qslOutputs[1];
-	return QFileInfo(qsDestination).path() + qsNewFilename.mid(qsSourcePath.length());
+	return QFileInfo(qsDestination).path() + '/' + qsNewFilename.mid(qsSourcePath.length());
 } // GetWildcardedName
 
 // copy or move operation was canceled
@@ -317,7 +317,9 @@ void cCopyMove::run()
 
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
-			qdDir.rmdir(qfilSources.at(iI).filePath());
+			if (eoOperation == cFileRoutine::MoveOperation) {
+				qdDir.rmdir(qfilSources.at(iI).filePath());
+			} // if
 		} else {
 			cFileRoutine::sDiskSpace sdsDiskSpace;
 #ifdef Q_WS_WIN
