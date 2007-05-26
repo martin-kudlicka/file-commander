@@ -257,7 +257,7 @@ void cCopyMove::run()
 	QString qsOverwrite, qsSourcePath;
 
 	// gather source files and source path
-	qfilSources = cFileRoutine::GetSources(qfilSource, false, qsFilter);
+	qfilSources = cFileRoutine::GetSources(qfilSource, true, qsFilter);
 	qsSourcePath = qfilSource.at(0).path();
 
 	// prepare progress bars
@@ -317,6 +317,7 @@ void cCopyMove::run()
 
 		if (qfilSources.at(iI).isDir()) {
 			qdDir.mkpath(QFileInfo(qsTarget).filePath());
+			qdDir.rmdir(qfilSources.at(iI).filePath());
 		} else {
 			cFileRoutine::sDiskSpace sdsDiskSpace;
 #ifdef Q_WS_WIN
