@@ -11,7 +11,7 @@
 #include <QtGui/QShortcut>
 
 const QString qsAPPLICATION = "File Commander";
-const QString qsVERSION = "0.0.0.1 rev 272";
+const QString qsVERSION = "0.0.0.1 rev 275";
 
 /// application's main window
 

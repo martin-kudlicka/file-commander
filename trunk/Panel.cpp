@@ -164,7 +164,6 @@ void cPanel::CloseTab(const int &iTabIndex)
 		int iI;
 
 		// reposition of tabs following remove tab
-		bool a = qhTabs[iTabIndex + 1].bValid;
 		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
 		} // for

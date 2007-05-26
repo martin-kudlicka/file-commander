@@ -159,7 +159,8 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 	} // if
 
 	soObjects = GetCount(qfilSource);
-
+	
+	euaAction = cFileOperationDialog::CancelAction;
 	switch (eoOperation) {
 		case cFileRoutine::DeleteOperation:
 			euaAction = cfodDialog.ShowDialog(eoOperation,
