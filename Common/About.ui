@@ -79,22 +79,6 @@
      <string>Isshou</string>
     </property>
    </widget>
-   <widget class="QLabel" name="qlQt" >
-    <property name="geometry" >
-     <rect>
-      <x>225</x>
-      <y>100</y>
-      <width>61</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>TextLabel</string>
-    </property>
-    <property name="alignment" >
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="qlVersion" >
     <property name="geometry" >
      <rect>
@@ -106,6 +90,22 @@
     </property>
     <property name="text" >
      <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="qlQt" >
+    <property name="geometry" >
+     <rect>
+      <x>215</x>
+      <y>100</y>
+      <width>71</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment" >
+     <set>Qt::AlignCenter|Qt::AlignHorizontal_Mask|Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter|Qt::AlignVertical_Mask</set>
     </property>
    </widget>
   </widget>
