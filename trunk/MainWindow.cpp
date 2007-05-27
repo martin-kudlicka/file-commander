@@ -2,7 +2,6 @@
 
 #include "Common/System.h"
 #include "FileOperation/FileRoutine.h"
-#include "OptionsDialog.h"
 #include "ListerMainWindow.h"
 #include "FindFilesDialog.h"
 #include "Panel/Process.h"
@@ -74,6 +73,15 @@ void cMainWindow::ActualizeDrives()
 		} // if else
 	} // if
 } // ActualizeDrives
+
+// actualize favourite directories context menu
+void cMainWindow::ActualizeFavouriteDirectories()
+{
+	qhFavouriteDirectories.clear();
+	qmFavouriteDirectories.clear();
+
+	FillFavouriteDirectories(&qmFavouriteDirectories, csSettings.GetFavouriteDirectories());
+} // ActualizeFavouriteDirectories
 
 // assign shortcuts
 void cMainWindow::AssignShortcuts()
@@ -190,6 +198,10 @@ cMainWindow::cMainWindow()
 	this->addAction(qaTabBarCloseTab);
 	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 	this->addAction(qaTabBarCloseAllOtherTabs);
+	// favourites context menu
+	ActualizeFavouriteDirectories();
+	qpbLeftFavourites->setMenu(&qmFavouriteDirectories);
+	qpbRightFavourites->setMenu(&qmFavouriteDirectories);
 
 	// variables initialization
 	qagSortBy = new QActionGroup(this);
@@ -210,8 +222,10 @@ cMainWindow::cMainWindow()
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
+	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
 
 	ActualizeDrives();
+	// show before change drive dialog can appear
 	show();
 	// load settings
 	// left tabs
@@ -259,6 +273,32 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 		return QMainWindow::eventFilter(watched, event);
 	} // if else
 } // eventFilter
+
+// fill favourite directories context menu
+void cMainWindow::FillFavouriteDirectories(QMenu *qmMenu, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	int iI;
+
+	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
+		if (qlFavouriteDirectories.at(iI).second.bSubmenu) {
+			QMenu *qmSubmenu;
+
+			qmSubmenu = qmMenu->addMenu(qlFavouriteDirectories.at(iI).first);
+			FillFavouriteDirectories(qmSubmenu, qlFavouriteDirectories.at(iI).second.qlChildFavourites);
+		} else {
+			QAction *qaFavouriteDirectory;
+			cOptionsDialog::sFavouriteDirectory sfdFavouriteDirectory;
+
+			qaFavouriteDirectory = qmMenu->addAction(qlFavouriteDirectories.at(iI).first);
+
+			sfdFavouriteDirectory.qsSource = qlFavouriteDirectories.at(iI).second.qsSource;
+			sfdFavouriteDirectory.bTarget = qlFavouriteDirectories.at(iI).second.bTarget;
+			sfdFavouriteDirectory.qsTarget = qlFavouriteDirectories.at(iI).second.qsTarget;
+
+			qhFavouriteDirectories.insert(qaFavouriteDirectory, sfdFavouriteDirectory);
+		} // if else
+	} // for
+} // FillFavouriteDirectories
 
 // load tabs from qsSettings
 void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
@@ -442,29 +482,32 @@ void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
 	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccContent);
-	QFlags<cOptionsDialog::eToDo> qfTodo;
+	QFlags<cOptionsDialog::eToDo> qfToDo;
 
-	qfTodo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
+	qfToDo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
 
-	if (qfTodo & cOptionsDialog::ReassignShortcuts) {
+	if (qfToDo & cOptionsDialog::ReassignShortcuts) {
 		retranslateUi(this);
 		AssignShortcuts();
 	} // if
-	if (qfTodo & cOptionsDialog::ReloadPlugins) {
+	if (qfToDo & cOptionsDialog::ReloadPlugins) {
 		cpPlugins->Unload();
 		cpPlugins->Load();
 	} // if
-	if (qfTodo & cOptionsDialog::RefreshContent) {
+	if (qfToDo & cOptionsDialog::RefreshContent) {
 		cpLeft->RefreshAllContents();
 		cpRight->RefreshAllContents();
 	} // if
-	if (qfTodo & cOptionsDialog::RefreshHeader) {
+	if (qfToDo & cOptionsDialog::RefreshHeader) {
 		cpLeft->RefreshAllHeaders();
 		cpRight->RefreshAllHeaders();
 	} // if
-	if (qfTodo & cOptionsDialog::RefreshTabs) {
+	if (qfToDo & cOptionsDialog::RefreshTabs) {
 		cpLeft->RefreshTabs();
 		cpRight->RefreshTabs();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshFavouriteDirectories) {
+		ActualizeFavouriteDirectories();
 	} // if
 } // on_qaOptions_triggered
 
@@ -631,6 +674,19 @@ void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource);
 	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clLister);
 } // on_qaUnselectGroup_triggered
+
+// selected favourite directory from from favourites context menu
+void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action)
+{
+	cPanel *cpDestination, *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
+
+	cpSource->ChangePath(qhFavouriteDirectories.value(action).qsSource);
+	if (qhFavouriteDirectories.value(action).bTarget) {
+		cpDestination->ChangePath(qhFavouriteDirectories.value(action).qsTarget);
+	} // if
+} // on_qmFavouriteDirectories_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)

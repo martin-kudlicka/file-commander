@@ -126,6 +126,29 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	return iIndex;
 } // AddTab
 
+// change current directory view path even to another drive
+void cPanel::ChangePath(const QString &qsPath)
+{
+	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
+
+	// change drive first
+	qmDrives = cFileRoutine::GetDrives();
+	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrive(qmDrives);
+	while (qmiDrive.hasNext()) {
+		qmiDrive.next();
+
+		if (qsPath.startsWith(qmiDrive.value().qsPath)) {
+			qcbDrive->blockSignals(true);
+			qcbDrive->setCurrentIndex(qcbDrive->findText(qmiDrive.key()));
+			qcbDrive->blockSignals(false);
+			// then change path
+			qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath = qsPath;
+			SetPath(qsPath);
+			break;
+		} // if
+	} // while
+} // ChangePath
+
 // close all other tabs than selected
 void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 {
@@ -1414,7 +1437,7 @@ void cPanel::SetFocus()
 	qswDir->currentWidget()->setFocus(Qt::OtherFocusReason);
 } // SetFocus
 
-// set new path for current dir view
+// set new path for current dir view on selected drive
 void cPanel::SetPath(const QString &qsPath)
 {
 	// remove old path from watcher

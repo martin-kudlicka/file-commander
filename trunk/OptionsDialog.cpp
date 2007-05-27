@@ -309,6 +309,8 @@ void cOptionsDialog::FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnf
 
 		// set cursor to new favourite
 		qtwFavouriteDirectories->setCurrentItem(qtwiFavourite);
+
+		qfToDo |= RefreshFavouriteDirectories;
 	} // if
 
 	cnfdFavourite->deleteLater();
@@ -729,6 +731,8 @@ void cOptionsDialog::on_qleFavouriteSource_textChanged(const QString &text)
 {
 	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
 		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsSource = text;
+
+		qfToDo |= RefreshFavouriteDirectories;
 	} // if
 } // on_qleFavouriteSource_textChanged
 
@@ -737,6 +741,8 @@ void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
 {
 	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
 		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsTarget = text;
+
+		qfToDo |= RefreshFavouriteDirectories;
 	} // if
 } // on_qleFavouriteTarget_textChanged
 
@@ -963,6 +969,8 @@ void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
 	// TODO on_qpbFavouriteRemove_clicked remove subitems from hash
 	qhFavouriteDirectories.remove(qtwFavouriteDirectories->currentItem());
 	delete qtwFavouriteDirectories->currentItem();
+
+	qfToDo |= RefreshFavouriteDirectories;
 } // on_qpbFavouriteRemove_clicked
 
 // favourite source browse button is clicked on

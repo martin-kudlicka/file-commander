@@ -53,6 +53,8 @@ class cPanel : public QObject
 																							/**< \param stiTabInfo new tab description
 																								  \param bStartUp true if tab is added on application startup
 																								  \return new tab index */
+		void ChangePath(const QString &qsPath);								///< change current directory view path even to another drive
+																							/**< \param qsPath new path */
 		void CloseAllOtherTabs(const int &iTabIndex);						///< close all other tabs than selected
 																							/**< \param iTabIndex selected tab */
 		void CloseTab(const int &iTabIndex);									///< close tab
@@ -195,7 +197,7 @@ class cPanel : public QObject
 																							///< refresh column's header
 																							/**< \param iIndex index of dir view
 																								  \param bContent refresh content too flag */
-		void SetPath(const QString &qsPath);									///< set new path for current dir view
+		void SetPath(const QString &qsPath);									///< set new path for current dir view on selected drive
 																							/**< \param qsPath new path */
 		void SetTabText(const int &iTabIndex);									///< set text in tab bar
 																							/**< \param iTabIndex tab bar index to set text in */

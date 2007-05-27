@@ -23,9 +23,16 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			ReloadPlugins = 2,													///< plugins change
 			RefreshContent = 4,													///< dir view content change
 			RefreshHeader = 8,													///< dir view header change
-			RefreshTabs = 16														///< tab change
+			RefreshTabs = 16,														///< tab change
+			RefreshFavouriteDirectories = 32									///< favourite directories change
 		};
 		Q_DECLARE_FLAGS(ToDo, eToDo);
+		/// favourite directory
+		struct sFavouriteDirectory {
+			QString qsSource;														///< path for source panel
+			bool bTarget;															///< set target path too
+			QString qsTarget;														///< path for destination panel
+		};
 
 		cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContent *ccContent);
 																						///< constructor
@@ -52,12 +59,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		/// specific options to save
 		enum eOption {
 			Columns																	///< columns from column set
-		};
-		/// favourite directory
-		struct sFavouriteDirectory {
-			QString qsSource;														///< path for source panel
-			bool bTarget;															///< set target path too
-			QString qsTarget;														///< path for destination panel
 		};
 
 		cContent *ccContent;														///< content plugins
