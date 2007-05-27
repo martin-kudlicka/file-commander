@@ -9,6 +9,7 @@
 #include "FileOperation.h"
 #include <QtCore/QTimer>
 #include <QtGui/QShortcut>
+#include "OptionsDialog.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.1 rev 278";
@@ -40,8 +41,11 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QAction *qaTabBarCloseTab;												///< close current tab
 		QAction *qaTabBarDuplicateTab;										///< duplicate current tab
 		QActionGroup *qagSortBy;												///< sort by actions
+		QHash<QAction *, cOptionsDialog::sFavouriteDirectory> qhFavouriteDirectories;
+																						///< favourite directories table
 		QHBoxLayout *qhblBackgroundOperations;								///< layout for background operations
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
+		QMenu qmFavouriteDirectories;											///< favourite directories context menu
 		QMenu qmTabBar;															///< tab bar context menu
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
 		QShortcut *qsRightDrive;												///< right drive combo box shortcut
@@ -52,11 +56,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTreeWidget *qtwRightDrives;											///< drives list for right drive combo box
 
 		void ActualizeDrives();													///< drive lists actualization
+		void ActualizeFavouriteDirectories();								///< actualize favourite directories context menu
 		void AssignShortcuts();													///< assign shortcuts
 		bool eventFilter(QObject *watched, QEvent *event);				///< event filter
 																						/**< \param watched filtered object
 																							  \param event event description
 																							  \return true if event is handled */
+		void FillFavouriteDirectories(QMenu *qmMenu, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+																						///< fill favourite directories context menu
+																						/**< \param qmMenu menu to fill in
+																							  \param qlFavouriteDirectories favourites to fill */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
 																						/**< \param epPos means left or right TabBar */
 		void SaveSettings();														///< save dir view settings
@@ -115,6 +124,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaUnselectGroup_triggered(bool checked = false);		///< unselect group selected
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from from favourites context menu
+																						/**< \param action favourite directory */
 		void on_qpbCopy_clicked(bool checked = false);					///< copy button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);				///< delete button is clicked on
