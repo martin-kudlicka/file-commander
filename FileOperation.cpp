@@ -190,11 +190,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 		case cFileOperationDialog::OkAction:
 			if (eoOperation == cFileRoutine::DeleteOperation) {
 				// delete
-				cdDelete = new cDelete(qmwParent, qhblOperations
-#ifdef Q_WS_WIN
-					, csSettings
-#endif
-					);
+				cdDelete = new cDelete(qmwParent, qhblOperations, csSettings);
 				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
 				qlDelete.append(cdDelete);
 				cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);
@@ -232,11 +228,7 @@ void cFileOperation::ProcessQueue()
 				ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);
 				break;
 			case cFileRoutine::DeleteOperation:
-				cdDelete = new cDelete(qmwParent, qhblOperations
-#ifdef Q_WS_WIN
-					, csSettings
-#endif
-					);
+				cdDelete = new cDelete(qmwParent, qhblOperations, csSettings);
 				cdInQueue = cdDelete;
 				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
 				qlDelete.append(cdDelete);

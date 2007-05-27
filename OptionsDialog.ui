@@ -815,13 +815,26 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>10</y>
+             <y>30</y>
              <width>121</width>
              <height>18</height>
             </rect>
            </property>
            <property name="text" >
             <string>&amp;Delete to recycle bin</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbAskToDeleteNonEmptyDirectory" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>191</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Ask to delete non empty directory</string>
            </property>
           </widget>
          </widget>

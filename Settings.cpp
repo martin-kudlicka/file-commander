@@ -7,6 +7,7 @@
 // general
 const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsASCENDING = "ascending";
+const QString qsASK_TO_DELETE_NON_EMPTY_DIRECTORY = "AskToDeleteNonEmptyDirectory";
 const QString qsBUFFER_SIZE = "BufferSize";
 const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
@@ -217,6 +218,12 @@ QMap <QString, QString> cSettings::GetAllSettings()
 
 	return qlSettings;
 } // GetAllSettings
+
+// delete non empty directory
+bool cSettings::GetAskToDeleteNonEmptyDirectory()
+{
+	return qsSettings.value(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, true).toBool();
+} // GetAskToDeleteNonEmptyDirectory
 
 // close tab in tab bar on double click
 bool cSettings::GetCloseTabOnDoubleClick()
@@ -767,6 +774,12 @@ void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
 		qsSettings.setValue(qmiSettings.key(), qmiSettings.value());
 	} // while
 } // RestoreSettings
+
+// delete non empty directory
+void cSettings::SetAskToDeleteNonEmptyDirectory(const bool &bAsk)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, bAsk);
+} // SetAskToDeleteNonEmptyDirectory
 
 // close tab on double click
 void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)

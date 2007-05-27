@@ -60,46 +60,55 @@ QMap<QString, cFileRoutine::sDriveInfo> cFileRoutine::GetDrives()
 } // GetDrives
 
 // return list of sources (within subdirectories too)
-QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, const bool &bAllDirectories /* true */, const QString &qsFilter /* "*" */)
+QFileInfoList cFileRoutine::GetSources(const QFileInfo &qfiFile, const QString &qsFilter /* "*" */)
+{
+	QFileInfoList qfilSources;
+
+	if (qfiFile.isDir()) {
+		QFileInfoList qfilDirectories;
+
+		qfilSources.append(qfiFile);
+		qfilDirectories.append(qfiFile);
+
+		// process subdirectories
+		while (!qfilDirectories.isEmpty()) {
+			int iI;
+			QFileInfo qfiDir;
+			QFileInfoList qfilDirContent;
+
+			qfiDir = qfilDirectories.takeAt(0);
+			qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+
+			// filter sources and add next directories
+			for (iI = 0; iI < qfilDirContent.count(); iI++) {
+				if (qfilDirContent.at(iI).isDir()) {
+					qfilDirectories.append(qfilDirContent.at(iI));
+					qfilSources.append(qfilDirContent.at(iI));
+				} else {
+					if (SuitsFilter(qfilDirContent.at(iI).fileName(), qsFilter)) {
+						qfilSources.append(qfilDirContent.at(iI));
+					} // if
+				} // if else
+			} // for
+		} // while
+	} else {
+		if (SuitsFilter(qfiFile.fileName(), qsFilter)) {
+			qfilSources.append(qfiFile);
+		} // if
+	} // if else
+
+	return qfilSources;
+} // GetSources
+
+// return list of sources (within subdirectories too)
+QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, const QString &qsFilter /* "*" */)
 {
 	int iI;
-	QFileInfoList qfilDirectories, qfilSources;
+	QFileInfoList qfilSources;
 
-	// filter sources
 	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
-		if (qfilFileAndDirList.at(iI).isDir()) {
-			qfilSources.append(qfilFileAndDirList.at(iI));
-			if (qfilFileAndDirList.at(iI).fileName() != "." && qfilFileAndDirList.at(iI).fileName() != "..") {
-				qfilDirectories.append(qfilFileAndDirList.at(iI));
-			} // if
-		} else {
-			if (SuitsFilter(qfilFileAndDirList.at(iI).fileName(), qsFilter)) {
-				qfilSources.append(qfilFileAndDirList.at(iI));
-			} // if
-		} // if else
+		qfilSources += GetSources(qfilFileAndDirList.at(iI));
 	} // for
-
-	while (!qfilDirectories.isEmpty()) {
-		QFileInfo qfiDir;
-		QFileInfoList qfilDirContent;
-
-		qfiDir = qfilDirectories.takeAt(0);
-		qfilDirContent = GetDirectoryContent(qfiDir.filePath(), QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-
-		// filter sources and add next directories
-		for (iI = 0; iI < qfilDirContent.count(); iI++) {
-			if (qfilDirContent.at(iI).isDir()) {
-				qfilDirectories.append(qfilDirContent.at(iI));
-				if (bAllDirectories) {
-					qfilSources.append(qfilDirContent.at(iI));
-				} // if
-			} else {
-				if (SuitsFilter(qfilDirContent.at(iI).fileName(), qsFilter)) {
-					qfilSources.append(qfilDirContent.at(iI));
-				} // if
-			} // if else
-		} // for
-	} // while
 
 	return qfilSources;
 } // GetSources
