@@ -781,7 +781,14 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 		if (qhiTab.value().qhFiles->value(ctwTree->topLevelItem(iI)).isDir()) {
 			iDirectoriesTotal++;
 			if (ctwTree->topLevelItem(iI)->isSelected()) {
+				int iColumnExtension;
+
 				iDirectories++;
+				iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
+				if (iColumnExtension != -1) {
+					// size for directory can be known too
+					qi64Size += ctwTree->topLevelItem(iI)->data(iColumnExtension, Qt::UserRole).toInt();
+				} // if
 			} // if
 		} else {
 			iFilesTotal++;
@@ -839,6 +846,8 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				qi64Size += qfilFiles.at(iI).size();
 			} // for
 
+			// put size to data to count with it when selecting files
+			qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
 			qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
 			break;
 		case Qt::Key_Enter:
