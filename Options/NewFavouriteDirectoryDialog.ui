@@ -1,0 +1,125 @@
+<ui version="4.0" >
+ <class>qdNewFavouriteDirectory</class>
+ <widget class="QDialog" name="qdNewFavouriteDirectory" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>249</width>
+    <height>188</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <widget class="QLineEdit" name="qleDirectory" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>231</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="qgbPosition" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>120</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Position</string>
+   </property>
+   <widget class="QRadioButton" name="qrbAfter" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>83</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;After</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="qrbBefore" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>83</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Before</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;User name</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qleDirectory</cstring>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="qcbPutInSubmenu" >
+   <property name="geometry" >
+    <rect>
+     <x>140</x>
+     <y>70</y>
+     <width>101</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Put in &amp;submenu</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbOK" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>150</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;OK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbCancel" >
+   <property name="geometry" >
+    <rect>
+     <x>160</x>
+     <y>150</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+   <property name="autoDefault" >
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

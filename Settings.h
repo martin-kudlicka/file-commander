@@ -119,6 +119,13 @@ class cSettings : private QObject
 			QString qsUnit;												///< selected unit for column
 			int iWidth;														///< column width
 		};
+		/// favourite directory
+		struct sFavouriteDirectory {
+			bool bSubmenu;													///< true if submenu
+			QString qsSource;												///< path for source panel
+			bool bTarget;													///< set target path too
+			QString qsTarget;												///< path for destination panel
+		};
 		/// find settings
 		struct sFindSettings {
 			// general
