@@ -110,6 +110,7 @@ void cDelete::run()
 #endif
 	cRetry::eChoice ecRetry;
 	int iI;
+	qint64 qi64Total;
 	QList<QFileInfoList> qlSources;
 #ifdef Q_WS_WIN
 	QString qsOverwrite;
@@ -147,6 +148,7 @@ void cDelete::run()
 		ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
 	} // if else
 
+	qi64Total = 0;
 	// main process - go through list of sources
 	for (iI = 0; iI < qlSources.count(); iI++) {
 		int iJ;
@@ -172,6 +174,7 @@ void cDelete::run()
 
 			if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
 				// do not delete this list of sources
+				qi64Total += qlSources.at(iI).count();
 				continue;
 			} // if
 			if (ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
@@ -291,7 +294,8 @@ void cDelete::run()
 				break;
 			} // if
 
-			emit SetTotalValue(qi64TotalMaximum - iJ);
+			emit SetTotalValue(qi64Total);
+			qi64Total++;
 		} // for
 	} // for
 
