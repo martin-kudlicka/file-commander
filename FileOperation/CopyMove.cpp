@@ -558,6 +558,7 @@ void cCopyMove::run()
 						if (qsSourcePath != qfilSources.at(iI).path()) {
 							qdDir.rmdir(qfilSources.at(iI).path());
 						} // if
+						break;
 					default:
 						bCopyMoveSuccess = false;
 				} // switch
