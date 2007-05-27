@@ -115,6 +115,7 @@ void cMainWindow::AssignShortcuts()
 	qaInvertSelection->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION)));
 	qaCompareDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES)));
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
+	qaFavouriteDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES)));
 	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
 	qaReverseOrder->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER)));
@@ -447,6 +448,16 @@ void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
 		} // if else
 	} // while
 } // on_qaCompareDirectories_triggered
+
+// favourite directories are selected
+void cMainWindow::on_qaFavouriteDirectories_triggered(bool checked /* false */)
+{
+	if (cpActive == cpLeft) {
+		qpbLeftFavourites->showMenu();
+	} else {
+		qpbRightFavourites->showMenu();
+	} // if else
+} // on_qaFavouriteDirectories_triggered
 
 // full screen mode is selected
 void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
