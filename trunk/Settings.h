@@ -189,6 +189,8 @@ class cSettings : private QObject
 																					  \param stiTab tab information */
 		QMap <QString, QString> GetAllSettings();					///< get all application's settings
 																				/**< \return list of whole settings file */
+		bool GetAskToDeleteNonEmptyDirectory();					///< delete non empty directory
+																				/**< return delete non empty directory flag */
 		bool GetCloseTabOnDoubleClick();								///< close tab in tab bar on double click
 																				/**< \return true if can close on double click */
 		sColumn GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn);
@@ -290,6 +292,9 @@ class cSettings : private QObject
 		void RestoreSettings(QMap <QString, QString> &qmSettings);
 																				///< restore old application's settings
 																				/**< \param qmSettings settings to restore */
+		void SetAskToDeleteNonEmptyDirectory(const bool &bAsk);
+																				///< delete non empty directory
+																				/**< \param bAsk delete non empty directory flag */
 		void SetCloseTabOnDoubleClick(const bool &bClose);		///< close tab on double click
 																				/**< \param bClose can close tab on double click if true */
 		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs

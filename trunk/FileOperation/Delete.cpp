@@ -5,18 +5,11 @@
 #endif
 
 // constructor
-cDelete::cDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations
-#ifdef Q_WS_WIN
-					  , cSettings *csSettings)
-#else
-					  )
-#endif
+cDelete::cDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
-#ifdef Q_WS_WIN
 	this->csSettings = csSettings;
-#endif
 	bCanceled = false;
 	qi64TotalMaximum = 0;
 } // cDelete
@@ -63,6 +56,10 @@ void cDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilter, c
 	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
+	// delete non empty directory
+	connect(this, SIGNAL(ShowDeleteNonEmptyDirectoryDialog(const QString &)), &cdnedDeleteNonEmptyDir, SLOT(Show(const QString &)));
+	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
+
 	start();
 } // Delete
 
@@ -80,6 +77,13 @@ void cDelete::on_cdDeleteDialog_Background()
 	cddDialog->deleteLater();
 	cddDialog = NULL;
 } // on_cdDeleteDialog_Background
+
+// delete non empty directory dialog closed with user response
+void cDelete::on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse)
+{
+	ecDeleteNonEmptyDirectoryCurrent = ecResponse;
+	qsPause.release();
+} // on_cdnedDeleteNonEmptyDirectory_Finished
 
 #ifdef Q_WS_WIN
 // permission dialog closed with user response
@@ -100,19 +104,25 @@ void cDelete::on_crRetry_Finished(const cRetry::eChoice &ecResponse)
 // separate thread process
 void cDelete::run()
 {
+	cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectory;
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
 	cRetry::eChoice ecRetry;
 	int iI;
-	QFileInfoList qfilSources;
+	QList<QFileInfoList> qlSources;
 #ifdef Q_WS_WIN
 	QString qsOverwrite;
 #endif
+	QString qsSourcePath;
 
+	qsSourcePath = qfilSource.at(0).path();
+	qi64TotalMaximum = 0;
 	// gather source files
-	qfilSources = cFileRoutine::GetSources(qfilSource, true, qsFilter);
-	qi64TotalMaximum = qfilSources.count();
+	for (iI = 0; iI < qfilSource.count(); iI++) {
+		qlSources.append(cFileRoutine::GetSources(qfilSource.at(iI), qsFilter));
+		qi64TotalMaximum += qlSources.at(iI).count();
+	} // for
 
 	emit SetTotalMaximum(qi64TotalMaximum);
 
@@ -130,115 +140,159 @@ void cDelete::run()
 	} // if else
 #endif
 	ecRetry = cRetry::Ask;
+	// get default delete non empty directory answer
+	if (csSettings->GetAskToDeleteNonEmptyDirectory()) {
+		ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::Ask;
+	} else {
+		ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
+	} // if else
 
-	// main process
-	for (iI = qfilSources.count() - 1; iI >= 0; iI--) {
-		QDir qdSource;
+	// main process - go through list of sources
+	for (iI = 0; iI < qlSources.count(); iI++) {
+		int iJ;
+		const QFileInfoList *qfilSources;
 
-		if (cddDialog) {
-			// name with path in dialog
-			emit SetSource(qfilSources.at(iI).filePath());
-		} else {
-			// just name in widget
-			emit SetSource(qfilSources.at(iI).fileName());
-		} // if else
+		// check if source contains more items
+		if (qlSources.at(iI).count() > 1) {
+			ecDeleteNonEmptyDirectoryCurrent = cDeleteNonEmptyDirectory::Ask;
 
-#ifdef Q_WS_WIN
-		// check readonly permission
-		ecPermissionCurrent = cPermission::Ask;
-		if (GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode())) & FILE_ATTRIBUTE_READONLY) {
-			if (ecPermission == cPermission::Ask) {
-				emit ShowPermissionDialog(qfilSources.at(iI).fileName(), tr("is readonly."));
+			if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
+				emit ShowDeleteNonEmptyDirectoryDialog(qlSources.at(iI).at(0).filePath());
 				// wait for answer
 				qsPause.acquire();
 
-				switch (ecPermissionCurrent) {
-					case cPermission::YesToAll:
-						ecPermission = cPermission::YesToAll;
+				switch (ecDeleteNonEmptyDirectoryCurrent) {
+					case cDeleteNonEmptyDirectory::YesToAll:
+						ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
 						break;
-					case cPermission::NoToAll:
-						ecPermission = cPermission::NoToAll;
-					default:
-						;
+					case cDeleteNonEmptyDirectory::NoToAll:
+						ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
 				} // switch
-
-				if (ecPermissionCurrent == cPermission::Cancel) {
-					break;
-				} // if
 			} // if
-			if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+
+			if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
+				// do not delete this list of sources
 				continue;
-			} else {
-				// remove target file readonly permission
-				SetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources.at(iI).filePath().unicode())) & ~FILE_ATTRIBUTE_READONLY);
-			} // if else
+			} // if
+			if (ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
+				// delete canceled
+				break;
+			} // if
+			// else can remove this list of sources
 		} // if
-#endif
 
-		while (true) {
-			bool bSuccess;
+		// go through one list of sources (one marked item in directory view)
+		qfilSources = &qlSources.at(iI);
+		for (iJ = qfilSources->count() - 1; iJ >= 0; iJ--) {
+			QDir qdSource;
 
-			if (qfilSources.at(iI).isDir()) {
-				bSuccess = qdSource.rmdir(qfilSources.at(iI).filePath());
+			if (cddDialog) {
+				// name with path in dialog
+				emit SetSource(qfilSources->at(iJ).filePath());
 			} else {
-#ifdef Q_WS_WIN
-				if (csSettings->GetDeleteToRecycleBin()) {
-					SHFILEOPSTRUCT shfsRemove;
-					TCHAR tcSource[MAX_PATH + 1];
-
-					memset(tcSource, 0, MAX_PATH + 1);
-					memcpy(tcSource, QDir::toNativeSeparators(qfilSources.at(iI).filePath()).unicode(), qfilSources.at(iI).filePath().length() * sizeof(WCHAR)); 
-
-					shfsRemove.wFunc = FO_DELETE;
-					shfsRemove.pFrom = tcSource;
-					shfsRemove.pTo = NULL;
-					shfsRemove.fFlags |= FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_SILENT;
-					
-					bSuccess = !SHFileOperation(&shfsRemove);
-				} else {
-					bSuccess = qdSource.remove(qfilSources.at(iI).filePath());
-				} // if else
-#else
-				bSuccess = qdSource.remove(qfilSources.at(iI).filePath());
-#endif
+				// just name in widget
+				emit SetSource(qfilSources->at(iJ).fileName());
 			} // if else
 
-			if (!bSuccess) {
-				if (ecRetry != cRetry::SkipAll) {
-					QString qsInformation;
+#ifdef Q_WS_WIN
+			// check readonly permission
+			if (GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode())) & FILE_ATTRIBUTE_READONLY) {
+				ecPermissionCurrent = cPermission::Ask;
 
-					if (qfilSources.at(iI).isDir()) {
-						qsInformation = tr("Can't remove following directory:");
-					} else {
-						qsInformation = tr("Can't delete following file:");
-					} // if else
-
-					emit ShowRetryDialog(qsInformation, qfilSources.at(iI).filePath());
+				if (ecPermission == cPermission::Ask) {
+					emit ShowPermissionDialog(qfilSources->at(iJ).fileName(), tr("is readonly."));
 					// wait for answer
 					qsPause.acquire();
 
-					if (ecRetryCurrent == cRetry::SkipAll) {
-						// memorize permanent answer
-						ecRetry = cRetry::SkipAll;
+					switch (ecPermissionCurrent) {
+						case cPermission::YesToAll:
+							ecPermission = cPermission::YesToAll;
+							break;
+						case cPermission::NoToAll:
+							ecPermission = cPermission::NoToAll;
+						default:
+							;
+					} // switch
+
+					if (ecPermissionCurrent == cPermission::Cancel) {
+						break;
 					} // if
 				} // if
-				if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-					// skip this file
+				if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+					continue;
+				} else {
+					// remove target file readonly permission
+					SetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode())) & ~FILE_ATTRIBUTE_READONLY);
+				} // if else
+			} // if
+#endif
+
+			while (true) {
+				bool bSuccess;
+
+				if (qfilSources->at(iJ).isDir()) {
+					bSuccess = qdSource.rmdir(qfilSources->at(iJ).filePath());
+				} else {
+#ifdef Q_WS_WIN
+					if (csSettings->GetDeleteToRecycleBin()) {
+						SHFILEOPSTRUCT shfsRemove;
+						TCHAR tcSource[MAX_PATH + 1];
+
+						memset(tcSource, 0, MAX_PATH + 1);
+						memcpy(tcSource, QDir::toNativeSeparators(qfilSources->at(iJ).filePath()).unicode(), qfilSources->at(iJ).filePath().length() * sizeof(WCHAR)); 
+
+						shfsRemove.wFunc = FO_DELETE;
+						shfsRemove.pFrom = tcSource;
+						shfsRemove.pTo = NULL;
+						shfsRemove.fFlags |= FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_SILENT;
+						
+						bSuccess = !SHFileOperation(&shfsRemove);
+					} else {
+						bSuccess = qdSource.remove(qfilSources->at(iJ).filePath());
+					} // if else
+#else
+					bSuccess = qdSource.remove(qfilSources->at(iJ).filePath());
+#endif
+				} // if else
+
+				if (!bSuccess) {
+					// not successfuly removed - try to retry
+					if (ecRetry != cRetry::SkipAll) {
+						QString qsInformation;
+
+						if (qfilSources->at(iJ).isDir()) {
+							qsInformation = tr("Can't remove following directory:");
+						} else {
+							qsInformation = tr("Can't delete following file:");
+						} // if else
+
+						emit ShowRetryDialog(qsInformation, qfilSources->at(iJ).filePath());
+						// wait for answer
+						qsPause.acquire();
+
+						if (ecRetryCurrent == cRetry::SkipAll) {
+							// memorize permanent answer
+							ecRetry = cRetry::SkipAll;
+						} // if
+					} // if
+					if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
+						// skip this file
+						break;
+					} // if
+					// else try once more
+				} else {
+					// successfuly removed/deleted
 					break;
-				} // if
-				// else try once more
-			} else {
-				// successfuly removed/deleted
+				} // if else
+			} // while
+
+			if (ecRetryCurrent == cRetry::Abort) {
+				// process aborted
 				break;
-			} // if else
-		} // while
+			} // if
 
-		if (ecRetryCurrent == cRetry::Abort) {
-			// process aborted
-			break;
-		} // if
-
-		emit SetTotalValue(qi64TotalMaximum - iI);
+			emit SetTotalValue(qi64TotalMaximum - iJ);
+		} // for
 	} // for
 
 	// close dialog or widget

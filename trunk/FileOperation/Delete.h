@@ -15,18 +15,14 @@
 #include <QtCore/QSemaphore>
 #endif
 #include "FileOperation/Retry.h"
+#include "FileOperation/DeleteNonEmptyDirectory.h"
 
 class cDelete : public QThread
 {
 	Q_OBJECT
 
 	public:
-		cDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations
-#ifdef Q_WS_WIN
-			, cSettings *csSettings);
-#else
-			);
-#endif
+		cDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																		///< constructor
 																		/**< \param qmwParent parent window for foreground dialog
 																			  \param qhblOperations layout for background widget
@@ -40,6 +36,10 @@ class cDelete : public QThread
 	private:
 		bool bCanceled;											///< true if operation is canceled
 		cDeleteDialog *cddDialog;								///< delete dialog
+		cDeleteNonEmptyDirectory cdnedDeleteNonEmptyDir;
+																		///< delete non empty directory dialog
+		cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectoryCurrent;
+																		///< delete non empty directory dialog user's response
 		cDeleteWidget *cdwWidget;								///< delete widget
 #ifdef Q_WS_WIN
 		cPermission cpPermission;								///< permission dialog
@@ -47,9 +47,7 @@ class cDelete : public QThread
 #endif
 		cRetry crRetry;											///< retry dialog
 		cRetry::eChoice ecRetryCurrent;						///< current retry dialog user's response
-#ifdef Q_WS_WIN
 		cSettings *csSettings;									///< application's configuration
-#endif
 		QFileInfoList qfilSource;								///< source file list
 		QHBoxLayout *qhblOperations;							///< layout for background operations
 		qint64 qi64TotalMaximum;								///< total count of files to delete
@@ -69,6 +67,9 @@ class cDelete : public QThread
 																		/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value);		///< set overall progress
 																		/**< \param qi64Value overall progress */
+		void ShowDeleteNonEmptyDirectoryDialog(const QString &qsDirectory);
+																		///< show question dialog
+																		/**< \param qsDirectory directory to delete */
 #ifdef Q_WS_WIN
 		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation);
 																		///< show permission dialog
@@ -83,6 +84,9 @@ class cDelete : public QThread
 	private slots:
 		void on_cd_OperationCanceled();						///< delete operation was canceled
 		void on_cdDeleteDialog_Background();				///< delete operation to background
+		void on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse);
+																		///< delete non empty directory dialog closed with user response
+																		/**< \param ecResponse dialog result */
 #ifdef Q_WS_WIN
 		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
 																		///< permission dialog closed with user response

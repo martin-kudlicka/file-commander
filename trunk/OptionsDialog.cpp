@@ -158,9 +158,9 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 
 	qleShortcut->installEventFilter(this);
 
-	// hide unrelated pages
+	// hide unrelated options
 #ifndef Q_WS_WIN
-	qtwOperations->removeTab(iOPERATIONS_DELETE_TAB_INDEX);
+	qcbDeleteToRecycleBin->deleteLater();
 #endif
 } // cConfigurationDialog
 
@@ -333,6 +333,7 @@ void cOptionsDialog::FillOptions()
 	// copy/move
 	qsbCopyMoveBufferSize->setValue(csSettings->GetCopyMoveBufferSize());
 	// delete
+	qcbAskToDeleteNonEmptyDirectory->setChecked(csSettings->GetAskToDeleteNonEmptyDirectory());
 #ifdef Q_WS_WIN
 	qcbDeleteToRecycleBin->setChecked(csSettings->GetDeleteToRecycleBin());
 #endif
@@ -1179,6 +1180,7 @@ void cOptionsDialog::SaveOptions()
 	// copy/move
 	csSettings->SetCopyMoveBufferSize(qsbCopyMoveBufferSize->value());
 	// delete
+	csSettings->SetAskToDeleteNonEmptyDirectory(qcbAskToDeleteNonEmptyDirectory->isChecked());
 #ifdef Q_WS_WIN
 	csSettings->SetDeleteToRecycleBin(qcbDeleteToRecycleBin->isChecked());
 #endif

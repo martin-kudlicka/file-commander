@@ -34,10 +34,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		~cOptionsDialog();														///< destructor
 
 	private:
-#ifndef Q_WS_WIN
-		static const int iOPERATIONS_DELETE_TAB_INDEX = 3;				///< index of delete tab in operations options
-#endif
-
 		static const int iPANELS_TAB = 0;									///< tab number of panels options
 		static const int iOPERATIONS_TAB = 1;								///< tab number of operations options
 		static const int iPLUGINS_TAB = 2;									///< tab number of plugins options

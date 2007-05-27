@@ -45,10 +45,14 @@ class cFileRoutine
 																						  \return disk space information */
 		static QMap<QString, sDriveInfo> GetDrives();				///< detect drives in system
 																					/**< \return information about drive in system */
-		static QFileInfoList GetSources(const QFileInfoList &qfilFileAndDirList, const bool &bAllDirectories = true, const QString &qsFilter = "*");
+		static QFileInfoList GetSources(const QFileInfo &qfiFile, const QString &qsFilter = "*");
 																					///< return list of sources (within subdirectories too)
+																					/**< \param qfiFile file or directory
+																						  \param qsFilter filter for input files
+																						  \return source list */
+		static QFileInfoList GetSources(const QFileInfoList &qfilFileAndDirList, const QString &qsFilter = "*");
+																					///< return list of sources (with or within subdirectories too)
 																					/**< \param qfilFileAndDirList list of directories and files
-																						  \param bAllDirectories add to sources all found directories
 																						  \param qsFilter filter for input files
 																						  \return source list */
 #ifdef Q_WS_WIN
