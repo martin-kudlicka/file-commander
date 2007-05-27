@@ -169,6 +169,8 @@ void cDelete::run()
 						break;
 					case cDeleteNonEmptyDirectory::NoToAll:
 						ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
+					default:
+						;
 				} // switch
 			} // if
 

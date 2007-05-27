@@ -690,7 +690,7 @@ bool cSettings::GetShowSystemFiles()
 // show tab bar with only one tab flag
 bool cSettings::GetShowTabBarWithOnlyOneTab()
 {
-	return qsSettings.value(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB, true).toBool();
+	return qsSettings.value(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB).toBool();
 } // GetShowTabBarWithOnlyOneTab
 
 ///< get some information about tab
