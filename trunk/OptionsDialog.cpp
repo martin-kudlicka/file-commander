@@ -566,6 +566,34 @@ cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
 	return scColumn;
 } // GetColumnInfo
 
+// collect favourite directories
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavouriteDirectories(QTreeWidgetItem *qtwiParent)
+{
+	int iI;
+	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
+	QList<QTreeWidgetItem *> qlChildren;
+
+	qlChildren = qtwiParent->takeChildren();
+
+	for (iI = 0; iI < qlChildren.count(); iI++) {
+		cSettings::sFavouriteDirectory sfdFavouriteDirectory;
+
+		if (qlChildren.at(iI)->type() == cNewFavouriteDirectoryDialog::Directory) {
+			sfdFavouriteDirectory.qsSource = qhFavouriteDirectories.value(qlChildren.at(iI)).qsSource;
+			sfdFavouriteDirectory.bTarget = qhFavouriteDirectories.value(qlChildren.at(iI)).bTarget;
+			sfdFavouriteDirectory.qsTarget = qhFavouriteDirectories.value(qlChildren.at(iI)).qsTarget;
+			sfdFavouriteDirectory.bSubmenu = false;
+		} else {
+			sfdFavouriteDirectory.bSubmenu = true;
+			sfdFavouriteDirectory.qlChildFavourites = GetFavouriteDirectories(qlChildren.at(iI));
+		} // if else
+
+		qlFavouriteDirectories.append(QPair<QString, cSettings::sFavouriteDirectory>(qlChildren.at(iI)->text(0), sfdFavouriteDirectory));
+	} // for
+
+	return qlFavouriteDirectories;
+} // GetFavouriteDirectories
+
 // get info about specified plugins
 QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins)
 {
@@ -1399,4 +1427,8 @@ void cOptionsDialog::SaveOptions()
 	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
 	csSettings->SetListerSettings(slLister);
 	csSettings->SetListerFont(qfListerFont);
+
+	// others
+	// favourite directories
+	csSettings->SetFavouriteDirectories(GetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem()));
 } // SaveOptions

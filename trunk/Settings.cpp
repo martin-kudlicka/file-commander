@@ -53,7 +53,11 @@ const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsSEARCH_IN = "SearchIn";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
+const QString qsSOURCE = "Source";
 const QString qsSUBDIRECTORY_DEPTH = "SubdirectoryDepth";
+const QString qsSUBMENU = "Submenu";
+const QString qsTARGET = "Target";
+const QString qsTARGET_ENABLED = "TargetEnabled";
 const QString qsUNIT = "Unit";
 const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
@@ -93,6 +97,8 @@ const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 const QString qsMAIN_WINDOW = "MainWindow";
 // Operations/
 const QString qsOPERATIONS__ = "Operations/";
+// Others/FavouriteDirectories
+const QString qsOTHERS__FAVOURITE_DIRECTORIES = "Others/FavouriteDirectories";
 // Others/Shortcuts
 const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
@@ -181,6 +187,29 @@ void cSettings::CreateDefaultColumnSet()
 
 	CreateColumnSet(qsFULL, qlColumns);
 } // CreateDefaultColumnSet
+
+// create favourite directories
+void cSettings::CreateFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	int iI;
+
+	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
+		qsSettings.beginGroup(QVariant(iI).toString());
+
+		qsSettings.setValue(qsNAME, qlFavouriteDirectories.at(iI).first);
+		qsSettings.setValue(qsSUBMENU, qlFavouriteDirectories.at(iI).second.bSubmenu);
+
+		if (qlFavouriteDirectories.at(iI).second.bSubmenu) {
+			CreateFavouriteDirectories(qlFavouriteDirectories.at(iI).second.qlChildFavourites);
+		} else {
+			qsSettings.setValue(qsSOURCE, qlFavouriteDirectories.at(iI).second.qsSource);
+			qsSettings.setValue(qsTARGET_ENABLED, qlFavouriteDirectories.at(iI).second.bTarget);
+			qsSettings.setValue(qsTARGET, qlFavouriteDirectories.at(iI).second.qsTarget);
+		} // if else
+
+		qsSettings.endGroup();
+	} // for
+} // CreateFavouriteDirectories
 
 // create new tab in settings file
 void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab)
@@ -824,6 +853,20 @@ void cSettings::SetExternalViewer(const QString &qsViewer)
 {
 	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_VIEWER, qsViewer);
 } // SetExternalViewer
+
+// set favourite directories
+void cSettings::SetFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	qsSettings.beginGroup(qsOTHERS__FAVOURITE_DIRECTORIES);
+
+	// clear current favourite directories
+	qsSettings.remove("");
+
+	// set new one
+	CreateFavouriteDirectories(qlFavouriteDirectories);
+
+	qsSettings.endGroup();
+} // SetFavouriteDirectories
 
 // set default overwrite behaviour
 void cSettings::SetFileOverwrite(const QString &qsMode)

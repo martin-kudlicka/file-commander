@@ -5,6 +5,7 @@
 
 #include <QtCore/QSettings>
 #include <QtCore/QDateTime>
+#include <QtCore/QPair>
 
 const QString qsANSI = "ANSI";
 const QString qsASCII = "ASCII";
@@ -125,6 +126,8 @@ class cSettings : private QObject
 			QString qsSource;												///< path for source panel
 			bool bTarget;													///< set target path too
 			QString qsTarget;												///< path for destination panel
+			QList<QPair<QString, cSettings::sFavouriteDirectory> > qlChildFavourites;
+																				///< can contain children favourites if bSubmenu is true
 		};
 		/// find settings
 		struct sFindSettings {
@@ -318,6 +321,9 @@ class cSettings : private QObject
 																				/**< \param qsEditor external editor command line */
 		void SetExternalViewer(const QString &qsViewer);		///< external viewer
 																				/**< \param qsViewer external viewer command line */
+		void SetFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+																				///< set favourite directories
+																				/**< \param qlFavouriteDirectories list of favourite directories */
 		void SetFileOverwrite(const QString &qsMode);			///< set default overwrite behaviour
 																				/**< \param qsMode overwrite mode */
 		void SetFileSizeIn(const QString &qsSize);				///< set file size mode
@@ -387,6 +393,10 @@ class cSettings : private QObject
 
 	private:
 		QSettings qsSettings;											///< application's settings
+
+		void CreateFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+																				///< create favourite directories
+																				/**< \param qlFavouriteDirectories list of favourite directories */
 }; // cSettings
 
 #endif

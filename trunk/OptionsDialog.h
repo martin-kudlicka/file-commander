@@ -123,6 +123,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column
 																							  \return column information */
+		QList<QPair<QString, cSettings::sFavouriteDirectory> > GetFavouriteDirectories(QTreeWidgetItem *qtwiParent);
+																						///< collect favourite directories
+																						/**< \param qtwiParent favourite to start with
+																							  \return list of favourites description */
 		void PrepareColumnsMenu();												///< prepare context columns menu
 		void SaveOption(const eOption &eoType);							///< save specific changes into settings file
 																						/**< \param eoType type of changes */
