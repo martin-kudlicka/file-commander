@@ -242,6 +242,78 @@ bool cOptionsDialog::eventFilter(QObject *watched, QEvent *event)
 	} // if else
 } // eventFilter
 
+// add new favourite directory/submenu
+void cOptionsDialog::FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType)
+{
+	bool bInSubmenu;
+	cNewFavouriteDirectoryDialog *cnfdFavourite;
+	cNewFavouriteDirectoryDialog::ePosition epPosition;
+	QString qsDirectory;
+
+	// settings for new favourite directory dialog
+	if (qtwFavouriteDirectories->currentItem()) {
+		epPosition = cNewFavouriteDirectoryDialog::After;
+		if (qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
+			bInSubmenu = false;
+		} else {
+			bInSubmenu = true;
+		} // if else
+	} else {
+		epPosition = cNewFavouriteDirectoryDialog::Disabled;
+	} // if else
+
+	cnfdFavourite = new cNewFavouriteDirectoryDialog(this, cnfdType, &qsDirectory, &epPosition, &bInSubmenu);
+	if (cnfdFavourite->exec() == QDialog::Accepted) {
+		QTreeWidgetItem *qtwiFavourite;
+		sFavouriteDirectory sfdFavourite;
+
+		if (epPosition == cNewFavouriteDirectoryDialog::Disabled) {
+			// insert first item
+			qtwiFavourite = new QTreeWidgetItem(qtwFavouriteDirectories, cnfdType);
+		} else {
+			// insert another item
+			QTreeWidgetItem *qtwiParent;
+
+			qtwiFavourite = new QTreeWidgetItem(cnfdType);
+
+			if (bInSubmenu) {
+				// in submenu
+				qtwiParent = qtwFavouriteDirectories->currentItem();
+				if (epPosition == cNewFavouriteDirectoryDialog::Before) {
+					qtwiParent->insertChild(0, qtwiFavourite);
+				} else {
+					qtwiParent->addChild(qtwiFavourite);
+				} // if else
+			} else {
+				// next to existing item
+				qtwiParent = qtwFavouriteDirectories->currentItem()->parent();
+				if (!qtwiParent) {
+					qtwiParent = qtwFavouriteDirectories->invisibleRootItem();
+				} // if
+				if (epPosition == cNewFavouriteDirectoryDialog::Before) {
+					qtwiParent->insertChild(qtwiParent->indexOfChild(qtwFavouriteDirectories->currentItem()), qtwiFavourite);
+				} else {
+					qtwiParent->insertChild(qtwiParent->indexOfChild(qtwFavouriteDirectories->currentItem()) + 1, qtwiFavourite);
+				} // if else
+			} // if else
+		} // if else
+
+		// set text for item
+		qtwiFavourite->setText(0, qsDirectory);
+
+		// add to favourite directory table
+		if (cnfdType == cNewFavouriteDirectoryDialog::Directory) {
+			sfdFavourite.bTarget = false;
+			qhFavouriteDirectories.insert(qtwiFavourite, sfdFavourite);
+		} // if
+
+		// set cursor to new favourite
+		qtwFavouriteDirectories->setCurrentItem(qtwiFavourite);
+	} // if
+
+	cnfdFavourite->deleteLater();
+} // FavouriteAdd
+
 // fill options with set settings
 void cOptionsDialog::FillOptions()
 {
@@ -364,6 +436,8 @@ void cOptionsDialog::FillOptions()
 	} // if else
 
 	// others
+	// favourite directories
+	qtwFavouriteDirectories->header()->hide();
 	// shortcuts
 	qtwShortcutCategory->header()->hide();
 	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
@@ -557,6 +631,18 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 	} // if else
 } // on_qcbColumnSet_currentIndexChanged
 
+// set target favourite directory too
+void cOptionsDialog::on_qcbFavouriteTargetDirectory_stateChanged(int state)
+{
+	qleFavouriteTarget->setEnabled(state == Qt::Checked);
+	qpbFavouriteTargetBrowse->setEnabled(state == Qt::Checked);
+
+	// write change to favourite directories table
+	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
+		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].bTarget = state == Qt::Checked;
+	} // if
+} // on_qcbFavouriteTargetDirectory_toggled
+
 // change of show drive letter in tab bar
 void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
 {
@@ -605,6 +691,22 @@ void cOptionsDialog::on_qleDateTimeDisplay_textEdited(const QString &text)
 {
 	qfToDo |= RefreshContent;
 } // on_qleDateTimeDisplay_textEdited
+
+// source favourite directory path changed
+void cOptionsDialog::on_qleFavouriteSource_textChanged(const QString &text)
+{
+	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
+		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsSource = text;
+	} // if
+} // on_qleFavouriteSource_textChanged
+
+// target favourite directory path changed
+void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
+{
+	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
+		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsTarget = text;
+	} // if
+} // on_qleFavouriteTarget_textChanged
 
 // time format for plugin changed
 void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
@@ -811,6 +913,50 @@ void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */
 	} // if
 } // on_qpbExternalViewerBrowse_clicked
 
+// add favourite directory button is clicked on
+void cOptionsDialog::on_qpbFavouriteAddDirectory_clicked(bool checked /* false */)
+{
+	FavouriteAdd(cNewFavouriteDirectoryDialog::Directory);
+} // on_qpbFavouriteAddDirectory_clicked
+
+// add submenu button is clicked on
+void cOptionsDialog::on_qpbFavouriteAddSubmenu_clicked(bool checked /* false */)
+{
+	FavouriteAdd(cNewFavouriteDirectoryDialog::Submenu);
+} // on_qpbFavouriteAddSubmenu_clicked
+
+// remove favourite button is clicked on
+void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
+{
+	// TODO on_qpbFavouriteRemove_clicked remove subitems from hash
+	qhFavouriteDirectories.remove(qtwFavouriteDirectories->currentItem());
+	delete qtwFavouriteDirectories->currentItem();
+} // on_qpbFavouriteRemove_clicked
+
+// favourite source browse button is clicked on
+void cOptionsDialog::on_qpbFavouriteSourceBrowse_clicked(bool checked /* false */)
+{
+	QString qsDirectory;
+
+	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select directory"), "/");
+
+	if (!qsDirectory.isEmpty()) {
+		qleFavouriteSource->setText(qsDirectory);
+	} // if
+} // on_qpbFavouriteSourceBrowse_clicked
+
+// favourite target browse button is clicked on
+void cOptionsDialog::on_qpbFavouriteTargetBrowse_clicked(bool checked /* false */)
+{
+	QString qsDirectory;
+
+	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select directory"), "/");
+
+	if (!qsDirectory.isEmpty()) {
+		qleFavouriteTarget->setText(qsDirectory);
+	} // if
+} // on_qpbFavouriteTargetBrowse_clicked
+
 // change font in lister button is clicked on
 void cOptionsDialog::on_qpbListerChangeFont_clicked(bool checked /* false */)
 {
@@ -924,6 +1070,30 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 		qpbRemoveContentPlugin->setEnabled(false);
 	} // if else
 } // on_qtwContentPlugins_itemSelectionChanged
+
+// another favourite directory is selected
+void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	qpbFavouriteRemove->setEnabled(current);
+
+	if (current && current->type() == cNewFavouriteDirectoryDialog::Directory) {
+		qleFavouriteSource->setEnabled(true);
+		qpbFavouriteSourceBrowse->setEnabled(true);
+		qcbFavouriteTargetDirectory->setEnabled(true);
+
+		// set values for currently selected favourite directory
+		qleFavouriteSource->setText(qhFavouriteDirectories.value(current).qsSource);
+		qcbFavouriteTargetDirectory->setChecked(qhFavouriteDirectories.value(current).bTarget);
+		qleFavouriteTarget->setText(qhFavouriteDirectories.value(current).qsTarget);
+	} else {
+		qleFavouriteSource->setEnabled(false);
+		qleFavouriteSource->clear();
+		qpbFavouriteSourceBrowse->setEnabled(false);
+		qcbFavouriteTargetDirectory->setChecked(false);
+		qcbFavouriteTargetDirectory->setEnabled(false);
+		qleFavouriteTarget->clear();
+	} // if else
+} // on_qtwFavouriteDirectories_currentItemChanged
 
 // selected lister plugin changed
 void cOptionsDialog::on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column)

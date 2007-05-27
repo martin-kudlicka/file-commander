@@ -333,7 +333,7 @@ void cFindFilesDialog::on_qpbBrowse_clicked(bool checked /* false */)
 {
 	QString qsDirectory;
 
-	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select a directory"), "/");
+	qsDirectory = QFileDialog::getExistingDirectory(this, tr("Select directory"), "/");
 	if (!qsDirectory.isEmpty()) {
 		qcbSearchIn->setEditText(qsDirectory);
 	} // if

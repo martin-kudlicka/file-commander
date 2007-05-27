@@ -9,6 +9,7 @@
 #include <QtGui/QMenu>
 #include "Plugins/Content.h"
 #include <QtGui/QToolBar>
+#include "Options/NewFavouriteDirectoryDialog.h"
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
 {
@@ -52,6 +53,12 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		enum eOption {
 			Columns																	///< columns from column set
 		};
+		/// favourite directory
+		struct sFavouriteDirectory {
+			QString qsSource;														///< path for source panel
+			bool bTarget;															///< set target path too
+			QString qsTarget;														///< path for destination panel
+		};
 
 		cContent *ccContent;														///< content plugins
 		cSettings *csSettings;													///< application's settings
@@ -62,6 +69,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
 		QFlags<eToDo> qfToDo;													///< actions after confirmation changes
 		QFont qfListerFont;														///< lister font
+		QHash<QTreeWidgetItem *, sFavouriteDirectory> qhFavouriteDirectories;
+																						///< favourite directories
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
 		QMenu qmColumns;															///< columns menu
 		QMenu *qmNative;															///< native part of columns menu
@@ -94,10 +103,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param watched filtered object
 																							  \param event event description
 																							  \return true if event is handled */
-		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
-																						///< get info about specified plugins
-																						/**< \param qtwPlugins plugins to get info
-																							  \return plugin info list */
+		void FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType);
+																						///< add new favourite directory/submenu
+																						/**< \param cnfdType type of favourite */
 		void FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree);
 																						///< fills plugin information into tree
 																						/**< \param qlPlugins plugin list
@@ -107,6 +115,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< fill shortcuts for selected category
 																						/**< \param escCategory shortcut category
 																							  \param qslItems shortcut list */
+		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
+																						///< get info about specified plugins
+																						/**< \param qtwPlugins plugins to get info
+																							  \return plugin info list */
 		cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem);
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column
@@ -122,6 +134,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qcbColumnSet_currentIndexChanged(const QString &text);
 																						///< column set changed
 																						/**< \param text new selected column set */
+		void on_qcbFavouriteTargetDirectory_stateChanged(int state);
+																						///< set target favourite directory too
+																						/**< \param state set target favourite directory too */
 		void on_qcbShowDriveLetter_stateChanged(int state);			///< change of show drive letter in tab bar
 																						/**< \param state show drive letter in tab bar flag */
 		void on_qcbShowHiddenFiles_stateChanged(int state);			///< change of show hidden files
@@ -138,6 +153,12 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qdbbResponse_rejected();										///< changes rejected
 		void on_qleDateTimeDisplay_textEdited(const QString &text);	///< date/time format changed
 																						/**< \param text new date/time format */
+		void on_qleFavouriteSource_textChanged(const QString &text);
+																						///< source favourite directory path changed
+																						/**< \param text source favourite directory path */
+		void on_qleFavouriteTarget_textChanged(const QString &text);
+																						///< target favourite directory path changed
+																						/**< \param text target favourite directory path */
 		void on_qlePluginTimeDisplay_textEdited(const QString &text);
 																						///< time format for plugin changed
 																						/**< \param text new time format */
@@ -166,6 +187,20 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbExternalViewerBrowse_clicked(bool checked = false);
 																						///< external viewer browse button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbFavouriteAddDirectory_clicked(bool checked = false);
+																						///< add favourite directory button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbFavouriteAddSubmenu_clicked(bool checked = false);
+																						///< add submenu button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbFavouriteRemove_clicked(bool checked = false);	///< remove favourite button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbFavouriteSourceBrowse_clicked(bool checked = false);
+																						///< favourite source browse button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		void on_qpbFavouriteTargetBrowse_clicked(bool checked = false);
+																						///< favourite target browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbListerChangeFont_clicked(bool checked = false);	///< change font in lister button is clicked on
 																						/**< \param checked true if button is checkable and checked */
@@ -199,6 +234,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param item selected content plugin
 																							  \param column changed column of plugin list */
 		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
+		void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+																						///< another favourite directory is selected
+																						/**< \param current new favourite directory
+																							  \param previous old favourite directory */
 		void on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column);
 																						///< selected lister plugin changed
 																						/**< \param item selected lister plugin

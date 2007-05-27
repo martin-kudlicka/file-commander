@@ -1201,6 +1201,153 @@
          <property name="currentIndex" >
           <number>0</number>
          </property>
+         <widget class="QWidget" name="tab_3" >
+          <attribute name="title" >
+           <string>&amp;Favourite directories</string>
+          </attribute>
+          <widget class="QLabel" name="label_3" >
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>10</y>
+             <width>79</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Source directory</string>
+           </property>
+           <property name="buddy" >
+            <cstring>qleFavouriteSource</cstring>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbFavouriteAddDirectory" >
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>130</y>
+             <width>91</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Add directory...</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbFavouriteAddSubmenu" >
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>160</y>
+             <width>91</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Add sub&amp;menu...</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbFavouriteRemove" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>190</y>
+             <width>91</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Remove</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbFavouriteTargetDirectory" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>60</y>
+             <width>101</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>&amp;Target directory</string>
+           </property>
+          </widget>
+          <widget class="QTreeWidget" name="qtwFavouriteDirectories" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>120</width>
+             <height>201</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbFavouriteSourceBrowse" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>380</x>
+             <y>30</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Browse...</string>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="qleFavouriteSource" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>30</y>
+             <width>231</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="qleFavouriteTarget" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>140</x>
+             <y>80</y>
+             <width>231</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbFavouriteTargetBrowse" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>380</x>
+             <y>80</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </widget>
          <widget class="QWidget" name="tab_7" >
           <attribute name="title" >
            <string>&amp;Shortcuts</string>

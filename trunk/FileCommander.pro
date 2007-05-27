@@ -14,6 +14,7 @@ FORMS = MainWindow.ui \
 		  FileOperation/QueueWidget.ui \
 		  FileOperation/DeleteDialog.ui \
 		  FileOperation/DeleteWidget.ui \
+		  Options/NewFavouriteDirectoryDialog.ui \
 		  Common/About.ui
 HEADERS = MainWindow.h \
 		    OptionsDialog.h \
@@ -43,6 +44,7 @@ HEADERS = MainWindow.h \
 			 FileOperation/DeleteNonEmptyDirectory.h \
 			 FileOperation/Retry.h \
 			 FileOperation/DiskSpace.h \
+			 Options/NewFavouriteDirectoryDialog.h \
 			 Settings.h \
 			 Plugins.h \
 			 Plugins/Content.h \
@@ -84,6 +86,7 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/DeleteNonEmptyDirectory.cpp \
 			 FileOperation/Retry.cpp \
 			 FileOperation/DiskSpace.cpp \
+			 Options/NewFavouriteDirectoryDialog.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
 			 Plugins/Content.cpp \
