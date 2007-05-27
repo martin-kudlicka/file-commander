@@ -56,8 +56,19 @@
           </item>
           <item>
            <widget class="QLabel" name="qlLeftDriveInfo" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>5</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text" >
              <string>TextLabel</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -68,7 +79,7 @@
             </property>
             <property name="sizeHint" >
              <size>
-              <width>40</width>
+              <width>0</width>
               <height>20</height>
              </size>
             </property>
@@ -118,8 +129,17 @@
           </property>
           <item>
            <widget class="QLabel" name="qlLeftPath" >
+            <property name="maximumSize" >
+             <size>
+              <width>16777215</width>
+              <height>14</height>
+             </size>
+            </property>
             <property name="text" >
              <string>TextLabel</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -186,8 +206,19 @@
           </item>
           <item>
            <widget class="QLabel" name="qlRightDriveInfo" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>5</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text" >
              <string>TextLabel</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -198,7 +229,7 @@
             </property>
             <property name="sizeHint" >
              <size>
-              <width>40</width>
+              <width>0</width>
               <height>20</height>
              </size>
             </property>
@@ -248,8 +279,17 @@
           </property>
           <item>
            <widget class="QLabel" name="qlRightPath" >
+            <property name="maximumSize" >
+             <size>
+              <width>16777215</width>
+              <height>14</height>
+             </size>
+            </property>
             <property name="text" >
              <string>TextLabel</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -297,11 +337,28 @@
       </property>
       <item>
        <widget class="QLabel" name="qlGlobalPath" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>4</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>16</height>
+         </size>
+        </property>
         <property name="text" >
          <string>TextLabel</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
         </property>
        </widget>
       </item>
