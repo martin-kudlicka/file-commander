@@ -131,6 +131,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void SaveOption(const eOption &eoType);							///< save specific changes into settings file
 																						/**< \param eoType type of changes */
 		void SaveOptions();														///< save changes into application's settings file
+		void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+																						///< fill favourite directories into tree widget
+																						/**< \param qtwiParent favourite to start with
+																							  \param qlFavouriteDirectories list of favourites description */
 
 	private slots:
 		void on_qagToolBarActions_triggered(QAction *qaAction);		///< clicked on action in tool bar panel

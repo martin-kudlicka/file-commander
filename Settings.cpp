@@ -111,6 +111,36 @@ const QString qsPLUGINS__LISTER = "Plugins/Lister";
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
 
+// collect favourite directories from settings file
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cSettings::CollectFavouriteDirectories()
+{
+	int iI;
+	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
+	QStringList qslFavouriteDirectories;
+
+	qslFavouriteDirectories = qsSettings.childGroups();
+	for (iI = 0; iI < qslFavouriteDirectories.count(); iI++) {
+		sFavouriteDirectory sfdFavouriteDirectory;
+
+		qsSettings.beginGroup(QVariant(iI).toString());
+
+		sfdFavouriteDirectory.bSubmenu = qsSettings.value(qsSUBMENU).toBool();
+		if (sfdFavouriteDirectory.bSubmenu) {
+			sfdFavouriteDirectory.qlChildFavourites = CollectFavouriteDirectories();
+		} else {
+			sfdFavouriteDirectory.qsSource = qsSettings.value(qsSOURCE).toString();
+			sfdFavouriteDirectory.bTarget = qsSettings.value(qsTARGET_ENABLED).toBool();
+			sfdFavouriteDirectory.qsTarget = qsSettings.value(qsTARGET).toString();
+		} // if else
+
+		qlFavouriteDirectories.append(QPair<QString, cSettings::sFavouriteDirectory>(qsSettings.value(qsNAME).toString(), sfdFavouriteDirectory));
+
+		qsSettings.endGroup();
+	} // for
+
+	return qlFavouriteDirectories;
+} // CollectFavouriteDirectories
+
 // create new empty column set
 void cSettings::CreateColumnSet(const QString &qsColumnSet)
 {
@@ -338,6 +368,21 @@ QString cSettings::GetExternalViewer()
 {
 	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_VIEWER).toString();
 } // GetExternalViewer
+
+// get favourite directories
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cSettings::GetFavouriteDirectories()
+{
+	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
+
+	qsSettings.beginGroup(qsOTHERS__FAVOURITE_DIRECTORIES);
+
+	// collect them
+	qlFavouriteDirectories = CollectFavouriteDirectories();
+
+	qsSettings.endGroup();
+
+	return qlFavouriteDirectories;
+} // GetFavouriteDirectories
 
 // find out file overwrite mode
 QString cSettings::GetFileOverwrite()
