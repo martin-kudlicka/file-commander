@@ -508,6 +508,10 @@ void cOptionsDialog::FillOptions()
 	qcbListerWrapText->setChecked(slLister.bWrapText);
 	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
 	qfListerFont = csSettings->GetListerFont();
+
+	// others
+	// favourite directories
+	SetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem(), csSettings->GetFavouriteDirectories());
 } // FillOptions
 
 // fills plugin information into tree
@@ -1432,3 +1436,34 @@ void cOptionsDialog::SaveOptions()
 	// favourite directories
 	csSettings->SetFavouriteDirectories(GetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem()));
 } // SaveOptions
+
+// fill favourite directories into tree widget
+void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	int iI;
+
+	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
+		cNewFavouriteDirectoryDialog::eType etType;
+		QTreeWidgetItem *qtwiFavouriteDirectory;
+		sFavouriteDirectory sfdFavouriteDirectory;
+
+		if (qlFavouriteDirectories.at(iI).second.bSubmenu) {
+			etType = cNewFavouriteDirectoryDialog::Submenu;
+		} else {
+			etType = cNewFavouriteDirectoryDialog::Directory;
+		} // if else
+
+		qtwiFavouriteDirectory = new QTreeWidgetItem(qtwiParent, etType);
+		qtwiFavouriteDirectory->setText(0, qlFavouriteDirectories.at(iI).first);
+
+		if (etType == cNewFavouriteDirectoryDialog::Submenu) {
+			SetFavouriteDirectories(qtwiFavouriteDirectory, qlFavouriteDirectories.at(iI).second.qlChildFavourites);
+		} else {
+			sfdFavouriteDirectory.qsSource = qlFavouriteDirectories.at(iI).second.qsSource;
+			sfdFavouriteDirectory.bTarget = qlFavouriteDirectories.at(iI).second.bTarget;
+			sfdFavouriteDirectory.qsTarget = qlFavouriteDirectories.at(iI).second.qsTarget;
+		} // if else
+
+		qhFavouriteDirectories.insert(qtwiFavouriteDirectory, sfdFavouriteDirectory);
+	} // for
+} // SetFavouriteDirectories

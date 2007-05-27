@@ -228,6 +228,9 @@ class cSettings : private QObject
 																				/**< \return external editor command line */
 		QString GetExternalViewer();									///< external viewer
 																				/**< \return external viewer command line */
+		QList<QPair<QString, cSettings::sFavouriteDirectory> > GetFavouriteDirectories();
+																				///< get favourite directories
+																				/**< \return list of favourite directories */
 		QString GetFileOverwrite();									///< find out file overwrite mode
 																				/**< \return default file overwrite mode */
 		QString GetFileSizeIn();										///< unit for files size
@@ -394,6 +397,9 @@ class cSettings : private QObject
 	private:
 		QSettings qsSettings;											///< application's settings
 
+		QList<QPair<QString, cSettings::sFavouriteDirectory> > CollectFavouriteDirectories();
+																				///< collect favourite directories from settings file
+																				/**< \return list of favourite directories */
 		void CreateFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
 																				///< create favourite directories
 																				/**< \param qlFavouriteDirectories list of favourite directories */
