@@ -90,6 +90,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qaCompareDirectories_triggered(bool checked = false);
 																						///< compare directories is selected
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaFavouriteDirectories_triggered(bool checked = false);
+																						///< favourite directories are selected
+																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qagSortBy_triggered(QAction *action);					///< sort by action called

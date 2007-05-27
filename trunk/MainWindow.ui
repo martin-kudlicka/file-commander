@@ -562,16 +562,6 @@
     <addaction name="separator" />
     <addaction name="qaCompareDirectories" />
    </widget>
-   <widget class="QMenu" name="menuCommands" >
-    <property name="title" >
-     <string>&amp;Commands</string>
-    </property>
-    <addaction name="qaSearch" />
-    <addaction name="separator" />
-    <addaction name="qaBranchView" />
-    <addaction name="separator" />
-    <addaction name="qaFullScreen" />
-   </widget>
    <widget class="QMenu" name="menuConfiguration" >
     <property name="title" >
      <string>C&amp;onfiguration</string>
@@ -595,6 +585,17 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="qaAbout" />
+   </widget>
+   <widget class="QMenu" name="menuCommands" >
+    <property name="title" >
+     <string>&amp;Commands</string>
+    </property>
+    <addaction name="qaSearch" />
+    <addaction name="qaFavouriteDirectories" />
+    <addaction name="separator" />
+    <addaction name="qaBranchView" />
+    <addaction name="separator" />
+    <addaction name="qaFullScreen" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
@@ -689,6 +690,11 @@
   <action name="qaAbout" >
    <property name="text" >
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="qaFavouriteDirectories" >
+   <property name="text" >
+    <string>Favourite &amp;directories</string>
    </property>
   </action>
  </widget>
