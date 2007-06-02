@@ -17,16 +17,13 @@ cListerMainWindow::~cListerMainWindow()
 	} // if
 
 	delete qhiPlugins;
-	if (qteContent && qteContent->document()) {
-		qteContent->setDocument(NULL);
-	} // if
-	qteContent->deleteLater();
 } // ~cListerMainWindow
 
 // creates lister window
 cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, const QString &qsFile)
 {
 	cSettings::sLister slLister;
+
 	// setup GUI
 	setupUi(this);
 
@@ -38,7 +35,7 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 	qhPlugins = clLister->GetPluginsInfo();
 	qhiPlugins = new QHashIterator<QString, cLister::sPluginInfo>(qhPlugins);
 	hwPlugin = NULL;
-	qteContent = NULL;
+	qteContent->setDocument(&qtdDocument);
 
 	// assign shortcuts
 	qaOpen->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__OPEN)));
@@ -100,17 +97,6 @@ void cListerMainWindow::ClosePlugin()
 #endif
 	hwPlugin = NULL;
 } // ClosePlugin
-
-// create text edit control and set default parameters
-void cListerMainWindow::CreateTextEdit()
-{
-	qteContent = new QTextEdit(this);
-	resizeEvent(NULL);
-	qteContent->show();
-
-	qteContent->setReadOnly(true);
-	on_qaWrapText_triggered(qaWrapText->isChecked());
-} // CreateTextEdit
 
 // find next usable plugin for file
 bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow)
@@ -266,14 +252,14 @@ void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 // copy as text selected
 void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
 {
-	if (qteContent) {
-		// native
-		qteContent->copy();
-	} else  {
+	if (hwPlugin) {
 		// plugin
 		if (qhiPlugins->value().tlscListSendCommand) {
 			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_copy, 0);
 		} // if
+	} else {
+		// native
+		qteContent->copy();
 	} // if else
 } // on_qaCopyAsText_triggered
 
@@ -283,19 +269,32 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 	bool bPlugin;
 	cFindDialog *cfdFind;
 
-	if (qteContent) {
-		// native
-		bPlugin = false;
-	} else {
+	if (hwPlugin) {
 		// plugin
 		bPlugin = true;
+	} else {
+		// native
+		bPlugin = false;
 	} // if else
 
 	cfdFind = new cFindDialog(this, bPlugin);
 	if (cfdFind->exec() == QDialog::Accepted) {
 		qsSearchedText = cfdFind->qcbFind->currentText();
 
-		if (qteContent) {
+		if (hwPlugin) {
+			// plugin
+			iSearchFlags = lcs_findfirst;
+			if (cfdFind->qcbCaseSensitive->isChecked()) {
+				iSearchFlags |= lcs_matchcase;
+			} // if
+			if (cfdFind->qcbWholeWords->isChecked()) {
+				iSearchFlags |= lcs_wholewords;
+			} // if
+			if (cfdFind->qcbSearchBackwards->isChecked()) {
+				iSearchFlags |= lcs_backwards;
+			} // if
+			qhiPlugins->value().tlstListSearchText(hwPlugin, qsSearchedText.toLatin1().data(), iSearchFlags);
+		} else {
 			// native
 			if (cfdFind->qcbSearchBackwards->isChecked()) {
 				ffFlags = QTextDocument::FindBackward;
@@ -310,19 +309,6 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 			} // if
 			qteContent->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
 			qteContent->find(qsSearchedText, ffFlags);
-		} else {
-			// plugin
-			iSearchFlags = lcs_findfirst;
-			if (cfdFind->qcbCaseSensitive->isChecked()) {
-				iSearchFlags |= lcs_matchcase;
-			} // if
-			if (cfdFind->qcbWholeWords->isChecked()) {
-				iSearchFlags |= lcs_wholewords;
-			} // if
-			if (cfdFind->qcbSearchBackwards->isChecked()) {
-				iSearchFlags |= lcs_backwards;
-			} // if
-			qhiPlugins->value().tlstListSearchText(hwPlugin, qsSearchedText.toLatin1().data(), iSearchFlags);
 		} // if else
 	} // if
 
@@ -332,15 +318,15 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 // find next selected
 void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
 {
-	if (qteContent) {
-		// native
-		qteContent->find(qsSearchedText, ffFlags);
-	} else {
+	if (hwPlugin) {
 		// plugin
 		if (iSearchFlags & lcs_findfirst) {
 			iSearchFlags ^= lcs_findfirst;
 		} // if
 		qhiPlugins->value().tlstListSearchText(hwPlugin, qsSearchedText.toLatin1().data(), iSearchFlags);
+	} else {
+		// native
+		qteContent->find(qsSearchedText, ffFlags);
 	} // if else
 } // on_qaFindNext_triggered
 
@@ -397,10 +383,7 @@ void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
 // print selected
 void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
 {
-	if (qteContent) {
-		// native
-		qtdDocument.print(&qpPrinter);
-	} else {
+	if (hwPlugin) {
 		// plugin
 		RECT rMargins;
 
@@ -410,6 +393,9 @@ void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
 		rMargins.top = qpPrinter.pageRect().top() - qpPrinter.paperRect().top();
 
 		qhiPlugins->value().tlpListPrint(hwPlugin, qsFile.toLatin1().data(), qpPrinter.printerName().toLatin1().data(), 0, &rMargins);
+	} else {
+		// native
+		qtdDocument.print(&qpPrinter);
 	} // if else
 } // on_qaPrint_triggered
 
@@ -436,14 +422,14 @@ void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
 // select all selected
 void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 {
-	if (qteContent) {
-		// native
-		qteContent->selectAll();
-	} else {
+	if (hwPlugin) {
 		// plugin
 		if (qhiPlugins->value().tlscListSendCommand) {
 			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_selectall, 0);
 		} // if
+	} else {
+		// native
+		qteContent->selectAll();
 	} // if else
 } // on_qaSelectAll_triggered
 
@@ -478,7 +464,12 @@ void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false *
 // variable char width selected
 void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 {
-	if (qteContent) {
+	if (hwPlugin) {
+		// plugin
+		if (qhiPlugins->value().tlscListSendCommand) {
+			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
+		} // if
+	} else {
 		// native
 		if (qaText->isChecked() || qaBinary->isChecked()) {
 			if (checked) {
@@ -495,11 +486,6 @@ void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 		} else {
 			// TODO on_qaWrapText_triggered Hex
 		} // if else
-	} else {
-		// plugin
-		if (qhiPlugins->value().tlscListSendCommand) {
-			qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
-		} // if
 	} // if else
 } // on_qaWrapText_triggered
 
@@ -523,30 +509,25 @@ void cListerMainWindow::PermitMenuActions()
 	} // if else
 } // PermitMenuActions
 
+#ifdef Q_WS_WIN
 // resize of lister window occurs
 void cListerMainWindow::resizeEvent(QResizeEvent *event)
 {
-#ifdef Q_WS_WIN
 	if (hwPlugin) {
 		MoveWindow(hwPlugin, 0, 0, centralwidget->width(), centralwidget->height(), FALSE);
 	} // if
-#endif
-	if (qteContent) {
-		qteContent->setGeometry(centralwidget->geometry());
-	} // if
 } // resizeEvent
+#endif
 
 // show file content
 void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
 {
-	if (qteContent) {
-		qteContent->setDocument(NULL);
-		qteContent->deleteLater();
-		qteContent = NULL;
-	} // if
 	if (hwPlugin) {
 		ClosePlugin();
-	} // if
+	} else {
+		qtdDocument.clear();
+		//qteContent->setDocument(NULL);
+	} // if else
 
 	if (qaMultimedia->isChecked()) {
 		// multimedia
@@ -558,6 +539,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 				on_qaBinary_triggered();
 			} // if else
 		} else {
+			qteContent->hide();
 			// send default parameters to plugin
 			if (qhiPlugins->value().tlscListSendCommand) {
 				qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
@@ -568,7 +550,8 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		QByteArray qbaFile;
 		QFile qfFile;
 
-		CreateTextEdit();
+		qteContent->show();
+		on_qaWrapText_triggered(qaWrapText->isChecked());
 		qfFile.setFileName(qsFile);
 		qfFile.open(QIODevice::ReadOnly);
 
@@ -577,7 +560,6 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		if (qaText->isChecked() || qaBinary->isChecked()) {
 			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 			qtdDocument.setDefaultFont(csSettings->GetListerFont());
-			qteContent->setDocument(&qtdDocument);
 		} else {
 			// TODO ShowContent Hex
 		} // if else
