@@ -888,7 +888,7 @@ void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 		qcbColumnSet->addItem(qsName);
 		qcbColumnSet->setCurrentIndex(qcbColumnSet->findText(qsName));
 
-		qfToDo |= RefreshHeader;
+		qfToDo |= RefreshHeader | RefreshColumnSets;
 	} // if
 } // on_qpbColumnSetAdd_clicked
 
@@ -898,7 +898,7 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
 	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
 
-	qfToDo |= RefreshHeader;
+	qfToDo |= RefreshHeader | RefreshColumnSets;
 } // on_qpbColumnSetRemove_clicked
 
 // column up button is clicked on in columns view
