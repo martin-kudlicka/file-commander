@@ -1555,6 +1555,7 @@ void cPanel::Sort(const int &iIndex)
 	if (iColumnName != -1) {
 		ssSort.iSortedColumn = iColumnName;
 		ssSort.soSortOrder = Qt::AscendingOrder;
+		ssSort.bCaseSensitive = csSettings->GetCaseSensitiveSorting();
 		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
 		for (iI = 0; iI < qlDirectories.count(); iI++) {
 			if (qhTabs.value(iIndex).qhFiles->value(qlDirectories.at(iI)).fileName() == "..") {
@@ -1568,6 +1569,7 @@ void cPanel::Sort(const int &iIndex)
 	// set sort informations for sorting functions
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
 	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
+	ssSort.bCaseSensitive = csSettings->GetCaseSensitiveSorting();
 	if ((qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder) || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
 		// let ".." be the first if possible
 		if (qhTabs.value(iIndex).qhFiles->value(qlDirectories.front()).fileName() == "..") {
@@ -1613,7 +1615,17 @@ void cPanel::SortBy(const int &iColumn)
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
 {
-	if ((qtwiItem1->text(ssSort.iSortedColumn) < qtwiItem2->text(ssSort.iSortedColumn) && ssSort.soSortOrder == Qt::AscendingOrder) || (qtwiItem1->text(ssSort.iSortedColumn) <= qtwiItem2->text(ssSort.iSortedColumn) && ssSort.soSortOrder == Qt::DescendingOrder)) {
+	QString qsItem1, qsItem2;
+
+	if (ssSort.bCaseSensitive) {
+		qsItem1 = qtwiItem1->text(ssSort.iSortedColumn);
+		qsItem2 = qtwiItem2->text(ssSort.iSortedColumn);
+	} else {
+		qsItem1 = qtwiItem1->text(ssSort.iSortedColumn).toLower();
+		qsItem2 = qtwiItem2->text(ssSort.iSortedColumn).toLower();
+	} // if else
+
+	if ((qsItem1 < qsItem2 && ssSort.soSortOrder == Qt::AscendingOrder) || (qsItem1 <= qsItem2 && ssSort.soSortOrder == Qt::DescendingOrder)) {
 		if (ssSort.soSortOrder == Qt::AscendingOrder) {
 			return true;
 		} else {

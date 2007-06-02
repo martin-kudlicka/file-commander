@@ -67,13 +67,14 @@ const QString qsWRAP_TEXT = "WrapText";
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
 // Display
+const QString qsDISPLAY__CASE_SENSITIVE_SORTING = "Display/CaseSensitiveSorting";
+const QString qsDISPLAY__DATE_TIME_DISPLAY = "Display/DateTimeDisplay";
 const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
 const QString qsDISPLAY__SAVE_SETTINGS_ON_QUIT = "Display/SaveSettingsOnQuit";
 const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
-const QString qsDISPLAY__DATE_TIME_DISPLAY = "Display/DateTimeDisplay";
 // Tabs
 const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
 const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
@@ -283,6 +284,12 @@ bool cSettings::GetAskToDeleteNonEmptyDirectory()
 {
 	return qsSettings.value(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, true).toBool();
 } // GetAskToDeleteNonEmptyDirectory
+
+// case sensitive sorting
+bool cSettings::GetCaseSensitiveSorting()
+{
+	return qsSettings.value(qsDISPLAY__CASE_SENSITIVE_SORTING).toBool();
+} // GetCaseSensitiveSorting
 
 // close tab in tab bar on double click
 bool cSettings::GetCloseTabOnDoubleClick()
@@ -857,6 +864,12 @@ void cSettings::SetAskToDeleteNonEmptyDirectory(const bool &bAsk)
 {
 	qsSettings.setValue(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, bAsk);
 } // SetAskToDeleteNonEmptyDirectory
+
+// case sensitive sorting
+void cSettings::SetCaseSensitiveSorting(const bool &bCaseSensitive)
+{
+	qsSettings.setValue(qsDISPLAY__CASE_SENSITIVE_SORTING, bCaseSensitive);
+} // SetCaseSensitiveSorting
 
 // close tab on double click
 void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)
