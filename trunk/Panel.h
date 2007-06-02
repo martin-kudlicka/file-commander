@@ -68,6 +68,8 @@ class cPanel : public QObject
 																							/**< \param qfilFiles custom list of files */
 		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view
 																							/**< \return columns for current dir view */
+		QString GetColumnSet();														///< column set for current directory view
+																							/**< \return column set for current directory view */
 		QHash<QTreeWidgetItem *, QFileInfo> *GetDirContent();				///< get content of the directory view
 																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
@@ -102,6 +104,8 @@ class cPanel : public QObject
 																							/**< \param estType select/unselect mode
 																								  \param clLister lister plugins */
 		void SelectAll();																///< select all files
+		void SetColumnSet(const QString &qsColumnSet);						///< selected another column set for actual directory view
+																							/**< \param qsColumnSet new column set */
 		void SetFocus();																///< set focus to current directory view
 		void SortBy(const int &iColumn);											///< sort by specified column
 																							/**< \param iColumn column position to sort by */

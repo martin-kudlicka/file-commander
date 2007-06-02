@@ -40,11 +40,13 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QAction *qaTabBarCloseAllOtherTabs;									///< close all other tabs
 		QAction *qaTabBarCloseTab;												///< close current tab
 		QAction *qaTabBarDuplicateTab;										///< duplicate current tab
+		QActionGroup *qagColumnSets;											///< column sets
 		QActionGroup *qagSortBy;												///< sort by actions
 		QHash<QAction *, cOptionsDialog::sFavouriteDirectory> qhFavouriteDirectories;
 																						///< favourite directories table
 		QHBoxLayout *qhblBackgroundOperations;								///< layout for background operations
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
+		QMenu qmColumnSets;														///< column sets submenu
 		QMenu qmFavouriteDirectories;											///< favourite directories context menu
 		QMenu qmTabBar;															///< tab bar context menu
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
@@ -55,6 +57,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTreeWidget *qtwLeftDrives;											///< drives list for left drive combo box
 		QTreeWidget *qtwRightDrives;											///< drives list for right drive combo box
 
+		void ActualizeColumnSets();											///< actualize column sets submenu
 		void ActualizeDrives();													///< drive lists actualization
 		void ActualizeFavouriteDirectories();								///< actualize favourite directories context menu
 		void AssignShortcuts();													///< assign shortcuts
@@ -127,6 +130,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaUnselectGroup_triggered(bool checked = false);		///< unselect group selected
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qmColumnSets_triggered(QAction *action);				///< selected column set from column set submenu
+																						/**< \param action column set */
 		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from from favourites context menu
 																						/**< \param action favourite directory */
 		void on_qpbCopy_clicked(bool checked = false);					///< copy button is clicked on

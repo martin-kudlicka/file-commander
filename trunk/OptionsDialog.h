@@ -24,7 +24,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			RefreshContent = 4,													///< dir view content change
 			RefreshHeader = 8,													///< dir view header change
 			RefreshTabs = 16,														///< tab change
-			RefreshFavouriteDirectories = 32									///< favourite directories change
+			RefreshFavouriteDirectories = 32,								///< favourite directories change
+			RefreshColumnSets = 64												///< column set change
 		};
 		Q_DECLARE_FLAGS(ToDo, eToDo);
 		/// favourite directory

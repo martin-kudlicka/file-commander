@@ -418,6 +418,12 @@ QList<cSettings::sColumn> *cPanel::GetColumns()
 	return qhTabs.value(qswDir->currentIndex()).qlColumns;
 } // GetColumns
 
+//< column set for current directory view
+QString cPanel::GetColumnSet()
+{
+	return qhTabs.value(qswDir->currentIndex()).qsColumnSet;
+} // GetColumnSet
+
 // get content of the directory view
 QHash<QTreeWidgetItem *, QFileInfo> *cPanel::GetDirContent()
 {
@@ -1430,6 +1436,16 @@ void cPanel::SelectAll()
 		static_cast<cTreeWidget *>(qswDir->currentWidget())->selectAll();
 	} // if else
 } // SelectAll
+
+// selected another column set for actual directory view
+void cPanel::SetColumnSet(const QString &qsColumnSet)
+{
+	qhTabs[qswDir->currentIndex()].qsColumnSet = qsColumnSet;
+	// change sort column to prevent sorting by nonexisting column number
+	static_cast<cTreeWidget *>(qswDir->currentWidget())->header()->setSortIndicator(0, Qt::AscendingOrder);
+	// refresh header to show changes
+	RefreshHeader(qswDir->currentIndex(), true);
+} // SetColumnSet
 
 // set focus to current directory view
 void cPanel::SetFocus()

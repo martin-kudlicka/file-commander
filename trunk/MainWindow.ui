@@ -562,24 +562,6 @@
     <addaction name="separator" />
     <addaction name="qaCompareDirectories" />
    </widget>
-   <widget class="QMenu" name="menuConfiguration" >
-    <property name="title" >
-     <string>C&amp;onfiguration</string>
-    </property>
-    <addaction name="qaOptions" />
-    <addaction name="qaSavePosition" />
-    <addaction name="qaSaveSettings" />
-   </widget>
-   <widget class="QMenu" name="qmPanel" >
-    <property name="title" >
-     <string>&amp;Panel</string>
-    </property>
-    <addaction name="qaColumnsSeparator" />
-    <addaction name="separator" />
-    <addaction name="qaReverseOrder" />
-    <addaction name="separator" />
-    <addaction name="qaRefresh" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -596,6 +578,26 @@
     <addaction name="qaBranchView" />
     <addaction name="separator" />
     <addaction name="qaFullScreen" />
+   </widget>
+   <widget class="QMenu" name="qmPanel" >
+    <property name="title" >
+     <string>&amp;Panel</string>
+    </property>
+    <addaction name="qaColumnSet" />
+    <addaction name="separator" />
+    <addaction name="qaColumnsSeparator" />
+    <addaction name="separator" />
+    <addaction name="qaReverseOrder" />
+    <addaction name="separator" />
+    <addaction name="qaRefresh" />
+   </widget>
+   <widget class="QMenu" name="menuConfiguration" >
+    <property name="title" >
+     <string>C&amp;onfiguration</string>
+    </property>
+    <addaction name="qaOptions" />
+    <addaction name="qaSavePosition" />
+    <addaction name="qaSaveSettings" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menu_Mark" />
@@ -695,6 +697,11 @@
   <action name="qaFavouriteDirectories" >
    <property name="text" >
     <string>Favourite &amp;directories</string>
+   </property>
+  </action>
+  <action name="qaColumnSet" >
+   <property name="text" >
+    <string>&amp;Column set</string>
    </property>
   </action>
  </widget>

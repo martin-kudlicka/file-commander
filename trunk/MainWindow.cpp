@@ -25,9 +25,35 @@ cMainWindow::~cMainWindow()
 	cpRight->deleteLater();
 	delete cpPlugins;
 	qagSortBy->deleteLater();
+	qagColumnSets->deleteLater();
 	qtwLeftDrives->deleteLater();
 	qtwRightDrives->deleteLater();
 } // cMainWindow
+
+// actualize column sets submenu
+void cMainWindow::ActualizeColumnSets()
+{
+	int iI;
+	QString qsActiveColumnSet;
+	QStringList qslColumnSets;
+
+	qsActiveColumnSet = cpActive->GetColumnSet();
+	qagColumnSets->actions().clear();
+	qmColumnSets.clear();
+	qslColumnSets = csSettings.GetColumnSets();
+
+	for (iI = 0; iI < qslColumnSets.count(); iI++) {
+		QAction *qaColumnSet;
+
+		qaColumnSet = qmColumnSets.addAction(qslColumnSets.at(iI));
+		// put action to action group to prevent checking more than one action in a time
+		qagColumnSets->addAction(qaColumnSet);
+		qaColumnSet->setCheckable(true);
+		if (qsActiveColumnSet == qslColumnSets.at(iI)) {
+			qaColumnSet->setChecked(true);
+		} // if
+	} // for
+} // ActualizeColumnSets
 
 // drive lists actualization
 void cMainWindow::ActualizeDrives()
@@ -203,11 +229,14 @@ cMainWindow::cMainWindow()
 	ActualizeFavouriteDirectories();
 	qpbLeftFavourites->setMenu(&qmFavouriteDirectories);
 	qpbRightFavourites->setMenu(&qmFavouriteDirectories);
+	// column sets submenu
+	qaColumnSet->setMenu(&qmColumnSets);
 
 	// variables initialization
 	qagSortBy = new QActionGroup(this);
 	iTabBarIndex = -1;
 	qcbCommand->installEventFilter(this);
+	qagColumnSets = new QActionGroup(this);
 
 	// shortcuts
 	AssignShortcuts();
@@ -224,6 +253,7 @@ cMainWindow::cMainWindow()
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
 	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
+	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));
 
 	ActualizeDrives();
 	// show before change drive dialog can appear
@@ -348,6 +378,7 @@ void cMainWindow::on_cpLeft_GotFocus()
 {
 	cpActive = cpLeft;
 	SetSortByActions();
+	ActualizeColumnSets();
 } // on_cpLeft_GotFocus
 
 // delete marked files
@@ -361,6 +392,7 @@ void cMainWindow::on_cpRight_GotFocus()
 {
 	cpActive = cpRight;
 	SetSortByActions();
+	ActualizeColumnSets();
 } // on_cpRight_GotFocus
 
 // about is selected
@@ -519,6 +551,9 @@ void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshFavouriteDirectories) {
 		ActualizeFavouriteDirectories();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshColumnSets) {
+		ActualizeColumnSets();
 	} // if
 } // on_qaOptions_triggered
 
@@ -685,6 +720,12 @@ void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */)
 	SetSourceAndDestinationPanel(&cpSource);
 	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clLister);
 } // on_qaUnselectGroup_triggered
+
+// selected column set from column set submenu
+void cMainWindow::on_qmColumnSets_triggered(QAction *action)
+{
+	cpActive->SetColumnSet(action->text());
+} // on_qmColumnSets_triggered
 
 // selected favourite directory from from favourites context menu
 void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action)
