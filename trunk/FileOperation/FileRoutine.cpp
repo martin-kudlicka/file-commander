@@ -107,7 +107,7 @@ QFileInfoList cFileRoutine::GetSources(const QFileInfoList &qfilFileAndDirList, 
 	QFileInfoList qfilSources;
 
 	for (iI = 0; iI < qfilFileAndDirList.count(); iI++) {
-		qfilSources += GetSources(qfilFileAndDirList.at(iI));
+		qfilSources += GetSources(qfilFileAndDirList.at(iI), qsFilter);
 	} // for
 
 	return qfilSources;
