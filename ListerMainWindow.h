@@ -6,7 +6,6 @@
 #include "ui_ListerMainWindow.h"
 
 #include "Plugins/Lister.h"
-#include <QtGui/QTextEdit>
 #include <QtGui/QPrinter>
 
 class cListerMainWindow : public QMainWindow, private Ui::qmwLister
@@ -33,13 +32,11 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		QString qsSearchedText;																	///< last searched text
 		QTextDocument::FindFlags ffFlags;													///< last used flags for native search
 		QTextDocument qtdDocument;																///< text to show in QTextEdit
-		QTextEdit *qteContent;																	///< file content in standard widget
 		WId hwPlugin;																				///< plugin's window
 
 		void closeEvent(QCloseEvent *event);												///< lister window close
 																										/**< \param event close description */
 		void ClosePlugin();																		///< destroy of plugin's window
-		void CreateTextEdit();																	///< create text edit control and set default parameters
 		bool FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow);
 																										///< find next usable plugin for file
 																										/**< \param bNextPlugin move onto next plugin or not
@@ -52,8 +49,10 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																										/**< \param event key press event description */
 #endif
 		void PermitMenuActions();																///< enable/disable menu actions
+#ifdef Q_WS_WIN
 		void resizeEvent(QResizeEvent *event);												///< resize of lister window occurs
 																										/**< \param event resize parameters */
+#endif
 		void ShowContent(const bool &bNextPlugin = false, const bool &bForceShow = false);
 																										///< show file content
 																										/**< \param bNextPlugin move onto next plugin

@@ -3,7 +3,7 @@
 #ifndef NEW_FAVOURITE_DIRECTORY_DIALOG_H
 #define NEW_FAVOURITE_DIRECTORY_DIALOG_H
 
-#include "ui_NewFavouriteDirectory.h"
+#include "ui_NewFavouriteDirectoryDialog.h"
 
 class cNewFavouriteDirectoryDialog : public QDialog, public Ui::qdNewFavouriteDirectory
 {
