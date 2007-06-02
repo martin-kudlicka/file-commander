@@ -371,6 +371,7 @@ void cOptionsDialog::FillOptions()
 	} // if else
 	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
 	qleDateTimeDisplay->setText(csSettings->GetDateTimeDisplay());
+	qcbCaseSensitiveSorting->setChecked(csSettings->GetCaseSensitiveSorting());
 	// tabs
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->blockSignals(true);
@@ -1364,6 +1365,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetSelectionMode(qsValue);
 	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
 	csSettings->SetDateTimeDisplay(qleDateTimeDisplay->text());
+	csSettings->SetCaseSensitiveSorting(qcbCaseSensitiveSorting->isChecked());
 	// tabs
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());

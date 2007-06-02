@@ -269,7 +269,7 @@
           <widget class="QCheckBox" name="qcbSaveSettingsOnQuit" >
            <property name="geometry" >
             <rect>
-             <x>10</x>
+             <x>330</x>
              <y>200</y>
              <width>121</width>
              <height>18</height>
@@ -283,13 +283,26 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>180</y>
+             <y>200</y>
              <width>211</width>
              <height>18</height>
             </rect>
            </property>
            <property name="text" >
             <string>Square brackets around directory name</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="qcbCaseSensitiveSorting" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>180</y>
+             <width>131</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Case sensitive sorting</string>
            </property>
           </widget>
          </widget>
