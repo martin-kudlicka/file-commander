@@ -484,11 +484,13 @@ void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
 // favourite directories are selected
 void cMainWindow::on_qaFavouriteDirectories_triggered(bool checked /* false */)
 {
-	if (cpActive == cpLeft) {
-		qpbLeftFavourites->showMenu();
-	} else {
-		qpbRightFavourites->showMenu();
-	} // if else
+	if (qhFavouriteDirectories.count() != 0) {
+		if (cpActive == cpLeft) {
+			qpbLeftFavourites->showMenu();
+		} else {
+			qpbRightFavourites->showMenu();
+		} // if else
+	} // if
 } // on_qaFavouriteDirectories_triggered
 
 // full screen mode is selected
