@@ -6,6 +6,7 @@
 #include "Plugins/Content.h"
 #include "Settings.h"
 #include "Plugins/Lister.h"
+#include "Plugins/Packer.h"
 
 class cPlugins
 {
@@ -21,6 +22,7 @@ class cPlugins
 		void Unload();							///< unload all plugins
 
 	private:
+		cPacker *cpPacker;					///< packer plugins
 		cSettings *csSettings;				///< main settings
 }; // cPlugins
 

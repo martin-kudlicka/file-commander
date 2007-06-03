@@ -55,9 +55,8 @@ class cLister
 		cLister(cSettings *csSettings);										///< constructor
 																						/**< \param csSettings application's settings */
 
-		QHash<QString, sPluginInfo> GetPluginsInfo();					///< retrieve lister plugin info
+		QHash<QString, sPluginInfo> GetPluginsInfo();					///< retrieve lister plugins info
 		void Load();																///< loads lister plugins
-		void Unload();																///< unloads lister plugins
 
 	private:
 		cSettings *csSettings;													///< main settings "file"

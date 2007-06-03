@@ -524,7 +524,6 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		ClosePlugin();
 	} else {
 		qtdDocument.clear();
-		//qteContent->setDocument(NULL);
 	} // if else
 
 	if (qaMultimedia->isChecked()) {
@@ -556,6 +555,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 
 		// fill text edit
 		qbaFile = qfFile.readAll();
+
 		if (qaText->isChecked() || qaBinary->isChecked()) {
 			qtdDocument.setDefaultFont(csSettings->GetListerFont());
 			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));

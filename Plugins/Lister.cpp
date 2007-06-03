@@ -39,12 +39,12 @@ void cLister::Load()
 			qlLibrary.load();
 
 			// fill plugin properties
-			spiPluginInfo.tllListLoad = (tListLoad)qlLibrary.resolve("ListLoad");
-			spiPluginInfo.tlcwListCloseWindow = (tListCloseWindow)qlLibrary.resolve("ListCloseWindow");
-			spiPluginInfo.tlpListPrint = (tListPrint)qlLibrary.resolve("ListPrint");
-			spiPluginInfo.tlstListSearchText = (tListSearchText)qlLibrary.resolve("ListSearchText");
-			spiPluginInfo.tlscListSendCommand = (tListSendCommand)qlLibrary.resolve("ListSendCommand");
-			spiPluginInfo.tlsdpListSetDefaultParams = (tListSetDefaultParams)qlLibrary.resolve("ListSetDefaultParams");
+			spiPluginInfo.tllListLoad = static_cast<tListLoad>(qlLibrary.resolve("ListLoad"));
+			spiPluginInfo.tlcwListCloseWindow = static_cast<tListCloseWindow>(qlLibrary.resolve("ListCloseWindow"));
+			spiPluginInfo.tlpListPrint = static_cast<tListPrint>(qlLibrary.resolve("ListPrint"));
+			spiPluginInfo.tlstListSearchText = static_cast<tListSearchText>(qlLibrary.resolve("ListSearchText"));
+			spiPluginInfo.tlscListSendCommand = static_cast<tListSendCommand>(qlLibrary.resolve("ListSendCommand"));
+			spiPluginInfo.tlsdpListSetDefaultParams = static_cast<tListSetDefaultParams>(qlLibrary.resolve("ListSetDefaultParams"));
 
 			// set default parameters
 			if (spiPluginInfo.tlsdpListSetDefaultParams) {
@@ -64,9 +64,3 @@ void cLister::Load()
 		} // if
 	} // for
 } // Load
-
-// unloads lister plugins
-void cLister::Unload()
-{
-	qhPlugins.clear();
-} // Unload
