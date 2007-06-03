@@ -5,7 +5,6 @@
 #include <QtGui/QFont>
 
 // general
-const QChar qcPATH_SEPARATOR = '|';	///< some substitution needed beacuse '/' is group separator in QSettings
 const QString qsASCENDING = "ascending";
 const QString qsASK_TO_DELETE_NON_EMPTY_DIRECTORY = "AskToDeleteNonEmptyDirectory";
 const QString qsBUFFER_SIZE = "BufferSize";
@@ -18,11 +17,11 @@ const QString qsDATE_TIME_TO = "DateTimeTo";
 const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
 #endif
 const QString qsDESCENDING = "descending";
-const QString qsDISABLED = "Disabled";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
 const QString qsEXTERNAL_EDITOR = "ExternalEditor";
 const QString qsEXTERNAL_VIEWER = "ExternalViewer";
+const QString qsFALSE = "false";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsFILE_SIZE = "FileSize";
 const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
@@ -58,6 +57,7 @@ const QString qsSUBDIRECTORY_DEPTH = "SubdirectoryDepth";
 const QString qsSUBMENU = "Submenu";
 const QString qsTARGET = "Target";
 const QString qsTARGET_ENABLED = "TargetEnabled";
+const QString qsTRUE = "true";
 const QString qsUNIT = "Unit";
 const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
@@ -492,22 +492,28 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 	switch (epPlugin) {
 		// TODO GetPlugins - other plugin types
 		case ContentPlugins:
-			qsSettings.beginGroup(qsPLUGINS__CONTENT);
+			qsSettings.beginReadArray(qsPLUGINS__CONTENT);
 			break;
 		case ListerPlugins:
-			qsSettings.beginGroup(qsPLUGINS__LISTER);
+			qsSettings.beginReadArray(qsPLUGINS__LISTER);
 			break;
 		case PackerPlugins:
-			qsSettings.beginGroup(qsPLUGINS__PACKER);
+			qsSettings.beginReadArray(qsPLUGINS__PACKER);
 	} // switch
-	qslPlugins = qsSettings.childKeys();
 
+	qslPlugins = qsSettings.childGroups();
 	for (iI = 0; iI < qslPlugins.count(); iI++) {
 		sPlugin spPlugin;
 
-		spPlugin.qsName = qslPlugins.at(iI);
-		spPlugin.qsName.replace(qcPATH_SEPARATOR, '/');
-		if (qsSettings.value(qslPlugins.at(iI)).toString() == qsENABLED) {
+		if (!qslPlugins.contains(QVariant(iI + 1).toString())) {
+			// not a plugin record
+			continue;
+		} // if
+
+		qsSettings.setArrayIndex(iI);
+
+		spPlugin.qsName = qsSettings.value(qsNAME).toString();
+		if (qsSettings.value(qsENABLED).toString() == qsTRUE) {
 			spPlugin.bEnabled = true;
 		} else {
 			spPlugin.bEnabled = false;
@@ -515,7 +521,8 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 
 		qlPlugins.append(spPlugin);
 	} // for
-	qsSettings.endGroup();
+
+	qsSettings.endArray();
 
 	return qlPlugins;
 } // GetPlugins
@@ -1019,13 +1026,13 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 	switch (epPlugin) {
 		// TODO GetPlugins - other plugin types
 		case ContentPlugins:
-			qsSettings.beginGroup(qsPLUGINS__CONTENT);
+			qsSettings.beginWriteArray(qsPLUGINS__CONTENT);
 			break;
 		case ListerPlugins:
-			qsSettings.beginGroup(qsPLUGINS__LISTER);
+			qsSettings.beginWriteArray(qsPLUGINS__LISTER);
 			break;
 		case PackerPlugins:
-			qsSettings.beginGroup(qsPLUGINS__PACKER);
+			qsSettings.beginWriteArray(qsPLUGINS__PACKER);
 	} // switch
 
 	qsSettings.remove("");
@@ -1033,18 +1040,21 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
 		QString qsKey, qsValue;
 
-		qsKey = qlPlugins.at(iI).qsName;
-		qsKey.replace('/', qcPATH_SEPARATOR);
-		if (qlPlugins.at(iI).bEnabled) {
-			qsValue = qsENABLED;
-		} else {
-			qsValue = qsDISABLED;
-		} // if else
+		qsSettings.setArrayIndex(iI);
 
+		qsKey = qsNAME;
+		qsValue = qlPlugins.at(iI).qsName;
+		qsSettings.setValue(qsKey, qsValue);
+		qsKey = qsENABLED;
+		if (qlPlugins.at(iI).bEnabled) {
+			qsValue = qsTRUE;
+		} else {
+			qsValue = qsFALSE;
+		} // if else
 		qsSettings.setValue(qsKey, qsValue);
 	} // for
 
-	qsSettings.endGroup();
+	qsSettings.endArray();
 } // SetPlugins
 
 ///< plugin time display format
