@@ -51,6 +51,9 @@ HEADERS = MainWindow.h \
 			 Plugins/ContentDelayed.h \
 			 Plugins/ContPlug.h \
 			 Plugins/Lister.h \
+			 Plugins/ListPlug.h \
+			 Plugins/Packer.h \
+			 Plugins/WCXHead.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h \
 			 Common/About.h
@@ -92,6 +95,7 @@ SOURCES = FileCommander.cpp \
 			 Plugins/Content.cpp \
 			 Plugins/ContentDelayed.cpp \
 			 Plugins/Lister.cpp \
+			 Plugins/Packer.cpp \
 			 Common/System.cpp \
 			 Common/About.cpp
 win32 {
