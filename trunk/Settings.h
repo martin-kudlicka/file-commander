@@ -99,7 +99,8 @@ class cSettings : private QObject
 		/// plugin type
 		enum ePlugin {
 			ContentPlugins,												///< content plugin type
-			ListerPlugins													///< lister plugin type
+			ListerPlugins,													///< lister plugin type
+			PackerPlugins													///< packer plugin type
 		};
 		/// choose of panel
 		enum ePosition {

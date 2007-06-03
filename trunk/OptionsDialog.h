@@ -182,6 +182,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbAddListerPlugin_clicked(bool checked = false);	///< add button is clicked on in lister plugins
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbAddPackerPlugin_clicked(bool checked = false);	///< add button is clicked on in packer plugins
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnDown_clicked(bool checked = false);			///< column down button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbColumnRemove_clicked(bool checked = false);		///< column remove button is clicked on in columns view
@@ -220,6 +222,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qpbRemoveListerPlugin_clicked(bool checked = false);
 																						///< remove lister plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbRemovePackerPlugin_clicked(bool checked = false);
+																						///< remove packer plugin button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbShortcutClear_clicked(bool checked = false);		///< shortcut clear button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qrbSizeBytes_toggled(bool checked);						///< size in bytes status change
@@ -253,6 +258,11 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						/**< \param item selected lister plugin
 																							  \param column changed column of plugin list */
 		void on_qtwListerPlugins_itemSelectionChanged();				///< selected lister plugin changed
+		void on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column);
+																						///< selected packer plugin changed
+																						/**< \param item selected packer plugin
+																							  \param column changed column of plugin list */
+		void on_qtwPackerPlugins_itemSelectionChanged();				///< selected packer plugin changed
 		void on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< selected shortcut category changed
 																						/**< \param current current shortcut category
