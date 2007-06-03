@@ -1285,8 +1285,14 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 	// clear previous header contents and fill new information
 	qhTabs.value(iIndex).qlColumns->clear();
 	qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
+	// check for column count in current column set
+	if (qslColumns.count() == 0 && qhTabs.value(iIndex).qsColumnSet != qsFULL) {
+		// no columns - switch to full column set
+		qhTabs[iIndex].qsColumnSet = qsFULL;
+		qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
+	} // if
 	if (qslColumns.count() == 0 && qhTabs.value(iIndex).qsColumnSet == qsFULL) {
-		// create default column set (Full) if not created yet
+		// create default column set (Full) if not created yet or empty
 		csSettings->CreateDefaultColumnSet();
 		qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
 	} // if
