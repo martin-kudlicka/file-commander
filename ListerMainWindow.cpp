@@ -12,10 +12,6 @@
 // destructor
 cListerMainWindow::~cListerMainWindow()
 {
-	if (hwPlugin) {
-		ClosePlugin();
-	} // if
-
 	delete qhiPlugins;
 } // ~cListerMainWindow
 
@@ -81,7 +77,9 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 // lister window close
 void cListerMainWindow::closeEvent(QCloseEvent *event)
 {
-	delete this;
+	if (hwPlugin) {
+		ClosePlugin();
+	} // if
 } // closeEvent
 
 // destroy of plugin's window
