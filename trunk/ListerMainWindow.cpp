@@ -549,6 +549,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		QFile qfFile;
 
 		qteContent->show();
+		qteContent->setFocus(Qt::OtherFocusReason);
 		on_qaWrapText_triggered(qaWrapText->isChecked());
 		qfFile.setFileName(qsFile);
 		qfFile.open(QIODevice::ReadOnly);
@@ -556,8 +557,8 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		// fill text edit
 		qbaFile = qfFile.readAll();
 		if (qaText->isChecked() || qaBinary->isChecked()) {
-			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 			qtdDocument.setDefaultFont(csSettings->GetListerFont());
+			qtdDocument.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 		} else {
 			// TODO ShowContent Hex
 		} // if else
