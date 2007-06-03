@@ -1156,6 +1156,19 @@
             <string>Wrap text</string>
            </property>
           </widget>
+          <widget class="QTreeWidget" name="qtwListerPlugins" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>109</y>
+             <width>441</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+          </widget>
           <widget class="QPushButton" name="qpbAddListerPlugin" >
            <property name="geometry" >
             <rect>
@@ -1185,17 +1198,51 @@
             <string>Remove</string>
            </property>
           </widget>
-          <widget class="QTreeWidget" name="qtwListerPlugins" >
+         </widget>
+         <widget class="QWidget" name="tab_14" >
+          <attribute name="title" >
+           <string>&amp;Packer</string>
+          </attribute>
+          <widget class="QPushButton" name="qpbAddPackerPlugin" >
+           <property name="geometry" >
+            <rect>
+             <x>290</x>
+             <y>190</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+          <widget class="QTreeWidget" name="qtwPackerPlugins" >
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>109</y>
+             <y>10</y>
              <width>441</width>
-             <height>71</height>
+             <height>171</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
             <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="qpbRemovePackerPlugin" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="geometry" >
+            <rect>
+             <x>370</x>
+             <y>190</y>
+             <width>75</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Remove</string>
            </property>
           </widget>
          </widget>

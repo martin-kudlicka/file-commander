@@ -512,6 +512,8 @@ void cOptionsDialog::FillOptions()
 	qcbListerWrapText->setChecked(slLister.bWrapText);
 	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
 	qfListerFont = csSettings->GetListerFont();
+	// packer
+	FillPluginsTree(csSettings->GetPlugins(cSettings::PackerPlugins), qtwPackerPlugins);
 
 	// others
 	// favourite directories
@@ -851,6 +853,24 @@ void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 	} // if
 } // on_qpbAddListerPlugin_clicked
 
+// add button is clicked on in packer plugins
+void cOptionsDialog::on_qpbAddPackerPlugin_clicked(bool checked /* false */)
+{
+	QString qsFile;
+
+	qsFile = QFileDialog::getOpenFileName(this, tr("Select lister plugin"), "/", "*.wcx");
+
+	if (!qsFile.isEmpty()) {
+		cSettings::sPlugin spPlugin;
+
+		spPlugin.qsName = qsFile;
+		spPlugin.bEnabled = true;
+		AddPluginIntoTree(spPlugin, qtwPackerPlugins);
+
+		qfToDo |= ReloadPlugins;
+	} // if
+} // on_qpbAddPackerPlugin_clicked
+
 // column down button is clicked on in columns view
 void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 {
@@ -1028,6 +1048,14 @@ void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 	qfToDo |= ReloadPlugins;
 } // on_qpbRemoveListerPlugin_clicked
 
+// remove packer plugin button is clicked on
+void cOptionsDialog::on_qpbRemovePackerPlugin_clicked(bool checked /* false */)
+{
+	delete qtwPackerPlugins->selectedItems().at(0);
+
+	qfToDo |= ReloadPlugins;
+} // on_qpbRemovePackerPlugin_clicked
+
 // shortcut clear button is clicked on
 void cOptionsDialog::on_qpbShortcutClear_clicked(bool checked /* false */)
 {
@@ -1152,6 +1180,22 @@ void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
 		qpbRemoveListerPlugin->setEnabled(false);
 	} // if else
 } // on_qtwListerPlugins_itemSelectionChanged
+
+// selected packer plugin changed
+void cOptionsDialog::on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column)
+{
+	qfToDo |= ReloadPlugins;
+} // on_qtwPackerPlugins_itemChanged
+
+// selected packer plugin changed
+void cOptionsDialog::on_qtwPackerPlugins_itemSelectionChanged()
+{
+	if (qtwPackerPlugins->selectedItems().count() > 0) {
+		qpbRemovePackerPlugin->setEnabled(true);
+	} else {
+		qpbRemovePackerPlugin->setEnabled(false);
+	} // if else
+} // on_qtwPackerPlugins_itemSelectionChanged
 
 // selected shortcut category changed
 void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
@@ -1442,6 +1486,8 @@ void cOptionsDialog::SaveOptions()
 	slLister.bFitImageToWindow = qcbListerFitImageToWindow->isChecked();
 	csSettings->SetListerSettings(slLister);
 	csSettings->SetListerFont(qfListerFont);
+	// packer
+	csSettings->SetPlugins(cSettings::PackerPlugins, GetPluginList(qtwPackerPlugins));
 
 	// others
 	// favourite directories

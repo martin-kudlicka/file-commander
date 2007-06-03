@@ -108,6 +108,7 @@ const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 const QString qsPLUGINS__LISTER = "Plugins/Lister";
+const QString qsPLUGINS__PACKER = "Plugins/Packer";
 // RightPanel
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
@@ -495,6 +496,9 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 			break;
 		case ListerPlugins:
 			qsSettings.beginGroup(qsPLUGINS__LISTER);
+			break;
+		case PackerPlugins:
+			qsSettings.beginGroup(qsPLUGINS__PACKER);
 	} // switch
 	qslPlugins = qsSettings.childKeys();
 
@@ -1019,6 +1023,9 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 			break;
 		case ListerPlugins:
 			qsSettings.beginGroup(qsPLUGINS__LISTER);
+			break;
+		case PackerPlugins:
+			qsSettings.beginGroup(qsPLUGINS__PACKER);
 	} // switch
 
 	qsSettings.remove("");
