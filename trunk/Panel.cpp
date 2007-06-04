@@ -952,7 +952,7 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 				// check if it's supported archive
 				if (!OpenArchive(qfiFile)) {
 					// else execute it
-					cProcess::Execute(QString("\"%1\"").arg(qfiFile.filePath()));
+					cProcess::Execute(QString("\"%1\"").arg(qfiFile.filePath()), qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 				} // if
 			} // if else
 			break;
