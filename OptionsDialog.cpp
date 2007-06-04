@@ -518,6 +518,7 @@ void cOptionsDialog::FillOptions()
 	// others
 	// favourite directories
 	SetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem(), csSettings->GetFavouriteDirectories());
+	qtwFavouriteDirectories->expandAll();
 } // FillOptions
 
 // fills plugin information into tree
