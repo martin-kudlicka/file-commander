@@ -19,6 +19,7 @@ const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
 const QString qsDESCENDING = "descending";
 const QString qsDRIVE = "Drive";
 const QString qsENABLED = "Enabled";
+const QString qsEXTENSIONS = "Extensions";
 const QString qsEXTERNAL_EDITOR = "ExternalEditor";
 const QString qsEXTERNAL_VIEWER = "ExternalViewer";
 const QString qsFALSE = "false";
@@ -508,6 +509,9 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 		qsSettings.setArrayIndex(iI);
 
 		spPlugin.qsName = qsSettings.value(qsNAME).toString();
+		if (epPlugin == PackerPlugins) {
+			spPlugin.qsExtensions = qsSettings.value(qsEXTENSIONS).toString();
+		} // if
 		if (qsSettings.value(qsENABLED).toString() == qsTRUE) {
 			spPlugin.bEnabled = true;
 		} else {
@@ -1040,6 +1044,11 @@ void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlug
 		qsKey = qsNAME;
 		qsValue = qlPlugins.at(iI).qsName;
 		qsSettings.setValue(qsKey, qsValue);
+		if (epPlugin == PackerPlugins) {
+			qsKey = qsEXTENSIONS;
+			qsValue = qlPlugins.at(iI).qsExtensions;
+			qsSettings.setValue(qsKey, qsValue);
+		} // if
 		qsKey = qsENABLED;
 		if (qlPlugins.at(iI).bEnabled) {
 			qsValue = qsTRUE;

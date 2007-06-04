@@ -166,6 +166,7 @@ class cSettings : private QObject
 		/// plugin
 		struct sPlugin {
 			QString qsName;												///< plugin's file name
+			QString qsExtensions;										///< packer plugin's extensions
 			bool bEnabled;													///< enable/disable flag
 		};
 		/// sort information
