@@ -206,13 +206,13 @@ cMainWindow::cMainWindow()
 	qtwLeftDrives->header()->hide();
 	qcbLeftDrive->setModel(qtwLeftDrives->model());
 	qcbLeftDrive->setView(qtwLeftDrives);
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, cpPlugins->cpPacker, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
 	qtwRightDrives = new QTreeWidget(qcbRightDrive);
 	qtwRightDrives->setRootIsDecorated(false);
 	qtwRightDrives->header()->hide();
 	qcbRightDrive->setModel(qtwRightDrives->model());
 	qcbRightDrive->setView(qtwRightDrives);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, cpPlugins->cpPacker,  &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
 	// quick searches
 	qleLeftQuickSearch->hide();
 	qleRightQuickSearch->hide();
@@ -416,52 +416,52 @@ void cMainWindow::on_qaBranchView_triggered(bool checked /* false */)
 // compare directories is selected
 void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
 {
-	QHash<QTreeWidgetItem *, QFileInfo> *qhFilesLeft, *qhFilesRight;
+	QHash<QTreeWidgetItem *, QFileInfo> qhFilesLeft, qhFilesRight;
 
 	qhFilesLeft = cpLeft->GetDirContent();
 	qhFilesRight = cpRight->GetDirContent();
 
 	// mark first all files in the right panel, unmark directories
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFilesRight(*qhFilesRight);
-	while (qhiFilesRight.hasNext()) {
-		qhiFilesRight.next();
-		if (qhiFilesRight.value().isFile()) {
-			qhiFilesRight.key()->setSelected(true);
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFileRight(qhFilesRight);
+	while (qhiFileRight.hasNext()) {
+		qhiFileRight.next();
+		if (qhiFileRight.value().isFile()) {
+			qhiFileRight.key()->setSelected(true);
 		} else {
-			qhiFilesRight.key()->setSelected(false);
+			qhiFileRight.key()->setSelected(false);
 		} // if else
 	} // while
 
 	// go through left panel files and compare with right
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFilesLeft(*qhFilesLeft);
-	while (qhiFilesLeft.hasNext()) {
-		qhiFilesLeft.next();
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFileLeft(qhFilesLeft);
+	while (qhiFileLeft.hasNext()) {
+		qhiFileLeft.next();
 
-		if (qhiFilesLeft.value().isFile()) {
+		if (qhiFileLeft.value().isFile()) {
 			bool bFound;
 
 			bFound = false;
 
-			qhiFilesRight.toFront();
-			while (qhiFilesRight.hasNext()) {
-				qhiFilesRight.next();
+			qhiFileRight.toFront();
+			while (qhiFileRight.hasNext()) {
+				qhiFileRight.next();
 
-				if (qhiFilesRight.value().isFile()) {
-					if (qhiFilesLeft.value().fileName() == qhiFilesRight.value().fileName()) {
+				if (qhiFileRight.value().isFile()) {
+					if (qhiFileLeft.value().fileName() == qhiFileRight.value().fileName()) {
 						bFound = true;
 
-						if (qhiFilesLeft.value().lastModified() == qhiFilesRight.value().lastModified()) {
+						if (qhiFileLeft.value().lastModified() == qhiFileRight.value().lastModified()) {
 							// files are the same - clear mark of both files
-							qhiFilesLeft.key()->setSelected(false);
-							qhiFilesRight.key()->setSelected(false);
+							qhiFileLeft.key()->setSelected(false);
+							qhiFileRight.key()->setSelected(false);
 						} else {
-							if (qhiFilesLeft.value().lastModified() > qhiFilesRight.value().lastModified()) {
+							if (qhiFileLeft.value().lastModified() > qhiFileRight.value().lastModified()) {
 								// newer file on the left panel
-								qhiFilesLeft.key()->setSelected(true);
-								qhiFilesRight.key()->setSelected(false);
+								qhiFileLeft.key()->setSelected(true);
+								qhiFileRight.key()->setSelected(false);
 							} else {
 								// newer file on the right panel
-								qhiFilesLeft.key()->setSelected(false);
+								qhiFileLeft.key()->setSelected(false);
 							} // if else
 						} // if else
 
@@ -472,11 +472,11 @@ void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */)
 
 			if (!bFound) {
 				// file on the left is not on the right panel
-				qhiFilesLeft.key()->setSelected(true);
+				qhiFileLeft.key()->setSelected(true);
 			} // if
 		} else {
 			// unmark directories on the left
-			qhiFilesLeft.key()->setSelected(false);
+			qhiFileLeft.key()->setSelected(false);
 		} // if else
 	} // while
 } // on_qaCompareDirectories_triggered

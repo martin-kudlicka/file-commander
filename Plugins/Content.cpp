@@ -97,10 +97,10 @@ void cContent::Load()
 			// load plugin
 			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
 			qlLibrary.load();
-			tcgsfContentGetSupportedField = static_cast<tContentGetSupportedField>(qlLibrary.resolve("ContentGetSupportedField"));
+			tcgsfContentGetSupportedField = (tContentGetSupportedField)(qlLibrary.resolve("ContentGetSupportedField"));
 
 			// fill plugin properties
-			spiPluginInfo.tcsdpContentSetDefaultParams = static_cast<tContentSetDefaultParams>(qlLibrary.resolve("ContentSetDefaultParams"));
+			spiPluginInfo.tcsdpContentSetDefaultParams = (tContentSetDefaultParams)(qlLibrary.resolve("ContentSetDefaultParams"));
 			if (spiPluginInfo.tcsdpContentSetDefaultParams) {
 				ContentDefaultParamStruct cdpsParam;
 				QString qsIniFile;
@@ -113,9 +113,9 @@ void cContent::Load()
 
 				spiPluginInfo.tcsdpContentSetDefaultParams(&cdpsParam);
 			} // if
-			spiPluginInfo.tcgvContentGetValue = static_cast<tContentGetValue>(qlLibrary.resolve("ContentGetValue"));
-			spiPluginInfo.tcpuContentPluginUnloading = static_cast<tContentPluginUnloading>(qlLibrary.resolve("ContentPluginUnloading"));
-			spiPluginInfo.tcsgvContentStopGetValue = static_cast<tContentStopGetValue>(qlLibrary.resolve("ContentStopGetValue"));
+			spiPluginInfo.tcgvContentGetValue = (tContentGetValue)(qlLibrary.resolve("ContentGetValue"));
+			spiPluginInfo.tcpuContentPluginUnloading = (tContentPluginUnloading)(qlLibrary.resolve("ContentPluginUnloading"));
+			spiPluginInfo.tcsgvContentStopGetValue = (tContentStopGetValue)(qlLibrary.resolve("ContentStopGetValue"));
 
 			// get fields
 			iField = 0;

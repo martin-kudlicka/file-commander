@@ -20,6 +20,7 @@
 #include <QtGui/QMainWindow>
 #include "Panel/SelectFilesDialog.h"
 #include "FileOperation.h"
+#include "Plugins/Packer.h"
 
 class cPanel : public QObject
 {
@@ -30,7 +31,7 @@ class cPanel : public QObject
 		static const qint64 qi64_KILOBYTE = 1024;								///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;							///< 1 megabyte in bytes
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, cPacker *cpPacker, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
 																								  \param qswPanel panel for cTreeWidget
@@ -40,7 +41,8 @@ class cPanel : public QObject
 																								  \param qlPath current path
 																								  \param qlSelected information about selected directories and files
 																								  \param csSettings application's settings
-																								  \param ccContent application'c content plugins
+																								  \param ccContent application's content plugins
+																								  \param cpPacker application's packer plugins
 																								  \param qmDrives information about system drives
 																								  \param qlGlobalPath path visible in the bottom of main window
 																								  \param qcbCommand command combo box
@@ -64,13 +66,13 @@ class cPanel : public QObject
 		int DuplicateTab(const int &iTabIndex);								///< create new tab by duplicate one
 																							/**< \param iTabIndex tab to duplicate
 																								  \return new tab index */
-		void FeedToPanel(QFileInfoList &qfilFiles);							///< show custom list of files in current dir view
+		void FeedToPanel(const QFileInfoList &qfilFiles);					///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
 		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view
 																							/**< \return columns for current dir view */
 		QString GetColumnSet();														///< column set for current directory view
 																							/**< \return column set for current directory view */
-		QHash<QTreeWidgetItem *, QFileInfo> *GetDirContent();				///< get content of the directory view
+		QHash<QTreeWidgetItem *, QFileInfo> GetDirContent();				///< get content of the directory view
 																							/**< \return content of the directory view */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
@@ -91,7 +93,7 @@ class cPanel : public QObject
 		bool IsActive();																///< active panel flag
 																							/**< \return true if panel is active */
 		void RefreshContent();														///< refresh current dir view
-		void RefreshContent(QFileInfoList &qfilFiles);						///< refresh current dir view with custom files
+		void RefreshContent(const QFileInfoList &qfilFiles);				///< refresh current dir view with custom files
 																							/**< \param qfilFiles custom list of files */
 		void RefreshAllContents();													///< refresh all dir views
 		void RefreshAllHeaders();													///< refresh all dir view headers
@@ -114,12 +116,27 @@ class cPanel : public QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;								///< timer interval
 
+		///< location of the directory view
+		enum eLocation {
+			LocalDirectory,															///< standard directory
+			Archive																		///< archive contents
+		};
 		///< quick search direction in directory view
 		enum eQuickSearchDirection {
 			SearchUp,																	///< search up
 			SearchDown																	///< search down
 		};
 
+		/// archive
+		struct sArchive {
+			cPacker::sPluginInfo spiPlugin;										///< access to packer methods for this archive
+			QList<tHeaderData> qlFiles;											///< files in archive
+			QString qsPath;															///< path in archive
+			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
+		};
+		struct sLocalDirectory {
+			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
+		};
 		/// strings for widgets
 		struct sWidgets {
 			QString qsDrive;															///< selected drive
@@ -129,15 +146,18 @@ class cPanel : public QObject
 		/// tab information
 		struct sTab {
 			bool bValid;																///< tab content is validated flag
-			QHash<QTreeWidgetItem *, QFileInfo> *qhFiles;					///< info about files listed in dir panel
 			QList<cSettings::sColumn> *qlColumns;								///< columns in specified tab
 			QString qsColumnSet;														///< column set for tab
 			sWidgets *swWidgets;														///< to remember displayed strings
+			eLocation elLocation;													///< location of the directory view
+			sLocalDirectory sldLocalDirectory;									///< local directory information
+			sArchive saArchive;														///< archive information
 		};
 
 		cContent *ccContent;															///< access to content plugins
 		cContentDelayed *ccdContentDelayed;										///< thread to get delayed content plugins values
 		cFileOperation *cfoFileOperation;										///< handling file operations
+		cPacker *cpPacker;															///< access to packer plugins
 		cSettings *csSettings;														///< main settings
 		cShellMenu *csmMenu;															///< right click "native" shell menu
 		QComboBox *qcbCommand;														///< command combo box
@@ -169,6 +189,13 @@ class cPanel : public QObject
 																							/**< \param watched filtered object
 																								  \param event event description
 																								  \return true if event is handled */
+		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentDelayed::sParameters> *qlParameters);
+																							///< fill directory view item accodring to content of vData
+																							/**< \param iIndex directory view tab index
+																								  \param elType type of item
+																								  \param qtwiItem item to fill
+																								  \param vData data to fill by
+																								  \param qlParameters parameters for delayed content plugins */
 		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
 																							///< find index of native column
 																							/**< \param qsColumn native column name
@@ -183,6 +210,8 @@ class cPanel : public QObject
 		bool IsRootDirectory(const QString &qsDirectory);					///< find out if qsDirectory points to the root
 																							/**< \param qsDirectory directory to test
 																								  \return true if qsDirectory is root directory */
+		bool OpenArchive(const QFileInfo &qfiFile);							///< try to open archive
+																							/**< \param qfiFile archive filename */
 #ifdef Q_WS_WIN
 		bool PathExists(const QString &qsPath);								///< check if path is valid
 																							/**< \param qsPath path to test
@@ -193,10 +222,15 @@ class cPanel : public QObject
 																							/**< \param qsNextChar next filename character to search with
 																								  \param eqsdDirection direction of search
 																								  \return true if file found */
+		QList<tHeaderData> ReadArchiveFiles(const HANDLE &hArchive);	///< read archive contents
+																							/**< \param hArchive archive handle
+																								  \return list of files in archive */
 		void RefreshContent(const int &iIndex, QFileInfoList qfilFiles = QFileInfoList());
 																							///< refresh dir content
 																							/**< \param iIndex index of dir view
 																								  \param qfilFiles custom list of files */
+		void RefreshContent(const QList<tHeaderData> &qlFiles);			///< refresh current directory view with archive content
+																							/**< \param qlFiles all files in archive */
 		void RefreshHeader(const int &iIndex, const bool &bContent = false);
 																							///< refresh column's header
 																							/**< \param iIndex index of dir view
