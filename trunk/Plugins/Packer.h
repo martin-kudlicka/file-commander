@@ -31,6 +31,15 @@ class cPacker
 																															  \param thdHeaderData information about next file
 																															  \return error value */
 
+		// file attributes
+		static const int iREAD_ONLY = 0x1;																	///< read only file
+		static const int iHIDDEN = 0x2;																		///< hidden file
+		static const int iSYSTEM = 0x4;																		///< system file
+		static const int iVOLUME_ID = 0x8;																	///< volume ID file
+		static const int iDIRECTORY = 0x10;																	///< directory
+		static const int iARCHIVE = 0x20;																	///< archive file
+		static const int iANY = 0x3F;																			///< any file
+
 		/// plugin info
 		struct sPluginInfo {
 			tCloseArchive tcaCloseArchive;																	///< CloseArchive function
@@ -43,7 +52,7 @@ class cPacker
 		cPacker(cSettings *csSettings);																		///< constructor
 																														/**< \param csSettings application's settings */
 
-		//QHash<QString, sPluginInfo> GetPluginsInfo();													///< retrieve packer plugins info
+		QHash<QString, sPluginInfo> GetPluginsInfo();													///< retrieve packer plugins info
 		void Load();																								///< loads packer plugins
 
 	private:

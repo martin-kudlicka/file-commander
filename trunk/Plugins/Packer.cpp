@@ -13,6 +13,12 @@ cPacker::cPacker(cSettings *csSettings)
 	this->csSettings = csSettings;
 } // cPacker
 
+// retrieve packer plugin info
+QHash<QString, cPacker::sPluginInfo> cPacker::GetPluginsInfo()
+{
+	return qhPlugins;
+} // GetPluginsInfo
+
 // loads packer plugins
 void cPacker::Load()
 {
@@ -33,12 +39,12 @@ void cPacker::Load()
 			qlLibrary.load();
 
 			// fill plugin properties
-			spiPluginInfo.tcaCloseArchive = static_cast<tCloseArchive>(qlLibrary.resolve("CloseArchive"));
-			spiPluginInfo.toaOpenArchive = static_cast<tOpenArchive>(qlLibrary.resolve("OpenArchive"));
-			spiPluginInfo.tpfProcessFile = static_cast<tProcessFile>(qlLibrary.resolve("ProcessFile"));
-			spiPluginInfo.trhReadHeader = static_cast<tReadHeader>(qlLibrary.resolve("ReadHeader"));
+			spiPluginInfo.tcaCloseArchive = (tCloseArchive)(qlLibrary.resolve("CloseArchive"));
+			spiPluginInfo.toaOpenArchive = (tOpenArchive)(qlLibrary.resolve("OpenArchive"));
+			spiPluginInfo.tpfProcessFile = (tProcessFile)(qlLibrary.resolve("ProcessFile"));
+			spiPluginInfo.trhReadHeader = (tReadHeader)(qlLibrary.resolve("ReadHeader"));
 
-			spiPluginInfo.tpsdpPackSetDefaultParams = static_cast<tPackSetDefaultParams>(qlLibrary.resolve("PackSetDefaultParams"));
+			spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)(qlLibrary.resolve("PackSetDefaultParams"));
 			// set default parameters
 			if (spiPluginInfo.tpsdpPackSetDefaultParams) {
 				PackDefaultParamStruct pdpsParams;

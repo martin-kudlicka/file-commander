@@ -13,6 +13,7 @@ class cPlugins
 	public:
 		cContent	*ccContent;					///< content plugins
 		cLister *clLister;					///< lister plugins
+		cPacker *cpPacker;					///< packer plugins
 
 		cPlugins(cSettings *csSettings);	///< constructor
 													/**< \param csSettings application's settings */
@@ -22,7 +23,6 @@ class cPlugins
 		void Unload();							///< unload all plugins
 
 	private:
-		cPacker *cpPacker;					///< packer plugins
 		cSettings *csSettings;				///< main settings
 }; // cPlugins
 
