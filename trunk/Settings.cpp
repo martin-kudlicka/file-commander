@@ -485,30 +485,23 @@ bool cSettings::GetOpenNewTabNextToCurrentTab()
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 {
-	int iI;
+	int iCount, iI;
 	QList<sPlugin> qlPlugins;
-	QStringList qslPlugins;
 
 	switch (epPlugin) {
 		// TODO GetPlugins - other plugin types
 		case ContentPlugins:
-			qsSettings.beginReadArray(qsPLUGINS__CONTENT);
+			iCount = qsSettings.beginReadArray(qsPLUGINS__CONTENT);
 			break;
 		case ListerPlugins:
-			qsSettings.beginReadArray(qsPLUGINS__LISTER);
+			iCount = qsSettings.beginReadArray(qsPLUGINS__LISTER);
 			break;
 		case PackerPlugins:
-			qsSettings.beginReadArray(qsPLUGINS__PACKER);
+			iCount = qsSettings.beginReadArray(qsPLUGINS__PACKER);
 	} // switch
 
-	qslPlugins = qsSettings.childGroups();
-	for (iI = 0; iI < qslPlugins.count(); iI++) {
+	for (iI = 0; iI < iCount; iI++) {
 		sPlugin spPlugin;
-
-		if (!qslPlugins.contains(QVariant(iI + 1).toString())) {
-			// not a plugin record
-			continue;
-		} // if
 
 		qsSettings.setArrayIndex(iI);
 
