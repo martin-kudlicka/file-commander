@@ -133,9 +133,11 @@ class cPanel : public QObject
 			QList<tHeaderData> qlFiles;											///< files in archive
 			QString qsPath;															///< path in archive
 			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
+			QString qsArchive;														///< archive filepath
 		};
 		struct sLocalDirectory {
 			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
+			QString qsPath;															///< path in local directory
 		};
 		/// strings for widgets
 		struct sWidgets {
@@ -226,7 +228,7 @@ class cPanel : public QObject
 																							/**< \param hArchive archive handle
 																								  \return list of files in archive */
 		void RefreshContent(const int &iIndex, QFileInfoList qfilFiles = QFileInfoList());
-																							///< refresh dir content
+																							///< refresh dir content with local directory files
 																							/**< \param iIndex index of dir view
 																								  \param qfilFiles custom list of files */
 		void RefreshContent(const QList<tHeaderData> &qlFiles);			///< refresh current directory view with archive content
