@@ -49,6 +49,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		static const int iOTHERS_TAB = 3;									///< tab number of others options
 
 		static const int iPLUGIN_NAME_COLUMN = 0;							///< name of plugin
+		static const int iPLUGIN_EXTENSIONS_COLUMN = 1;					///< extensions for packer plugin
 		static const int iPLUGIN_ENABLED_COLUMN = 1;						///< plugin enabled / disabled
 
 		static const int iTYPE_COLUMN = 0;									///< type of column (native / plugin name)

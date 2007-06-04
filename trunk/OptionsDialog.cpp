@@ -117,18 +117,32 @@ QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &sc
 // add another plugin into tree
 void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree)
 {
+	int iEnabledColumn;
 	QTreeWidgetItem *qtwiItem;
 
 	qtwTree->blockSignals(true);
 
-	// name
 	qtwiItem = new QTreeWidgetItem(qtwTree);
+	// name
 	qtwiItem->setText(iPLUGIN_NAME_COLUMN, spPlugin.qsName);
+	// extensions for packer
+	if (qtwTree == qtwPackerPlugins) {
+		QLineEdit *qleExtensions;
+
+		qleExtensions = new QLineEdit(qtwPackerPlugins);
+		qtwPackerPlugins->setItemWidget(qtwiItem, iPLUGIN_EXTENSIONS_COLUMN, qleExtensions);
+		qleExtensions->setText(spPlugin.qsExtensions);
+	} // if
 	// enable/disable flag
-	if (spPlugin.bEnabled) {
-		qtwiItem->setCheckState(iPLUGIN_ENABLED_COLUMN, Qt::Checked);
+	if (qtwTree == qtwPackerPlugins) {
+		iEnabledColumn = iPLUGIN_ENABLED_COLUMN + 1;
 	} else {
-		qtwiItem->setCheckState(iPLUGIN_ENABLED_COLUMN, Qt::Unchecked);
+		iEnabledColumn = iPLUGIN_ENABLED_COLUMN;
+	} // if else
+	if (spPlugin.bEnabled) {
+		qtwiItem->setCheckState(iEnabledColumn, Qt::Checked);
+	} else {
+		qtwiItem->setCheckState(iEnabledColumn, Qt::Unchecked);
 	} // if else
 
 	qtwTree->resizeColumnToContents(iPLUGIN_NAME_COLUMN);
@@ -528,6 +542,9 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 	QStringList qslHeader;
 
 	qslHeader.append(tr("File path"));
+	if (qtwTree == qtwPackerPlugins) {
+		qslHeader.append(tr("Extensions"));
+	} // if
 	qslHeader.append(tr("Enabled"));
 	qtwTree->setHeaderLabels(qslHeader);
 
@@ -613,9 +630,21 @@ QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPl
 
 	for (iI = 0; iI < qtwPlugins->topLevelItemCount(); iI++) {
 		cSettings::sPlugin spPlugin;
+		int iEnabledColumn;
 
+		// name
 		spPlugin.qsName = qtwPlugins->topLevelItem(iI)->text(iPLUGIN_NAME_COLUMN);
-		if (qtwPlugins->topLevelItem(iI)->checkState(iPLUGIN_ENABLED_COLUMN) == Qt::Checked) {
+		// extensions
+		if (qtwPlugins == qtwPackerPlugins) {
+			spPlugin.qsExtensions = static_cast<QLineEdit *>(qtwPlugins->itemWidget(qtwPlugins->topLevelItem(iI), iPLUGIN_EXTENSIONS_COLUMN))->text();
+		} // if
+		// enabled
+		if (qtwPlugins == qtwPackerPlugins) {
+			iEnabledColumn = iPLUGIN_ENABLED_COLUMN + 1;
+		} else {
+			iEnabledColumn = iPLUGIN_ENABLED_COLUMN;
+		} // if else
+		if (qtwPlugins->topLevelItem(iI)->checkState(iEnabledColumn) == Qt::Checked) {
 			spPlugin.bEnabled = true;
 		} else {
 			spPlugin.bEnabled = false;
@@ -863,9 +892,19 @@ void cOptionsDialog::on_qpbAddPackerPlugin_clicked(bool checked /* false */)
 
 	if (!qsFile.isEmpty()) {
 		cSettings::sPlugin spPlugin;
+		QString qsInfFile;
 
 		spPlugin.qsName = qsFile;
 		spPlugin.bEnabled = true;
+		// check for default extensions
+		qsInfFile = QFileInfo(qsFile).path() + "/pluginst.inf";
+		if (QFile::exists(qsInfFile)) {
+			QSettings qsPackerSettings(qsInfFile, QSettings::IniFormat);
+
+			qsPackerSettings.beginGroup("plugininstall");
+			spPlugin.qsExtensions = qsPackerSettings.value("defaultextension").toStringList().join(";");
+		} // if
+
 		AddPluginIntoTree(spPlugin, qtwPackerPlugins);
 
 		qfToDo |= ReloadPlugins;
