@@ -1204,7 +1204,7 @@ bool cPanel::OpenArchive(const QFileInfo &qfiFile)
 					qhTabs[qswDir->currentIndex()].elLocation = Archive;
 					// read archive files
 					qhTabs[qswDir->currentIndex()].saArchive.qlFiles = ReadArchiveFiles(hArchive);
-					qhTabs[qswDir->currentIndex()].saArchive.qsPath.clear();
+					qhTabs[qswDir->currentIndex()].saArchive.qsPath = '.';
 					// close archive
 					qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).tcaCloseArchive(hArchive);
 					// show archive contents
@@ -1450,14 +1450,15 @@ void cPanel::RefreshContent(const QList<tHeaderData> &qlFiles)
 
 	// go through files and add them into file list
 	for (iI = 0; iI < qlFiles.count(); iI++) {
-		// TODO RefreshContent refresh only current archive directory
+		// check for path in archive
+		if (QFileInfo(qlFiles.at(iI).FileName).path() == qhTabs.value(qswDir->currentIndex()).saArchive.qsPath) {
+			// add to internal file list
+			qtwiFile = new QTreeWidgetItem();
+			qhTabs[qswDir->currentIndex()].saArchive.qhFiles.insert(qtwiFile, qlFiles.at(iI));
 
-		// add to internal file list
-		qtwiFile = new QTreeWidgetItem();
-		qhTabs[qswDir->currentIndex()].saArchive.qhFiles.insert(qtwiFile, qlFiles.at(iI));
-
-		// fill columns
-		FillDirViewItem(qswDir->currentIndex(), Archive, qtwiFile, &qlFiles.at(iI), NULL);
+			// fill columns
+			FillDirViewItem(qswDir->currentIndex(), Archive, qtwiFile, &qlFiles.at(iI), NULL);
+		} // if
 	} // for
 
 	// sort and show files
