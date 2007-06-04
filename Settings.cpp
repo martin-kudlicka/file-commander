@@ -158,18 +158,20 @@ void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn>
 {
 	int iI;
 
-	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
+	qsSettings.beginWriteArray(qsCOLUMN_SET__ + qsColumnSet);
 	qsSettings.remove("");
+
 	for (iI = 0; iI < qlColumns.count(); iI++) {
-		qsSettings.beginGroup(QVariant(iI).toString());
+		qsSettings.setArrayIndex(iI);
+
 		qsSettings.setValue(qsIDENTIFIER, qlColumns.at(iI).qsIdentifier);
 		qsSettings.setValue(qsNAME, qlColumns.at(iI).qsName);
 		qsSettings.setValue(qsPLUGIN, qlColumns.at(iI).qsPlugin);
 		qsSettings.setValue(qsUNIT, qlColumns.at(iI).qsUnit);
 		qsSettings.setValue(qsWIDTH, qlColumns.at(iI).iWidth);
-		qsSettings.endGroup();
 	} // for
-	qsSettings.endGroup();
+
+	qsSettings.endArray();
 } // CreateColumnSet
 
 // create default (Full) column set
