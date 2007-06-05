@@ -499,7 +499,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 										qtwiFile->setText(iI, DateTime(static_cast<const QFileInfo *>(vData)->lastModified()));
 										break;
 									case Archive:
-										;// TODO FillDirViewItem archive filename datetime
+										qtwiFile->setText(iI, DateTime(ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
 								} // switch
 							}
 #ifdef Q_WS_WIN
@@ -1410,7 +1410,7 @@ QList<tHeaderData> cPanel::ReadArchiveFiles(const HANDLE &hArchive)
 
 	// archive root ".." directory
 	strcpy(thdHeaderData.FileName, "..");
-	// TODO ReadArchiveFiles ".." archive file time as today
+	thdHeaderData.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
 	thdHeaderData.FileAttr = cPacker::iDIRECTORY;
 	qlFiles.append(thdHeaderData);
 
@@ -1422,7 +1422,7 @@ QList<tHeaderData> cPanel::ReadArchiveFiles(const HANDLE &hArchive)
 
 			qsDirectory = QFileInfo(thdHeaderData.FileName).filePath() + "/..";
 			strcpy(thdDotDot.FileName, qsDirectory.toLatin1().constData());
-			// TODO ReadArchiveFiles ".." archive file time as today
+			thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
 			thdDotDot.FileAttr = cPacker::iDIRECTORY;
 			qlFiles.append(thdDotDot);
 		} // if
@@ -2020,6 +2020,37 @@ void cPanel::SortBy(const int &iColumn)
 	// sort again
 	Sort(qswDir->currentIndex());
 } // SortBy
+
+// converts Qt's date time format to packer
+int cPanel::ToPackerDateTime(const QDateTime &qdtDateTime)
+{
+	int iDateTime;
+
+	iDateTime = (qdtDateTime.date().year() - 1980) << 25;
+	iDateTime |= qdtDateTime.date().month() << 21;
+	iDateTime |= qdtDateTime.date().day() << 16;
+	iDateTime |= qdtDateTime.time().hour() << 11;
+	iDateTime |= qdtDateTime.time().minute() << 5;
+	iDateTime |= qdtDateTime.time().second() / 2;
+
+	return iDateTime;
+} // ToPackerDateTime
+
+// converts packer plugin's date time format to QDateTime
+QDateTime cPanel::ToQDateTime(const int &iDateTime)
+{
+	QDate qdDate;
+	QDateTime qdtDateTime;
+	QTime qtTime;
+
+	qdDate.setDate((iDateTime >> 25) + 1980, (iDateTime >> 21) & 0xF, (iDateTime >> 16) & 0x1F);
+	qtTime.setHMS((iDateTime >> 11) & 0x1F, (iDateTime >> 5) & 0x3F, (iDateTime & 0x1F) * 2);
+
+	qdtDateTime.setDate(qdDate);
+	qdtDateTime.setTime(qtTime);
+
+	return qdtDateTime;
+} // ToQDateTime
 
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
