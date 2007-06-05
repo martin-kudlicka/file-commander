@@ -41,7 +41,7 @@ class cArchiveOperation : private QObject
 			YesToAll																			///< always yes
 		};
 
-		bool bCanceled;																	///< operation in progress is canceled
+		static bool bCanceled;															///< operation in progress is canceled
 		static cCopyMoveDialog *ccmdDialog;											///< copy/move (progress) dialog
 		cSettings *csSettings;															///< application's settings file
 		static qint64 qi64CurrentValue;												///< current file progress

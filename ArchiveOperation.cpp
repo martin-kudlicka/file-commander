@@ -4,6 +4,7 @@
 #include "FileOperation.h"
 #include <QtGui/QMessageBox>
 
+bool cArchiveOperation::bCanceled;					///< operation in progress is canceled (static class variable)
 qint64 cArchiveOperation::qi64CurrentValue;		///< current file progress (static class variable)
 qint64 cArchiveOperation::qi64TotalValue;			///< total progress (static class variable)
 cCopyMoveDialog *cArchiveOperation::ccmdDialog;	///< copy/move (progress) dialog (static class variable)
@@ -43,6 +44,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	ccmdDialog->setWindowTitle(tr("Extract"));
 	ccmdDialog->setModal(true);
 	ccmdDialog->show();
+	connect(ccmdDialog, SIGNAL(Cancel()), SLOT(on_ccmdDialog_OperationCanceled()));
 
 	// collect files to extract
 	qlExtract = GetAllArchiveFiles(qlSourceSelected, saSourceArchive.qlFiles);
@@ -99,7 +101,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 					qdDir.mkpath(qsTarget);
 					saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 				} else {
-					bool bExtractSuccess;
+					int iExtract;
 
 					// check disk space on target
 					sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
@@ -253,38 +255,44 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	#endif
 
 					// extract file
-					bExtractSuccess = !saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
+					iExtract = saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
 
-					if (!bExtractSuccess) {
-						if (ecContinue != YesToAll) {
-							QMessageBox qmbContinue;
-							QPushButton *qpbNo, *qpbYes, *qpbYesToAll;
+					if (iExtract) {
+						if (bCanceled) {
+							// user abort
+							ecContinueCurrent = No;
+						} else {
+							// other fault
+							if (ecContinue != YesToAll) {
+								QMessageBox qmbContinue;
+								QPushButton *qpbNo, *qpbYes, *qpbYesToAll;
 
-							// prepare dialog
-							qmbContinue.setIcon(QMessageBox::Warning);
-							qmbContinue.setWindowTitle(tr("Continue"));
-							qmbContinue.setText(tr("Error while extracting file\n%2\nContinue?").arg(qsSource));
-							qpbYes = qmbContinue.addButton(tr("&Yes"), QMessageBox::NoRole);
-							qpbNo = qmbContinue.addButton(tr("&No"), QMessageBox::YesRole);
-							qpbYesToAll = qmbContinue.addButton(tr("Yes to &all"), QMessageBox::YesRole);
+								// prepare dialog
+								qmbContinue.setIcon(QMessageBox::Warning);
+								qmbContinue.setWindowTitle(tr("Continue"));
+								qmbContinue.setText(tr("Error while extracting file\n%2\nContinue?").arg(qsSource));
+								qpbYes = qmbContinue.addButton(tr("&Yes"), QMessageBox::NoRole);
+								qpbNo = qmbContinue.addButton(tr("&No"), QMessageBox::YesRole);
+								qpbYesToAll = qmbContinue.addButton(tr("Yes to &all"), QMessageBox::YesRole);
 
-							qmbContinue.exec();
+								qmbContinue.exec();
 
-							if (qmbContinue.clickedButton() == qpbYes) {
-								ecContinueCurrent = Yes;
-							} else {
-								if (qmbContinue.clickedButton() == qpbNo) {
-									ecContinueCurrent = No;
+								if (qmbContinue.clickedButton() == qpbYes) {
+									ecContinueCurrent = Yes;
 								} else {
-									ecContinueCurrent = YesToAll;
+									if (qmbContinue.clickedButton() == qpbNo) {
+										ecContinueCurrent = No;
+									} else {
+										ecContinueCurrent = YesToAll;
+									} // if else
 								} // if else
-							} // if else
 
-							if (ecContinueCurrent == YesToAll) {
-								// memorize permanent answer
-								ecContinue = YesToAll;
+								if (ecContinueCurrent == YesToAll) {
+									// memorize permanent answer
+									ecContinue = YesToAll;
+								} // if
 							} // if
-						} // if
+						} // if else
 					} // if
 				} // if else
 
@@ -433,6 +441,6 @@ int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
 	ccmdDialog->qpbTotal->setValue(qi64TotalValue);
 	QApplication::processEvents();
 
-	return 1;
+	return !bCanceled;
 } // ProcessDataProc
 #endif
