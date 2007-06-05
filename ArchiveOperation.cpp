@@ -3,6 +3,7 @@
 #include "FileOperation/FileOperationDialog.h"
 #include "FileOperation/CopyMoveDialog.h"
 #include "FileOperation.h"
+#include <QtGui/QMessageBox>
 
 // constructor
 cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings)
@@ -14,13 +15,13 @@ cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettin
 // extract files from archive to local directory
 void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
 {
+	eContinue ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
 	cCopyMoveDialog ccmdDialog(qmwParent, true);
 	cDiskSpace::eChoice ecDiskSpace;
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
-	cRetry::eChoice ecRetry;
 	HANDLE hArchive;
 	QList<tHeaderData> qlExtract;
 	tHeaderData thdHeaderData;
@@ -47,7 +48,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 #ifdef Q_WS_WIN
 	ecPermission = cCopyMove::GetDefaultReadonlyOverwritePermission(csSettings);
 #endif
-	ecRetry = cRetry::Ask;
+	ecContinue = Ask;
 	ecDiskSpace = cDiskSpace::Ask;
 
 	// open archive
@@ -63,10 +64,10 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 
 	// extract files
 	while (!saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
+		eContinue ecContinueCurrent;
 		cCopyMoveConflict::eChoice ecConflictCurrent;
 		cDiskSpace::eChoice ecDiskSpaceCurrent;
 		cPermission::eChoice ecPermissionCurrent;
-		cRetry::eChoice ecRetryCurrent;
 		int iI;
 
 		for (iI = 0; iI < qlExtract.count(); iI++) {
@@ -87,6 +88,8 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 					qdDir.mkpath(qsTarget);
 					saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 				} else {
+					bool bExtractSuccess;
+
 					// check disk space on target
 					sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
 					if (sdsDiskSpace.qi64Free < thdHeaderData.UnpSize) {
@@ -239,32 +242,39 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	#endif
 
 					// extract file
-					while (true) {
-						bool bExtractSuccess;
+					bExtractSuccess = !saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
 
-						bExtractSuccess = !saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
+					if (!bExtractSuccess) {
+						if (ecContinue != YesToAll) {
+							QMessageBox qmbContinue;
+							QPushButton *qpbNo, *qpbYes, *qpbYesToAll;
 
-						if (!bExtractSuccess) {
-							if (ecRetry != cRetry::SkipAll) {
-								cRetry crRetryDialog;
+							// prepare dialog
+							qmbContinue.setIcon(QMessageBox::Warning);
+							qmbContinue.setWindowTitle(tr("Continue"));
+							qmbContinue.setText(tr("Error while extracting file\n%2\nContinue?").arg(qsSource));
+							qpbYes = qmbContinue.addButton(tr("&Yes"), QMessageBox::NoRole);
+							qpbNo = qmbContinue.addButton(tr("&No"), QMessageBox::YesRole);
+							qpbYesToAll = qmbContinue.addButton(tr("Yes to &all"), QMessageBox::YesRole);
 
-								ecRetryCurrent = crRetryDialog.Exec(tr("Can't extract following file:"), qsSource);
+							qmbContinue.exec();
 
-								if (ecRetryCurrent == cRetry::SkipAll) {
-									// memorize permanent answer
-									ecRetry = cRetry::SkipAll;
-								} // if
+							if (qmbContinue.clickedButton() == qpbYes) {
+								ecContinueCurrent = Yes;
+							} else {
+								if (qmbContinue.clickedButton() == qpbNo) {
+									ecContinueCurrent = No;
+								} else {
+									ecContinueCurrent = YesToAll;
+								} // if else
+							} // if else
+
+							if (ecContinueCurrent == YesToAll) {
+								// memorize permanent answer
+								ecContinue = YesToAll;
 							} // if
-							if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-								// skip this file
-								break;
-							} // if
-							// else try once more
-						} else {
-							// successfuly copied/moved
-							break;
-						} // if else
-					} // while
+						} // if
+					} // if
 				} // if else
 
 				// extracted or interrupted
@@ -277,7 +287,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 			} // if else
 		} // for
 
-		if (ecDiskSpaceCurrent == cDiskSpace::No || ecConflictCurrent == cCopyMoveConflict::Cancel || ecPermissionCurrent == cPermission::Cancel || ecRetryCurrent == cRetry::Abort) {
+		if (ecDiskSpaceCurrent == cDiskSpace::No || ecConflictCurrent == cCopyMoveConflict::Cancel || ecPermissionCurrent == cPermission::Cancel || ecContinueCurrent == No) {
 			// process aborted
 			break;
 		} // if

@@ -31,6 +31,14 @@ class cArchiveOperation : private QObject
 																									  \param qsDestination destination path */
 
 	private:
+		/// continue after extract error
+		enum eContinue {
+			Ask,																				///< no permanent decision yet
+			Yes,																				///< yes
+			No,																				///< no
+			YesToAll																			///< always yes
+		};
+
 		bool bCanceled;																	///< operation in progress is canceled
 		cSettings *csSettings;															///< application's settings file
 		QMainWindow *qmwParent;															///< parent window for dialogs
