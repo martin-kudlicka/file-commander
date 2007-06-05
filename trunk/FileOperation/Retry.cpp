@@ -3,24 +3,8 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 
-// show retry dialog (single thread)
-cRetry::eChoice cRetry::Exec(const QString &qsInformation, const QString &qsFilename)
-{
-	return ShowDialog(qsInformation, qsFilename);
-} // Exec
-
-// show retry dialog (multithread)
-void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
-{
-	eChoice ecResponse;
-
-	ecResponse = ShowDialog(qsInformation, qsFilename);
-
-	emit Finished(ecResponse);
-} // Show
-
 // show retry dialog
-cRetry::eChoice cRetry::ShowDialog(const QString &qsInformation, const QString &qsFilename)
+void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -51,5 +35,5 @@ cRetry::eChoice cRetry::ShowDialog(const QString &qsInformation, const QString &
 		} // if else
 	} // if else
 
-	return ecResponse;
-} // ShowDialog
+	emit Finished(ecResponse);
+} // Show
