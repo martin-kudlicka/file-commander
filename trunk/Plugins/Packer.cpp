@@ -39,12 +39,15 @@ void cPacker::Load()
 			qlLibrary.load();
 
 			// fill plugin properties
-			spiPluginInfo.tcaCloseArchive = (tCloseArchive)(qlLibrary.resolve("CloseArchive"));
-			spiPluginInfo.toaOpenArchive = (tOpenArchive)(qlLibrary.resolve("OpenArchive"));
-			spiPluginInfo.tpfProcessFile = (tProcessFile)(qlLibrary.resolve("ProcessFile"));
-			spiPluginInfo.trhReadHeader = (tReadHeader)(qlLibrary.resolve("ReadHeader"));
+			spiPluginInfo.tcaCloseArchive = (tCloseArchive)qlLibrary.resolve("CloseArchive");
+			spiPluginInfo.toaOpenArchive = (tOpenArchive)qlLibrary.resolve("OpenArchive");
+			spiPluginInfo.tpfProcessFile = (tProcessFile)qlLibrary.resolve("ProcessFile");
+			spiPluginInfo.trhReadHeader = (tReadHeader)qlLibrary.resolve("ReadHeader");
+#ifdef Q_WS_WIN
+			spiPluginInfo.tspdpSetProcessDataProc = (tSetProcessDataProc)qlLibrary.resolve("SetProcessDataProc");
+#endif
 
-			spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)(qlLibrary.resolve("PackSetDefaultParams"));
+			spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)qlLibrary.resolve("PackSetDefaultParams");
 			// set default parameters
 			if (spiPluginInfo.tpsdpPackSetDefaultParams) {
 				PackDefaultParamStruct pdpsParams;

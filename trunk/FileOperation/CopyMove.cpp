@@ -133,6 +133,54 @@ void cCopyMove::CreateWidget()
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_ccm_OperationCanceled()));
 } // CreateWidget
 
+// default overwrite mode from settings file
+cCopyMoveConflict::eChoice cCopyMove::GetDefaultOverwriteMode(cSettings *csSettings)
+{
+	cCopyMoveConflict::eChoice ecConflict;
+	QString qsOverwrite;
+
+	qsOverwrite = csSettings->GetFileOverwrite();
+
+	if (qsOverwrite == qsASK) {
+		ecConflict = cCopyMoveConflict::Ask;
+	} else {
+		if (qsOverwrite == qsOVERWRITE_ALL) {
+			ecConflict = cCopyMoveConflict::OverwriteAll;
+		} else {
+			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
+				ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+			} else {
+				ecConflict = cCopyMoveConflict::SkipAll;
+			} // if else
+		} // if else
+	} // if else
+
+	return ecConflict;
+} // GetDefaultOverwriteMode
+
+#ifdef Q_WS_WIN
+// default readonly overwrite permission
+cPermission::eChoice cCopyMove::GetDefaultReadonlyOverwritePermission(cSettings *csSettings)
+{
+	cPermission::eChoice ecPermission;
+	QString qsOverwrite;
+
+	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
+
+	if (qsOverwrite == qsASK) {
+		ecPermission = cPermission::Ask;
+	} else {
+		if (qsOverwrite == qsYES_TO_ALL) {
+			ecPermission = cPermission::YesToAll;
+		} else {
+			ecPermission = cPermission::NoToAll;
+		} // if else
+	} // if else
+
+	return ecPermission;
+} // GetDefaultReadonlyOverwritePermission
+#endif
+
 // copy or move operation was canceled
 void cCopyMove::on_ccm_OperationCanceled()
 {
@@ -213,34 +261,10 @@ void cCopyMove::run()
 	} // for
 	emit SetTotalMaximum(qi64TotalMaximum);
 
-	// get default overwrite mode
-	qsOverwrite = csSettings->GetFileOverwrite();
-	if (qsOverwrite == qsASK) {
-		ecConflict = cCopyMoveConflict::Ask;
-	} else {
-		if (qsOverwrite == qsOVERWRITE_ALL) {
-			ecConflict = cCopyMoveConflict::OverwriteAll;
-		} else {
-			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
-				ecConflict = cCopyMoveConflict::OverwriteAllOlder;
-			} else {
-				ecConflict = cCopyMoveConflict::SkipAll;
-			} // if else
-		} // if else
-	} // if else
-
+	// get default modes
+	ecConflict = GetDefaultOverwriteMode(csSettings);
 #ifdef Q_WS_WIN
-	// get default readonly overwrite permission
-	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
-	if (qsOverwrite == qsASK) {
-		ecPermission = cPermission::Ask;
-	} else {
-		if (qsOverwrite == qsYES_TO_ALL) {
-			ecPermission = cPermission::YesToAll;
-		} else {
-			ecPermission = cPermission::NoToAll;
-		} // if else
-	} // if else
+	ecPermission = GetDefaultReadonlyOverwritePermission(csSettings);
 #endif
 	ecRetry = cRetry::Ask;
 	ecDiskSpace = cDiskSpace::Ask;
@@ -251,7 +275,7 @@ void cCopyMove::run()
 	for (iI = 0; iI < qfilSources.count() && !bCanceled; iI++) {
 		// show file names
 		qsSource = qfilSources.at(iI).filePath();
-		qsTarget = cFileRoutine::GetWildcardedName(qfilSources.at(iI).filePath(), qsSourcePath, qsDestination);
+		qsTarget = cFileRoutine::GetWildcardedName(qfilSources.at(iI), qsSourcePath, qsDestination);
 		if (ccmdDialog) {
 			// name with path in dialog
 			emit SetSource(qsSource);
@@ -347,8 +371,10 @@ void cCopyMove::run()
 						if (ecConflictCurrent == cCopyMoveConflict::Rename) {
 							// rename
 							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
+
 							// wait for answer
 							qsPause.acquire();
+
 							if (!qsNewFilename.isEmpty()) {
 								// new file name typed
 								qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
@@ -411,7 +437,9 @@ void cCopyMove::run()
 			ecPermissionCurrent = cPermission::Ask;
 			if (QFile::permissions(qsTarget) & QFile::ReadOther) {
 				if (ecPermission == cPermission::Ask) {
+					// show permission dialog
 					emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
+
 					// wait for answer
 					qsPause.acquire();
 

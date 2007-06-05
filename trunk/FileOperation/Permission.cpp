@@ -2,8 +2,24 @@
 
 #include <QtGui/QMessageBox>
 
-// show conflict dialog
+// show permission dialog (single thread)
+cPermission::eChoice cPermission::Exec(const QString &qsFilename, const QString &qsInformation)
+{
+	return ShowDialog(qsFilename, qsInformation);
+} // Exec
+
+// show conflict dialog (multithread)
 void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
+{
+	eChoice ecResponse;
+
+	ecResponse = ShowDialog(qsFilename, qsInformation);
+
+	emit Finished(ecResponse);
+} // Show
+
+// show permission dialog
+cPermission::eChoice cPermission::ShowDialog(const QString &qsFilename, const QString &qsInformation)
 {
 	eChoice ecResponse;
 
@@ -27,5 +43,5 @@ void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
 			;
 	} // switch
 
-	emit Finished(ecResponse);
-} // Show
+	return ecResponse;
+} // ShowDialog

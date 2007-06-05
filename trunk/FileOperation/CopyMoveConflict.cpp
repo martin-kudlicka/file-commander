@@ -12,8 +12,24 @@ cCopyMoveConflict::cCopyMoveConflict()
 	qRegisterMetaType<QFileInfo>("QFileInfo");
 } // cCopyMoveConflict
 
-// show conflict dialog
+// show conflict dialog (single thread)
+cCopyMoveConflict::eChoice cCopyMoveConflict::Exec(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
+{
+	return ShowDialog(qsOperation, qfiSource, qfiDestination);
+} // Exec
+
+// show conflict dialog (multithread)
 void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
+{
+	eChoice ecResponse;
+
+	ecResponse = ShowDialog(qsOperation, qfiSource, qfiDestination);
+
+	emit Finished(ecResponse);
+} // Show
+
+// show conflict dialog
+cCopyMoveConflict::eChoice cCopyMoveConflict::ShowDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -64,5 +80,5 @@ void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSou
 		} // if else
 	} // if else
 
-	emit Finished(ecResponse);
-} // Show
+	return ecResponse;
+} // ShowDialog

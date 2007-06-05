@@ -2,6 +2,7 @@
 
 #include "FileOperation/FileOperationDialog.h"
 #include "FileOperation/CopyMoveDialog.h"
+#include "FileOperation.h"
 
 // constructor
 cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings)
@@ -13,7 +14,13 @@ cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettin
 // extract files from archive to local directory
 void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
 {
+	cCopyMoveConflict::eChoice ecConflict;
 	cCopyMoveDialog ccmdDialog(qmwParent, true);
+	cDiskSpace::eChoice ecDiskSpace;
+#ifdef Q_WS_WIN
+	cPermission::eChoice ecPermission;
+#endif
+	cRetry::eChoice ecRetry;
 	HANDLE hArchive;
 	QList<tHeaderData> qlExtract;
 	tHeaderData thdHeaderData;
@@ -34,11 +41,25 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	// collect files to extract
 	qlExtract = GetAllArchiveFiles(qlSourceSelected, saSourceArchive.qlFiles);
 
+	// preparation
+	emit SetTotalMaximum(qlExtract.count());
+	ecConflict = cCopyMove::GetDefaultOverwriteMode(csSettings);
+#ifdef Q_WS_WIN
+	ecPermission = cCopyMove::GetDefaultReadonlyOverwritePermission(csSettings);
+#endif
+	ecRetry = cRetry::Ask;
+	ecDiskSpace = cDiskSpace::Ask;
+
 	// open archive
 	toadArchiveData.ArcName = new char[saSourceArchive.qsArchive.length() + 1];
 	strcpy(toadArchiveData.ArcName, saSourceArchive.qsArchive.toLatin1().constData());
 	toadArchiveData.OpenMode = PK_OM_EXTRACT;
 	hArchive = saSourceArchive.spiPlugin.toaOpenArchive(&toadArchiveData);
+
+#ifdef Q_WS_WIN
+	// set callback function
+	saSourceArchive.spiPlugin.tspdpSetProcessDataProc(hArchive, &cArchiveOperation::ProcessDataProc);
+#endif
 
 	// extract files
 	while (!saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
@@ -47,6 +68,206 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 		for (iI = 0; iI < qlExtract.count(); iI++) {
 			if (!strcmp(qlExtract.at(iI).FileName, thdHeaderData.FileName)) {
 				// extract file
+				cPermission::eChoice ecPermissionCurrent;
+				cRetry::eChoice ecRetryCurrent;
+				QString qsSource, qsTarget;
+				cFileRoutine::sDiskSpace sdsDiskSpace;
+
+				qsSource = saSourceArchive.qsArchive + '/' + thdHeaderData.FileName;
+				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(thdHeaderData.FileName), saSourceArchive.qsPath, qsDestination);
+
+				emit SetSource(qsSource);
+				emit SetDestination(qsTarget);
+
+				// check disk space on target
+				sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
+				if (sdsDiskSpace.qi64Free < thdHeaderData.UnpSize) {
+					cDiskSpace::eChoice ecDiskSpaceCurrent;
+					
+					ecDiskSpaceCurrent = cDiskSpace::Ask;
+
+					if (ecDiskSpace == cDiskSpace::Ask) {
+						// disk space dialog
+						cDiskSpace cdsDiskSpace;
+
+						ecDiskSpaceCurrent = cdsDiskSpace.Exec(qsSource, thdHeaderData.UnpSize, sdsDiskSpace.qi64Free);
+
+						// solve
+						switch (ecDiskSpaceCurrent) {
+							case cDiskSpace::YesToAll:
+								ecDiskSpace = cDiskSpace::YesToAll;
+								break;
+							case cDiskSpace::SkipAll:
+								ecDiskSpace = cDiskSpace::SkipAll;
+							default:
+								;
+						} // switch
+					} // if
+
+					if (ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
+						// skip current file
+						continue;
+					} else {
+						if (ecDiskSpaceCurrent == cDiskSpace::No) {
+							// cancel
+							break;
+						} // if
+					} // if else
+				} // if
+
+				// conflict solving
+				if (QFile::exists(qsTarget)) {
+					cCopyMoveConflict::eChoice ecConflictCurrent;
+
+					ecConflictCurrent = cCopyMoveConflict::Ask;
+
+					if (ecConflict == cCopyMoveConflict::Ask) {
+						while (true) {
+							// no permanent conflict answer yet
+							cCopyMoveConflict ccmcConflictDialog;
+
+							// conflict dialog
+							ecConflictCurrent = ccmcConflictDialog.Exec(tr("Extract"), QFileInfo(qsSource), QFileInfo(qsTarget));
+
+							// solve conflict
+							switch (ecConflictCurrent) {
+								case cCopyMoveConflict::SkipAll:
+									ecConflict = cCopyMoveConflict::SkipAll;
+									break;
+								case cCopyMoveConflict::OverwriteAll:
+									ecConflict = cCopyMoveConflict::OverwriteAll;
+									break;
+								case cCopyMoveConflict::OverwriteAllOlder:
+									ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+								default:
+									;
+							} // switch
+
+							// rename dialog
+							if (ecConflictCurrent == cCopyMoveConflict::Rename) {
+								cRename crRenameDialog;
+								QString qsNewFilename;
+
+								// rename
+								qsNewFilename = crRenameDialog.Exec(QFileInfo(qsTarget).fileName());
+
+								if (!qsNewFilename.isEmpty()) {
+									// new file name typed
+									qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
+									if (!QFile::exists(qsTarget)) {
+										// rename ok, continue
+										break;
+									} // if
+								} else {
+									// cancel
+									ecConflictCurrent = cCopyMoveConflict::Cancel;
+									break;
+								} // if else
+							} else {
+								// no rename
+								break;
+							} // if else
+						} // while
+						if (ecConflictCurrent == cCopyMoveConflict::Cancel) {
+							// cancel
+							break;
+						} // if
+					} // if
+
+					if (ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
+						// skip or skip all -> move onto next file
+						continue;
+					} else {
+						if (ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
+							// overwrite, overwrite all -> delete target file
+							QFile::remove(qsTarget);
+						} else {
+							if (ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
+								// overwrite all older
+								if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
+									// target file is older -> delete it
+									QFile::remove(qsTarget);
+								} else {
+									// target file is newer -> move onto next file
+									continue;
+								} // if else
+							} // if
+						} // if else
+					} // if else
+				} // if*/
+
+#ifdef Q_WS_WIN
+				// check readonly permission
+				ecPermissionCurrent = cPermission::Ask;
+				if (QFile::permissions(qsTarget) & QFile::ReadOther) {
+					QFile::Permissions pPermissions;
+
+					pPermissions = QFile::permissions(qsTarget);
+
+					if (ecPermission == cPermission::Ask) {
+						cPermission cpPermissionDialog;
+
+						// show permission dialog
+						ecPermissionCurrent = cpPermissionDialog.Exec(QFile(qsTarget).fileName(), tr("is readonly."));
+
+						switch (ecPermissionCurrent) {
+							case cPermission::YesToAll:
+								ecPermission = cPermission::YesToAll;
+								break;
+							case cPermission::NoToAll:
+								ecPermission = cPermission::NoToAll;
+							default:
+								;
+						} // switch
+
+						if (ecPermissionCurrent == cPermission::Cancel) {
+							break;
+						} // if
+					} // if
+					if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+						continue;
+					} else {
+						// remove target file readonly permission
+						pPermissions ^= QFile::ReadOther;
+						QFile::setPermissions(qsTarget, pPermissions);
+					} // if else
+				} // if
+#endif
+
+				// extract file
+				while (true) {
+					bool bExtractSuccess;
+
+					bExtractSuccess = !saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
+
+					if (!bExtractSuccess) {
+						if (ecRetry != cRetry::SkipAll) {
+							cRetry crRetryDialog;
+
+							ecRetryCurrent = crRetryDialog.Exec(tr("Can't extract following file:"), qsSource);
+
+							if (ecRetryCurrent == cRetry::SkipAll) {
+								// memorize permanent answer
+								ecRetry = cRetry::SkipAll;
+							} // if
+						} // if
+						if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
+							// skip this file
+							break;
+						} // if
+						// else try once more
+					} else {
+						// successfuly copied/moved
+						break;
+					} // if else
+				} // while
+
+				if (ecRetryCurrent == cRetry::Abort) {
+					// process aborted
+					break;
+				} // if
+
+				emit SetTotalValue(iI);
 			} else {
 				// skip file
 				saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
@@ -91,10 +312,10 @@ QList<tHeaderData> cArchiveOperation::GetAllArchiveFiles(const QList<tHeaderData
 } // GetAllArchiveFiles
 
 // count of objects
-cArchiveOperation::sObjects cArchiveOperation::GetCount(const QList<tHeaderData> &qlArchive)
+cFileOperation::sObjects cArchiveOperation::GetCount(const QList<tHeaderData> &qlArchive)
 {
 	int iI;
-	sObjects soCount;
+	cFileOperation::sObjects soCount;
 
 	soCount.Directories = 0;
 	soCount.Files = 0;
@@ -121,7 +342,7 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sAr
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
 	QString qsFilter;
-	sObjects soObjects;
+	cFileOperation::sObjects soObjects;
 
 	if (qlSourceSelected.isEmpty()) {
 		// no items selected
@@ -173,3 +394,12 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sAr
 			} // switch
 	} // switch
 } // Operate
+
+#ifdef Q_WS_WIN
+// callback progress function
+int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
+{
+	// TODO ProcessDataProc
+	return 1;
+} // ProcessDataProc
+#endif
