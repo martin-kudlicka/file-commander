@@ -1347,7 +1347,7 @@ void cOptionsDialog::PrepareColumnsMenu()
 	// plugins sub menu
 	qmPlugins = new QMenu(&qmColumns);
 	qhPlugins = ccContent->GetPluginsInfo();
-	if (qhPlugins.count() == 0) {
+	if (qhPlugins.isEmpty()) {
 		qmPlugins->setEnabled(false);
 	} else {
 		QHashIterator<QString, cContent::sPluginInfo> qhiPlugins(qhPlugins);

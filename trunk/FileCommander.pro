@@ -44,6 +44,7 @@ HEADERS = MainWindow.h \
 			 FileOperation/DeleteNonEmptyDirectory.h \
 			 FileOperation/Retry.h \
 			 FileOperation/DiskSpace.h \
+			 ArchiveOperation.h \
 			 Options/NewFavouriteDirectoryDialog.h \
 			 Settings.h \
 			 Plugins.h \
@@ -89,6 +90,7 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/DeleteNonEmptyDirectory.cpp \
 			 FileOperation/Retry.cpp \
 			 FileOperation/DiskSpace.cpp \
+			 ArchiveOperation.cpp \
 			 Options/NewFavouriteDirectoryDialog.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \

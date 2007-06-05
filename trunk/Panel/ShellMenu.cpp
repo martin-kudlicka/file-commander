@@ -20,7 +20,7 @@ void cShellMenu::Show(const QFileInfoList &qfilObjects, const QPoint &qpPoint)
 
 	pPoint.x = qpPoint.x();
 	pPoint.y = qpPoint.y();
-	if (qslObjects.count() == 0) {
+	if (qslObjects.isEmpty()) {
 		cscmShellMenu.SetObjects("");
 	} else {
 		cscmShellMenu.SetObjects(qslObjects);

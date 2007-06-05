@@ -12,8 +12,10 @@ class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
 	Q_OBJECT
 
 	public:
-		cCopyMoveDialog(QMainWindow *qmwParent);							///< constructor
-																						/**< \param qmwParent parent window of this dialog */
+		cCopyMoveDialog(QMainWindow *qmwParent, const bool &bArchive = false);
+																						///< constructor
+																						/**< \param qmwParent parent window of this dialog
+																							  \param bArchive for use with archive files */
 
 	signals:
 		void Background();														///< set operation as background

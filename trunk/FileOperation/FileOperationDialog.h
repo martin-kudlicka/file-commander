@@ -25,12 +25,13 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 																/**< \param qmwParent parent window of this dialog
 																	  \param csSettings application's settings file */
 
-		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter);
+		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter, const bool &bArchive = false);
 																///< shows copy or move dialog
 																/**< \param eoOperation type of operation
 																	  \param qsCount string with count of files and directories
 																	  \param qsDestination destination path
 																	  \param qsFilter filter for operation
+																	  \param bArchive manipulate with archive
 																	  \return user action */
 
 		private:

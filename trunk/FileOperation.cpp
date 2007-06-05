@@ -137,15 +137,16 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 	cCopyMove *ccmCopyMove;
 	cDelete *cdDelete;
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
-	sObjects soObjects;
 	cFileOperationDialog::eUserAction euaAction;
 	QString qsFilter;
+	sObjects soObjects;
 
-	if (qfilSource.count() == 0) {
+	if (qfilSource.isEmpty()) {
 		// no items selected
 		return;
 	} // if
 
+	// prepare destination path for dialog
 	if (eoOperation != cFileRoutine::DeleteOperation) {
 		if (qfilSource.count() == 1) {
 			// one file selected
@@ -164,17 +165,18 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 	switch (eoOperation) {
 		case cFileRoutine::DeleteOperation:
 			euaAction = cfodDialog.ShowDialog(eoOperation,
-			tr("&Delete %1 files and %2 directories.").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
+														 tr("&Delete %1 files and %2 directories.").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
 			break;
 		case cFileRoutine::CopyOperation:
 			euaAction = cfodDialog.ShowDialog(eoOperation,
-			tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
+														 tr("Co&py %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
 			break;
 		case cFileRoutine::MoveOperation:
 			euaAction = cfodDialog.ShowDialog(eoOperation,
-			tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
+														 tr("&Move %1 files and %2 directories to:").arg(soObjects.Files).arg(soObjects.Directories), &qsDestination, &qsFilter);
 	} // switch
 
+	// correct destination path
 	if (eoOperation == cFileRoutine::CopyOperation || eoOperation == cFileRoutine::MoveOperation) {
 		QDir qdDir;
 
@@ -184,6 +186,7 @@ void cFileOperation::Operate(const cFileRoutine::eOperation &eoOperation, const 
 		} // if
 	} // if
 
+	// operate
 	switch (euaAction) {
 		case cFileOperationDialog::CancelAction:
 			return;

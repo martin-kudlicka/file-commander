@@ -60,6 +60,12 @@ class cFileRoutine
 																					/**< \param qsRootPath root path on disk to detect name
 																						  \return volume name */
 #endif
+		static QString GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination);
+																					///< return file name modified by wildcard
+																					/**< \param qfiFile source file to copy or move
+																						  \param qsSourcePath path for all sources
+																						  \param qsDestination destination string
+																						  \return modified file name */
 		static bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false);
 																					///< check if filename suits filter
 																					/**< \param qsName filename to check
