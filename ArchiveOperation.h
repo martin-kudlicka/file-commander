@@ -8,6 +8,7 @@
 #include "Plugins/Packer.h"
 #include <QtGui/QMainWindow>
 #include "Panel.h"
+//#include "FileOperation/CopyMoveDialog.h"
 
 class cArchiveOperation : private QObject
 {
@@ -22,6 +23,7 @@ class cArchiveOperation : private QObject
 		cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings);	///< constructor
 																								/**< \param qmwParent parent window for dialogs
 																									  \param csSettings application's settings file */
+		~cArchiveOperation();															///< destructor
 
 		void Operate(const eOperation &eoOperation, const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
 																								///< manipulate with archive files
@@ -40,8 +42,10 @@ class cArchiveOperation : private QObject
 		};
 
 		bool bCanceled;																	///< operation in progress is canceled
+		static cCopyMoveDialog *ccmdDialog;											///< copy/move (progress) dialog
 		cSettings *csSettings;															///< application's settings file
 		static qint64 qi64CurrentValue;												///< current file progress
+		static qint64 qi64TotalValue;													///< total progress
 		QMainWindow *qmwParent;															///< parent window for dialogs
 
 		void ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
@@ -63,20 +67,6 @@ class cArchiveOperation : private QObject
 																									  \param iSize bytes processed since last call
 																									  \return zero if operation canceled */
 #endif
-
-	signals:
-		void SetCurrentMaximum(const qint64 &qi64Value);						///< set maximum for current file
-																								/**< \param qi64Value maximum for current file */
-		void SetCurrentValue(const qint64 &qi64Value);							///< set progress for current file
-																								/**< \param qi64Value progress for current file */
-		void SetDestination(const QString &qsDestination);						///< set destination file
-																								/**< \param qsDestination destination file */
-		void SetSource(const QString &qsSource);									///< set source file
-																								/**< \param qsSource source file */
-		void SetTotalMaximum(const qint64 &qi64Value);							///< set overall maximum
-																								/**< \param qi64Value overall maximum */
-		void SetTotalValue(const qint64 &qi64Value);								///< set overall progress
-																								/**< \param qi64Value overall progress */
 
 	private slots:
 		void on_ccmdDialog_OperationCanceled();									///< operation canceled
