@@ -622,6 +622,9 @@ QString cPanel::GetPath()
 		case Archive:
 			return qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
 	} // switch
+
+	// shouldn't happen
+	return QString();
 } // GetPath
 
 // get file infos of selected items
@@ -1442,35 +1445,57 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 	// interrupt delayed content processing
 	emit InterruptContentDelayed();
 
-	// clear previous file contents
-	qhTabs[iIndex].sldLocalDirectory.qhFiles.clear();
+	switch (qhTabs.value(iIndex).elLocation) {
+		case LocalDirectory:
+			// clear previous file contents
+			qhTabs[iIndex].sldLocalDirectory.qhFiles.clear();
 
-	if (qfilFiles.count() == 0) {
-		// check path
-		if (!PathExists(qhTabs.value(iIndex).sldLocalDirectory.qsPath)) {
-			SetPath(qhTabs.value(iIndex).sldLocalDirectory.qsPath);
-			return;
-		} // if
-		// get files
-		qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).sldLocalDirectory.qsPath, GetStandardFilters());
-	} // if
+			if (qfilFiles.count() == 0) {
+				// check path
+				if (!PathExists(qhTabs.value(iIndex).sldLocalDirectory.qsPath)) {
+					SetPath(qhTabs.value(iIndex).sldLocalDirectory.qsPath);
+					return;
+				} // if
+				// get files
+				qfilFiles = cFileRoutine::GetDirectoryContent(qhTabs.value(iIndex).sldLocalDirectory.qsPath, GetStandardFilters());
+			} // if
 
-	// go through files and add them into file list
-	for (iI = 0; iI < qfilFiles.count(); iI++) {
-		QTreeWidgetItem *qtwiFile;
+			// go through files and add them into file list
+			for (iI = 0; iI < qfilFiles.count(); iI++) {
+				QTreeWidgetItem *qtwiFile;
 
-		// omit some entries
-		if (qfilFiles.at(iI).fileName() == ".") {
-			continue;
-		} // if
+				// omit some entries
+				if (qfilFiles.at(iI).fileName() == ".") {
+					continue;
+				} // if
 
-		// add to internal file list
-		qtwiFile = new QTreeWidgetItem();
-		qhTabs[iIndex].sldLocalDirectory.qhFiles.insert(qtwiFile, qfilFiles.at(iI));
+				// add to internal file list
+				qtwiFile = new QTreeWidgetItem();
+				qhTabs[iIndex].sldLocalDirectory.qhFiles.insert(qtwiFile, qfilFiles.at(iI));
 
-		// fill columns
-		FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters);
-	} // for
+				// fill columns
+				FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters);
+			} // for
+			break;
+		case Archive:
+			// clear previous file contents
+			qhTabs[iIndex].saArchive.qhFiles.clear();
+
+			// go through files and add them into file list
+			for (iI = 0; iI < qhTabs.value(iIndex).saArchive.qlFiles.count(); iI++) {
+				// check for path in archive
+				if (QFileInfo(qhTabs.value(iIndex).saArchive.qlFiles.at(iI).FileName).path() == qhTabs.value(iIndex).saArchive.qsPath) {
+					QTreeWidgetItem *qtwiFile;
+
+					// add to internal file list
+					qtwiFile = new QTreeWidgetItem();
+					qhTabs[iIndex].saArchive.qhFiles.insert(qtwiFile, qhTabs.value(iIndex).saArchive.qlFiles.at(iI));
+
+					// fill columns
+					FillDirViewItem(iIndex, Archive, qtwiFile, &qhTabs.value(iIndex).saArchive.qlFiles.at(iI), NULL);
+				} // if
+			} // for
+	} // switch
 
 	// sort and show files
 	Sort(iIndex);
@@ -1491,39 +1516,6 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 void cPanel::RefreshContent(const QFileInfoList &qfilFiles)
 {
 	RefreshContent(qswDir->currentIndex(), qfilFiles);
-} // RefreshContent
-
-// refresh current directory view with archive content
-void cPanel::RefreshContent(const QList<tHeaderData> &qlFiles)
-{
-	int iI;
-	QTreeWidgetItem *qtwiFile;
-
-	// interrupt delayed content processing
-	emit InterruptContentDelayed();
-
-	// clear previous file contents
-	qhTabs[qswDir->currentIndex()].saArchive.qhFiles.clear();
-
-	// go through files and add them into file list
-	for (iI = 0; iI < qlFiles.count(); iI++) {
-		// check for path in archive
-		if (QFileInfo(qlFiles.at(iI).FileName).path() == qhTabs.value(qswDir->currentIndex()).saArchive.qsPath) {
-			// add to internal file list
-			qtwiFile = new QTreeWidgetItem();
-			qhTabs[qswDir->currentIndex()].saArchive.qhFiles.insert(qtwiFile, qlFiles.at(iI));
-
-			// fill columns
-			FillDirViewItem(qswDir->currentIndex(), Archive, qtwiFile, &qlFiles.at(iI), NULL);
-		} // if
-	} // for
-
-	// sort and show files
-	Sort(qswDir->currentIndex());
-	qhTabs[qswDir->currentIndex()].bValid = true;
-
-	// focus to the first item
-	static_cast<cTreeWidget *>(qswDir->widget(qswDir->currentIndex()))->setCurrentItem(static_cast<cTreeWidget *>(qswDir->widget(qswDir->currentIndex()))->topLevelItem(0));
 } // RefreshContent
 
 // refresh column's header
@@ -1785,9 +1777,35 @@ void cPanel::SetPath(const QString &qsPath)
 #endif
 			break;
 		case Archive:
-			// TODO SetPath change path in archive
-			//RefreshContent(qhTabs.value(qswDir->currentIndex()).saArchive.qlFiles);
-			;
+			// set new path
+			if (qsPath.endsWith("..")) {
+				// go up one directory
+				if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath == ".") {
+					// go to local directory
+					qhTabs[qswDir->currentIndex()].elLocation = LocalDirectory;
+					SetPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
+					return;
+				} else {
+					// go up one directory in archive
+					qhTabs[qswDir->currentIndex()].saArchive.qsPath = QDir::cleanPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + "/..");
+					if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.endsWith("..")) {
+						qhTabs[qswDir->currentIndex()].saArchive.qsPath = '.';
+					} // if
+				} // if else
+			} else {
+				// go into another directory in archive
+				if (qsPath.startsWith('.') && qsPath != ".") {
+					// skip "./"
+					qhTabs[qswDir->currentIndex()].saArchive.qsPath = qsPath.mid(2);
+				} else {
+					qhTabs[qswDir->currentIndex()].saArchive.qsPath = qsPath;
+				} // if else
+			} // if else
+			// new path in widgets
+			qhTabs[qswDir->currentIndex()].swWidgets->qsPath = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + '/' + QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName() + '/' + qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
+			qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+			// refresh directory view
+			RefreshContent(qswDir->currentIndex());
 	} // switch
 } // SetPath
 
