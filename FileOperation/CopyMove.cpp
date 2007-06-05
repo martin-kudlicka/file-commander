@@ -287,9 +287,9 @@ void cCopyMove::run()
 		} // if else
 
 		if (qfilSources.at(iI).isDir()) {
-			qdDir.mkpath(QFileInfo(qsTarget).filePath());
+			qdDir.mkpath(qsTarget);
 			if (eoOperation == cFileRoutine::MoveOperation) {
-				qdDir.rmdir(qfilSources.at(iI).filePath());
+				qdDir.rmdir(qsSource);
 			} // if
 		} else {
 			cFileRoutine::sDiskSpace sdsDiskSpace;
