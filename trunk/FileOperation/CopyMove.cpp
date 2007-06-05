@@ -110,17 +110,17 @@ cCopyMove::eCheckResult cCopyMove::CheckConflict(const QFileInfo &qfiSource, cCo
 } // CheckConflict
 
 // check disk space
-cCopyMove::eCheckResult cCopyMove::CheckDiskSpace(const QFileInfo &qfiSource, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
+cCopyMove::eCheckResult cCopyMove::CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
 {
 	cFileRoutine::sDiskSpace sdsDiskSpace;
 
 	sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
-	if (sdsDiskSpace.qi64Free < qfiSource.size()) {
+	if (sdsDiskSpace.qi64Free < qi64SourceSize) {
 		ecDiskSpaceCurrent = cDiskSpace::Ask;
 
 		if (*ecDiskSpace == cDiskSpace::Ask) {
 			// disk space dialog
-			emit ShowDiskSpaceDialog(qsSource, qfiSource.size(), sdsDiskSpace.qi64Free);
+			emit ShowDiskSpaceDialog(qsSource, qi64SourceSize, sdsDiskSpace.qi64Free);
 			// wait for answer
 			qsPause.acquire();
 
@@ -138,7 +138,7 @@ cCopyMove::eCheckResult cCopyMove::CheckDiskSpace(const QFileInfo &qfiSource, cD
 
 		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
 			// skip current file
-			*qi64TotalValue += qfiSource.size();
+			*qi64TotalValue += qi64SourceSize;
 			return NextFile;
 		} else {
 			if (ecDiskSpaceCurrent == cDiskSpace::No) {
@@ -152,7 +152,7 @@ cCopyMove::eCheckResult cCopyMove::CheckDiskSpace(const QFileInfo &qfiSource, cD
 } // CheckDiskSpace
 
 // check target file permission
-cCopyMove::eCheckResult cCopyMove::CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue)
+cCopyMove::eCheckResult cCopyMove::CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue)
 {
 	ecPermissionCurrent = cPermission::Ask;
 	if (QFile::permissions(qsTarget) & QFile::ReadOther) {
@@ -178,7 +178,7 @@ cCopyMove::eCheckResult cCopyMove::CheckPermission(const QFileInfo &qfiSource, c
 			} // if
 		} // if
 		if (*ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
-			*qi64TotalValue += qfiSource.size();
+			*qi64TotalValue += qi64SourceSize;
 			return NextFile;
 		} else {
 			// remove target file readonly permission
@@ -507,7 +507,7 @@ void cCopyMove::run()
 			emit SetCurrentValue(0);
 
 			// check disk space on target
-			ecrCheck = CheckDiskSpace(qfilSources.at(iI), &ecDiskSpace, &qi64TotalValue);
+			ecrCheck = CheckDiskSpace(qfilSources.at(iI).size(), &ecDiskSpace, &qi64TotalValue);
 			if (ecrCheck == NextFile) {
 				continue;
 			} else {
@@ -538,7 +538,7 @@ void cCopyMove::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = CheckPermission(qfilSources.at(iI), &ecPermission, &qi64TotalValue);
+			ecrCheck = CheckPermission(qfilSources.at(iI).size(), &ecPermission, &qi64TotalValue);
 			if (ecrCheck == NextFile) {
 				continue;
 			} else {
