@@ -791,22 +791,44 @@ void cPanel::GoToUpDir()
 			} // if
 			break;
 		case Archive:
+			bool bBackToLocal;
+
 			qdDir.setPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath);
 
 			// remember directory going from
 			qsFrom = QFileInfo(GetPath()).fileName();
+			if (qsFrom.isEmpty()) {
+				// returning from archive
+				qsFrom = QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName();
+				bBackToLocal = true;
+			} else {
+				bBackToLocal = false;
+			} // if else
 
 			SetPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + "/..");
 
 			// find directory went from and set it as current
-			QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles);
-			while (qhiFile.hasNext()) {
-				qhiFile.next();
-				if (QFileInfo(qhiFile.value().FileName).fileName() == qsFrom) {
-					static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
-					break;
-				} // if
-			} // while
+			if (bBackToLocal) {
+				// find right file in local files
+				QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles);
+				while (qhiFile.hasNext()) {
+					qhiFile.next();
+					if (qhiFile.value().fileName() == qsFrom) {
+						static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+						break;
+					} // if
+				} // while
+			} else {
+				// find right directory in archive
+				QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles);
+				while (qhiFile.hasNext()) {
+					qhiFile.next();
+					if (QFileInfo(qhiFile.value().FileName).fileName() == qsFrom) {
+						static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+						break;
+					} // if
+				} // while
+			} // if else
 	} // switch
 } // GoToUpDir
 
@@ -1000,7 +1022,14 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 				if (QFileInfo(thdFile->FileName).fileName() == "..") {
 					GoToUpDir();
 				} else {
-					SetPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + '/' + QFileInfo(thdFile->FileName).fileName());
+					QString qsNewPath;
+
+					if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.isEmpty()) {
+						qsNewPath = QFileInfo(thdFile->FileName).fileName();
+					} else {
+						qsNewPath = qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + '/' + QFileInfo(thdFile->FileName).fileName();
+					} // if else
+					SetPath(qsNewPath);
 				} // if else
 			} else {
 				// double click on file
@@ -1033,7 +1062,17 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 	qi64Size = 0;
 	qi64TotalSize = 0;
 	for (iI = 0; iI < ctwTree->topLevelItemCount(); iI++) {
-		if (qhiTab.value().sldLocalDirectory.qhFiles.value(ctwTree->topLevelItem(iI)).isDir()) {
+		bool bDirectory;
+
+		switch (qhiTab.value().elLocation) {
+			case LocalDirectory:
+				bDirectory = qhiTab.value().sldLocalDirectory.qhFiles.value(ctwTree->topLevelItem(iI)).isDir();
+				break;
+			case Archive:
+				bDirectory = qhiTab.value().saArchive.qhFiles.value(ctwTree->topLevelItem(iI)).FileAttr & cPacker::iDIRECTORY;
+		} // switch
+
+		if (bDirectory) {
 			iDirectoriesTotal++;
 			if (ctwTree->topLevelItem(iI)->isSelected()) {
 				int iColumnExtension;
@@ -1264,7 +1303,7 @@ bool cPanel::OpenArchive(const QFileInfo &qfiFile)
 					qhTabs[qswDir->currentIndex()].elLocation = Archive;
 					// read archive files
 					qhTabs[qswDir->currentIndex()].saArchive.qlFiles = ReadArchiveFiles(hArchive);
-					qhTabs[qswDir->currentIndex()].saArchive.qsPath = '.';
+					qhTabs[qswDir->currentIndex()].saArchive.qsPath.clear();
 					// close archive
 					qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).tcaCloseArchive(hArchive);
 					// show archive contents
@@ -1483,8 +1522,14 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 
 			// go through files and add them into file list
 			for (iI = 0; iI < qhTabs.value(iIndex).saArchive.qlFiles.count(); iI++) {
+				QString qsFilePath;
+
 				// check for path in archive
-				if (QFileInfo(qhTabs.value(iIndex).saArchive.qlFiles.at(iI).FileName).path() == qhTabs.value(iIndex).saArchive.qsPath) {
+				qsFilePath = QFileInfo(qhTabs.value(iIndex).saArchive.qlFiles.at(iI).FileName).path();
+				if (qsFilePath == ".") {
+					qsFilePath.clear();
+				} // if
+				if (qsFilePath == qhTabs.value(iIndex).saArchive.qsPath) {
 					QTreeWidgetItem *qtwiFile;
 
 					// add to internal file list
@@ -1777,10 +1822,12 @@ void cPanel::SetPath(const QString &qsPath)
 #endif
 			break;
 		case Archive:
+			QString qsNewWidgetPath;
+
 			// set new path
 			if (qsPath.endsWith("..")) {
 				// go up one directory
-				if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath == ".") {
+				if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.isEmpty()) {
 					// go to local directory
 					qhTabs[qswDir->currentIndex()].elLocation = LocalDirectory;
 					SetPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
@@ -1789,20 +1836,20 @@ void cPanel::SetPath(const QString &qsPath)
 					// go up one directory in archive
 					qhTabs[qswDir->currentIndex()].saArchive.qsPath = QDir::cleanPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + "/..");
 					if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.endsWith("..")) {
-						qhTabs[qswDir->currentIndex()].saArchive.qsPath = '.';
+						qhTabs[qswDir->currentIndex()].saArchive.qsPath.clear();
 					} // if
 				} // if else
 			} else {
 				// go into another directory in archive
-				if (qsPath.startsWith('.') && qsPath != ".") {
-					// skip "./"
-					qhTabs[qswDir->currentIndex()].saArchive.qsPath = qsPath.mid(2);
-				} else {
-					qhTabs[qswDir->currentIndex()].saArchive.qsPath = qsPath;
-				} // if else
+				qhTabs[qswDir->currentIndex()].saArchive.qsPath = qsPath;
 			} // if else
 			// new path in widgets
-			qhTabs[qswDir->currentIndex()].swWidgets->qsPath = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + '/' + QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName() + '/' + qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
+			if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.isEmpty()) {
+				qsNewWidgetPath = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + '/' + QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName();
+			} else {
+				qsNewWidgetPath = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + '/' + QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName() + '/' + qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
+			} // if else
+			qhTabs[qswDir->currentIndex()].swWidgets->qsPath = qsNewWidgetPath;
 			qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
 			// refresh directory view
 			RefreshContent(qswDir->currentIndex());
@@ -1829,7 +1876,7 @@ void cPanel::SetTabText(const int &iTabIndex)
 			} // if else
 			break;
 		case Archive:
-			if (qhTabs.value(iTabIndex).saArchive.qsPath == ".") {
+			if (qhTabs.value(iTabIndex).saArchive.qsPath.isEmpty()) {
 				qsTabText += QFileInfo(qhTabs.value(iTabIndex).saArchive.qsArchive).fileName();
 			} else {
 				qsTabText += QFileInfo(qhTabs.value(iTabIndex).saArchive.qsPath).fileName();
