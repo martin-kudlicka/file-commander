@@ -5,6 +5,8 @@
 #include "FileOperation.h"
 #include <QtGui/QMessageBox>
 
+qint64 cArchiveOperation::qi64CurrentValue;	///< current file progress (static class variable)
+
 // constructor
 cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings)
 {
@@ -23,6 +25,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	cPermission::eChoice ecPermission;
 #endif
 	HANDLE hArchive;
+	qint64 qi64TotalValue;
 	QList<tHeaderData> qlExtract;
 	tHeaderData thdHeaderData;
 	tOpenArchiveData toadArchiveData;
@@ -62,6 +65,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	saSourceArchive.spiPlugin.tspdpSetProcessDataProc(hArchive, &cArchiveOperation::ProcessDataProc);
 #endif
 
+	qi64TotalValue = -1;
 	// extract files
 	while (!saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
 		eContinue ecContinueCurrent;
@@ -78,9 +82,13 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 
 				qsSource = saSourceArchive.qsArchive + '/' + thdHeaderData.FileName;
 				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(thdHeaderData.FileName), saSourceArchive.qsPath, qsDestination);
+				qi64TotalValue++;
 
 				emit SetSource(qsSource);
 				emit SetDestination(qsTarget);
+				qi64CurrentValue = 0;
+				emit SetCurrentMaximum(thdHeaderData.UnpSize);
+				emit SetTotalValue(qi64TotalValue);
 
 				if (thdHeaderData.FileAttr & cPacker::iDIRECTORY) {
 					QDir qdDir;
@@ -416,7 +424,9 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sAr
 // callback progress function
 int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
 {
-	// TODO ProcessDataProc
+	qi64CurrentValue += iSize;
+	//emit SetCurrentValue(qi64CurrentValue);
+
 	return 1;
 } // ProcessDataProc
 #endif

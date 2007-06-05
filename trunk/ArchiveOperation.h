@@ -41,6 +41,7 @@ class cArchiveOperation : private QObject
 
 		bool bCanceled;																	///< operation in progress is canceled
 		cSettings *csSettings;															///< application's settings file
+		static qint64 qi64CurrentValue;												///< current file progress
 		QMainWindow *qmwParent;															///< parent window for dialogs
 
 		void ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
