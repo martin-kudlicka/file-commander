@@ -43,7 +43,7 @@ void cFileOperationDialog::on_qpbOK_clicked(bool checked /* false */)
 } // on_qpbOK_clicked
 
 // shows copy or move dialog
-cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter)
+cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter, const bool &bArchive /* false */)
 {
 	eUserAction euaAction;
 
@@ -61,6 +61,9 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);
 	qcbFilter->setEditText(*qsFilter);
+	if (bArchive) {
+		qpbEnqueue->setEnabled(false);
+	} // if
 
 	if (eoOperation == cFileRoutine::DeleteOperation) {
 		qlCount->parentWidget()->setGeometry(qlCount->parentWidget()->geometry().x(),

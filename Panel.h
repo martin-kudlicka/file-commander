@@ -31,6 +31,21 @@ class cPanel : public QObject
 		static const qint64 qi64_KILOBYTE = 1024;								///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;							///< 1 megabyte in bytes
 
+		///< location of the directory view
+		enum eLocation {
+			LocalDirectory,															///< standard directory
+			Archive																		///< archive contents
+		};
+
+		/// archive information
+		struct sArchive {
+			cPacker::sPluginInfo spiPlugin;										///< access to packer methods for this archive
+			QList<tHeaderData> qlFiles;											///< files in archive
+			QString qsPath;															///< path in archive
+			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
+			QString qsArchive;														///< archive filepath
+		};
+
 		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, cPacker *cpPacker, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
@@ -68,14 +83,20 @@ class cPanel : public QObject
 																								  \return new tab index */
 		void FeedToPanel(const QFileInfoList &qfilFiles);					///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
+		sArchive GetArchiveInfo();													///< information about displayed archive in directory view
+																							/**< \return information about displayed archive in directory view */
 		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view
 																							/**< \return columns for current dir view */
 		QString GetColumnSet();														///< column set for current directory view
 																							/**< \return column set for current directory view */
 		QHash<QTreeWidgetItem *, QFileInfo> GetDirContent();				///< get content of the directory view
 																							/**< \return content of the directory view */
+		eLocation GetLocation();													///< location of current tab directory view
+																							/**< \return location of current tab directory view */
 		QString GetPath();															///< get path for current dir
 																							/**< \return current dir view path */
+		QList<tHeaderData> GetSelectedItemsArchiveList();					///< collect selected archive files
+																							/**< \return selected archive files */
 		QFileInfoList GetSelectedItemsFileList(const QDir::Filters &qfType = QDir::Dirs | QDir::Files);
 																							///< get file infos of selected items
 																							/**< \param qfType type of files to retreive info about
@@ -116,25 +137,12 @@ class cPanel : public QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;								///< timer interval
 
-		///< location of the directory view
-		enum eLocation {
-			LocalDirectory,															///< standard directory
-			Archive																		///< archive contents
-		};
 		///< quick search direction in directory view
 		enum eQuickSearchDirection {
 			SearchUp,																	///< search up
 			SearchDown																	///< search down
 		};
 
-		/// archive
-		struct sArchive {
-			cPacker::sPluginInfo spiPlugin;										///< access to packer methods for this archive
-			QList<tHeaderData> qlFiles;											///< files in archive
-			QString qsPath;															///< path in archive
-			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
-			QString qsArchive;														///< archive filepath
-		};
 		struct sLocalDirectory {
 			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
 			QString qsPath;															///< path in local directory

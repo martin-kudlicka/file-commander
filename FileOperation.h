@@ -30,8 +30,8 @@ class cFileOperation : private QObject
 	private:
 		// count of objects
 		struct sObjects {
-			uint Directories;													///< number of directories
-			uint Files;															///< number of files
+			uint Directories;											///< number of directories
+			uint Files;													///< number of files
 		};
 
 		/// queued operation description

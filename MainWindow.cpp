@@ -9,6 +9,7 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QHeaderView>
 #include "Common/About.h"
+#include "ArchiveOperation.h"
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -79,7 +80,7 @@ void cMainWindow::ActualizeDrives()
 		} // while
 
 		// check for selected drive change, changes are handled in Panel class
-		if (qtwLeftDrives->findItems(qcbLeftDrive->currentText(), Qt::MatchExactly).count() == 0) {
+		if (qtwLeftDrives->findItems(qcbLeftDrive->currentText(), Qt::MatchExactly).isEmpty()) {
 			// selected drive changed
 			qcbLeftDrive->blockSignals(false);
 			qcbLeftDrive->setCurrentIndex(-1);
@@ -88,7 +89,7 @@ void cMainWindow::ActualizeDrives()
 			qcbLeftDrive->setCurrentIndex(qcbLeftDrive->findText(qsLeftDrive));
 			qcbLeftDrive->blockSignals(false);
 		} // if else
-		if (qtwRightDrives->findItems(qcbRightDrive->currentText(), Qt::MatchExactly).count() == 0) {
+		if (qtwRightDrives->findItems(qcbRightDrive->currentText(), Qt::MatchExactly).isEmpty()) {
 			// selected drive changed
 			qcbRightDrive->blockSignals(false);
 			qcbRightDrive->setCurrentIndex(-1);
@@ -340,7 +341,7 @@ void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 	// get tabs
 	qslTabs = csSettings.GetTabs(epPosition);
 
-	if (qslTabs.count() == 0) {
+	if (qslTabs.isEmpty()) {
 		// no tabs created yet -> create one default in settings file
 		cSettings::sTabInfo stiTab;
 
@@ -746,13 +747,33 @@ void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action)
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 {
 	cPanel *cpDestination, *cpSource;
+	cPanel::eLocation elSourceLocation;
 	QFileInfoList qfilSource;
 	QString qsDestination;
 
 	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
-	qfilSource = cpSource->GetSelectedItemsFileList();
-	qsDestination = cpDestination->GetPath();
-	cfoFileOperation->Operate(cFileRoutine::CopyOperation, qfilSource, qsDestination);
+	elSourceLocation = cpSource->GetLocation();
+
+	switch (elSourceLocation) {
+		case cPanel::LocalDirectory:
+			// copy from local directory to local directory
+			qfilSource = cpSource->GetSelectedItemsFileList();
+			qsDestination = cpDestination->GetPath();
+
+			cfoFileOperation->Operate(cFileRoutine::CopyOperation, qfilSource, qsDestination);
+			break;
+		case cPanel::Archive:
+			// extract from archive to local directory
+			cArchiveOperation caoArchiveOperation(this, &csSettings);
+			QList<tHeaderData> qlSourceAll, qlSourceSelected;
+			cPanel::sArchive saSourceArchive;
+
+			saSourceArchive = cpSource->GetArchiveInfo();
+			qlSourceSelected = cpSource->GetSelectedItemsArchiveList();
+			qsDestination = cpDestination->GetPath();
+
+			caoArchiveOperation.Operate(cArchiveOperation::Extract, saSourceArchive, qlSourceSelected, qsDestination);
+	} // switch
 } // on_qpbCopy_clicked
 
 // delete button is clicked on

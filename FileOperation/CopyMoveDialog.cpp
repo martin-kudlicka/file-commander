@@ -1,10 +1,14 @@
 #include "FileOperation/CopyMoveDialog.h"
 
 // constructor
-cCopyMoveDialog::cCopyMoveDialog(QMainWindow *qmwParent)
+cCopyMoveDialog::cCopyMoveDialog(QMainWindow *qmwParent, const bool &bArchive /* false */)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
+
+	if (bArchive) {
+		qpbBackground->setEnabled(false);
+	} // if
 } // cCopyMoveDialog
 
 // set maximum for current file

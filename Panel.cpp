@@ -29,7 +29,7 @@ void cPanel::ActualizeVolumeInfo()
 	cFileRoutine::sDiskSpace sdsInfo;
 	QString qsName;
 
-	if (qhTabs.count() == 0 || !qhTabs.value(qswDir->currentIndex()).bValid) {
+	if (qhTabs.isEmpty() || !qhTabs.value(qswDir->currentIndex()).bValid) {
 		// no tab created or not valid dir
 		return;
 	} // if
@@ -595,6 +595,12 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 	} // for
 } // FillDirViewItem
 
+// information about displayed archive in directory view
+cPanel::sArchive cPanel::GetArchiveInfo()
+{
+	return qhTabs.value(qswDir->currentIndex()).saArchive;
+} // GetArchiveInfo
+
 // columns for current dir view
 QList<cSettings::sColumn> *cPanel::GetColumns()
 {
@@ -612,6 +618,12 @@ QHash<QTreeWidgetItem *, QFileInfo> cPanel::GetDirContent()
 {
 	return qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles;
 } // GetDirContent
+
+// location of current tab directory view
+cPanel::eLocation cPanel::GetLocation()
+{
+	return qhTabs.value(qswDir->currentIndex()).elLocation;
+} // GetLocation
 
 // find index of native column
 int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
@@ -640,6 +652,27 @@ QString cPanel::GetPath()
 	// shouldn't happen
 	return QString();
 } // GetPath
+
+// collect selected archive files
+QList<tHeaderData> cPanel::GetSelectedItemsArchiveList()
+{
+	int iI;
+	QList<QTreeWidgetItem *> qlSelected;
+	QList<tHeaderData> qlFiles;
+
+	qlSelected = static_cast<cTreeWidget *>(qswDir->currentWidget())->selectedItems();
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		tHeaderData thdFile;
+		
+		thdFile = qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles.value(qlSelected.at(iI));
+		if (QFileInfo(thdFile.FileName).fileName() != "..") {
+			// ignore ".." directories
+			qlFiles.append(thdFile);
+		} // if
+	} // for
+
+	return qlFiles;
+} // GetSelectedItemsArchiveList
 
 // get file infos of selected items
 QFileInfoList cPanel::GetSelectedItemsFileList(const QDir::Filters &qfType /* QDir::Dirs | QDir::Files */)
@@ -1508,7 +1541,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 			// clear previous file contents
 			qhTabs[iIndex].sldLocalDirectory.qhFiles.clear();
 
-			if (qfilFiles.count() == 0) {
+			if (qfilFiles.isEmpty()) {
 				// check path
 				if (!PathExists(qhTabs.value(iIndex).sldLocalDirectory.qsPath)) {
 					SetPath(qhTabs.value(iIndex).sldLocalDirectory.qsPath);
@@ -1597,12 +1630,12 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 	qhTabs.value(iIndex).qlColumns->clear();
 	qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
 	// check for column count in current column set
-	if (qslColumns.count() == 0 && qhTabs.value(iIndex).qsColumnSet != qsFULL) {
+	if (qslColumns.isEmpty() && qhTabs.value(iIndex).qsColumnSet != qsFULL) {
 		// no columns - switch to full column set
 		qhTabs[iIndex].qsColumnSet = qsFULL;
 		qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
 	} // if
-	if (qslColumns.count() == 0 && qhTabs.value(iIndex).qsColumnSet == qsFULL) {
+	if (qslColumns.isEmpty() && qhTabs.value(iIndex).qsColumnSet == qsFULL) {
 		// create default column set (Full) if not created yet or empty
 		csSettings->CreateDefaultColumnSet();
 		qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);

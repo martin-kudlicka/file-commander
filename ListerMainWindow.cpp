@@ -101,7 +101,7 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 {
 	int iFlags, iI;
 
-	if (qhPlugins.count() == 0) {
+	if (qhPlugins.isEmpty()) {
 		// no lister plugins
 		return false;
 	} // if
