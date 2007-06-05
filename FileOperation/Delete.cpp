@@ -14,6 +14,108 @@ cDelete::cDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings 
 	qi64TotalMaximum = 0;
 } // cDelete
 
+// delete non empty directory check
+cCopyMove::eCheckResult cDelete::CheckDeleteNonEmptyDirectory(const QFileInfoList &qfilSources, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectory, qint64 *qi64Total)
+{
+	ecDeleteNonEmptyDirectoryCurrent = cDeleteNonEmptyDirectory::Ask;
+
+	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
+		emit ShowDeleteNonEmptyDirectoryDialog(qfilSources.at(0).filePath());
+		// wait for answer
+		qsPause.acquire();
+
+		switch (ecDeleteNonEmptyDirectoryCurrent) {
+			case cDeleteNonEmptyDirectory::YesToAll:
+				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
+				break;
+			case cDeleteNonEmptyDirectory::NoToAll:
+				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
+			default:
+				;
+		} // switch
+	} // if
+
+	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
+		// do not delete this list of sources
+		*qi64Total += qfilSources.count();
+		return cCopyMove::NextFile;
+	} // if
+	if (ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
+		// delete canceled
+		return cCopyMove::Cancel;
+	} // if
+		// else can remove this list of sources
+
+	return cCopyMove::Nothing;
+} // CheckDeleteNonEmptyDirectory
+
+#ifdef Q_WS_WIN
+// check target file permission
+cCopyMove::eCheckResult cDelete::CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission)
+{
+	if (GetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource.filePath().unicode())) & FILE_ATTRIBUTE_READONLY) {
+		ecPermissionCurrent = cPermission::Ask;
+
+		if (*ecPermission == cPermission::Ask) {
+			emit ShowPermissionDialog(qfiSource.fileName(), tr("is readonly."));
+			// wait for answer
+			qsPause.acquire();
+
+			switch (ecPermissionCurrent) {
+				case cPermission::YesToAll:
+					*ecPermission = cPermission::YesToAll;
+					break;
+				case cPermission::NoToAll:
+					*ecPermission = cPermission::NoToAll;
+				default:
+					;
+			} // switch
+
+			if (ecPermissionCurrent == cPermission::Cancel) {
+				return cCopyMove::Cancel;
+			} // if
+		} // if
+		if (*ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+			return cCopyMove::NextFile;;
+		} else {
+			// remove target file readonly permission
+			SetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource.filePath().unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource.filePath().unicode())) & ~FILE_ATTRIBUTE_READONLY);
+		} // if else
+	} // if
+
+	return cCopyMove::Nothing;
+} // CheckPermission
+#endif
+
+// retry if delete unsuccesfull
+cCopyMove::eCheckResult cDelete::CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry)
+{
+	if (*ecRetry != cRetry::SkipAll) {
+		QString qsInformation;
+
+		if (qfiSource.isDir()) {
+			qsInformation = tr("Can't remove following directory:");
+		} else {
+			qsInformation = tr("Can't delete following file:");
+		} // if else
+
+		emit ShowRetryDialog(qsInformation, qfiSource.filePath());
+		// wait for answer
+		qsPause.acquire();
+
+		if (ecRetryCurrent == cRetry::SkipAll) {
+			// memorize permanent answer
+			*ecRetry = cRetry::SkipAll;
+		} // if
+	} // if
+	if (*ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
+		// skip this file
+		return cCopyMove::NextFile;
+	} // if
+
+	return cCopyMove::Nothing;
+} // CheckRetry
+
 // create widget for background operation
 void cDelete::CreateWidget()
 {
@@ -112,9 +214,6 @@ void cDelete::run()
 	int iI;
 	qint64 qi64Total;
 	QList<QFileInfoList> qlSources;
-#ifdef Q_WS_WIN
-	QString qsOverwrite;
-#endif
 	QString qsSourcePath;
 
 	qsSourcePath = qfilSource.at(0).path();
@@ -129,16 +228,7 @@ void cDelete::run()
 
 #ifdef Q_WS_WIN
 	// get default readonly overwrite permission
-	qsOverwrite = csSettings->GetReadonlyFileOverwrite();
-	if (qsOverwrite == qsASK) {
-		ecPermission = cPermission::Ask;
-	} else {
-		if (qsOverwrite == qsYES_TO_ALL) {
-			ecPermission = cPermission::YesToAll;
-		} else {
-			ecPermission = cPermission::NoToAll;
-		} // if else
-	} // if else
+	ecPermission = cCopyMove::GetDefaultReadonlyOverwritePermission(csSettings);
 #endif
 	ecRetry = cRetry::Ask;
 	// get default delete non empty directory answer
@@ -151,39 +241,20 @@ void cDelete::run()
 	qi64Total = 0;
 	// main process - go through list of sources
 	for (iI = 0; iI < qlSources.count(); iI++) {
+		cCopyMove::eCheckResult ecrCheck;
 		int iJ;
 		const QFileInfoList *qfilSources;
 
 		// check if source contains more items
 		if (qlSources.at(iI).count() > 1) {
-			ecDeleteNonEmptyDirectoryCurrent = cDeleteNonEmptyDirectory::Ask;
-
-			if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
-				emit ShowDeleteNonEmptyDirectoryDialog(qlSources.at(iI).at(0).filePath());
-				// wait for answer
-				qsPause.acquire();
-
-				switch (ecDeleteNonEmptyDirectoryCurrent) {
-					case cDeleteNonEmptyDirectory::YesToAll:
-						ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
-						break;
-					case cDeleteNonEmptyDirectory::NoToAll:
-						ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
-					default:
-						;
-				} // switch
-			} // if
-
-			if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
-				// do not delete this list of sources
-				qi64Total += qlSources.at(iI).count();
+			ecrCheck = CheckDeleteNonEmptyDirectory(qlSources.at(iI), &ecDeleteNonEmptyDirectory, &qi64Total);
+			if (ecrCheck == cCopyMove::NextFile) {
 				continue;
-			} // if
-			if (ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
-				// delete canceled
-				break;
-			} // if
-			// else can remove this list of sources
+			} else {
+				if (ecrCheck == cCopyMove::Cancel) {
+					break;
+				} // if
+			} // if else
 		} // if
 
 		// go through one list of sources (one marked item in directory view)
@@ -201,35 +272,14 @@ void cDelete::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			if (GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode())) & FILE_ATTRIBUTE_READONLY) {
-				ecPermissionCurrent = cPermission::Ask;
-
-				if (ecPermission == cPermission::Ask) {
-					emit ShowPermissionDialog(qfilSources->at(iJ).fileName(), tr("is readonly."));
-					// wait for answer
-					qsPause.acquire();
-
-					switch (ecPermissionCurrent) {
-						case cPermission::YesToAll:
-							ecPermission = cPermission::YesToAll;
-							break;
-						case cPermission::NoToAll:
-							ecPermission = cPermission::NoToAll;
-						default:
-							;
-					} // switch
-
-					if (ecPermissionCurrent == cPermission::Cancel) {
-						break;
-					} // if
+			ecrCheck = CheckPermission(qfilSources->at(iJ), &ecPermission);
+			if (ecrCheck == cCopyMove::NextFile) {
+				continue;
+			} else {
+				if (ecrCheck == cCopyMove::Cancel) {
+					break;
 				} // if
-				if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
-					continue;
-				} else {
-					// remove target file readonly permission
-					SetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qfilSources->at(iJ).filePath().unicode())) & ~FILE_ATTRIBUTE_READONLY);
-				} // if else
-			} // if
+			} // if else
 #endif
 
 			while (true) {
@@ -262,26 +312,8 @@ void cDelete::run()
 
 				if (!bSuccess) {
 					// not successfuly removed - try to retry
-					if (ecRetry != cRetry::SkipAll) {
-						QString qsInformation;
-
-						if (qfilSources->at(iJ).isDir()) {
-							qsInformation = tr("Can't remove following directory:");
-						} else {
-							qsInformation = tr("Can't delete following file:");
-						} // if else
-
-						emit ShowRetryDialog(qsInformation, qfilSources->at(iJ).filePath());
-						// wait for answer
-						qsPause.acquire();
-
-						if (ecRetryCurrent == cRetry::SkipAll) {
-							// memorize permanent answer
-							ecRetry = cRetry::SkipAll;
-						} // if
-					} // if
-					if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-						// skip this file
+					ecrCheck = CheckRetry(qfilSources->at(iJ), &ecRetry);
+					if (ecrCheck == cCopyMove::NextFile) {
 						break;
 					} // if
 					// else try once more

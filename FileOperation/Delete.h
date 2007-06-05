@@ -16,6 +16,7 @@
 #endif
 #include "FileOperation/Retry.h"
 #include "FileOperation/DeleteNonEmptyDirectory.h"
+#include "FileOperation/CopyMove.h"
 
 class cDelete : public QThread
 {
@@ -57,6 +58,24 @@ class cDelete : public QThread
 #endif
 		QString qsFilter;											///< filter for input files
 
+		cCopyMove::eCheckResult CheckDeleteNonEmptyDirectory(const QFileInfoList &qfilSources, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectory, qint64 *qi64Total);
+																		///< delete non empty directory check
+																		/**< \param qlSources sources for one selected item in directory view
+																			  \param ecDeleteNonEmptyDirectory permanent delete non empty directory user answer
+																			  \param qi64Total total deleted files
+																			  \return action after conflict check */
+#ifdef Q_WS_WIN
+		cCopyMove::eCheckResult CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission);
+																		///< check target file permission
+																		/**< \param qfiSource source file to change permission
+																			  \param ecPermission permanent permission user answer
+																			  \return action after permission check */
+#endif
+		cCopyMove::eCheckResult CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry);
+																		///< retry if delete unsuccesfull
+																		/**< \param qfiSource source file to try to retry
+																			  \param ecRetry permanent retry user answer
+																			  \return action after retry */
 		void CreateWidget();										///< create widget for background operation
 		void run();													///< separate thread process
 

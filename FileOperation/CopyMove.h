@@ -24,6 +24,13 @@ class cCopyMove : public QThread
 	Q_OBJECT
 
 	public:
+		/// copy/move checks
+		enum eCheckResult {
+			Nothing,															///< do nothing
+			Cancel,															///< cancel processing
+			NextFile															///< move onto next file
+		};
+
 		cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																				///< constructor
 																				/**< \param qmwParent parent window for foreground dialog
@@ -49,13 +56,6 @@ class cCopyMove : public QThread
 #endif
 
 	private:
-		/// copy/move checks
-		enum eCheckResult {
-			Nothing,															///< do nothing
-			Cancel,															///< cancel processing
-			NextFile															///< move onto next file
-		};
-
 		bool bCanceled;													///< true if operation is canceled
 		cCopyMoveConflict ccmcConflict;								///< conflict dialog
 		cCopyMoveConflict::eChoice ecConflictCurrent;			///< current conflict user's response
