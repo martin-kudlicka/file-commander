@@ -31,12 +31,6 @@ class cArchiveOperation : private QObject
 																									  \param qsDestination destination path */
 
 	private:
-		// count of objects
-		struct sObjects {
-			uint Directories;																///< number of directories
-			uint Files;																		///< number of files
-		};
-
 		bool bCanceled;																	///< operation in progress is canceled
 		cSettings *csSettings;															///< application's settings file
 		QMainWindow *qmwParent;															///< parent window for dialogs
@@ -50,9 +44,16 @@ class cArchiveOperation : private QObject
 																								///< gather all archive files that are selected
 																								/**< \param qlSourceSelected selected files
 																									  \param qlSourceAll all files */
-		sObjects GetCount(const QList<tHeaderData> &qlArchive);				///< count of objects
+		cFileOperation::sObjects GetCount(const QList<tHeaderData> &qlArchive);
+																								///< count of objects
 																								/**< \param qlArchive objects to count
 																									  \return count of objects */
+#ifdef Q_WS_WIN
+		static int __stdcall ProcessDataProc(char *cFileName, int iSize);	///< callback progress function
+																								/**< \param cFileName file processed
+																									  \param iSize bytes processed since last call
+																									  \return zero if operation canceled */
+#endif
 
 	signals:
 		void SetCurrentMaximum(const qint64 &qi64Value);						///< set maximum for current file

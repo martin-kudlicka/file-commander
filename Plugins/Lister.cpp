@@ -39,12 +39,12 @@ void cLister::Load()
 			qlLibrary.load();
 
 			// fill plugin properties
-			spiPluginInfo.tllListLoad = (tListLoad)(qlLibrary.resolve("ListLoad"));
-			spiPluginInfo.tlcwListCloseWindow = (tListCloseWindow)(qlLibrary.resolve("ListCloseWindow"));
-			spiPluginInfo.tlpListPrint = (tListPrint)(qlLibrary.resolve("ListPrint"));
-			spiPluginInfo.tlstListSearchText = (tListSearchText)(qlLibrary.resolve("ListSearchText"));
-			spiPluginInfo.tlscListSendCommand = (tListSendCommand)(qlLibrary.resolve("ListSendCommand"));
-			spiPluginInfo.tlsdpListSetDefaultParams = (tListSetDefaultParams)(qlLibrary.resolve("ListSetDefaultParams"));
+			spiPluginInfo.tllListLoad = (tListLoad)qlLibrary.resolve("ListLoad");
+			spiPluginInfo.tlcwListCloseWindow = (tListCloseWindow)qlLibrary.resolve("ListCloseWindow");
+			spiPluginInfo.tlpListPrint = (tListPrint)qlLibrary.resolve("ListPrint");
+			spiPluginInfo.tlstListSearchText = (tListSearchText)qlLibrary.resolve("ListSearchText");
+			spiPluginInfo.tlscListSendCommand = (tListSendCommand)qlLibrary.resolve("ListSendCommand");
+			spiPluginInfo.tlsdpListSetDefaultParams = (tListSetDefaultParams)qlLibrary.resolve("ListSetDefaultParams");
 
 			// set default parameters
 			if (spiPluginInfo.tlsdpListSetDefaultParams) {

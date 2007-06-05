@@ -30,6 +30,12 @@ class cPacker
 																														/**< \param hArcData handle representing archive
 																															  \param thdHeaderData information about next file
 																															  \return error value */
+#ifdef Q_WS_WIN
+		typedef void (__stdcall *tSetProcessDataProc)(HANDLE hArcData, tProcessDataProc tpdpProcessDataProc);
+																														///< set progress callback function
+																														/**< \param hArcData handle representing archive
+																															  \param tpdpProcessDataProc callback function */
+#endif
 
 		// file attributes
 		static const int iREAD_ONLY = 0x1;																	///< read only file
@@ -47,6 +53,9 @@ class cPacker
 			tPackSetDefaultParams tpsdpPackSetDefaultParams;											///< PackSetDefaultParams function
 			tProcessFile tpfProcessFile;																		///< ProcessFile function
 			tReadHeader trhReadHeader;																			///< ReadHeader function
+#ifdef Q_WS_WIN
+			tSetProcessDataProc tspdpSetProcessDataProc;													///< SetProcessDataProc function
+#endif
 		};
 
 		cPacker(cSettings *csSettings);																		///< constructor

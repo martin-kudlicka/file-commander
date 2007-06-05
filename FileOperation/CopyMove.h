@@ -37,6 +37,16 @@ class cCopyMove : public QThread
 																					  \param qsDestination destination path
 																					  \param qsFilter filter for input files
 																					  \param eStyle foreground or background operation */
+		static cCopyMoveConflict::eChoice GetDefaultOverwriteMode(cSettings *csSettings);
+																				///< default overwrite mode from settings file
+																				/**< \param csSettings settings file
+																					  \return default overwrite mode from settings file */
+#ifdef Q_WS_WIN
+		static cPermission::eChoice GetDefaultReadonlyOverwritePermission(cSettings *csSettings);
+																				///< default readonly overwrite permission
+																				/**< \param csSettings settings file
+																					  \return default readonly overwrite permission */
+#endif
 
 	private:
 		bool bCanceled;													///< true if operation is canceled

@@ -3,8 +3,24 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 
-// show retry dialog
+// show disk space dialog (singlethread)
+cDiskSpace::eChoice cDiskSpace::Exec(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
+{
+	return ShowDialog(qsFilename, qi64FileSize, qi64FreeSpace);
+} // Exec
+
+// show retry dialog (multithread)
 void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
+{
+	eChoice ecResponse;
+
+	ecResponse = ShowDialog(qsFilename, qi64FileSize, qi64FreeSpace);
+
+	emit Finished(ecResponse);
+} // Show
+
+// show disk space dialog
+cDiskSpace::eChoice cDiskSpace::ShowDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -40,5 +56,5 @@ void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, con
 		} // if else
 	} // if else
 
-	emit Finished(ecResponse);
-} // Show
+	return ecResponse;
+} // ShowDialog

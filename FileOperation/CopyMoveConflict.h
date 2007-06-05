@@ -25,12 +25,25 @@ class cCopyMoveConflict : public QObject
 
 		cCopyMoveConflict();															///< constructor
 
+		eChoice Exec(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+																							///< show conflict dialog (single thread)
+																							/**< \param qsOperation type of operation - copy or move
+																								  \param qfiSource source file information
+																								  \param qfiDestination destination file information */
+
+	private:
+		eChoice ShowDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+																							///< show conflict dialog
+																							/**< \param qsOperation type of operation - copy or move
+																								  \param qfiSource source file information
+																								  \param qfiDestination destination file information */
+
 	signals:
 		void Finished(const cCopyMoveConflict::eChoice &ecResponse);	///< dialog closed with user response
 																							/**< \param ecResponse user's response */
 	private slots:
 		void Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
-																							///< show conflict dialog
+																							///< show conflict dialog (multithread)
 																							/**< \param qsOperation type of operation - copy or move
 																								  \param qfiSource source file information
 																								  \param qfiDestination destination file information */

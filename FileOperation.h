@@ -15,6 +15,12 @@ class cFileOperation : private QObject
 	Q_OBJECT
 
 	public:
+		// count of objects
+		struct sObjects {
+			uint Directories;											///< number of directories
+			uint Files;													///< number of files
+		};
+
 		cFileOperation(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																			///< constructor
 																			/**< \param qmwParent parent window for dialogs
@@ -28,12 +34,6 @@ class cFileOperation : private QObject
 																				  \param qsDestinationPath destination path */
 
 	private:
-		// count of objects
-		struct sObjects {
-			uint Directories;											///< number of directories
-			uint Files;													///< number of files
-		};
-
 		/// queued operation description
 		struct sOperation {
 			cFileRoutine::eOperation eoOperation;				///< operation type
