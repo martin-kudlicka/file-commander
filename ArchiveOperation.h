@@ -48,6 +48,34 @@ class cArchiveOperation : private QObject
 		static qint64 qi64TotalValue;													///< total progress
 		QMainWindow *qmwParent;															///< parent window for dialogs
 
+		cCopyMove::eCheckResult CheckConflict(const QFileInfo &qfiSource, QString *qsTarget, cCopyMoveConflict::eChoice *ecConflictCurrent, cCopyMoveConflict::eChoice *ecConflict);
+																								///< check existing destination file conflict
+																								/**< \param qfiSource source file to check conflict for
+																									  \param qsTarget target file in conflict
+																									  \param ecConflictCurrent conflict current user answer
+																									  \param ecConflict conflict permanent user answer
+																									  \return action after conflict check */
+		void CheckContinue(const QString &qsSource, eContinue *ecContinueCurrent, eContinue *ecContinue);
+																								///< continue after unsuccessfull file extraction
+																								/**< \param qsSource unsuccessfully extracted file
+																									  \param ecContinueCurrent continue current user answer
+																									  \param ecContinue continue permanent user answer */
+		cCopyMove::eCheckResult CheckDiskSpace(const QString &qsSource, const QString &qsTargetPath, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpaceCurrent, cDiskSpace::eChoice *ecDiskSpace);
+																								///< check disk space
+																								/**< \param qfiSource source file to check disk space for
+																									  \param qsTargetPath target path to check disk space
+																									  \param iUnpackedSize size of unpacked source file
+																									  \param ecDiskSpaceCurrent disk space current user answer
+																									  \param ecDiskSpace disk space permanent user answer
+																									  \return action after disk space check */
+#ifdef Q_WS_WIN
+		cCopyMove::eCheckResult CheckPermission(const QString &qsTarget, cPermission::eChoice *ecPermissionCurrent, cPermission::eChoice *ecPermission);
+																								///< check target file permission
+																								/**< \param qsTarget file to check for permission
+																									  \param ecPermissionCurrent permission current user answer
+																									  \param ecPermission permission permanent user answer
+																									  \return action after permission check */
+#endif
 		void ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
 																								///< extract files from archive to local directory
 																								/**< \param saSourceArchive source archive info
