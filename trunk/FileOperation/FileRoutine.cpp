@@ -175,7 +175,7 @@ QString cFileRoutine::GetWildcardedName(const QFileInfo &qfiFile, const QString 
 	} // for
 
 	qsNewFilename = qfiFile.path() + '/' + qslOutputs[0] + '.' + qslOutputs[1];
-	return QFileInfo(qsDestination).path() + '/' + qsNewFilename.mid(qsSourcePath.length());
+	return QDir::cleanPath(QFileInfo(qsDestination).path() + '/' + qsNewFilename.mid(qsSourcePath.length()));
 } // GetWildcardedName
 
 // check if filename suits filter
