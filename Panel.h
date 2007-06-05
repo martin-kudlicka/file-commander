@@ -231,8 +231,6 @@ class cPanel : public QObject
 																							///< refresh dir content with local directory files
 																							/**< \param iIndex index of dir view
 																								  \param qfilFiles custom list of files */
-		void RefreshContent(const QList<tHeaderData> &qlFiles);			///< refresh current directory view with archive content
-																							/**< \param qlFiles all files in archive */
 		void RefreshHeader(const int &iIndex, const bool &bContent = false);
 																							///< refresh column's header
 																							/**< \param iIndex index of dir view
