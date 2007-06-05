@@ -1,17 +1,26 @@
 #include "ArchiveOperation.h"
 
 #include "FileOperation/FileOperationDialog.h"
-#include "FileOperation/CopyMoveDialog.h"
 #include "FileOperation.h"
 #include <QtGui/QMessageBox>
 
-qint64 cArchiveOperation::qi64CurrentValue;	///< current file progress (static class variable)
+qint64 cArchiveOperation::qi64CurrentValue;		///< current file progress (static class variable)
+qint64 cArchiveOperation::qi64TotalValue;			///< total progress (static class variable)
+cCopyMoveDialog *cArchiveOperation::ccmdDialog;	///< copy/move (progress) dialog (static class variable)
+
+// destructor
+cArchiveOperation::~cArchiveOperation()
+{
+	ccmdDialog->deleteLater();
+} // ~cArchiveOperation
 
 // constructor
 cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings)
 {
 	this->qmwParent = qmwParent;
 	this->csSettings = csSettings;
+
+	ccmdDialog = new cCopyMoveDialog(qmwParent, true);
 } // cArchiveOperation
 
 // extract files from archive to local directory
@@ -19,34 +28,31 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 {
 	eContinue ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
-	cCopyMoveDialog ccmdDialog(qmwParent, true);
 	cDiskSpace::eChoice ecDiskSpace;
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
 	HANDLE hArchive;
-	qint64 qi64TotalValue;
+	int iI;
+	qint64 qi64TotalMaximum;
 	QList<tHeaderData> qlExtract;
 	tHeaderData thdHeaderData;
 	tOpenArchiveData toadArchiveData;
 
 	// prepare dialog
-	ccmdDialog.setWindowTitle(tr("Extract"));
-	ccmdDialog.setModal(true);
-	ccmdDialog.show();
-	connect(this, SIGNAL(SetCurrentMaximum(const qint64 &)), &ccmdDialog, SLOT(on_cCopyMove_SetCurrentMaximum(const qint64 &)));
-	connect(this, SIGNAL(SetCurrentValue(const qint64 &)), &ccmdDialog, SLOT(on_cCopyMove_SetCurrentValue(const qint64 &)));
-	connect(this, SIGNAL(SetDestination(const QString &)), &ccmdDialog, SLOT(on_cCopyMove_SetDestination(const QString &)));
-	connect(this, SIGNAL(SetSource(const QString &)), &ccmdDialog, SLOT(on_cCopyMove_SetSource(const QString &)));
-	connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), &ccmdDialog, SLOT(on_cCopyMove_SetTotalMaximum(const qint64 &)));
-	connect(this, SIGNAL(SetTotalValue(const qint64 &)), &ccmdDialog, SLOT(on_cCopyMove_SetTotalValue(const qint64 &)));
-	connect(&ccmdDialog, SIGNAL(Cancel()), SLOT(on_ccmdDialog_OperationCanceled()));
+	ccmdDialog->setWindowTitle(tr("Extract"));
+	ccmdDialog->setModal(true);
+	ccmdDialog->show();
 
 	// collect files to extract
 	qlExtract = GetAllArchiveFiles(qlSourceSelected, saSourceArchive.qlFiles);
+	qi64TotalMaximum = 0;
+	for (iI = 0; iI < qlExtract.count(); iI++) {
+		qi64TotalMaximum += qlExtract.at(iI).UnpSize;
+	} // for
 
 	// preparation
-	emit SetTotalMaximum(qlExtract.count());
+	ccmdDialog->qpbTotal->setMaximum(qi64TotalMaximum);
 	ecConflict = cCopyMove::GetDefaultOverwriteMode(csSettings);
 #ifdef Q_WS_WIN
 	ecPermission = cCopyMove::GetDefaultReadonlyOverwritePermission(csSettings);
@@ -65,14 +71,12 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 	saSourceArchive.spiPlugin.tspdpSetProcessDataProc(hArchive, &cArchiveOperation::ProcessDataProc);
 #endif
 
-	qi64TotalValue = -1;
 	// extract files
 	while (!saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
 		eContinue ecContinueCurrent;
 		cCopyMoveConflict::eChoice ecConflictCurrent;
 		cDiskSpace::eChoice ecDiskSpaceCurrent;
 		cPermission::eChoice ecPermissionCurrent;
-		int iI;
 
 		for (iI = 0; iI < qlExtract.count(); iI++) {
 			if (!strcmp(qlExtract.at(iI).FileName, thdHeaderData.FileName)) {
@@ -84,11 +88,10 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(thdHeaderData.FileName), saSourceArchive.qsPath, qsDestination);
 				qi64TotalValue++;
 
-				emit SetSource(qsSource);
-				emit SetDestination(qsTarget);
+				ccmdDialog->qlSource->setText(qsSource);
+				ccmdDialog->qlDestination->setText(qsTarget);
 				qi64CurrentValue = 0;
-				emit SetCurrentMaximum(thdHeaderData.UnpSize);
-				emit SetTotalValue(qi64TotalValue);
+				ccmdDialog->qpbCurrent->setMaximum(thdHeaderData.UnpSize);
 
 				if (thdHeaderData.FileAttr & cPacker::iDIRECTORY) {
 					QDir qdDir;
@@ -425,7 +428,10 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sAr
 int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
 {
 	qi64CurrentValue += iSize;
-	//emit SetCurrentValue(qi64CurrentValue);
+	qi64TotalValue += iSize;
+	ccmdDialog->qpbCurrent->setValue(qi64CurrentValue);
+	ccmdDialog->qpbTotal->setValue(qi64TotalValue);
+	QApplication::processEvents();
 
 	return 1;
 } // ProcessDataProc

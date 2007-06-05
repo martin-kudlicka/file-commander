@@ -7,7 +7,7 @@
 
 #include <QtGui/QMainWindow>
 
-class cCopyMoveDialog : public QDialog, private Ui::qdCopyMove
+class cCopyMoveDialog : public QDialog, public Ui::qdCopyMove
 {
 	Q_OBJECT
 
