@@ -1134,15 +1134,20 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				return;
 			} // if
 
-			qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
-			qi64Size = 0;
-			for (iI = 0; iI < qfilFiles.count(); iI++) {
-				qi64Size += qfilFiles.at(iI).size();
-			} // for
+			qi64Size = qtwiItem->data(iColumnExtension, Qt::UserRole).toLongLong();
+			if (qi64Size == 0) {
+				// count only if not counted yet
+				qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+				qi64Size = 0;
+				for (iI = 0; iI < qfilFiles.count(); iI++) {
+					qi64Size += qfilFiles.at(iI).size();
+				} // for
 
-			// put size to data to count with it when selecting files
-			qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
-			qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+				// put size to data to count with it when selecting files
+				qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
+				// show the size in size column
+				qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+			} // if
 			break;
 		case Qt::Key_Enter:
 		case Qt::Key_Return:
