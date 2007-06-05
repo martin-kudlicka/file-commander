@@ -755,7 +755,7 @@ void cPanel::GoToRootDir()
 	QDir qdDir;
 
 	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
-	if(!qdDir.isRoot()) {
+	if(!qdDir.isRoot() || qhTabs.value(qswDir->currentIndex()).elLocation == Archive) {
 		if (qhTabs.value(qswDir->currentIndex()).elLocation == Archive) {
 			qhTabs[qswDir->currentIndex()].elLocation = LocalDirectory;
 		} // if
