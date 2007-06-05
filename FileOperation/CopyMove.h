@@ -91,15 +91,15 @@ class cCopyMove : public QThread
 																					  \param ecConflict permanent conflict user answer
 																					  \param qi64TotalValue total copied file size
 																					  \return action after conflict check */
-		eCheckResult CheckDiskSpace(const QFileInfo &qfiSource, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
+		eCheckResult CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
 																				///< check disk space
-																				/**< \param qfiSource source file to check disk space for
+																				/**< \param qi64SourceSize source file size to check disk space for
 																					  \param ecDiskSpace permanent disk space user answer
 																					  \param qi64TotalValue total copied file size
 																					  \return action after disk space check */
-		eCheckResult CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
+		eCheckResult CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
 																				///< check target file permission
-																				/**< \param qfiSource source file to increase copied file size by if skipped
+																				/**< \param qi64SourceSize source file size to increase copied file size by if skipped
 																					  \param ecPermission permanent permission user answer
 																					  \param qi64TotalValue total copied file size
 																					  \return action after permission check */
