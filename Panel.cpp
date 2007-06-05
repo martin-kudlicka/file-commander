@@ -284,6 +284,20 @@ QString cPanel::DateTime(const QDateTime &qdtDateTime)
 	return qsDateTime;
 } // DateTime
 
+// check if directory is displayed in another tab too
+bool cPanel::DirInAnotherTab(const int &iIndex, const QString &qsDirectory)
+{
+	QHashIterator<uint, sTab> qhiTab(qhTabs);
+	while (qhiTab.hasNext()) {
+		qhiTab.next();
+		if (qhiTab.key() != iIndex && qhiTab.value().elLocation == LocalDirectory && qhiTab.value().sldLocalDirectory.qsPath == qsDirectory) {
+			return true;
+		} // if
+	} // while
+
+	return false;
+} // DirInAnotherTab
+
 // create new tab by duplicate one
 int cPanel::DuplicateTab(const int &iTabIndex)
 {
@@ -1247,7 +1261,7 @@ void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
 				RefreshContent(iI);
 			} else {
 				// wait with refresh till swith to the tab
-				qhTabs[qswDir->currentIndex()].bValid = false;
+				qhTabs[iI].bValid = false;
 			} // if else
 		} // if
 	} // for
@@ -1761,7 +1775,9 @@ void cPanel::SetPath(const QString &qsPath)
 {
 	// remove old path from watcher
 	qhTabs[qswDir->currentIndex()].bValid = false;
-	qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
+	if (!DirInAnotherTab(qswDir->currentIndex(), qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath)) {
+		qfswWatcher.removePath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
+	} // if
 
 	switch (qhTabs.value(qswDir->currentIndex()).elLocation) {
 		case LocalDirectory:
@@ -2021,7 +2037,7 @@ void cPanel::SortBy(const int &iColumn)
 	Sort(qswDir->currentIndex());
 } // SortBy
 
-// converts Qt's date time format to packer
+// converts Qt's date time format to packer's
 int cPanel::ToPackerDateTime(const QDateTime &qdtDateTime)
 {
 	int iDateTime;

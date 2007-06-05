@@ -187,6 +187,11 @@ class cPanel : public QObject
 		QString DateTime(const QDateTime &qdtDateTime);						///< convert QDateTime to user defined format
 																							/**< \param qdtDateTime date/time to convert
 																								  \return formatted date/time string */
+		bool DirInAnotherTab(const int &iIndex, const QString &qsDirectory);
+																							///< check if directory is displayed in another tab too
+																							/**< \param iIndex tab index to ignore
+																								  \param qsDirectory directory (full path) name
+																								  \return true if in another tab too */
 		bool eventFilter(QObject *watched, QEvent *event);					///< event filter
 																							/**< \param watched filtered object
 																								  \param event event description
@@ -241,7 +246,7 @@ class cPanel : public QObject
 																							/**< \param iTabIndex tab bar index to set text in */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
-		int ToPackerDateTime(const QDateTime &qdtDateTime);				///< converts Qt's date time format to packer
+		int ToPackerDateTime(const QDateTime &qdtDateTime);				///< converts Qt's date time format to packer's
 																							/**< \param qdtDateTime Qt date time format
 																								  \return packer plugin's date time format */
 		QDateTime ToQDateTime(const int &iDateTime);							///< converts packer plugin's date time format to QDateTime
