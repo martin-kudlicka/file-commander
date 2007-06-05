@@ -5,7 +5,7 @@
 
 #include <QtCore/QObject>
 #include "Plugins/WCXHead.h"
-#include "Plugins/Packer.h"
+#include "Plugins/PackerPlugin.h"
 #include <QtGui/QMainWindow>
 #include "Panel.h"
 //#include "FileOperation/CopyMoveDialog.h"

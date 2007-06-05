@@ -151,13 +151,13 @@ void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTree
 } // AddPluginIntoTree
 
 // constructor
-cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContent *ccContent)
+cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	this->csSettings = csSettings;
-	this->ccContent = ccContent;
+	this->ccpContentPlugin = ccpContentPlugin;
 
 	qpbColumnAdd->setMenu(&qmColumns);
 
@@ -1322,7 +1322,7 @@ void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *curr
 void cOptionsDialog::PrepareColumnsMenu()
 {
 	QAction *qaAction, *qaNative, *qaPlugins;
-	QHash<QString, cContent::sPluginInfo> qhPlugins;
+	QHash<QString, cContentPlugin::sPluginInfo> qhPlugins;
 
 	// main menu
 	qaNative = qmColumns.addAction(qsNATIVE2);
@@ -1346,11 +1346,11 @@ void cOptionsDialog::PrepareColumnsMenu()
 
 	// plugins sub menu
 	qmPlugins = new QMenu(&qmColumns);
-	qhPlugins = ccContent->GetPluginsInfo();
+	qhPlugins = ccpContentPlugin->GetPluginsInfo();
 	if (qhPlugins.isEmpty()) {
 		qmPlugins->setEnabled(false);
 	} else {
-		QHashIterator<QString, cContent::sPluginInfo> qhiPlugins(qhPlugins);
+		QHashIterator<QString, cContentPlugin::sPluginInfo> qhiPlugins(qhPlugins);
 		while (qhiPlugins.hasNext()) {
 			int iI;
 			QAction *qaPlugin;

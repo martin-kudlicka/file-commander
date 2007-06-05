@@ -20,7 +20,7 @@ QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class vari
 cPanel::~cPanel()
 {
 	delete csmMenu;
-	ccdContentDelayed->deleteLater();
+	ccpdContentPluginDelayed->deleteLater();
 } // ~cPanel
 
 // actualize volume information - disk name and space
@@ -219,7 +219,7 @@ void cPanel::CloseTab(const QMouseEvent *qmeEvent)
 } // CloseTab
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, cPacker *cpPacker, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch)
 {
 	qswDir = qswPanel;
 	this->qcbDrive = qcbDrive;
@@ -228,8 +228,8 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qlPath = qlPath;
 	this->qlSelected = qlSelected;
 	this->csSettings = csSettings;
-	this->ccContent = ccContent;
-	this->cpPacker = cpPacker;
+	this->ccpContentPlugin = ccpContentPlugin;
+	this->cppPackerPlugin = cppPackerPlugin;
 	this->qmDrives = qmDrives;
 	this->qmwParent = qmwParent;
 	this->qlGlobalPath = qlGlobalPath;
@@ -254,9 +254,9 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	qtTimer.start(iTIMER_INTERVAL);
 
 	// delayed column update
-	ccdContentDelayed = new cContentDelayed(ccContent);
-	connect(ccdContentDelayed, SIGNAL(GotColumnValue(const cContentDelayed::sOutput &)), SLOT(on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &)));
-	connect(this, SIGNAL(InterruptContentDelayed()), ccdContentDelayed, SLOT(on_InterruptContentDelayed()));
+	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
+	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
+	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
 
 	// event filters
 	qcbCommand->installEventFilter(this);
@@ -432,7 +432,7 @@ void cPanel::FeedToPanel(const QFileInfoList &qfilFiles)
 } // FeedToPanel
 
 // fill directory view item accodring to content of vData
-void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentDelayed::sParameters> *qlParameters)
+void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters)
 {
 	int iI;
 
@@ -472,7 +472,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 							} else {
 								qsName = QFileInfo(static_cast<const tHeaderData *>(vData)->FileName).completeBaseName();
 							} // if
-							if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iDIRECTORY && csSettings->GetShowBracketsAroundDirectoryName()) {
+							if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY && csSettings->GetShowBracketsAroundDirectoryName()) {
 								qsName = '[' + qsName + ']';
 							} // if
 					} // switch
@@ -499,7 +499,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 									} // if else
 									break;
 								case Archive:
-									if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iDIRECTORY) {
+									if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
 										qtwiFile->setText(iI, tr("<DIR>"));
 									} else {
 										qtwiFile->setText(iI, GetSizeString(static_cast<const tHeaderData *>(vData)->UnpSize));
@@ -527,18 +527,18 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 										dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(static_cast<const QFileInfo *>(vData)->filePath().unicode()));
 										break;
 									case Archive:
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iREAD_ONLY) {
+										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iREAD_ONLY) {
 											dwAttributes = FILE_ATTRIBUTE_READONLY;
 										} else {
 											dwAttributes = 0;
 										} // if else
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iHIDDEN) {
+										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iHIDDEN) {
 											dwAttributes |= FILE_ATTRIBUTE_HIDDEN;
 										} // if
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iSYSTEM) {
+										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iSYSTEM) {
 											dwAttributes |= FILE_ATTRIBUTE_SYSTEM;
 										} // if
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPacker::iARCHIVE) {
+										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iARCHIVE) {
 											dwAttributes |= FILE_ATTRIBUTE_ARCHIVE;
 										} // if
 								} // switch
@@ -574,9 +574,9 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 				// but only for local directory files
 				int iFlag;
 
-				qtwiFile->setText(iI, ccContent->GetPluginValue(static_cast<const QFileInfo *>(vData)->filePath(), qhTabs.value(iIndex).qlColumns->at(iI).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iI).qsUnit, &iFlag));
+				qtwiFile->setText(iI, ccpContentPlugin->GetPluginValue(static_cast<const QFileInfo *>(vData)->filePath(), qhTabs.value(iIndex).qlColumns->at(iI).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iI).qsUnit, &iFlag));
 				if (iFlag == ft_delayed) {
-					cContentDelayed::sParameters spParameters;
+					cContentPluginDelayed::sParameters spParameters;
 
 					// thread input
 					spParameters.siInput.qsFilename = static_cast<const QFileInfo *>(vData)->filePath();
@@ -929,7 +929,7 @@ bool cPanel::IsActive()
 } // IsActive
 
 // got golumn value from plugin
-void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput)
+void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput)
 {
 	soOutput.qtwiItem->setText(soOutput.iColumn, soOutput.qsValue);
 } // on_ccdContentDelayed_GotColumnValue
@@ -1064,7 +1064,7 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 			} // if else
 			break;
 		case Archive:
-			if (thdFile->FileAttr & cPacker::iDIRECTORY) {
+			if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
 				// double click on directory -> go into directory
 				if (QFileInfo(thdFile->FileName).fileName() == "..") {
 					GoToUpDir();
@@ -1116,7 +1116,7 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 				bDirectory = qhiTab.value().sldLocalDirectory.qhFiles.value(ctwTree->topLevelItem(iI)).isDir();
 				break;
 			case Archive:
-				bDirectory = qhiTab.value().saArchive.qhFiles.value(ctwTree->topLevelItem(iI)).FileAttr & cPacker::iDIRECTORY;
+				bDirectory = qhiTab.value().saArchive.qhFiles.value(ctwTree->topLevelItem(iI)).FileAttr & cPackerPlugin::iDIRECTORY;
 		} // switch
 
 		if (bDirectory) {
@@ -1166,7 +1166,7 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 			// refresh content plugin values
 			for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
 				if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
-					qtwiItem->setText(iI, ccContent->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+					qtwiItem->setText(iI, ccpContentPlugin->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
 				} // if
 			} // for
 
@@ -1326,10 +1326,10 @@ void cPanel::on_qtTimer_timeout()
 bool cPanel::OpenArchive(const QFileInfo &qfiFile)
 {
 	int iI;
-	QHash<QString, cPacker::sPluginInfo> qhPluginsInfo;
+	QHash<QString, cPackerPlugin::sPluginInfo> qhPluginsInfo;
 	QList<cSettings::sPlugin> qlPackerPlugins;
 
-	qhPluginsInfo = cpPacker->GetPluginsInfo();
+	qhPluginsInfo = cppPackerPlugin->GetPluginsInfo();
 	qlPackerPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
 
 	for (iI = 0; iI < qlPackerPlugins.count(); iI++) {
@@ -1458,11 +1458,11 @@ QList<tHeaderData> cPanel::ReadArchiveFiles(const HANDLE &hArchive)
 	// archive root ".." directory
 	strcpy(thdHeaderData.FileName, "..");
 	thdHeaderData.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
-	thdHeaderData.FileAttr = cPacker::iDIRECTORY;
+	thdHeaderData.FileAttr = cPackerPlugin::iDIRECTORY;
 	qlFiles.append(thdHeaderData);
 
 	while (!qhTabs.value(qswDir->currentIndex()).saArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
-		if (thdHeaderData.FileAttr & cPacker::iDIRECTORY) {
+		if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
 			// create ".." directory in each archive directory
 			QString qsDirectory;
 			tHeaderData thdDotDot;
@@ -1470,7 +1470,7 @@ QList<tHeaderData> cPanel::ReadArchiveFiles(const HANDLE &hArchive)
 			qsDirectory = QFileInfo(thdHeaderData.FileName).filePath() + "/..";
 			strcpy(thdDotDot.FileName, qsDirectory.toLatin1().constData());
 			thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
-			thdDotDot.FileAttr = cPacker::iDIRECTORY;
+			thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
 			qlFiles.append(thdDotDot);
 		} // if
 
@@ -1531,7 +1531,7 @@ void cPanel::RefreshContent()
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 {
 	int iI;
-	QList<cContentDelayed::sParameters> qlParameters;
+	QList<cContentPluginDelayed::sParameters> qlParameters;
 
 	// interrupt delayed content processing
 	emit InterruptContentDelayed();
@@ -1605,7 +1605,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 
 	if (qlParameters.count() > 0) {
 		// start thread to query content plugins values
-		ccdContentDelayed->Start(qlParameters);
+		ccpdContentPluginDelayed->Start(qlParameters);
 	} // if
 } // RefreshContent
 
@@ -1645,7 +1645,7 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 
 		scColumn = csSettings->GetColumnInfo(qhTabs.value(iIndex).qsColumnSet, qslColumns.at(iI));
 		// test if is native or plugin and loaded
-		if (scColumn.qsPlugin == qsNO || ccContent->Loaded(scColumn.qsPlugin)) {
+		if (scColumn.qsPlugin == qsNO || ccpContentPlugin->Loaded(scColumn.qsPlugin)) {
 			// ok -> add to column list
 			qhTabs.value(iIndex).qlColumns->append(scColumn);
 		} // if
@@ -1725,12 +1725,12 @@ void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 } // SaveSettings
 
 // select or unselect some files
-void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister)
+void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cListerPlugin *clpListerPlugin)
 {
-	cSelectFilesDialog csfdSelect(qmwParent, estType, csSettings, clLister);
+	cSelectFilesDialog csfdSelect(qmwParent, estType, csSettings, clpListerPlugin);
 
 	if (csfdSelect.exec() == QDialog::Accepted) {
-		cFindFilesDialog cffdFindFiles(NULL, NULL, csSettings, clLister);
+		cFindFilesDialog cffdFindFiles(NULL, NULL, csSettings, clpListerPlugin);
 		cSettings::sFindSettings sfsFind;
 		QFileInfoList qfilFiles;
 
@@ -1972,7 +1972,7 @@ void cPanel::Sort(const int &iIndex)
 		case Archive:
 			while (qhiArchiveFile.hasNext()) {
 				qhiArchiveFile.next();
-				if (qhiArchiveFile.value().FileAttr & cPacker::iDIRECTORY) {
+				if (qhiArchiveFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
 					qlDirectories.append(qhiArchiveFile.key());
 				} else {
 					qlFiles.append(qhiArchiveFile.key());

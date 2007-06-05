@@ -5,7 +5,7 @@
 
 #include "ui_ListerMainWindow.h"
 
-#include "Plugins/Lister.h"
+#include "Plugins/ListerPlugin.h"
 #include <QtGui/QPrinter>
 
 class cListerMainWindow : public QMainWindow, private Ui::qmwLister
@@ -13,20 +13,20 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 	Q_OBJECT
 
 	public:
-		cListerMainWindow(cSettings *csSettings, cLister *clLister, const QString &qsFile);
+		cListerMainWindow(cSettings *csSettings, cListerPlugin *clpListerPlugin, const QString &qsFile);
 																										///< creates lister window
 																										/**< \param csSettings application's settings
-																											  \param clLister lister plugins
+																											  \param clpListerPlugin lister plugins
 																											  \param qsFile file content to show */
 		~cListerMainWindow();																	///< destructor
 
 
 	private:
-		cLister *clLister;																		///< lister plugin's class
+		cListerPlugin *clpListerPlugin;														///< lister plugin's class
 		cSettings *csSettings;																	///< application's main settings file
 		int iSearchFlags;																			///< last used flags for plugin search
-		QHash<QString, cLister::sPluginInfo> qhPlugins;									///< table of plugins
-		QHashIterator<QString, cLister::sPluginInfo> *qhiPlugins;					///< currently used plugin
+		QHash<QString, cListerPlugin::sPluginInfo> qhPlugins;							///< table of plugins
+		QHashIterator<QString, cListerPlugin::sPluginInfo> *qhiPlugins;			///< currently used plugin
 		QPrinter qpPrinter;																		///< printer settings
 		QString qsFile;																			///< file content to show
 		QString qsSearchedText;																	///< last searched text

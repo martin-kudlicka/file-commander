@@ -1,13 +1,13 @@
 /// content plugins
 
-#ifndef CONTENT_H
-#define CONTENT_H
+#ifndef CONTENT_PLUGIN_H
+#define CONTENT_PLUGIN_H
 
 #include <QtCore/QHash>
 #include "Settings.h"
 #include "Plugins/ContPlug.h"
 
-class cContent
+class cContentPlugin
 {
 	public:
 		typedef int (__stdcall *tContentGetValue)(char *cFilename, int iFieldIndex, int iUnitIndex, void *vFieldValue, int iMaxLen, int iFlags);
@@ -42,8 +42,8 @@ class cContent
 			tContentStopGetValue tcsgvContentStopGetValue;				///< pointer to plugin's ContentGetValue function
 		};
 
-		~cContent();																///< destructor
-		cContent(cSettings *csSettings);										///< constructor
+		~cContentPlugin();														///< destructor
+		cContentPlugin(cSettings *csSettings);								///< constructor
 																						/**< \param csSettings application's settings */
 
 		QHash<QString, sPluginInfo> GetPluginsInfo();
@@ -93,6 +93,6 @@ class cContent
 																						/**< \param cFieldValue value returned by plugin
 																							  \param iType type of value
 																							  \return QString presentation of value */
-}; // cContent
+}; // cContentPlugin
 
 #endif

@@ -207,13 +207,13 @@ cMainWindow::cMainWindow()
 	qtwLeftDrives->header()->hide();
 	qcbLeftDrive->setModel(qtwLeftDrives->model());
 	qcbLeftDrive->setView(qtwLeftDrives);
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccContent, cpPlugins->cpPacker, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->cppPackerPlugin, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
 	qtwRightDrives = new QTreeWidget(qcbRightDrive);
 	qtwRightDrives->setRootIsDecorated(false);
 	qtwRightDrives->header()->hide();
 	qcbRightDrive->setModel(qtwRightDrives->model());
 	qcbRightDrive->setView(qtwRightDrives);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccContent, cpPlugins->cpPacker,  &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->cppPackerPlugin,  &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
 	// quick searches
 	qleLeftQuickSearch->hide();
 	qleRightQuickSearch->hide();
@@ -527,7 +527,7 @@ void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
 // options are selected
 void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
-	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccContent);
+	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccpContentPlugin);
 	QFlags<cOptionsDialog::eToDo> qfToDo;
 
 	qfToDo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
@@ -609,7 +609,7 @@ void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
 	cPanel *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cffdFind = new cFindFilesDialog(this, cpSource, &csSettings, cpPlugins->clLister);
+	cffdFind = new cFindFilesDialog(this, cpSource, &csSettings, cpPlugins->clpListerPlugin);
 
 	cffdFind->exec();
 	cffdFind->deleteLater();
@@ -630,7 +630,7 @@ void cMainWindow::on_qaSelectGroup_triggered(bool checked /* false */)
 	cPanel *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cpSource->Select(cSelectFilesDialog::Select, cpPlugins->clLister);
+	cpSource->Select(cSelectFilesDialog::Select, cpPlugins->clpListerPlugin);
 } // on_qaSelectGroup_triggered
 
 // close all other tabs called
@@ -721,7 +721,7 @@ void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */)
 	cPanel *cpSource;
 
 	SetSourceAndDestinationPanel(&cpSource);
-	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clLister);
+	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clpListerPlugin);
 } // on_qaUnselectGroup_triggered
 
 // selected column set from column set submenu
@@ -877,7 +877,7 @@ void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 			if (csSettings.GetViewerType() == qsINTERNAL) {
 				cListerMainWindow *clmwLister;
 
-				clmwLister = new cListerMainWindow(&csSettings, cpPlugins->clLister, qfilFiles.at(iI).filePath());
+				clmwLister = new cListerMainWindow(&csSettings, cpPlugins->clpListerPlugin, qfilFiles.at(iI).filePath());
 				clmwLister->show();
 			} else {
 				QString qsCommand;

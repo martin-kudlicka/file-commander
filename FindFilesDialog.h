@@ -6,7 +6,7 @@
 #include "ui_FindFilesDialog.h"
 
 #include "Panel.h"
-#include "Plugins/Lister.h"
+#include "Plugins/ListerPlugin.h"
 
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
@@ -25,12 +25,12 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 	Q_OBJECT
 
 	public:
-		cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister);
+		cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cListerPlugin *clpListerPlugin);
 																								///< constructor
 																								/**< \param qwParent parent window of this dialog
 																									  \param cpPanel panel to work with
 																									  \param csSettings application's settings file
-																									  \param clLister lister plugins */
+																									  \param clpListerPlugin lister plugins */
 
 		QFileInfoList SearchResult();													///< founded files
 																								/**< \return list of founded files */
@@ -44,7 +44,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 
 		bool bStop;																			///< interrupt finding files
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< founded files table
-		cLister *clLister;																///< lister plugin's class
+		cListerPlugin *clpListerPlugin;												///< lister plugin's class
 		cPanel *cpPanel;																	///< panel to work with
 		cSettings *csSettings;															///< application's settings file
 		cSettings::sFindSettings sfsCurrentSearch;								///< current search settings

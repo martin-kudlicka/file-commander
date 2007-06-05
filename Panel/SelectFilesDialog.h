@@ -7,7 +7,7 @@
 
 #include <QtGui/QMainWindow>
 #include "Settings.h"
-#include "Plugins/Lister.h"
+#include "Plugins/ListerPlugin.h"
 
 class cSelectFilesDialog : public QDialog, public Ui::qdSelectFiles
 {
@@ -20,15 +20,15 @@ class cSelectFilesDialog : public QDialog, public Ui::qdSelectFiles
 			Unselect
 		};
 
-		cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cLister *clLister);
+		cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cListerPlugin *clpListerPlugin);
 																			///< constructor
 																			/**< \param qmwParent parent window of this dialog
 																				  \param estType type of dialog
 																				  \param csSettings application's settings
-																				  \param clLister lister plugins */
+																				  \param clpListerPlugin lister plugins */
 
 	private:
-		cLister *clLister;											///< lister plugins
+		cListerPlugin *clpListerPlugin;							///< lister plugins
 		cSettings *csSettings;										///< application's settings
 
 		bool eventFilter(QObject *watched, QEvent *event);	///< event filter

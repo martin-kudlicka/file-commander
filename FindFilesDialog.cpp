@@ -9,7 +9,7 @@
 #include <QtGui/QInputDialog>
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cLister *clLister)
+cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cListerPlugin *clpListerPlugin)
 {
 	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
@@ -17,7 +17,7 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings
 
 	this->cpPanel = cpPanel;
 	this->csSettings = csSettings;
-	this->clLister = clLister;
+	this->clpListerPlugin = clpListerPlugin;
 
 	if (cpPanel) {
 		// find files called from application's main menu
@@ -470,7 +470,7 @@ void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
 {
 	cListerMainWindow *clmwListerWindow;
 
-	clmwListerWindow = new cListerMainWindow(csSettings, clLister, qhFiles.value(qtwSearch->selectedItems().at(0)).filePath());
+	clmwListerWindow = new cListerMainWindow(csSettings, clpListerPlugin, qhFiles.value(qtwSearch->selectedItems().at(0)).filePath());
 	clmwListerWindow->show();
 } // on_qpbView_clicked
 

@@ -1,13 +1,13 @@
 /// lister plugins
 
-#ifndef LISTER_H
-#define LISTER_H
+#ifndef LISTER_PLUGIN_H
+#define LISTER_PLUGIN_H
 
 #include "Settings.h"
 #include "Plugins/ListPlug.h"
 #include <QtCore/QHash>
 
-class cLister
+class cListerPlugin
 {
 	public:
 		typedef void (__stdcall *tListCloseWindow)(HWND hwListWin);	///< close plugin's window function
@@ -52,7 +52,7 @@ class cLister
 			tListSetDefaultParams tlsdpListSetDefaultParams;			///< ListSetDefaultParams function
 		};
 
-		cLister(cSettings *csSettings);										///< constructor
+		cListerPlugin(cSettings *csSettings);								///< constructor
 																						/**< \param csSettings application's settings */
 
 		QHash<QString, sPluginInfo> GetPluginsInfo();					///< retrieve lister plugins info
@@ -62,6 +62,6 @@ class cLister
 		cSettings *csSettings;													///< main settings "file"
 		QHash<QString, sPluginInfo> qhPlugins;								///< table of plugins
 																						/**< key is plugin name, value contains plugin's info */
-}; // cLister
+}; // cListerPlugin
 
 #endif

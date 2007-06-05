@@ -16,7 +16,7 @@ cListerMainWindow::~cListerMainWindow()
 } // ~cListerMainWindow
 
 // creates lister window
-cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, const QString &qsFile)
+cListerMainWindow::cListerMainWindow(cSettings *csSettings, cListerPlugin *clpListerPlugin, const QString &qsFile)
 {
 	cSettings::sLister slLister;
 
@@ -25,11 +25,11 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cLister *clLister, c
 
 	// variables
 	this->csSettings = csSettings;
-	this->clLister = clLister;
+	this->clpListerPlugin = clpListerPlugin;
 	this->qsFile = qsFile;
 
-	qhPlugins = clLister->GetPluginsInfo();
-	qhiPlugins = new QHashIterator<QString, cLister::sPluginInfo>(qhPlugins);
+	qhPlugins = clpListerPlugin->GetPluginsInfo();
+	qhiPlugins = new QHashIterator<QString, cListerPlugin::sPluginInfo>(qhPlugins);
 	hwPlugin = NULL;
 	qteContent->setDocument(&qtdDocument);
 

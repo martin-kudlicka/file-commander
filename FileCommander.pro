@@ -48,12 +48,12 @@ HEADERS = MainWindow.h \
 			 Options/NewFavouriteDirectoryDialog.h \
 			 Settings.h \
 			 Plugins.h \
-			 Plugins/Content.h \
-			 Plugins/ContentDelayed.h \
+			 Plugins/ContentPlugin.h \
+			 Plugins/ContentPluginDelayed.h \
 			 Plugins/ContPlug.h \
-			 Plugins/Lister.h \
+			 Plugins/ListerPlugin.h \
 			 Plugins/ListPlug.h \
-			 Plugins/Packer.h \
+			 Plugins/PackerPlugin.h \
 			 Plugins/WCXHead.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h \
@@ -94,10 +94,10 @@ SOURCES = FileCommander.cpp \
 			 Options/NewFavouriteDirectoryDialog.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \
-			 Plugins/Content.cpp \
-			 Plugins/ContentDelayed.cpp \
-			 Plugins/Lister.cpp \
-			 Plugins/Packer.cpp \
+			 Plugins/ContentPlugin.cpp \
+			 Plugins/ContentPluginDelayed.cpp \
+			 Plugins/ListerPlugin.cpp \
+			 Plugins/PackerPlugin.cpp \
 			 Common/System.cpp \
 			 Common/About.cpp
 win32 {

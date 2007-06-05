@@ -4,13 +4,13 @@
 #include "FindFilesDialog.h"
 
 // constructor
-cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cLister *clLister)
+cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cListerPlugin *clpListerPlugin)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	this->csSettings = csSettings;
-	this->clLister = clLister;
+	this->clpListerPlugin = clpListerPlugin;
 
 	qcbFilter->installEventFilter(this);
 	qtwFindSets->header()->setHidden(true);
@@ -41,7 +41,7 @@ bool cSelectFilesDialog::eventFilter(QObject *watched, QEvent *event)
 // define button is clicked on
 void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
 {
-	cFindFilesDialog cffdFind(this, NULL, csSettings, clLister);
+	cFindFilesDialog cffdFind(this, NULL, csSettings, clpListerPlugin);
 
 	cffdFind.exec();
 	RefreshFindSets();

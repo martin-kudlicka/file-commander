@@ -1,4 +1,4 @@
-#include "Plugins/Packer.h"
+#include "Plugins/PackerPlugin.h"
 
 #include <QtCore/QLibrary>
 #include <QtCore/QFileInfo>
@@ -8,19 +8,19 @@ const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 2;
 const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 1;
 
 // constructor
-cPacker::cPacker(cSettings *csSettings)
+cPackerPlugin::cPackerPlugin(cSettings *csSettings)
 {
 	this->csSettings = csSettings;
-} // cPacker
+} // cPackerPlugin
 
 // retrieve packer plugin info
-QHash<QString, cPacker::sPluginInfo> cPacker::GetPluginsInfo()
+QHash<QString, cPackerPlugin::sPluginInfo> cPackerPlugin::GetPluginsInfo()
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // loads packer plugins
-void cPacker::Load()
+void cPackerPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
