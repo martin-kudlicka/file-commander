@@ -17,6 +17,212 @@ cCopyMove::cCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSetti
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 } // cCopyMove
 
+// check existing destination file conflict
+cCopyMove::eCheckResult cCopyMove::CheckConflict(const QFileInfo &qfiSource, cCopyMoveConflict::eChoice *ecConflict, qint64 *qi64TotalValue)
+{
+	if (QFile::exists(qsTarget)) {
+		ecConflictCurrent = cCopyMoveConflict::Ask;
+
+		if (*ecConflict == cCopyMoveConflict::Ask) {
+			while (true) {
+				// no permanent conflict answer yet
+				QString qsOperation;
+
+				// conflict dialog
+				if (eoOperation == cFileRoutine::CopyOperation) {
+					qsOperation = tr("Copy");
+				} else {
+					qsOperation = tr("Move");
+				} // if else
+				emit ShowConflictDialog(qsOperation, qfiSource, QFileInfo(qsTarget));
+				// wait for answer
+				qsPause.acquire();
+				// solve conflict
+				switch (ecConflictCurrent) {
+					case cCopyMoveConflict::SkipAll:
+						*ecConflict = cCopyMoveConflict::SkipAll;
+						break;
+					case cCopyMoveConflict::OverwriteAll:
+						*ecConflict = cCopyMoveConflict::OverwriteAll;
+						break;
+					case cCopyMoveConflict::OverwriteAllOlder:
+						*ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+					default:
+						;
+				} // switch
+
+				// rename dialog
+				if (ecConflictCurrent == cCopyMoveConflict::Rename) {
+					// rename
+					emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
+
+					// wait for answer
+					qsPause.acquire();
+
+					if (!qsNewFilename.isEmpty()) {
+						// new file name typed
+						qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
+						if (!QFile::exists(qsTarget)) {
+							// rename ok, continue
+							break;
+						} // if
+					} else {
+						// cancel
+						ecConflictCurrent = cCopyMoveConflict::Cancel;
+						break;
+					} // if else
+				} else {
+					// no rename
+					break;
+				} // if else
+			} // while
+			if (ecConflictCurrent == cCopyMoveConflict::Cancel) {
+				// cancel
+				return Cancel;
+			} // if
+		} // if
+
+		if (*ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
+			// skip or skip all -> move onto next file
+			*qi64TotalValue += qfiSource.size();
+			return NextFile;
+		} else {
+			if (*ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
+				// overwrite, overwrite all -> delete target file
+				QFile::remove(qsTarget);
+			} else {
+				if (*ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
+					// overwrite all older
+					if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
+						// target file is older -> delete it
+						QFile::remove(qsTarget);
+					} else {
+						// target file is newer -> move onto next file
+						*qi64TotalValue += qfiSource.size();
+						return NextFile;
+					} // if else
+				} // if
+			} // if else
+		} // if else
+	} // if
+
+	return Nothing;
+} // CheckConflict
+
+// check disk space
+cCopyMove::eCheckResult cCopyMove::CheckDiskSpace(const QFileInfo &qfiSource, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
+{
+	cFileRoutine::sDiskSpace sdsDiskSpace;
+
+	sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
+	if (sdsDiskSpace.qi64Free < qfiSource.size()) {
+		ecDiskSpaceCurrent = cDiskSpace::Ask;
+
+		if (*ecDiskSpace == cDiskSpace::Ask) {
+			// disk space dialog
+			emit ShowDiskSpaceDialog(qsSource, qfiSource.size(), sdsDiskSpace.qi64Free);
+			// wait for answer
+			qsPause.acquire();
+
+			// solve
+			switch (ecDiskSpaceCurrent) {
+				case cDiskSpace::YesToAll:
+					*ecDiskSpace = cDiskSpace::YesToAll;
+					break;
+				case cDiskSpace::SkipAll:
+					*ecDiskSpace = cDiskSpace::SkipAll;
+				default:
+					;
+			} // switch
+		} // if
+
+		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
+			// skip current file
+			*qi64TotalValue += qfiSource.size();
+			return NextFile;
+		} else {
+			if (ecDiskSpaceCurrent == cDiskSpace::No) {
+				// cancel
+				return Cancel;
+			} // if
+		} // if else
+	} // if
+
+	return Nothing;
+} // CheckDiskSpace
+
+// check target file permission
+cCopyMove::eCheckResult cCopyMove::CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue)
+{
+	ecPermissionCurrent = cPermission::Ask;
+	if (QFile::permissions(qsTarget) & QFile::ReadOther) {
+		if (*ecPermission == cPermission::Ask) {
+			// show permission dialog
+			emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
+
+			// wait for answer
+			qsPause.acquire();
+
+			switch (ecPermissionCurrent) {
+				case cPermission::YesToAll:
+					*ecPermission = cPermission::YesToAll;
+					break;
+				case cPermission::NoToAll:
+					*ecPermission = cPermission::NoToAll;
+				default:
+					;
+			} // switch
+
+			if (ecPermissionCurrent == cPermission::Cancel) {
+				return Cancel;
+			} // if
+		} // if
+		if (*ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
+			*qi64TotalValue += qfiSource.size();
+			return NextFile;
+		} else {
+			// remove target file readonly permission
+			DWORD dwAttributes;
+
+			dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()));
+			SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes & ~FILE_ATTRIBUTE_READONLY);
+		} // if else
+	} // if
+
+	return Nothing;
+} // CheckPermission
+
+// retry if copy/move unsuccesfull
+cCopyMove::eCheckResult cCopyMove::CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue)
+{
+	if (*ecRetry != cRetry::SkipAll) {
+		QString qsInformation;
+
+		if (eoOperation == cFileRoutine::CopyOperation) {
+			qsInformation = tr("Can't copy following file:");
+		} else {
+			qsInformation = tr("Can't move following file:");
+		} // if else
+
+		emit ShowRetryDialog(qsInformation, qfiSource.filePath());
+		// wait for answer
+		qsPause.acquire();
+
+		if (ecRetryCurrent == cRetry::SkipAll) {
+			// memorize permanent answer
+			*ecRetry = cRetry::SkipAll;
+		} // if
+	} // if
+	if (*ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
+		// skip this file
+		*qi64TotalValue += qfiSource.size();
+		emit SetTotalValue(*qi64TotalValue);
+		return NextFile;
+	} // if
+
+	return Nothing;
+} // CheckRetry
+
 // copy file
 bool cCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue)
 {
@@ -292,135 +498,33 @@ void cCopyMove::run()
 				qdDir.rmdir(qsSource);
 			} // if
 		} else {
-			cFileRoutine::sDiskSpace sdsDiskSpace;
 #ifdef Q_WS_WIN
 			DWORD dwAttributes;
 #else
 			QFile::Permissions pPermissions;
 #endif
+			eCheckResult ecrCheck;
 			emit SetCurrentValue(0);
 
 			// check disk space on target
-			sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
-			if (sdsDiskSpace.qi64Free < qfilSources.at(iI).size()) {
-				ecDiskSpaceCurrent = cDiskSpace::Ask;
-
-				if (ecDiskSpace == cDiskSpace::Ask) {
-					// disk space dialog
-					emit ShowDiskSpaceDialog(qsSource, qfilSources.at(iI).size(), sdsDiskSpace.qi64Free);
-					// wait for answer
-					qsPause.acquire();
-
-					// solve
-					switch (ecDiskSpaceCurrent) {
-						case cDiskSpace::YesToAll:
-							ecDiskSpace = cDiskSpace::YesToAll;
-							break;
-						case cDiskSpace::SkipAll:
-							ecDiskSpace = cDiskSpace::SkipAll;
-						default:
-							;
-					} // switch
+			ecrCheck = CheckDiskSpace(qfilSources.at(iI), &ecDiskSpace, &qi64TotalValue);
+			if (ecrCheck == NextFile) {
+				continue;
+			} else {
+				if (ecrCheck == Cancel) {
+					break;
 				} // if
-
-				if (ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
-					// skip current file
-					qi64TotalValue += qfilSources.at(iI).size();
-					continue;
-				} else {
-					if (ecDiskSpaceCurrent == cDiskSpace::No) {
-						// cancel
-						break;
-					} // if
-				} // if else
-			} // if
+			} // if else
 
 			// conflict solving
-			if (QFile::exists(qsTarget)) {
-				ecConflictCurrent = cCopyMoveConflict::Ask;
-
-				if (ecConflict == cCopyMoveConflict::Ask) {
-					while (true) {
-						// no permanent conflict answer yet
-						QString qsOperation;
-
-						// conflict dialog
-						if (eoOperation == cFileRoutine::CopyOperation) {
-							qsOperation = tr("Copy");
-						} else {
-							qsOperation = tr("Move");
-						} // if else
-						emit ShowConflictDialog(qsOperation, QFileInfo(qsSource), QFileInfo(qsTarget));
-						// wait for answer
-						qsPause.acquire();
-						// solve conflict
-						switch (ecConflictCurrent) {
-							case cCopyMoveConflict::SkipAll:
-								ecConflict = cCopyMoveConflict::SkipAll;
-								break;
-							case cCopyMoveConflict::OverwriteAll:
-								ecConflict = cCopyMoveConflict::OverwriteAll;
-								break;
-							case cCopyMoveConflict::OverwriteAllOlder:
-								ecConflict = cCopyMoveConflict::OverwriteAllOlder;
-							default:
-								;
-						} // switch
-
-						// rename dialog
-						if (ecConflictCurrent == cCopyMoveConflict::Rename) {
-							// rename
-							emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
-
-							// wait for answer
-							qsPause.acquire();
-
-							if (!qsNewFilename.isEmpty()) {
-								// new file name typed
-								qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
-								if (!QFile::exists(qsTarget)) {
-									// rename ok, continue
-									break;
-								} // if
-							} else {
-								// cancel
-								ecConflictCurrent = cCopyMoveConflict::Cancel;
-								break;
-							} // if else
-						} else {
-							// no rename
-							break;
-						} // if else
-					} // while
-					if (ecConflictCurrent == cCopyMoveConflict::Cancel) {
-						// cancel
-						break;
-					} // if
+			ecrCheck = CheckConflict(qfilSources.at(iI), &ecConflict, &qi64TotalValue);
+			if (ecrCheck == NextFile) {
+				continue;
+			} else {
+				if (ecrCheck == Cancel) {
+					break;
 				} // if
-
-				if (ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
-					// skip or skip all -> move onto next file
-					qi64TotalValue += qfilSources.at(iI).size();
-					continue;
-				} else {
-					if (ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
-						// overwrite, overwrite all -> delete target file
-						QFile::remove(qsTarget);
-					} else {
-						if (ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
-							// overwrite all older
-							if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
-								// target file is older -> delete it
-								QFile::remove(qsTarget);
-							} else {
-								// target file is newer -> move onto next file
-								qi64TotalValue += qfilSources.at(iI).size();
-								continue;
-							} // if else
-						} // if
-					} // if else
-				} // if else
-			} // if
+			} // if else
 
 			// create destination path
 			qdDir.mkpath(QFileInfo(qsTarget).path());
@@ -434,37 +538,14 @@ void cCopyMove::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecPermissionCurrent = cPermission::Ask;
-			if (QFile::permissions(qsTarget) & QFile::ReadOther) {
-				if (ecPermission == cPermission::Ask) {
-					// show permission dialog
-					emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
-
-					// wait for answer
-					qsPause.acquire();
-
-					switch (ecPermissionCurrent) {
-						case cPermission::YesToAll:
-							ecPermission = cPermission::YesToAll;
-							break;
-						case cPermission::NoToAll:
-							ecPermission = cPermission::NoToAll;
-						default:
-							;
-					} // switch
-
-					if (ecPermissionCurrent == cPermission::Cancel) {
-						break;
-					} // if
+			ecrCheck = CheckPermission(qfilSources.at(iI), &ecPermission, &qi64TotalValue);
+			if (ecrCheck == NextFile) {
+				continue;
+			} else {
+				if (ecrCheck == Cancel) {
+					break;
 				} // if
-				if (ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
-					qi64TotalValue += qfilSources.at(iI).size();
-					continue;
-				} else {
-					// remove target file readonly permission
-					SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), dwAttributes & ~FILE_ATTRIBUTE_READONLY);
-				} // if else
-			} // if
+			} // if else
 #endif
 
 			// copy/move file
@@ -539,28 +620,8 @@ void cCopyMove::run()
 				} // switch
 
 				if (!bCopyMoveSuccess) {
-					if (ecRetry != cRetry::SkipAll) {
-						QString qsInformation;
-
-						if (eoOperation == cFileRoutine::CopyOperation) {
-							qsInformation = tr("Can't copy following file:");
-						} else {
-							qsInformation = tr("Can't move following file:");
-						} // if else
-
-						emit ShowRetryDialog(qsInformation, qfilSources.at(iI).filePath());
-						// wait for answer
-						qsPause.acquire();
-
-						if (ecRetryCurrent == cRetry::SkipAll) {
-							// memorize permanent answer
-							ecRetry = cRetry::SkipAll;
-						} // if
-					} // if
-					if (ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-						// skip this file
-						qi64TotalValue += qfilSources.at(iI).size();
-						emit SetTotalValue(qi64TotalValue);
+					ecrCheck = CheckRetry(qfilSources.at(iI), &ecRetry, &qi64TotalValue);
+					if (ecrCheck == NextFile) {
 						break;
 					} // if
 					// else try once more

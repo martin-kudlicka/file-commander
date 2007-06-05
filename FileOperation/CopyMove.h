@@ -49,6 +49,13 @@ class cCopyMove : public QThread
 #endif
 
 	private:
+		/// copy/move checks
+		enum eCheckResult {
+			Nothing,															///< do nothing
+			Cancel,															///< cancel processing
+			NextFile															///< move onto next file
+		};
+
 		bool bCanceled;													///< true if operation is canceled
 		cCopyMoveConflict ccmcConflict;								///< conflict dialog
 		cCopyMoveConflict::eChoice ecConflictCurrent;			///< current conflict user's response
@@ -78,6 +85,30 @@ class cCopyMove : public QThread
 		QString qsSource;													///< currently copied/moved source file
 		QString qsTarget;													///< target of currently copied/moved file
 
+		eCheckResult CheckConflict(const QFileInfo &qfiSource, cCopyMoveConflict::eChoice *ecConflict, qint64 *qi64TotalValue);
+																				///< check existing destination file conflict
+																				/**< \param qfiSource source file to check conflict
+																					  \param ecConflict permanent conflict user answer
+																					  \param qi64TotalValue total copied file size
+																					  \return action after conflict check */
+		eCheckResult CheckDiskSpace(const QFileInfo &qfiSource, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
+																				///< check disk space
+																				/**< \param qfiSource source file to check disk space for
+																					  \param ecDiskSpace permanent disk space user answer
+																					  \param qi64TotalValue total copied file size
+																					  \return action after disk space check */
+		eCheckResult CheckPermission(const QFileInfo &qfiSource, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
+																				///< check target file permission
+																				/**< \param qfiSource source file to increase copied file size by if skipped
+																					  \param ecPermission permanent permission user answer
+																					  \param qi64TotalValue total copied file size
+																					  \return action after permission check */
+		eCheckResult CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue);
+																				///< retry if copy/move unsuccesfull
+																				/**< \param qfiSource source file to try to retry
+																					  \param ecRetry permanent retry user answer
+																					  \param qi64TotalValue total copied file size
+																					  \return action after retry check */
 		bool Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue);
 																				///< copy file
 																				/**< \param qsSource source file
