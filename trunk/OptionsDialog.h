@@ -7,7 +7,7 @@
 
 #include "Settings.h"
 #include <QtGui/QMenu>
-#include "Plugins/Content.h"
+#include "Plugins/ContentPlugin.h"
 #include <QtGui/QToolBar>
 #include "Options/NewFavouriteDirectoryDialog.h"
 
@@ -35,11 +35,11 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			QString qsTarget;														///< path for destination panel
 		};
 
-		cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContent *ccContent);
+		cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
 																						///< constructor
 																						/**< \param qmwParent parent widget (window) of this dialog
 																							  \param csSettings application's settings
-																							  \param ccContent content plugins */
+																							  \param ccpContentPlugin content plugins */
 		~cOptionsDialog();														///< destructor
 
 	private:
@@ -63,7 +63,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			Columns																	///< columns from column set
 		};
 
-		cContent *ccContent;														///< content plugins
+		cContentPlugin *ccpContentPlugin;									///< content plugins
 		cSettings *csSettings;													///< application's settings
 		QAction *qaOperations;													///< operations options
 		QAction *qaOthers;														///< others options

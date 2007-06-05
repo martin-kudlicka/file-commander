@@ -1,13 +1,13 @@
 /// packer plugins
 
-#ifndef PACKER_H
-#define PACKER_H
+#ifndef PACKER_PLUGIN_H
+#define PACKER_PLUGIN_H
 
 #include "Settings.h"
 #include "Plugins/WCXHead.h"
 #include <QtCore/QHash>
 
-class cPacker
+class cPackerPlugin
 {
 	public:
 		typedef int (__stdcall *tCloseArchive)(HANDLE hArcData);										///< close archive
@@ -58,7 +58,7 @@ class cPacker
 #endif
 		};
 
-		cPacker(cSettings *csSettings);																		///< constructor
+		cPackerPlugin(cSettings *csSettings);																///< constructor
 																														/**< \param csSettings application's settings */
 
 		QHash<QString, sPluginInfo> GetPluginsInfo();													///< retrieve packer plugins info
@@ -68,6 +68,6 @@ class cPacker
 		cSettings *csSettings;																					///< main settings "file"
 		QHash<QString, sPluginInfo> qhPlugins;																///< table of plugins
 																														/**< key is plugin name, value contains plugin's info */
-}; // cPacker
+}; // cPackerPlugin
 
 #endif

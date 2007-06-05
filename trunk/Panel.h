@@ -8,7 +8,7 @@
 #include <QtGui/QStackedWidget>
 #include "Settings.h"
 #include <QtCore/QHash>
-#include "Plugins/Content.h"
+#include "Plugins/ContentPlugin.h"
 #include <QtCore/QFileInfo>
 #include <QtGui/QFileIconProvider>
 #include "Panel/ShellMenu.h"
@@ -16,11 +16,11 @@
 #include "FileOperation/FileRoutine.h"
 #include "Panel/TreeWidget.h"
 #include <QtCore/QTimer>
-#include "Plugins/ContentDelayed.h"
+#include "Plugins/ContentPluginDelayed.h"
 #include <QtGui/QMainWindow>
 #include "Panel/SelectFilesDialog.h"
 #include "FileOperation.h"
-#include "Plugins/Packer.h"
+#include "Plugins/PackerPlugin.h"
 
 class cPanel : public QObject
 {
@@ -39,14 +39,14 @@ class cPanel : public QObject
 
 		/// archive information
 		struct sArchive {
-			cPacker::sPluginInfo spiPlugin;										///< access to packer methods for this archive
+			cPackerPlugin::sPluginInfo spiPlugin;								///< access to packer methods for this archive
 			QList<tHeaderData> qlFiles;											///< files in archive
 			QString qsPath;															///< path in archive
 			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
 			QString qsArchive;														///< archive filepath
 		};
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContent *ccContent, cPacker *cpPacker, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
 																							///< constructor
 																							/**< \param qmwParent parent window for dialogs
 																								  \param qswPanel panel for cTreeWidget
@@ -56,8 +56,8 @@ class cPanel : public QObject
 																								  \param qlPath current path
 																								  \param qlSelected information about selected directories and files
 																								  \param csSettings application's settings
-																								  \param ccContent application's content plugins
-																								  \param cpPacker application's packer plugins
+																								  \param ccpContentPlugin application's content plugins
+																								  \param cppPackerPlugin application's packer plugins
 																								  \param qmDrives information about system drives
 																								  \param qlGlobalPath path visible in the bottom of main window
 																								  \param qcbCommand command combo box
@@ -122,10 +122,10 @@ class cPanel : public QObject
 		void ReverseOrder();															///< reverse sort order
 		void SaveSettings(const cSettings::ePosition &epPosition);		///< save panel settings
 																							/**< \param epPosition panel's position */
-		void Select(const cSelectFilesDialog::eSelectType &estType, cLister *clLister);
+		void Select(const cSelectFilesDialog::eSelectType &estType, cListerPlugin *clpListerPlugin);
 																							///< select or unselect some files
 																							/**< \param estType select/unselect mode
-																								  \param clLister lister plugins */
+																								  \param clpListerPlugin lister plugins */
 		void SelectAll();																///< select all files
 		void SetColumnSet(const QString &qsColumnSet);						///< selected another column set for actual directory view
 																							/**< \param qsColumnSet new column set */
@@ -164,10 +164,10 @@ class cPanel : public QObject
 			sArchive saArchive;														///< archive information
 		};
 
-		cContent *ccContent;															///< access to content plugins
-		cContentDelayed *ccdContentDelayed;										///< thread to get delayed content plugins values
+		cContentPlugin *ccpContentPlugin;										///< access to content plugins
+		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
 		cFileOperation *cfoFileOperation;										///< handling file operations
-		cPacker *cpPacker;															///< access to packer plugins
+		cPackerPlugin *cppPackerPlugin;											///< access to packer plugins
 		cSettings *csSettings;														///< main settings
 		cShellMenu *csmMenu;															///< right click "native" shell menu
 		QComboBox *qcbCommand;														///< command combo box
@@ -204,7 +204,7 @@ class cPanel : public QObject
 																							/**< \param watched filtered object
 																								  \param event event description
 																								  \return true if event is handled */
-		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentDelayed::sParameters> *qlParameters);
+		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters);
 																							///< fill directory view item accodring to content of vData
 																							/**< \param iIndex directory view tab index
 																								  \param elType type of item
@@ -271,7 +271,7 @@ class cPanel : public QObject
 		void InterruptContentDelayed();											///< interrupt delayed content processing before refresh dir view content
 
 	private slots:
-		void on_ccdContentDelayed_GotColumnValue(const cContentDelayed::sOutput &soOutput);
+		void on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput);
 																							///< got golumn value from plugin
 																							/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);	///< show tree view context menu

@@ -1,4 +1,4 @@
-#include "Plugins/Lister.h"
+#include "Plugins/ListerPlugin.h"
 
 #include <QtCore/QLibrary>
 #include <QtCore/QFileInfo>
@@ -8,19 +8,19 @@ const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
 const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 3;
 
 // constructor
-cLister::cLister(cSettings *csSettings)
+cListerPlugin::cListerPlugin(cSettings *csSettings)
 {
 	this->csSettings = csSettings;
-} // cLister
+} // cListerPlugin
 
 // retrieve lister plugin info
-QHash<QString, cLister::sPluginInfo> cLister::GetPluginsInfo()
+QHash<QString, cListerPlugin::sPluginInfo> cListerPlugin::GetPluginsInfo()
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // loads lister plugins
-void cLister::Load()
+void cListerPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;

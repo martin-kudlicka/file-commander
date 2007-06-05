@@ -1,19 +1,19 @@
-#include "Plugins/ContentDelayed.h"
+#include "Plugins/ContentPluginDelayed.h"
 
 // constructor
-cContentDelayed::cContentDelayed(cContent *ccContent)
+cContentPluginDelayed::cContentPluginDelayed(cContentPlugin *ccpContentPlugin)
 {
-	this->ccContent = ccContent;
-	qRegisterMetaType<sOutput>("cContentDelayed::sOutput");
-} // cContentDelayed
+	this->ccpContentPlugin = ccpContentPlugin;
+	qRegisterMetaType<sOutput>("cContentPluginDelayed::sOutput");
+} // cContentPluginDelayed
 
 // interrupt delayed content processing before refresh dir view content
-void cContentDelayed::on_InterruptContentDelayed()
+void cContentPluginDelayed::on_InterruptContentDelayed()
 {
-	QHash<QString, cContent::sPluginInfo> qhPlugins;
+	QHash<QString, cContentPlugin::sPluginInfo> qhPlugins;
 
 	bStop = true;
-	qhPlugins = ccContent->GetPluginsInfo();
+	qhPlugins = ccpContentPlugin->GetPluginsInfo();
 	if (isRunning()) {
 		if (qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue) {
 			qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
@@ -22,7 +22,7 @@ void cContentDelayed::on_InterruptContentDelayed()
 } // on_InterruptContentDelayed
 
 // main thread
-void cContentDelayed::run()
+void cContentPluginDelayed::run()
 {
 	int iI;
 
@@ -34,13 +34,13 @@ void cContentDelayed::run()
 		qsCurrentPlugin = qlParameters.at(iI).siInput.qsPlugin;
 
 		soOutput = qlParameters.at(iI).soOutput;
-		soOutput.qsValue = ccContent->GetPluginValue(qlParameters.at(iI).siInput.qsFilename, qlParameters.at(iI).siInput.qsPlugin, qlParameters.at(iI).siInput.qsColumn, qlParameters.at(iI).siInput.qsUnit);
+		soOutput.qsValue = ccpContentPlugin->GetPluginValue(qlParameters.at(iI).siInput.qsFilename, qlParameters.at(iI).siInput.qsPlugin, qlParameters.at(iI).siInput.qsColumn, qlParameters.at(iI).siInput.qsUnit);
 		emit GotColumnValue(soOutput);
 	} // for
 } // run
 
 // start thread processing
-void cContentDelayed::Start(const QList<sParameters> &qlParameters)
+void cContentPluginDelayed::Start(const QList<sParameters> &qlParameters)
 {
 	this->qlParameters = qlParameters;
 	bStop = false;

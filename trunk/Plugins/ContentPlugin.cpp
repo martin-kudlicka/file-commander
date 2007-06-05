@@ -1,4 +1,4 @@
-#include "Plugins/Content.h"
+#include "Plugins/ContentPlugin.h"
 
 #include <QtCore/QLibrary>
 #include <QtCore/QStringList>
@@ -9,19 +9,19 @@ const DWORD dwPLUGIN_INTERFACE_VERSION_HI = 1;
 const DWORD dwPLUGIN_INTERFACE_VERSION_LOW = 4;
 
 // destructor
-cContent::~cContent()
+cContentPlugin::~cContentPlugin()
 {
 	Unload();
-} // ~cContent
+} // ~cContentPlugin
 
 // constructor
-cContent::cContent(cSettings *csSettings)
+cContentPlugin::cContentPlugin(cSettings *csSettings)
 {
 	this->csSettings = csSettings;
-} // cContent
+} // cContentPlugin
 
 // get index of column in plugin
-int cContent::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
+int cContentPlugin::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 {
 	int iI;
 
@@ -35,13 +35,13 @@ int cContent::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 } // GetFieldIndex
 
 // retrieve content plugin info
-QHash<QString, cContent::sPluginInfo> cContent::GetPluginsInfo()
+QHash<QString, cContentPlugin::sPluginInfo> cContentPlugin::GetPluginsInfo()
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // returns plugin's value for specified column
-QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
+QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
 {
 	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
@@ -69,7 +69,7 @@ QString cContent::GetPluginValue(const QString &qsFilename, const QString &qsPlu
 } // GetPluginValue
 
 // find index of unit
-int cContent::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
+int cContentPlugin::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
 {
 	QStringList qslUnits;
 
@@ -78,7 +78,7 @@ int cContent::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
 } // GetUnitIndex
 
 // loads content plugins
-void cContent::Load()
+void cContentPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
@@ -144,13 +144,13 @@ void cContent::Load()
 } // Load
 
 // checks if plugin qsName has been succesfully loaded
-bool cContent::Loaded(const QString &qsName)
+bool cContentPlugin::Loaded(const QString &qsName)
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
 
 // unloads content plugins
-void cContent::Unload()
+void cContentPlugin::Unload()
 {
 	QHashIterator<QString, sPluginInfo> qhiPlugins(qhPlugins);
 
@@ -164,7 +164,7 @@ void cContent::Unload()
 } // Unload
 
 // "converts" plugin's returned value to QString
-QString cContent::ValidateFieldValue(const char *cFieldValue, const int &iType)
+QString cContentPlugin::ValidateFieldValue(const char *cFieldValue, const int &iType)
 {
 	// TODO ValidateFieldValue other types
 	QString qsValue;

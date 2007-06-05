@@ -296,7 +296,7 @@ void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, co
 				qi64CurrentValue = 0;
 				ccmdDialog->qpbCurrent->setMaximum(thdHeaderData.UnpSize);
 
-				if (thdHeaderData.FileAttr & cPacker::iDIRECTORY) {
+				if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
 					QDir qdDir;
 
 					qdDir.mkpath(qsTarget);
@@ -384,7 +384,7 @@ QList<tHeaderData> cArchiveOperation::GetAllArchiveFiles(const QList<tHeaderData
 
 		qlFiles.append(thdFile);
 
-		if (thdFile.FileAttr & cPacker::iDIRECTORY) {
+		if (thdFile.FileAttr & cPackerPlugin::iDIRECTORY) {
 			// selected item is directory -> add all files from this directory too
 			int iJ;
 
@@ -411,7 +411,7 @@ cFileOperation::sObjects cArchiveOperation::GetCount(const QList<tHeaderData> &q
 	soCount.Directories = 0;
 	soCount.Files = 0;
 	for (iI = 0; iI < qlArchive.count(); iI++) {
-		if (qlArchive.at(iI).FileAttr & cPacker::iDIRECTORY) {
+		if (qlArchive.at(iI).FileAttr & cPackerPlugin::iDIRECTORY) {
 			soCount.Directories++;
 		} else {
 			soCount.Files++;
@@ -444,7 +444,7 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sAr
 	if (eoOperation == Extract) {
 		if (qlSourceSelected.count() == 1) {
 			// one file selected
-			if (!(qlSourceSelected.at(0).FileAttr & cPacker::iDIRECTORY)) {
+			if (!(qlSourceSelected.at(0).FileAttr & cPackerPlugin::iDIRECTORY)) {
 				qsDestination += '/' + QFileInfo(qlSourceSelected.at(0).FileName).fileName();
 			} // if
 		} else {

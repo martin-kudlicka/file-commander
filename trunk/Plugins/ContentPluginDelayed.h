@@ -1,13 +1,13 @@
 /// get delayed plugin values
 
-#ifndef CONTENT_DELAYED_H
-#define CONTENT_DELAYED_H
+#ifndef CONTENT_PLUGIN_DELAYED_H
+#define CONTENT_PLUGIN_DELAYED_H
 
 #include <QtCore/QThread>
 #include <QtGui/QTreeWidgetItem>
-#include "Plugins/Content.h"
+#include "Plugins/ContentPlugin.h"
 
-class cContentDelayed : public QThread
+class cContentPluginDelayed : public QThread
 {
 	Q_OBJECT
 
@@ -33,8 +33,9 @@ class cContentDelayed : public QThread
 			sOutput soOutput;												///< output parameters
 		};
 
-		cContentDelayed(cContent *ccContent);						///< constructor
-																				/**< \param ccContent content plugins */
+		cContentPluginDelayed(cContentPlugin *ccpContentPlugin);
+																				///< constructor
+																				/**< \param ccpContentPlugin content plugins */
 
 		void Start(const QList<sParameters> &qlParameters);	///< start thread processing
 																				/**< \param qlParameters description what to check */
@@ -42,18 +43,18 @@ class cContentDelayed : public QThread
 
 	private:
 		bool bStop;															///< interrupt thread process
-		cContent *ccContent;												///< content plugins
+		cContentPlugin *ccpContentPlugin;							///< content plugins
 		QList<sParameters> qlParameters;								///< description what to check
 		QString qsCurrentFile;											///< currently checked file
 		QString qsCurrentPlugin;										///< currently used plugin
 
 	signals:
-		void GotColumnValue(const cContentDelayed::sOutput &soOutput);	
+		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput);	
 																				///< got golumn value from plugin
 																				/**< \param soOutput information to update dir view */
 
 	private slots:
 		void on_InterruptContentDelayed();							///< interrupt delayed content processing before refresh dir view content
-}; // cContentDelayed
+}; // cContentPluginDelayed
 
 #endif
