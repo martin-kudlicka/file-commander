@@ -616,7 +616,12 @@ int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
 // get path for current dir
 QString cPanel::GetPath()
 {
-	return qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath;
+	switch (qhTabs.value(qswDir->currentIndex()).elLocation) {
+		case LocalDirectory:
+			return qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath;
+		case Archive:
+			return qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
+	} // switch
 } // GetPath
 
 // get file infos of selected items
@@ -758,28 +763,48 @@ void cPanel::GoToRootDir()
 // go up one level (directory)
 void cPanel::GoToUpDir()
 {
-	// TODO GoToUpDir for archives too
 	QDir qdDir;
+	QString qsFrom;
 
-	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
-	if(!qdDir.isRoot()) {
-		QString qsFrom;
+	switch (qhTabs.value(qswDir->currentIndex()).elLocation) {
+		case LocalDirectory:
+			qdDir.setPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
 
-		// remember directory going from
-		qsFrom = QFileInfo(GetPath()).fileName();
+			if(!qdDir.isRoot()) {				
+				// remember directory going from
+				qsFrom = QFileInfo(GetPath()).fileName();
 
-		SetPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + "/..");
+				SetPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + "/..");
 
-		// find directory went from and set it as current
-		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles);
-		while (qhiFile.hasNext()) {
-			qhiFile.next();
-			if (qhiFile.value().fileName() == qsFrom) {
-				static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
-				break;
+				// find directory went from and set it as current
+				QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles);
+				while (qhiFile.hasNext()) {
+					qhiFile.next();
+					if (qhiFile.value().fileName() == qsFrom) {
+						static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+						break;
+					} // if
+				} // while
 			} // if
-		} // while
-	} // if
+			break;
+		case Archive:
+			qdDir.setPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath);
+
+			// remember directory going from
+			qsFrom = QFileInfo(GetPath()).fileName();
+
+			SetPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + "/..");
+
+			// find directory went from and set it as current
+			QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles);
+			while (qhiFile.hasNext()) {
+				qhiFile.next();
+				if (QFileInfo(qhiFile.value().FileName).fileName() == qsFrom) {
+					static_cast<QTreeWidget *>(qswDir->currentWidget())->setCurrentItem(qhiFile.key());
+					break;
+				} // if
+			} // while
+	} // switch
 } // GoToUpDir
 
 // hide or show tab bar as set in options
