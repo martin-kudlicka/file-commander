@@ -31,7 +31,8 @@ const QStringList qslSHORTCUTS__LISTER__OPTIONS = QStringList() << qsSHORTCUT__L
 																						 qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH <<
 																						 qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT <<
 																						 qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW;
-const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__QUIT;
+const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES <<
+																						 qsSHORTCUT__MAIN_MENU__FILE__QUIT;
 const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP <<
 																						 qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL <<
