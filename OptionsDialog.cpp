@@ -528,6 +528,7 @@ void cOptionsDialog::FillOptions()
 	qfListerFont = csSettings->GetListerFont();
 	// packer
 	FillPluginsTree(csSettings->GetPlugins(cSettings::PackerPlugins), qtwPackerPlugins);
+	qcbTreatArchivesLikeDirectories->setChecked(csSettings->GetTreatArchivesLikeDirectories());
 
 	// others
 	// favourite directories
@@ -1528,6 +1529,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetListerFont(qfListerFont);
 	// packer
 	csSettings->SetPlugins(cSettings::PackerPlugins, GetPluginList(qtwPackerPlugins));
+	csSettings->SetTreatArchivesLikeDirectories(qcbTreatArchivesLikeDirectories->isChecked());
 
 	// others
 	// favourite directories
