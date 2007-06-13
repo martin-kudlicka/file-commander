@@ -83,7 +83,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox" >
+  <widget class="QCheckBox" name="qcbUnpackWithFullPath" >
    <property name="geometry" >
     <rect>
      <x>10</x>

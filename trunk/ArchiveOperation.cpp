@@ -228,7 +228,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckPermission(const QString &qsTarg
 #endif
 
 // extract files from archive to local directory
-void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
+void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination, const bool &bFullPath /* true */)
 {
 	eContinue ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
@@ -289,7 +289,12 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 				QString qsSource, qsTarget;
 
 				qsSource = saSourceArchive.qsArchive + '/' + thdHeaderData.FileName;
-				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(thdHeaderData.FileName), saSourceArchive.qsPath, qsDestination);
+				if (bFullPath) {
+					qsTarget = thdHeaderData.FileName;
+				} else {
+					qsTarget = QFileInfo(thdHeaderData.FileName).fileName();
+				} // if else
+				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(qsTarget), saSourceArchive.qsPath, qsDestination);
 				qi64TotalValue++;
 
 				ccmdDialog->qlSource->setText(qsSource);
@@ -298,9 +303,11 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 				ccmdDialog->qpbCurrent->setMaximum(thdHeaderData.UnpSize);
 
 				if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
-					QDir qdDir;
+					if (bFullPath) {
+						QDir qdDir;
 
-					qdDir.mkpath(qsTarget);
+						qdDir.mkpath(qsTarget);
+					} // if
 					saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 				} else {
 					cCopyMove::eCheckResult ecrCheck;
@@ -625,7 +632,7 @@ void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, c
 				} // if
 				qsPath += "/*.*";
 
-				ExtractFiles(saArchive, saArchive.qlFiles, qsPath);
+				ExtractFiles(saArchive, saArchive.qlFiles, qsPath, cufdUnpackDialog.qcbUnpackWithFullPath->isChecked());
 			} else {
 				// unsupported archive file or not archive file
 				QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(qfilArchives.at(iI).fileName()));
