@@ -113,7 +113,8 @@ class cPanel : public QObject
 		void InvertSelection();														///< invert selection of files
 		bool IsActive();																///< active panel flag
 																							/**< \return true if panel is active */
-		void RefreshContent();														///< refresh current dir view
+		void RefreshContent(const QString &qsFocusTo = QString());		///< refresh current dir view
+																							/**< \param qsFocusTo set focus to this file */
 		void RefreshContent(const QFileInfoList &qfilFiles);				///< refresh current dir view with custom files
 																							/**< \param qfilFiles custom list of files */
 		void RefreshAllContents();													///< refresh all dir views
@@ -164,8 +165,9 @@ class cPanel : public QObject
 			sArchive saArchive;														///< archive information
 		};
 
+		bool bNewDirectory;															///< creating new directory
 		cContentPlugin *ccpContentPlugin;										///< access to content plugins
-		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
+		cContentPluginDelayed *ccpdContentPluginDelayed;					///< thread to get delayed content plugins values
 		cFileOperation *cfoFileOperation;										///< handling file operations
 		cPackerPlugin *cppPackerPlugin;											///< access to packer plugins
 		cSettings *csSettings;														///< main settings
