@@ -1337,7 +1337,7 @@ bool cPanel::OpenArchive(const QFileInfo &qfiFile)
 			QStringList qslExtensions;
 
 			qslExtensions = qlPackerPlugins.at(iI).qsExtensions.split(';');
-			if (qslExtensions.contains(qfiFile.suffix())) {
+			if (qslExtensions.contains(qfiFile.suffix(), Qt::CaseInsensitive)) {
 				HANDLE hArchive;
 				tOpenArchiveData toadArchiveData;
 
