@@ -289,7 +289,7 @@ QString cPanel::DateTime(const QDateTime &qdtDateTime)
 // check if directory is displayed in another tab too
 bool cPanel::DirInAnotherTab(const int &iIndex, const QString &qsDirectory)
 {
-	QHashIterator<uint, sTab> qhiTab(qhTabs);
+	QHashIterator<int, sTab> qhiTab(qhTabs);
 	while (qhiTab.hasNext()) {
 		qhiTab.next();
 		if (qhiTab.key() != iIndex && qhiTab.value().elLocation == LocalDirectory && qhiTab.value().sldLocalDirectory.qsPath == qsDirectory) {
@@ -1046,10 +1046,10 @@ void cPanel::on_ctwTree_GotFocus()
 void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 {
 	QFileInfo qfiFile;
-	const tHeaderData *thdFile;
+	tHeaderData thdFile;
 
 	qfiFile = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(item);
-	thdFile = &qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles.value(item);
+	thdFile = qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles.value(item);
 
 	switch (qhTabs.value(qswDir->currentIndex()).elLocation) {
 		case LocalDirectory:
@@ -1070,17 +1070,17 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 			} // if else
 			break;
 		case Archive:
-			if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
+			if (thdFile.FileAttr & cPackerPlugin::iDIRECTORY) {
 				// double click on directory -> go into directory
-				if (QFileInfo(thdFile->FileName).fileName() == "..") {
+				if (QFileInfo(thdFile.FileName).fileName() == "..") {
 					GoToUpDir();
 				} else {
 					QString qsNewPath;
 
 					if (qhTabs.value(qswDir->currentIndex()).saArchive.qsPath.isEmpty()) {
-						qsNewPath = QFileInfo(thdFile->FileName).fileName();
+						qsNewPath = QFileInfo(thdFile.FileName).fileName();
 					} else {
-						qsNewPath = qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + '/' + QFileInfo(thdFile->FileName).fileName();
+						qsNewPath = qhTabs.value(qswDir->currentIndex()).saArchive.qsPath + '/' + QFileInfo(thdFile.FileName).fileName();
 					} // if else
 					SetPath(qsNewPath);
 				} // if else
@@ -1100,7 +1100,7 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 	qint64 qi64Size, qi64TotalSize;
 
 	// find tab for tree widget
-	QHashIterator<uint, sTab> qhiTab(qhTabs);
+	QHashIterator<int, sTab> qhiTab(qhTabs);
 	while (qhiTab.hasNext()) {
 		qhiTab.next();
 		if (static_cast<cTreeWidget *>(qswDir->widget(qhiTab.key())) == ctwTree) {
@@ -1657,7 +1657,7 @@ void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 {
 	QList<cSettings::sTabInfo> qlTabs;
 
-	QHashIterator<uint, sTab> qhiTab(qhTabs);
+	QHashIterator<int, sTab> qhiTab(qhTabs);
 	while (qhiTab.hasNext()) {
 		cSettings::sTabInfo stiTab;
 

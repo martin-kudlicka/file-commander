@@ -530,6 +530,8 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const sArchive &s
 				case Extract:
 					ExtractFiles(saSourceArchive, qlSourceSelected, qsDestination);
 			} // switch
+		default:
+			;
 	} // switch
 } // Operate
 
