@@ -265,6 +265,8 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 #ifdef Q_WS_WIN
 	qcbDrive->view()->installEventFilter(this);
 #endif
+
+	bNewDirectory = false;
 } // cPanel
 
 // convert QDateTime to user defined format
@@ -1295,7 +1297,13 @@ void cPanel::on_qfswWatcher_directoryChanged(const QString &path)
 		if (qhTabs.value(iI).elLocation == LocalDirectory && qhTabs.value(iI).sldLocalDirectory.qsPath == path) {
 			if (qswDir->currentIndex() == iI) {
 				// refresh immediately
-				RefreshContent(iI);
+				if (bNewDirectory) {
+					// refresh was already done
+					bNewDirectory = false;
+				} else {
+					// other file system change
+					RefreshContent();
+				} // if else
 			} else {
 				// wait with refresh till swith to the tab
 				qhTabs[iI].bValid = false;
@@ -1510,12 +1518,17 @@ void cPanel::RefreshAllHeaders()
 } // RefreshAllHeaders
 
 // refresh current dir view
-void cPanel::RefreshContent()
+void cPanel::RefreshContent(const QString &qsFocusTo /* QString() */)
 {
 	QString qsFrom;
 
 	// remember file going from
-	qsFrom = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()).fileName();
+	if (qsFocusTo.isEmpty()) {
+		qsFrom = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem()).fileName();
+	} else {
+		bNewDirectory = true;
+		qsFrom = qsFocusTo;
+	} // if else
 
 	RefreshContent(qswDir->currentIndex());
 

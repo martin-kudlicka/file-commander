@@ -848,6 +848,9 @@ void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 			qsNewDirectory = cpActive->GetPath();
 			qsNewDirectory += '/' + qsName;
 			qdDir.mkpath(qsNewDirectory);
+
+			// set focus to new directory
+			cpActive->RefreshContent(QFileInfo(qsNewDirectory).fileName());
 		} // if
 	} // if
 } // on_qpbNewDirectory_clicked
