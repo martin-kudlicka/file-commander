@@ -446,7 +446,11 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 						qtwiFile->setIcon(iI, qfipIcon.icon(*static_cast<const QFileInfo *>(vData)));
 						break;
 					case Archive:
-						;// TODO FillDirViewItem archive filename icon
+						if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
+							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::Folder));
+						} else {
+							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::File));
+						} // if else
 				} // switch
 			} else {
 				if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME) {
