@@ -602,7 +602,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 } // FillDirViewItem
 
 // information about displayed archive in directory view
-cPanel::sArchive cPanel::GetArchiveInfo()
+cArchiveOperation::sArchive cPanel::GetArchiveInfo()
 {
 	return qhTabs.value(qswDir->currentIndex()).saArchive;
 } // GetArchiveInfo
@@ -1337,51 +1337,16 @@ void cPanel::on_qtTimer_timeout()
 // try to open archive
 bool cPanel::OpenArchive(const QFileInfo &qfiFile)
 {
-	int iI;
-	QHash<QString, cPackerPlugin::sPluginInfo> qhPluginsInfo;
-	QList<cSettings::sPlugin> qlPackerPlugins;
+	cArchiveOperation::sArchive saArchive;
 
-	qhPluginsInfo = cppPackerPlugin->GetPluginsInfo();
-	qlPackerPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
-
-	for (iI = 0; iI < qlPackerPlugins.count(); iI++) {
-		if (qlPackerPlugins.at(iI).bEnabled) {
-			QStringList qslExtensions;
-
-			qslExtensions = qlPackerPlugins.at(iI).qsExtensions.split(';');
-			if (qslExtensions.contains(qfiFile.suffix(), Qt::CaseInsensitive)) {
-				HANDLE hArchive;
-				tOpenArchiveData toadArchiveData;
-
-				toadArchiveData.ArcName = new char[qfiFile.filePath().length() + 1];
-				strcpy(toadArchiveData.ArcName, qfiFile.filePath().toLatin1().constData());
-				toadArchiveData.OpenMode = PK_OM_LIST;
-
-				hArchive = qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).toaOpenArchive(&toadArchiveData);
-
-				if (hArchive) {
-					// archive opened successfully
-					qhTabs[qswDir->currentIndex()].saArchive.spiPlugin = qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName());
-					qhTabs[qswDir->currentIndex()].saArchive.qsArchive = qfiFile.filePath();
-					// set location in archive
-					qhTabs[qswDir->currentIndex()].elLocation = Archive;
-					// read archive files
-					qhTabs[qswDir->currentIndex()].saArchive.qlFiles = ReadArchiveFiles(hArchive);
-					qhTabs[qswDir->currentIndex()].saArchive.qsPath.clear();
-					// close archive
-					qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).tcaCloseArchive(hArchive);
-					// show archive contents
-					SetPath(qhTabs.value(qswDir->currentIndex()).saArchive.qsPath);
-
-					return true;
-				} // if
-
-				delete toadArchiveData.ArcName;
-			} // if
-		} // if
-	} // for
-
-	return false;
+	if (cArchiveOperation::OpenArchive(qfiFile, &saArchive, csSettings, cppPackerPlugin)) {
+		qhTabs[qswDir->currentIndex()].saArchive = saArchive;
+		qhTabs[qswDir->currentIndex()].elLocation = Archive;
+		SetPath(saArchive.qsPath);
+		return true;
+	} else {
+		return false;
+	} // if else
 } // OpenArchive
 
 #ifdef Q_WS_WIN
@@ -1460,38 +1425,6 @@ bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection 
 		} // if else
 	} // while
 } // QuickSearch
-
-// read archive contents
-QList<tHeaderData> cPanel::ReadArchiveFiles(const HANDLE &hArchive)
-{
-	QList<tHeaderData> qlFiles;
-	tHeaderData thdHeaderData;
-
-	// archive root ".." directory
-	strcpy(thdHeaderData.FileName, "..");
-	thdHeaderData.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
-	thdHeaderData.FileAttr = cPackerPlugin::iDIRECTORY;
-	qlFiles.append(thdHeaderData);
-
-	while (!qhTabs.value(qswDir->currentIndex()).saArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
-		if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
-			// create ".." directory in each archive directory
-			QString qsDirectory;
-			tHeaderData thdDotDot;
-
-			qsDirectory = QFileInfo(thdHeaderData.FileName).filePath() + "/..";
-			strcpy(thdDotDot.FileName, qsDirectory.toLatin1().constData());
-			thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
-			thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
-			qlFiles.append(thdDotDot);
-		} // if
-
-		qlFiles.append(thdHeaderData);
-		qhTabs.value(qswDir->currentIndex()).saArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
-	} // while
-
-	return qlFiles;
-} // ReadArchiveFiles
 
 // refresh all dir views
 void cPanel::RefreshAllContents()
@@ -2086,21 +2019,6 @@ void cPanel::SortBy(const int &iColumn)
 	// sort again
 	Sort(qswDir->currentIndex());
 } // SortBy
-
-// converts Qt's date time format to packer's
-int cPanel::ToPackerDateTime(const QDateTime &qdtDateTime)
-{
-	int iDateTime;
-
-	iDateTime = (qdtDateTime.date().year() - 1980) << 25;
-	iDateTime |= qdtDateTime.date().month() << 21;
-	iDateTime |= qdtDateTime.date().day() << 16;
-	iDateTime |= qdtDateTime.time().hour() << 11;
-	iDateTime |= qdtDateTime.time().minute() << 5;
-	iDateTime |= qdtDateTime.time().second() / 2;
-
-	return iDateTime;
-} // ToPackerDateTime
 
 // converts packer plugin's date time format to QDateTime
 QDateTime cPanel::ToQDateTime(const int &iDateTime)

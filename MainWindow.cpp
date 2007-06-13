@@ -707,6 +707,16 @@ void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false */)
 	} // if
 } // on_qaTabBarDuplicateTab_triggered
 
+// unpack selected files chosen
+void cMainWindow::on_qaUnpackSelectedFiles_triggered(bool checked /* false */)
+{
+	cArchiveOperation caoArchiveOperation(this, &csSettings);
+	cPanel *cpDestination, *cpSource;
+
+	SetSourceAndDestinationPanel(&cpSource, &cpDestination);
+	caoArchiveOperation.UnpackSelectedFiles(cpSource->GetSelectedItemsFileList(QDir::Files), cpDestination->GetPath(), cpPlugins->cppPackerPlugin);
+} // on_qaUnpackSelectedFiles_triggered
+
 // unselect all selected
 void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */)
 {
@@ -767,7 +777,7 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 			// extract from archive to local directory
 			cArchiveOperation caoArchiveOperation(this, &csSettings);
 			QList<tHeaderData> qlSourceAll, qlSourceSelected;
-			cPanel::sArchive saSourceArchive;
+			cArchiveOperation::sArchive saSourceArchive;
 
 			saSourceArchive = cpSource->GetArchiveInfo();
 			qlSourceSelected = cpSource->GetSelectedItemsArchiveList();

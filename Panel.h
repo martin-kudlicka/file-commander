@@ -21,6 +21,7 @@
 #include "Panel/SelectFilesDialog.h"
 #include "FileOperation.h"
 #include "Plugins/PackerPlugin.h"
+#include "ArchiveOperation.h"
 
 class cPanel : public QObject
 {
@@ -35,15 +36,6 @@ class cPanel : public QObject
 		enum eLocation {
 			LocalDirectory,															///< standard directory
 			Archive																		///< archive contents
-		};
-
-		/// archive information
-		struct sArchive {
-			cPackerPlugin::sPluginInfo spiPlugin;								///< access to packer methods for this archive
-			QList<tHeaderData> qlFiles;											///< files in archive
-			QString qsPath;															///< path in archive
-			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;					///< info about archive files listed in dir panel
-			QString qsArchive;														///< archive filepath
 		};
 
 		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
@@ -83,7 +75,7 @@ class cPanel : public QObject
 																								  \return new tab index */
 		void FeedToPanel(const QFileInfoList &qfilFiles);					///< show custom list of files in current dir view
 																							/**< \param qfilFiles custom list of files */
-		sArchive GetArchiveInfo();													///< information about displayed archive in directory view
+		cArchiveOperation::sArchive GetArchiveInfo();						///< information about displayed archive in directory view
 																							/**< \return information about displayed archive in directory view */
 		QList<cSettings::sColumn> *GetColumns();								///< columns for current dir view
 																							/**< \return columns for current dir view */
@@ -162,7 +154,7 @@ class cPanel : public QObject
 			sWidgets *swWidgets;														///< to remember displayed strings
 			eLocation elLocation;													///< location of the directory view
 			sLocalDirectory sldLocalDirectory;									///< local directory information
-			sArchive saArchive;														///< archive information
+			cArchiveOperation::sArchive saArchive;								///< archive information
 		};
 
 		bool bNewDirectory;															///< creating new directory
@@ -239,9 +231,6 @@ class cPanel : public QObject
 																							/**< \param qsNextChar next filename character to search with
 																								  \param eqsdDirection direction of search
 																								  \return true if file found */
-		QList<tHeaderData> ReadArchiveFiles(const HANDLE &hArchive);	///< read archive contents
-																							/**< \param hArchive archive handle
-																								  \return list of files in archive */
 		void RefreshContent(const int &iIndex, QFileInfoList qfilFiles = QFileInfoList());
 																							///< refresh dir content with local directory files
 																							/**< \param iIndex index of dir view
@@ -256,9 +245,6 @@ class cPanel : public QObject
 																							/**< \param iTabIndex tab bar index to set text in */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
-		int ToPackerDateTime(const QDateTime &qdtDateTime);				///< converts Qt's date time format to packer's
-																							/**< \param qdtDateTime Qt date time format
-																								  \return packer plugin's date time format */
 		QDateTime ToQDateTime(const int &iDateTime);							///< converts packer plugin's date time format to QDateTime
 																							/**< \param iDateTime packed file date time
 																								  \return date time in Qt format */

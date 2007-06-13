@@ -3,6 +3,7 @@
 #include "FileOperation/FileOperationDialog.h"
 #include "FileOperation.h"
 #include <QtGui/QMessageBox>
+#include "ArchiveOperation/UnpackFilesDialog.h"
 
 bool cArchiveOperation::bCanceled;					///< operation in progress is canceled (static class variable)
 qint64 cArchiveOperation::qi64CurrentValue;		///< current file progress (static class variable)
@@ -227,7 +228,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckPermission(const QString &qsTarg
 #endif
 
 // extract files from archive to local directory
-void cArchiveOperation::ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
+void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
 {
 	eContinue ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
@@ -427,8 +428,54 @@ void cArchiveOperation::on_ccmdDialog_OperationCanceled()
 	bCanceled = true;
 } // on_ccmdDialog_OperationCanceled
 
+// try to open archive file
+bool cArchiveOperation::OpenArchive(const QFileInfo &qfiFile, sArchive *saArchive, cSettings *csSettings, cPackerPlugin *cppPackerPlugin)
+{
+	int iI;
+	QHash<QString, cPackerPlugin::sPluginInfo> qhPluginsInfo;
+	QList<cSettings::sPlugin> qlPackerPlugins;
+
+	qhPluginsInfo = cppPackerPlugin->GetPluginsInfo();
+	qlPackerPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
+
+	for (iI = 0; iI < qlPackerPlugins.count(); iI++) {
+		if (qlPackerPlugins.at(iI).bEnabled) {
+			QStringList qslExtensions;
+
+			qslExtensions = qlPackerPlugins.at(iI).qsExtensions.split(';');
+			if (qslExtensions.contains(qfiFile.suffix(), Qt::CaseInsensitive)) {
+				HANDLE hArchive;
+				tOpenArchiveData toadArchiveData;
+
+				toadArchiveData.ArcName = new char[qfiFile.filePath().length() + 1];
+				strcpy(toadArchiveData.ArcName, qfiFile.filePath().toLatin1().constData());
+				toadArchiveData.OpenMode = PK_OM_LIST;
+
+				hArchive = qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).toaOpenArchive(&toadArchiveData);
+
+				delete toadArchiveData.ArcName;
+
+				if (hArchive) {
+					// archive opened successfully
+					saArchive->spiPlugin = qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName());
+					saArchive->qsArchive = qfiFile.filePath();
+					// read archive files
+					saArchive->qlFiles = ReadArchiveFiles(hArchive, saArchive->spiPlugin);
+					saArchive->qsPath.clear();
+					// close archive
+					qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).tcaCloseArchive(hArchive);
+
+					return true;
+				} // if
+			} // if
+		} // if
+	} // for
+
+	return false;
+} // OpenArchive
+
 // manipulate with archive files
-void cArchiveOperation::Operate(const eOperation &eoOperation, const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
+void cArchiveOperation::Operate(const eOperation &eoOperation, const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
@@ -499,3 +546,88 @@ int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
 	return !bCanceled;
 } // ProcessDataProc
 #endif
+
+// read archive contents
+QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, const cPackerPlugin::sPluginInfo &spiPlugin)
+{
+	QList<tHeaderData> qlFiles;
+	tHeaderData thdHeaderData;
+
+	// archive root ".." directory
+	strcpy(thdHeaderData.FileName, "..");
+	thdHeaderData.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+	thdHeaderData.FileAttr = cPackerPlugin::iDIRECTORY;
+	qlFiles.append(thdHeaderData);
+
+	while (!spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
+		if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
+			// create ".." directory in each archive directory
+			QString qsDirectory;
+			tHeaderData thdDotDot;
+
+			qsDirectory = QFileInfo(thdHeaderData.FileName).filePath() + "/..";
+			strcpy(thdDotDot.FileName, qsDirectory.toLatin1().constData());
+			thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+			thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
+			qlFiles.append(thdDotDot);
+		} // if
+
+		qlFiles.append(thdHeaderData);
+		spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+	} // while
+
+	return qlFiles;
+} // ReadArchiveFiles
+
+// converts Qt's date time format to packer's
+int cArchiveOperation::ToPackerDateTime(const QDateTime &qdtDateTime)
+{
+	int iDateTime;
+
+	iDateTime = (qdtDateTime.date().year() - 1980) << 25;
+	iDateTime |= qdtDateTime.date().month() << 21;
+	iDateTime |= qdtDateTime.date().day() << 16;
+	iDateTime |= qdtDateTime.time().hour() << 11;
+	iDateTime |= qdtDateTime.time().minute() << 5;
+	iDateTime |= qdtDateTime.time().second() / 2;
+
+	return iDateTime;
+} // ToPackerDateTime
+
+// unpack selected archives
+void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, const QString &qsDestination, cPackerPlugin *cppPackerPlugin)
+{
+	cUnpackFilesDialog cufdUnpackDialog(qmwParent, qsDestination, csSettings);
+
+	if (qfilArchives.isEmpty()) {
+		// no archive to unpack
+		return;
+	} // if
+
+	if (cufdUnpackDialog.exec() == QDialog::Accepted) {
+		int iI;
+
+		for (iI = 0; iI < qfilArchives.count(); iI++) {
+			sArchive saArchive;
+
+			if (OpenArchive(qfilArchives.at(iI), &saArchive, csSettings, cppPackerPlugin)) {
+				// archive file supported
+				QString qsPath;
+
+				qsPath = QDir::cleanPath(qsDestination);
+				if (cufdUnpackDialog.qcbSeparatedSubdirectory->isChecked()) {
+					QDir qdDir;
+
+					qsPath += '/' + qfilArchives.at(iI).completeBaseName();
+					qdDir.mkpath(qsPath);
+				} // if
+				qsPath += "/*.*";
+
+				ExtractFiles(saArchive, saArchive.qlFiles, qsPath);
+			} else {
+				// unsupported archive file or not archive file
+				QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(qfilArchives.at(iI).fileName()));
+			} // if else
+		} // for
+	} // if
+} // UnpackSelectedFiles

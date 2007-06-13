@@ -126,6 +126,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		void on_qaTabBarDuplicateTab_triggered(bool checked = false);
 																						///< duplicate tab called
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaUnpackSelectedFiles_triggered(bool checked = false);
+																						///< unpack selected files chosen
+																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaUnselectAll_triggered(bool checked = false);		///< unselect all selected
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaUnselectGroup_triggered(bool checked = false);		///< unselect group selected
