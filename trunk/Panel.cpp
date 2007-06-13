@@ -1056,8 +1056,8 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 				} // if else
 			} else {
 				// double click on file
-				// check if it's supported archive
-				if (!OpenArchive(qfiFile)) {
+				// check if it's supported archive with browsing archive enabled
+				if (!(csSettings->GetTreatArchivesLikeDirectories() && OpenArchive(qfiFile))) {
 					// else execute it
 					cProcess::Execute(QString("\"%1\"").arg(qfiFile.filePath()), qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
 				} // if

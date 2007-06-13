@@ -299,6 +299,8 @@ class cSettings : private QObject
 		QStringList GetTabs(const ePosition &epPosition);		///< get tab list for left or right panel
 																				/**< \param epPosition left or right panel
 																					  \return list of tabs in panel */
+		bool GetTreatArchivesLikeDirectories();					///< treat archives like directories
+																				/**< \return browse through archives like by directories if true */
 		QString GetViewerType();										///< viewer type
 																				/**< \return internal or external viewer */
 		sMainWindowState GetWindowState();							///< retrieve startup main window parameters
@@ -397,6 +399,9 @@ class cSettings : private QObject
 																				///< save tab settings
 																				/**< \param epPosition panel position
 																					  \param qlTabs tab settings */
+		void SetTreatArchivesLikeDirectories(const bool &bLikeDirectories);
+																				///< treat archives like directories
+																				/**< \param bLikeDirectories browse through archives like by directories if true */
 		void SetViewerType(const QString &qsType);				///< viewer type
 																				/**< \param qsType internal or external viewer */
 		void SetWindowState(const sMainWindowState &smwsState);

@@ -58,6 +58,7 @@ const QString qsSUBDIRECTORY_DEPTH = "SubdirectoryDepth";
 const QString qsSUBMENU = "Submenu";
 const QString qsTARGET = "Target";
 const QString qsTARGET_ENABLED = "TargetEnabled";
+const QString qsTREAT_ARCHIVES_LIKE_DIRECTORIES = "TreatArchivesLikeDirectories";
 const QString qsTRUE = "true";
 const QString qsUNIT = "Unit";
 const QString qsVIEWER_TYPE = "ViewerType";
@@ -105,6 +106,7 @@ const QString qsOTHERS__FAVOURITE_DIRECTORIES = "Others/FavouriteDirectories";
 const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
 const QString qsPLUGINS__LISTER__SETTINGS__ = "Plugins/Lister/Settings/";
+const QString qsPLUGINS__PACKER__SETTINGS__ = "Plugins/Packer/Settings/";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
@@ -809,6 +811,12 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	return stiTabInfo;
 } // GetTabInfo
 
+// treat archives like directories
+bool cSettings::GetTreatArchivesLikeDirectories()
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsTREAT_ARCHIVES_LIKE_DIRECTORIES, true).toBool();
+} // GetTreatArchivesLikeDirectories
+
 // viewer type
 QString cSettings::GetViewerType()
 {
@@ -1186,6 +1194,12 @@ void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTa
 		CreateTab(epPosition, iI, qlTabs.at(iI));
 	} // for
 } // SetTabs
+
+// treat archives like directories
+void cSettings::SetTreatArchivesLikeDirectories(const bool &bLikeDirectories)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsTREAT_ARCHIVES_LIKE_DIRECTORIES, bLikeDirectories);
+} // SetTreatArchivesLikeDirectories
 
 // viewer type
 void cSettings::SetViewerType(const QString &qsType)
