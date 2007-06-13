@@ -168,7 +168,7 @@ class cPanel : public QObject
 		QComboBox *qcbDrive;															///< drive
 		QFileIconProvider qfipIcon;												///< icons
 		QFileSystemWatcher qfswWatcher;											///< watching directory changes
-		QHash<uint, sTab> qhTabs;													///< tabs in current panel
+		QHash<int, sTab> qhTabs;													///< tabs in current panel
 		QHash<QString, QString> qhLastPaths;									///< last visited paths for drives
 		QLabel *qlGlobalPath;														///< path visible in the bottom of main window
 		QLabel *qlPath;																///< path
