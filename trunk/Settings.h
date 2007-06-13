@@ -60,6 +60,7 @@ const QString qsSHORTCUT__LISTER__OPTIONS__ASCII = "ASCII (DOS char set)";
 const QString qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH = "Variable char width";
 const QString qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT = "Wrap text";
 const QString qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW = "Fit image to window";
+const QString qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES = "Unpack selected files...";
 const QString qsSHORTCUT__MAIN_MENU__FILE__QUIT = "Quit";
 const QString qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP = "Select group...";
 const QString qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP = "Unselect group...";

@@ -621,6 +621,9 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 
 		switch (escCategory) {
 			case MainMenuCategory:
+				if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES) {
+					return "Alt+F9";
+				} // if
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__QUIT) {
 					return "Alt+F4";
 				} // if
