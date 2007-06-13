@@ -14,6 +14,7 @@ FORMS = MainWindow.ui \
 		  FileOperation/QueueWidget.ui \
 		  FileOperation/DeleteDialog.ui \
 		  FileOperation/DeleteWidget.ui \
+		  ArchiveOperation/UnpackFilesDialog.ui \
 		  Options/NewFavouriteDirectoryDialog.ui \
 		  Common/About.ui
 HEADERS = MainWindow.h \
@@ -45,6 +46,7 @@ HEADERS = MainWindow.h \
 			 FileOperation/Retry.h \
 			 FileOperation/DiskSpace.h \
 			 ArchiveOperation.h \
+			 ArchiveOperation/UnpackFilesDialog.h \
 			 Options/NewFavouriteDirectoryDialog.h \
 			 Settings.h \
 			 Plugins.h \
@@ -91,6 +93,7 @@ SOURCES = FileCommander.cpp \
 			 FileOperation/Retry.cpp \
 			 FileOperation/DiskSpace.cpp \
 			 ArchiveOperation.cpp \
+			 ArchiveOperation/UnpackFilesDialog.cpp \
 			 Options/NewFavouriteDirectoryDialog.cpp \
 			 Settings.cpp \
 			 Plugins.cpp \

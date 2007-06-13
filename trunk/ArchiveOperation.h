@@ -7,8 +7,11 @@
 #include "Plugins/WCXHead.h"
 #include "Plugins/PackerPlugin.h"
 #include <QtGui/QMainWindow>
-#include "Panel.h"
-//#include "FileOperation/CopyMoveDialog.h"
+#include "FileOperation/CopyMoveDialog.h"
+#include <QtGui/QTreeWidgetItem>
+#include <QtCore/QFileInfo>
+#include "FileOperation/CopyMove.h"
+#include "FileOperation.h"
 
 class cArchiveOperation : private QObject
 {
@@ -20,17 +23,38 @@ class cArchiveOperation : private QObject
 			Extract																			///< extract files from archive
 		};
 
+		/// archive information
+		struct sArchive {
+			cPackerPlugin::sPluginInfo spiPlugin;									///< access to packer methods for this archive
+			QList<tHeaderData> qlFiles;												///< files in archive
+			QString qsPath;																///< path in archive
+			QHash<QTreeWidgetItem *, tHeaderData> qhFiles;						///< info about archive files listed in dir panel
+			QString qsArchive;															///< archive filepath
+		};
+
 		cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettings);	///< constructor
 																								/**< \param qmwParent parent window for dialogs
 																									  \param csSettings application's settings file */
 		~cArchiveOperation();															///< destructor
 
-		void Operate(const eOperation &eoOperation, const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
+		static bool OpenArchive(const QFileInfo &qfiFile, sArchive *saArchive, cSettings *csSettings, cPackerPlugin *cppPackerPlugin);
+																								///< try to open archive file
+																								/**< \param qfiFile archive file
+																									  \param saArchive information about opened archive
+																									  \param csSettings application's settings file
+																									  \param cppPackerPlugin packer plugins interface
+																									  \return true if success */
+		void Operate(const eOperation &eoOperation, const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
 																								///< manipulate with archive files
 																								/**< \param eoOperation type of archive operation
 																									  \param saSourceArchive source archive info
 																									  \param qlSourceSelected source archive files to manipulate with
 																									  \param qsDestination destination path */
+		void UnpackSelectedFiles(const QFileInfoList &qfilArchives, const QString &qsDestination, cPackerPlugin *cppPackerPlugin);
+																								///< unpack selected archives
+																								/**< \param qfilArchives list of archive files
+																									  \param qsDestination destination path for extraction
+																									  \param cppPackerPlugin packer plugin's interface */
 
 	private:
 		/// continue after extract error
@@ -76,7 +100,7 @@ class cArchiveOperation : private QObject
 																									  \param ecPermission permission permanent user answer
 																									  \return action after permission check */
 #endif
-		void ExtractFiles(const cPanel::sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
+		void ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination);
 																								///< extract files from archive to local directory
 																								/**< \param saSourceArchive source archive info
 																									  \param qlSourceSelected selected source archive files
@@ -95,6 +119,14 @@ class cArchiveOperation : private QObject
 																									  \param iSize bytes processed since last call
 																									  \return zero if operation canceled */
 #endif
+		static QList<tHeaderData> ReadArchiveFiles(const HANDLE &hArchive, const cPackerPlugin::sPluginInfo &spiPlugin);
+																								// read archive contents
+																								/**< \param hArchive archive handle
+																									  \param spiPlugin access to plugin's methods
+																									  \return list of files in archive */
+		static int ToPackerDateTime(const QDateTime &qdtDateTime);			///< converts Qt's date time format to packer's
+																								/**< \param qdtDateTime Qt date time format
+																									  \return packer plugin's date time format */
 
 	private slots:
 		void on_ccmdDialog_OperationCanceled();									///< operation canceled
