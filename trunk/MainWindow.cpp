@@ -837,16 +837,18 @@ void cMainWindow::on_qpbMove_clicked(bool checked /* false */)
 // new directory button is clicked on
 void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */)
 {
-	QString qsName;
+	if (cpActive->GetLocation() == cPanel::LocalDirectory) {
+		QString qsName;
 
-	qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"));
-	if (!qsName.isEmpty()) {
-		QDir qdDir;
-		QString qsNewDirectory;
+		qsName = QInputDialog::getText(this, tr("New directory"), tr("Enter name of a new directory:"));
+		if (!qsName.isEmpty()) {
+			QDir qdDir;
+			QString qsNewDirectory;
 
-		qsNewDirectory = cpActive->GetPath();
-		qsNewDirectory += '/' + qsName;
-		qdDir.mkpath(qsNewDirectory);
+			qsNewDirectory = cpActive->GetPath();
+			qsNewDirectory += '/' + qsName;
+			qdDir.mkpath(qsNewDirectory);
+		} // if
 	} // if
 } // on_qpbNewDirectory_clicked
 
