@@ -60,7 +60,7 @@ void cMainWindow::ActualizeColumnSets()
 void cMainWindow::ActualizeDrives()
 {
 	qmDrives = cFileRoutine::GetDrives();
-	if (qtwLeftDrives->topLevelItemCount() != qmDrives.count()) {
+	if (qcbLeftDrive->count() != qmDrives.count()) {
 		// assume drives have changed
 		QString qsLeftDrive, qsRightDrive;
 
@@ -69,18 +69,16 @@ void cMainWindow::ActualizeDrives()
 
 		qcbLeftDrive->blockSignals(true);
 		qcbRightDrive->blockSignals(true);
-		qtwLeftDrives->clear();
-		qtwRightDrives->clear();
 
 		QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
 		while (qmiDrives.hasNext()) {
 			qmiDrives.next();
-			qtwLeftDrives->addTopLevelItem(new QTreeWidgetItem(QStringList() << qmiDrives.key()));
-			qtwRightDrives->addTopLevelItem(new QTreeWidgetItem(QStringList() << qmiDrives.key()));
+			qcbLeftDrive->addItem(qmiDrives.key());
+			qcbRightDrive->addItem(qmiDrives.key());
 		} // while
 
 		// check for selected drive change, changes are handled in Panel class
-		if (qtwLeftDrives->findItems(qcbLeftDrive->currentText(), Qt::MatchExactly).isEmpty()) {
+		if (qcbLeftDrive->findText(qsLeftDrive) == -1) {
 			// selected drive changed
 			qcbLeftDrive->blockSignals(false);
 			qcbLeftDrive->setCurrentIndex(-1);
@@ -89,7 +87,7 @@ void cMainWindow::ActualizeDrives()
 			qcbLeftDrive->setCurrentIndex(qcbLeftDrive->findText(qsLeftDrive));
 			qcbLeftDrive->blockSignals(false);
 		} // if else
-		if (qtwRightDrives->findItems(qcbRightDrive->currentText(), Qt::MatchExactly).isEmpty()) {
+		if (qcbRightDrive->findText(qsRightDrive) == -1) {
 			// selected drive changed
 			qcbRightDrive->blockSignals(false);
 			qcbRightDrive->setCurrentIndex(-1);
@@ -203,16 +201,16 @@ cMainWindow::cMainWindow()
 	// file operations class initizalization
 	cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
 	// panels
-	qtwLeftDrives = new QTreeWidget(qcbLeftDrive);
+	qtwLeftDrives = new QTreeView(qcbLeftDrive);
 	qtwLeftDrives->setRootIsDecorated(false);
 	qtwLeftDrives->header()->hide();
-	qcbLeftDrive->setModel(qtwLeftDrives->model());
+	qtwLeftDrives->setModel(qcbLeftDrive->model());
 	qcbLeftDrive->setView(qtwLeftDrives);
 	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->cppPackerPlugin, &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleLeftQuickSearch);
-	qtwRightDrives = new QTreeWidget(qcbRightDrive);
+	qtwRightDrives = new QTreeView(qcbRightDrive);
 	qtwRightDrives->setRootIsDecorated(false);
 	qtwRightDrives->header()->hide();
-	qcbRightDrive->setModel(qtwRightDrives->model());
+	qtwRightDrives->setModel(qcbRightDrive->model());
 	qcbRightDrive->setView(qtwRightDrives);
 	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->cppPackerPlugin,  &qmDrives, qlGlobalPath, qcbCommand, cfoFileOperation, qleRightQuickSearch);
 	// quick searches
