@@ -23,6 +23,7 @@ cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettin
 	this->csSettings = csSettings;
 
 	ccmdDialog = new cCopyMoveDialog(qmwParent, true);
+	bCanceled = false;
 } // cArchiveOperation
 
 // check existing destination file conflict
@@ -253,7 +254,9 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 	qlExtract = GetAllArchiveFiles(qlSourceSelected, saSourceArchive.qlFiles);
 	qi64TotalMaximum = 0;
 	for (iI = 0; iI < qlExtract.count(); iI++) {
-		qi64TotalMaximum += qlExtract.at(iI).UnpSize;
+		if (!(qlExtract.at(iI).FileAttr & cPackerPlugin::iDIRECTORY)) {
+			qi64TotalMaximum += qlExtract.at(iI).UnpSize;
+		} // if
 	} // for
 
 	// preparation
@@ -525,8 +528,6 @@ void cArchiveOperation::Operate(const eOperation &eoOperation, const sArchive &s
 			qsDestination = QDir::cleanPath(qsDestination) + "/*.*";
 		} // if
 	} // if
-
-	bCanceled = false;
 
 	// operate
 	switch (euaAction) {
