@@ -589,6 +589,21 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 	return qlFiles;
 } // ReadArchiveFiles
 
+// select all root archive files and directories
+QList<tHeaderData> cArchiveOperation::SelectAllRoot(const QList<tHeaderData> &qlArchive)
+{
+	int iI;
+	QList<tHeaderData> qlRootFiles;
+
+	for (iI = 0; iI < qlArchive.count(); iI++) {
+		if (QFileInfo(qlArchive.at(iI).FileName).path() == "." && strcmp(qlArchive.at(iI).FileName, "..")) {
+			qlRootFiles.append(qlArchive.at(iI));
+		} // if
+	} // for
+
+	return qlRootFiles;
+} // SelectAllRoot
+
 // converts Qt's date time format to packer's
 int cArchiveOperation::ToPackerDateTime(const QDateTime &qdtDateTime)
 {
@@ -633,7 +648,7 @@ void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, c
 				} // if
 				qsPath += "/*.*";
 
-				ExtractFiles(saArchive, saArchive.qlFiles, qsPath, cufdUnpackDialog.qcbFilter->currentText(), cufdUnpackDialog.qcbUnpackWithFullPath->isChecked());
+				ExtractFiles(saArchive, SelectAllRoot(saArchive.qlFiles), qsPath, cufdUnpackDialog.qcbFilter->currentText(), cufdUnpackDialog.qcbUnpackWithFullPath->isChecked());
 			} else {
 				// unsupported archive file or not archive file
 				QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(qfilArchives.at(iI).fileName()));
