@@ -161,6 +161,8 @@ void cContentPlugin::Unload()
 			qhiPlugins.value().tcpuContentPluginUnloading();
 		} // if
 	} // while
+	
+	qhPlugins.clear();
 } // Unload
 
 // "converts" plugin's returned value to QString
