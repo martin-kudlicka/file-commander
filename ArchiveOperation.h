@@ -100,11 +100,12 @@ class cArchiveOperation : private QObject
 																									  \param ecPermission permission permanent user answer
 																									  \return action after permission check */
 #endif
-		void ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination, const bool &bFullPath = true);
+		void ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination, const QString &qsFilter = QString(), const bool &bFullPath = true);
 																								///< extract files from archive to local directory
 																								/**< \param saSourceArchive source archive info
 																									  \param qlSourceSelected selected source archive files
 																									  \param qsDestination destination path
+																									  \param qsFilter filter for files to unpack
 																									  \param bFullPath extract files with full path */
 		QList<tHeaderData> GetAllArchiveFiles(const QList<tHeaderData> &qlSelected, const QList<tHeaderData> &qlAll);
 																								///< gather all archive files that are selected
