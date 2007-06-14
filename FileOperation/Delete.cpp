@@ -259,7 +259,7 @@ void cDelete::run()
 
 		// go through one list of sources (one marked item in directory view)
 		qfilSources = &qlSources.at(iI);
-		for (iJ = qfilSources->count() - 1; iJ >= 0; iJ--) {
+		for (iJ = qfilSources->count() - 1; iJ >= 0 && !bCanceled; iJ--) {
 			QDir qdSource;
 
 			if (cddDialog) {
