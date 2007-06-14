@@ -29,4 +29,5 @@ void cPlugins::Load()
 void cPlugins::Unload()
 {
 	ccpContentPlugin->Unload();
+	clpListerPlugin->Unload();
 } // Unload
