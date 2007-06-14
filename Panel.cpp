@@ -409,8 +409,11 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 					// drives list
 					if (event->type() == QEvent::KeyPress) {
 						// if exists same drive as key pressed activate it
-						if (qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()) != -1) {
-							qcbDrive->setCurrentIndex(qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper()));
+						int iIndex;
+
+						iIndex = qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper());
+						if (iIndex != -1) {
+							qcbDrive->setCurrentIndex(iIndex);
 							qcbDrive->hidePopup();
 							static_cast<cTreeWidget *>(qswDir->currentWidget())->setFocus(Qt::OtherFocusReason);
 							return true;
