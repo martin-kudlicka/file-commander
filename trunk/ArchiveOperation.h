@@ -126,6 +126,10 @@ class cArchiveOperation : private QObject
 																								/**< \param hArchive archive handle
 																									  \param spiPlugin access to plugin's methods
 																									  \return list of files in archive */
+		QList<tHeaderData> SelectAllRoot(const QList<tHeaderData> &qlArchive);
+																								///< select all root archive files and directories
+																								/**< \param qlArchive all archive files
+																									  \return all root archive files and directories */
 		static int ToPackerDateTime(const QDateTime &qdtDateTime);			///< converts Qt's date time format to packer's
 																								/**< \param qdtDateTime Qt date time format
 																									  \return packer plugin's date time format */
