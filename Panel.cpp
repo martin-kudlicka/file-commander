@@ -344,12 +344,6 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 			if (watched == qleQuickSearch) {
 				// quick search
 				switch (event->type()) {
-					case QEvent::FocusIn:
-						qleQuickSearch->clear();
-						if (csSettings->GetQuickSearchShowSearchWindow()) {
-							qleQuickSearch->show();
-						} // if
-						return false;
 					case QEvent::FocusOut:
 						qleQuickSearch->hide();
 						return true;
@@ -400,6 +394,15 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 									} // if else
 								} // if else
 						} // switch
+					case QEvent::Show:
+						qleQuickSearch->clear();
+						if (csSettings->GetQuickSearchShowSearchWindow()) {
+							qleQuickSearch->setMaximumWidth(INT_MAX);
+						} else {
+							qleQuickSearch->setMaximumWidth(0);
+						} // if else
+						qleQuickSearch->setFocus(Qt::OtherFocusReason);
+						return false;
 					default:
 						return false;
 				} // switch
@@ -1193,7 +1196,7 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 			qi64Size = qtwiItem->data(iColumnExtension, Qt::UserRole).toLongLong();
 			if (qi64Size == 0) {
 				// count only if not counted yet
-				qfilFiles = cFileRoutine::GetSources(QFileInfoList() << qfiFile);
+				qfilFiles = cFileRoutine::GetSources(qfiFile);
 				qi64Size = 0;
 				for (iI = 0; iI < qfilFiles.count(); iI++) {
 					qi64Size += qfilFiles.at(iI).size();
@@ -1228,7 +1231,7 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
 				 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
 				// quick search activated
-				qleQuickSearch->setFocus(Qt::OtherFocusReason);
+				qleQuickSearch->show();
 				QApplication::sendEvent(qleQuickSearch, qkeEvent);
 			} else {
 				// pass key to command line
@@ -1379,14 +1382,14 @@ bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection 
 	int iPos;
 	QString qsFilename;
 
-	if (!qleQuickSearch->isVisible()) {
+	if (qleQuickSearch->maximumWidth() == 0) {
 		// search for only one first character
 		qleQuickSearch->clear();
 	} // if
 	qsFilename = qleQuickSearch->text() + qsNextChar;
 
 	iPos = static_cast<QTreeWidget *>(qswDir->currentWidget())->indexOfTopLevelItem(static_cast<QTreeWidget *>(qswDir->currentWidget())->currentItem());
-	if (qsNextChar.isEmpty() || !qleQuickSearch->isVisible()) {
+	if (qsNextChar.isEmpty() || qleQuickSearch->maximumWidth() == 0) {
 		if (eqsdDirection == SearchDown) {
 			iPos++;
 		} else {
