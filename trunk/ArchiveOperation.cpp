@@ -228,7 +228,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckPermission(const QString &qsTarg
 #endif
 
 // extract files from archive to local directory
-void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination, const bool &bFullPath /* true */)
+void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QList<tHeaderData> &qlSourceSelected, QString &qsDestination, const QString &qsFilter /* QString() */, const bool &bFullPath /* true */)
 {
 	eContinue ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
@@ -284,7 +284,7 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 		cPermission::eChoice ecPermissionCurrent;
 
 		for (iI = 0; iI < qlExtract.count(); iI++) {
-			if (!strcmp(qlExtract.at(iI).FileName, thdHeaderData.FileName)) {
+			if (!strcmp(qlExtract.at(iI).FileName, thdHeaderData.FileName) && cFileRoutine::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
 				// extract file
 				QString qsSource, qsTarget;
 
@@ -632,7 +632,7 @@ void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, c
 				} // if
 				qsPath += "/*.*";
 
-				ExtractFiles(saArchive, saArchive.qlFiles, qsPath, cufdUnpackDialog.qcbUnpackWithFullPath->isChecked());
+				ExtractFiles(saArchive, saArchive.qlFiles, qsPath, cufdUnpackDialog.qcbFilter->currentText(), cufdUnpackDialog.qcbUnpackWithFullPath->isChecked());
 			} else {
 				// unsupported archive file or not archive file
 				QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(qfilArchives.at(iI).fileName()));

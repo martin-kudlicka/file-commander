@@ -67,10 +67,10 @@
     <string>&amp;Filter:</string>
    </property>
    <property name="buddy" >
-    <cstring>comboBox</cstring>
+    <cstring>qcbFilter</cstring>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox" >
+  <widget class="QComboBox" name="qcbFilter" >
    <property name="geometry" >
     <rect>
      <x>10</x>
