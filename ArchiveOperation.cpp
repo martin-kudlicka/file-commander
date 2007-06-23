@@ -251,6 +251,7 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 
 	// collect files to extract
 	qlExtract = GetAllArchiveFiles(qlSourceSelected, saSourceArchive.qlFiles);
+	qi64TotalValue = 0;
 	qi64TotalMaximum = 0;
 	for (iI = 0; iI < qlExtract.count(); iI++) {
 		if (!(qlExtract.at(iI).FileAttr & cPackerPlugin::iDIRECTORY)) {
@@ -304,7 +305,6 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 					qsTarget = QFileInfo(thdHeaderData.FileName).fileName();
 				} // if else
 				qsTarget = cFileRoutine::GetWildcardedName(QFileInfo(qsTarget), saSourceArchive.qsPath, qsDestination);
-				qi64TotalValue++;
 
 				ccmdDialog->qlSource->setText(qsSource);
 				ccmdDialog->qlDestination->setText(qsTarget);
@@ -321,6 +321,7 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 				} else {
 					cCopyMove::eCheckResult ecrCheck;
 					int iExtract;
+					QDir qdDir;
 
 					// check disk space on target
 					ecrCheck = CheckDiskSpace(qsSource, QFileInfo(qsTarget).path(), thdHeaderData.UnpSize, &ecDiskSpaceCurrent, &ecDiskSpace);
@@ -353,6 +354,9 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 						} // if
 					} // if else
 #endif
+
+					// make destination path if doesn't exist
+					qdDir.mkpath(QFileInfo(qsTarget).path());
 
 					// extract file
 					iExtract = saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
@@ -566,6 +570,7 @@ int __stdcall cArchiveOperation::ProcessDataProc(char *cFileName, int iSize)
 // read archive contents
 QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, const cPackerPlugin::sPluginInfo &spiPlugin)
 {
+	QList<QString> qlDirectories;
 	QList<tHeaderData> qlFiles;
 	tHeaderData thdHeaderData;
 
@@ -575,21 +580,35 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 	thdHeaderData.FileAttr = cPackerPlugin::iDIRECTORY;
 	qlFiles.append(thdHeaderData);
 
+	qlDirectories.append(".");
 	memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	while (!spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
-		if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
-			// create ".." directory in each archive directory
-			QString qsDirectory;
-			tHeaderData thdDotDot;
+		if (!qlDirectories.contains(QFileInfo(thdHeaderData.FileName).path())) {
+			// create directory and ".." directory in each archive directory
+			QString qsDotDot;
+			tHeaderData thdDirectory, thdDotDot;
 
-			qsDirectory = QFileInfo(thdHeaderData.FileName).filePath() + "/..";
-			strcpy(thdDotDot.FileName, qsDirectory.toLatin1().constData());
+			qsDotDot = QFileInfo(thdHeaderData.FileName).path() + "/..";
+
+			// create directory
+			strcpy(thdDirectory.FileName, QFileInfo(thdHeaderData.FileName).path().toLatin1().constData());
+			thdDirectory.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+			thdDirectory.FileAttr = cPackerPlugin::iDIRECTORY;
+			qlFiles.append(thdDirectory);
+
+			qlDirectories.append(QFileInfo(thdHeaderData.FileName).path());
+
+			// create ".." directory
+			strcpy(thdDotDot.FileName, qsDotDot.toLatin1().constData());
 			thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
 			thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
 			qlFiles.append(thdDotDot);
 		} // if
 
-		qlFiles.append(thdHeaderData);
+		if (!(thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY)) {
+			qlFiles.append(thdHeaderData);
+		} // if
+
 		spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 		memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	} // while
