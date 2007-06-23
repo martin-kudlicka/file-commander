@@ -241,7 +241,6 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 	int iI;
 	qint64 qi64TotalMaximum;
 	QList<tHeaderData> qlExtract;
-	tHeaderData thdHeaderData;
 	tOpenArchiveData toadArchiveData;
 
 	// prepare dialog
@@ -280,11 +279,18 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 #endif
 
 	// extract files
-	while (!saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
+	while (true) {
 		eContinue ecContinueCurrent;
 		cCopyMoveConflict::eChoice ecConflictCurrent;
 		cDiskSpace::eChoice ecDiskSpaceCurrent;
 		cPermission::eChoice ecPermissionCurrent;
+		tHeaderData thdHeaderData;
+
+		memset(&thdHeaderData, 0, sizeof(tHeaderData));
+		if (saSourceArchive.spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
+			// no other file in archive
+			break;
+		} // if
 
 		for (iI = 0; iI < qlExtract.count(); iI++) {
 			if (!strcmp(qlExtract.at(iI).FileName, thdHeaderData.FileName) && cFileRoutine::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
@@ -569,6 +575,7 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 	thdHeaderData.FileAttr = cPackerPlugin::iDIRECTORY;
 	qlFiles.append(thdHeaderData);
 
+	memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	while (!spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
 		if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
 			// create ".." directory in each archive directory
@@ -584,6 +591,7 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 
 		qlFiles.append(thdHeaderData);
 		spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+		memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	} // while
 
 	return qlFiles;
