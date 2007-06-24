@@ -952,7 +952,20 @@ void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sO
 // show tree view context menu
 void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 {
-	csmMenu->Show(GetSelectedItemsStringList(), static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	int iI;
+	QStringList qslSelected;
+
+	qslSelected = GetSelectedItemsStringList();
+
+	for (iI = 0; iI < qslSelected.count(); iI++) {
+		if (qslSelected.at(iI).endsWith("..")) {
+			// replace ".." with current path
+			qslSelected.replace(iI, QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath));
+			break;
+		} // if
+	} // for
+
+	csmMenu->Show(qslSelected, static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 } // on_ctwTree_customContextMenuRequested
 
 // start dragging of selected objects
