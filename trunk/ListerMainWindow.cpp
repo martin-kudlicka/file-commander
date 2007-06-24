@@ -109,6 +109,7 @@ bool cListerMainWindow::eventFilter(QObject *watched, QEvent *event)
 		if (!bMenuBarVisible && event->type() == QEvent::Resize && hwPlugin) {
 			// to "fix" later shown menu bar
 			resizeEvent(NULL);
+			// UpdateWindow, InvalidateRect and WM_PAINT don't work -> hide and show
 			ShowWindow(hwPlugin, SW_HIDE);
 			ShowWindow(hwPlugin, SW_SHOW);
 			if (qmbMenu->height() > 0) {

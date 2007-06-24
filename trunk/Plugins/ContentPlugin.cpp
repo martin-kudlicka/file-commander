@@ -191,6 +191,21 @@ QString cContentPlugin::ValidateFieldValue(const char *cFieldValue, const int &i
 		case ft_multiplechoice:
 		case ft_string:
 			return cFieldValue;
+		case ft_datetime:
+			FILETIME fLocalFileTime;
+			SYSTEMTIME sSystemTime;
+
+			FileTimeToLocalFileTime(reinterpret_cast<PFILETIME>(const_cast<char *>(cFieldValue)), &fLocalFileTime);
+			FileTimeToSystemTime(&fLocalFileTime, &sSystemTime);
+
+			qsValue = csSettings->GetPluginDateTimeDisplay();
+			qsValue.replace("%d", QString("%1").arg(sSystemTime.wDay, 2, 10, QChar('0')));
+			qsValue.replace("%o", QString("%1").arg(sSystemTime.wMonth, 2, 10, QChar('0')));
+			qsValue.replace("%y", QString("%1").arg(sSystemTime.wYear));
+			qsValue.replace("%h", QString("%1").arg(sSystemTime.wHour, 2, 10, QChar('0')));
+			qsValue.replace("%m", QString("%1").arg(sSystemTime.wMinute, 2, 10, QChar('0')));
+			qsValue.replace("%s", QString("%1").arg(sSystemTime.wSecond, 2, 10, QChar('0')));
+			return qsValue;
 		default:
 			return QString();
 	} // switch

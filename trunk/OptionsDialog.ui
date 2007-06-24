@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>626</width>
-    <height>326</height>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -63,7 +63,7 @@
            <x>0</x>
            <y>0</y>
            <width>531</width>
-           <height>271</height>
+           <height>301</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -288,7 +288,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>200</y>
+             <y>230</y>
              <width>211</width>
              <height>18</height>
             </rect>
@@ -301,7 +301,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>180</y>
+             <y>210</y>
              <width>131</width>
              <height>18</height>
             </rect>
@@ -314,7 +314,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>220</y>
+             <y>250</y>
              <width>121</width>
              <height>18</height>
             </rect>
@@ -470,7 +470,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -486,7 +486,7 @@
            <property name="geometry" >
             <rect>
              <x>90</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -533,7 +533,7 @@
              <x>10</x>
              <y>60</y>
              <width>481</width>
-             <height>141</height>
+             <height>171</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -664,7 +664,7 @@
            <x>0</x>
            <y>0</y>
            <width>531</width>
-           <height>251</height>
+           <height>301</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -1000,7 +1000,7 @@
            <x>0</x>
            <y>0</y>
            <width>531</width>
-           <height>271</height>
+           <height>301</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -1013,7 +1013,7 @@
           <widget class="QGroupBox" name="groupBox_4" >
            <property name="geometry" >
             <rect>
-             <x>10</x>
+             <x>190</x>
              <y>10</y>
              <width>151</width>
              <height>91</height>
@@ -1053,7 +1053,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>110</y>
+             <y>140</y>
              <width>501</width>
              <height>91</height>
             </rect>
@@ -1071,7 +1071,7 @@
            <property name="geometry" >
             <rect>
              <x>350</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1087,7 +1087,7 @@
            <property name="geometry" >
             <rect>
              <x>430</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1095,6 +1095,61 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_12" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>171</width>
+             <height>121</height>
+            </rect>
+           </property>
+           <property name="title" >
+            <string>Date/time display</string>
+           </property>
+           <widget class="QLabel" name="label_9" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>131</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>%d - day, %o - month, %y - year</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_10" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>50</y>
+              <width>131</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>%h - hours, %m - minutes, %s - seconds</string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="qlePluginDateTimeDisplay" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>131</width>
+              <height>20</height>
+             </rect>
+            </property>
+           </widget>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_5" >
@@ -1185,7 +1240,7 @@
              <x>10</x>
              <y>109</y>
              <width>501</width>
-             <height>91</height>
+             <height>121</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1201,7 +1256,7 @@
            <property name="geometry" >
             <rect>
              <x>350</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1217,7 +1272,7 @@
            <property name="geometry" >
             <rect>
              <x>430</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1237,7 +1292,7 @@
              <x>10</x>
              <y>40</y>
              <width>501</width>
-             <height>161</height>
+             <height>191</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1253,7 +1308,7 @@
            <property name="geometry" >
             <rect>
              <x>350</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1269,7 +1324,7 @@
            <property name="geometry" >
             <rect>
              <x>430</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>
@@ -1301,7 +1356,7 @@
            <x>0</x>
            <y>0</y>
            <width>531</width>
-           <height>271</height>
+           <height>301</height>
           </rect>
          </property>
          <property name="currentIndex" >
@@ -1331,7 +1386,7 @@
            <property name="geometry" >
             <rect>
              <x>140</x>
-             <y>150</y>
+             <y>180</y>
              <width>91</width>
              <height>23</height>
             </rect>
@@ -1344,7 +1399,7 @@
            <property name="geometry" >
             <rect>
              <x>140</x>
-             <y>180</y>
+             <y>210</y>
              <width>91</width>
              <height>23</height>
             </rect>
@@ -1360,7 +1415,7 @@
            <property name="geometry" >
             <rect>
              <x>140</x>
-             <y>210</y>
+             <y>240</y>
              <width>91</width>
              <height>23</height>
             </rect>
@@ -1391,7 +1446,7 @@
              <x>10</x>
              <y>10</y>
              <width>120</width>
-             <height>221</height>
+             <height>251</height>
             </rect>
            </property>
            <column>
@@ -1469,7 +1524,7 @@
              <x>10</x>
              <y>10</y>
              <width>120</width>
-             <height>191</height>
+             <height>221</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1490,7 +1545,7 @@
              <x>140</x>
              <y>10</y>
              <width>371</width>
-             <height>191</height>
+             <height>221</height>
             </rect>
            </property>
            <property name="rootIsDecorated" >
@@ -1509,7 +1564,7 @@
            <property name="geometry" >
             <rect>
              <x>310</x>
-             <y>210</y>
+             <y>240</y>
              <width>113</width>
              <height>20</height>
             </rect>
@@ -1519,7 +1574,7 @@
            <property name="geometry" >
             <rect>
              <x>430</x>
-             <y>210</y>
+             <y>240</y>
              <width>75</width>
              <height>23</height>
             </rect>

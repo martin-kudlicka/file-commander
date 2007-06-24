@@ -107,6 +107,7 @@ const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
 const QString qsPLUGINS__LISTER__SETTINGS__ = "Plugins/Lister/Settings/";
 const QString qsPLUGINS__PACKER__SETTINGS__ = "Plugins/Packer/Settings/";
+const QString qsPLUGINS__DATE_TIME_DISPLAY = "Plugins/DateTimeDisplay";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 // Plugins/Content
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
@@ -486,6 +487,12 @@ bool cSettings::GetOpenNewTabNextToCurrentTab()
 {
 	return qsSettings.value(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB).toBool();
 } // GetOpenNewTabNextToCurrentTab
+
+// plugin date/time display format
+QString cSettings::GetPluginDateTimeDisplay()
+{
+	return qsSettings.value(qsPLUGINS__DATE_TIME_DISPLAY, "%d.%o.%y %h:%m").toString();
+} // GetPluginDateTimeDisplay
 
 ///< get plugin list
 QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
@@ -1030,6 +1037,12 @@ void cSettings::SetOpenNewTabNextToCurrentTab(const bool &bNextTo)
 {
 	qsSettings.setValue(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB, bNextTo);
 } // SetOpenNewTabNextToCurrentTab
+
+// plugin date/time display format
+void cSettings::SetPluginDateTimeDisplay(const QString &qsDateTime)
+{
+	qsSettings.setValue(qsPLUGINS__DATE_TIME_DISPLAY, qsDateTime);
+} // SetPluginDateTimeDisplay
 
 // write plugins into settings file
 void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins)

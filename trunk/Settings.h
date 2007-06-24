@@ -254,6 +254,8 @@ class cSettings : private QObject
 																				/** \return new tab by shortcut in foreground flag */
 		bool GetOpenNewTabNextToCurrentTab();						///< open new tab next to current tab
 																				/**< \return open new tab next to current tab flag */
+		QString GetPluginDateTimeDisplay();							///< plugin date/time display format
+																				/**< \return plugin date/time display format */
 		QList<sPlugin> GetPlugins(const ePlugin &epPlugin);	///< get plugin list
 																				/**< \param epPlugin plugin type
 																					  \return plugin list */
@@ -357,6 +359,9 @@ class cSettings : private QObject
 		void SetOpenNewTabNextToCurrentTab(const bool &bNextTo);
 																				///< open new tab next to current tab
 																				/**< \param bNextTo open new tab next to current tab flag */
+		void SetPluginDateTimeDisplay(const QString &qsDateTime);
+																				///< plugin date/time display format
+																				/**< \param qsDateTime user defined date/time display format */
 		void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> &qlPlugins);
 																				///< write plugins into settings file
 																				/**< \param epPlugin plugins type
