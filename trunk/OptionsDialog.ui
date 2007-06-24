@@ -421,7 +421,7 @@
             </rect>
            </property>
            <property name="text" >
-            <string>Add</string>
+            <string>Add...</string>
            </property>
           </widget>
           <widget class="QComboBox" name="qcbColumnSet" >
@@ -718,12 +718,12 @@
             <rect>
              <x>140</x>
              <y>10</y>
-             <width>75</width>
-             <height>23</height>
+             <width>82</width>
+             <height>25</height>
             </rect>
            </property>
            <property name="text" >
-            <string>&amp;Change font</string>
+            <string>&amp;Change font...</string>
            </property>
           </widget>
           <widget class="QGroupBox" name="groupBox_10" >
@@ -748,7 +748,7 @@
              </rect>
             </property>
             <property name="text" >
-             <string>&amp;Browse</string>
+             <string>&amp;Browse...</string>
             </property>
            </widget>
            <widget class="QLineEdit" name="qleExternalViewer" >
@@ -789,7 +789,7 @@
              </rect>
             </property>
             <property name="text" >
-             <string>&amp;Browse</string>
+             <string>&amp;Browse...</string>
             </property>
            </widget>
            <widget class="QLineEdit" name="qleExternalEditor" >
@@ -1077,7 +1077,7 @@
             </rect>
            </property>
            <property name="text" >
-            <string>Add</string>
+            <string>Add...</string>
            </property>
           </widget>
           <widget class="QPushButton" name="qpbRemoveContentPlugin" >
@@ -1207,7 +1207,7 @@
             </rect>
            </property>
            <property name="text" >
-            <string>Add</string>
+            <string>Add...</string>
            </property>
           </widget>
           <widget class="QPushButton" name="qpbRemoveListerPlugin" >
@@ -1259,7 +1259,7 @@
             </rect>
            </property>
            <property name="text" >
-            <string>Add</string>
+            <string>Add...</string>
            </property>
           </widget>
           <widget class="QPushButton" name="qpbRemovePackerPlugin" >
