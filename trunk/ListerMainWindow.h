@@ -22,6 +22,7 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 
 
 	private:
+		bool bMenuBarVisible;																	///< menu bar visible flag
 		cListerPlugin *clpListerPlugin;														///< lister plugin's class
 		cSettings *csSettings;																	///< application's main settings file
 		int iSearchFlags;																			///< last used flags for plugin search
@@ -37,6 +38,12 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 		void closeEvent(QCloseEvent *event);												///< lister window close
 																										/**< \param event close description */
 		void ClosePlugin();																		///< destroy of plugin's window
+#ifdef Q_WS_WIN
+		bool eventFilter(QObject *watched, QEvent *event);								///< event filter
+																										/**< \param watched filtered object
+																											  \param event event description
+																											  \return true if event is handled */
+#endif
 		bool FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow);
 																										///< find next usable plugin for file
 																										/**< \param bNextPlugin move onto next plugin or not
