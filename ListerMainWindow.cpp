@@ -33,6 +33,8 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cListerPlugin *clpLi
 	hwPlugin = NULL;
 	qteContent->setDocument(&qtdDocument);
 
+	bMenuBarVisible = false;
+
 	// assign shortcuts
 	qaOpen->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__OPEN)));
 	qaSaveAs->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::ListerCategory, qsSHORTCUT__LISTER__FILE__SAVE_AS)));
@@ -71,6 +73,9 @@ cListerMainWindow::cListerMainWindow(cSettings *csSettings, cListerPlugin *clpLi
 		qaFitImageToWindow->setChecked(true);
 	} // if
 
+	// event filter
+	qmbMenu->installEventFilter(this);
+
 	ShowContent(true);
 } // cListerMainWindow
 
@@ -95,6 +100,27 @@ void cListerMainWindow::ClosePlugin()
 #endif
 	hwPlugin = NULL;
 } // ClosePlugin
+
+#ifdef Q_WS_WIN
+// event filter
+bool cListerMainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qmbMenu) {
+		if (!bMenuBarVisible && event->type() == QEvent::Resize && hwPlugin) {
+			// to "fix" later shown menu bar
+			resizeEvent(NULL);
+			ShowWindow(hwPlugin, SW_HIDE);
+			ShowWindow(hwPlugin, SW_SHOW);
+			if (qmbMenu->height() > 0) {
+				bMenuBarVisible = true;
+			} // if
+		} // if
+		return false;
+	} else {
+		return QMainWindow::eventFilter(watched, event);
+	} // if else
+} // eventFilter
+#endif
 
 // find next usable plugin for file
 bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow)
@@ -138,7 +164,9 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 			qhiPlugins->next();
 			hwPlugin = qhiPlugins->value().tllListLoad(winId(), QDir::toNativeSeparators(qsFile).toLatin1().data(), iFlags);
 			if (hwPlugin) {
+#ifdef Q_WS_WIN
 				resizeEvent(NULL);
+#endif
 				return true;
 			} // if
 		} // while
