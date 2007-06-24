@@ -180,9 +180,6 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Binary</string>
    </property>
@@ -190,6 +187,9 @@
   <action name="qaHex" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="enabled" >
+    <bool>false</bool>
    </property>
    <property name="text" >
     <string>Hex</string>
