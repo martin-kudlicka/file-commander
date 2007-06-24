@@ -468,7 +468,7 @@ bool cArchiveOperation::OpenArchive(const QFileInfo &qfiFile, sArchive *saArchiv
 				tOpenArchiveData toadArchiveData;
 
 				toadArchiveData.ArcName = new char[qfiFile.filePath().length() + 1];
-				strcpy(toadArchiveData.ArcName, qfiFile.filePath().toLatin1().constData());
+				strcpy(toadArchiveData.ArcName, QDir::toNativeSeparators(qfiFile.filePath()).toLatin1().constData());
 				toadArchiveData.OpenMode = PK_OM_LIST;
 
 				hArchive = qhPluginsInfo.value(QFileInfo(qlPackerPlugins.at(iI).qsName).fileName()).toaOpenArchive(&toadArchiveData);
@@ -583,20 +583,27 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 	qlDirectories.append(".");
 	memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	while (!spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
-		if (!qlDirectories.contains(QFileInfo(thdHeaderData.FileName).path())) {
+		if (!qlDirectories.contains(QFileInfo(thdHeaderData.FileName).path())
+			|| thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY && !qlDirectories.contains(thdHeaderData.FileName)) {
 			// create directory and ".." directory in each archive directory
-			QString qsDotDot;
+			QString qsDirectory, qsDotDot;
 			tHeaderData thdDirectory, thdDotDot;
 
-			qsDotDot = QFileInfo(thdHeaderData.FileName).path() + "/..";
+			if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
+				qsDirectory = thdHeaderData.FileName;
+			} else {
+				qsDirectory = QFileInfo(thdHeaderData.FileName).path();
+			} // if else
+
+			qsDotDot = qsDirectory + "/..";
 
 			// create directory
-			strcpy(thdDirectory.FileName, QFileInfo(thdHeaderData.FileName).path().toLatin1().constData());
+			strcpy(thdDirectory.FileName, qsDirectory.toLatin1().constData());
 			thdDirectory.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
 			thdDirectory.FileAttr = cPackerPlugin::iDIRECTORY;
 			qlFiles.append(thdDirectory);
 
-			qlDirectories.append(QFileInfo(thdHeaderData.FileName).path());
+			qlDirectories.append(qsDirectory);
 
 			// create ".." directory
 			strcpy(thdDotDot.FileName, qsDotDot.toLatin1().constData());

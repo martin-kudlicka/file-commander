@@ -52,9 +52,9 @@ QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString 
 
 	// get value
 	if (iFlag == NULL) {
-		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
 	} else {
-		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(qsFilename.toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, CONTENT_DELAYIFSLOW);
+		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, CONTENT_DELAYIFSLOW);
 		if (iType == ft_delayed) {
 			iType = ft_string;
 			*iFlag = ft_delayed;

@@ -1960,7 +1960,7 @@ void cPanel::Sort(const int &iIndex)
 					} // if
 					break;
 				case Archive:
-					if (qhTabs.value(iIndex).saArchive.qhFiles.value(qlDirectories.at(iI)).FileName == "..") {
+					if (!strcmp(qhTabs.value(iIndex).saArchive.qhFiles.value(qlDirectories.at(iI)).FileName, "..")) {
 						bFound = true;
 					} // if
 			} // switch

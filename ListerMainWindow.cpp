@@ -136,7 +136,7 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 	for (iI = 0; iI < 2; iI++) {
 		while (qhiPlugins->hasNext()) {
 			qhiPlugins->next();
-			hwPlugin = qhiPlugins->value().tllListLoad(centralwidget->winId(), QDir::toNativeSeparators(qsFile).toLatin1().data(), iFlags);
+			hwPlugin = qhiPlugins->value().tllListLoad(winId(), QDir::toNativeSeparators(qsFile).toLatin1().data(), iFlags);
 			if (hwPlugin) {
 				resizeEvent(NULL);
 				return true;
@@ -512,7 +512,7 @@ void cListerMainWindow::PermitMenuActions()
 void cListerMainWindow::resizeEvent(QResizeEvent *event)
 {
 	if (hwPlugin) {
-		MoveWindow(hwPlugin, 0, 0, centralwidget->width(), centralwidget->height(), FALSE);
+		MoveWindow(hwPlugin, 0, qmbMenu->height(), width(), height() - qmbMenu->height(), FALSE);
 	} // if
 } // resizeEvent
 #endif
@@ -536,7 +536,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 				on_qaBinary_triggered();
 			} // if else
 		} else {
-			qteContent->hide();
+			centralwidget->hide();
 			// send default parameters to plugin
 			if (qhiPlugins->value().tlscListSendCommand) {
 				qhiPlugins->value().tlscListSendCommand(hwPlugin, lc_newparams, GetSendCommandParameters());
@@ -547,7 +547,7 @@ void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const b
 		QByteArray qbaFile;
 		QFile qfFile;
 
-		qteContent->show();
+		centralwidget->show();
 		qteContent->setFocus(Qt::OtherFocusReason);
 		on_qaWrapText_triggered(qaWrapText->isChecked());
 		qfFile.setFileName(qsFile);
