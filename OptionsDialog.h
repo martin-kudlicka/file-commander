@@ -170,6 +170,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qleFavouriteTarget_textChanged(const QString &text);
 																						///< target favourite directory path changed
 																						/**< \param text target favourite directory path */
+		void on_qlePluginDateTimeDisplay_textEdited(const QString &text);
+																						///< date/time format for plugin changed
+																						/**< \param text new date/time format */
 		void on_qlePluginTimeDisplay_textEdited(const QString &text);
 																						///< time format for plugin changed
 																						/**< \param text new time format */

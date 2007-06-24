@@ -454,9 +454,39 @@ void cOptionsDialog::FillOptions()
 		} // if else
 	} // if else
 
+	// plugins
+	// content
+	qlePluginDateTimeDisplay->blockSignals(true);
+	qlePluginDateTimeDisplay->setText(csSettings->GetPluginDateTimeDisplay());
+	qlePluginDateTimeDisplay->blockSignals(false);
+	qlePluginTimeDisplay->blockSignals(true);
+	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
+	qlePluginTimeDisplay->blockSignals(false);
+	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
+	// lister
+	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
+	slLister = csSettings->GetListerSettings();
+	if (slLister.qsCharSet == qsANSI) {
+		qrbListerANSI->setChecked(true);
+	} else {
+		if (slLister.qsCharSet == qsASCII) {
+			qrbListerASCII->setChecked(true);
+		} else {
+			qrbListerVariableCharWidth->setChecked(true);
+		} // if else
+	} // if else
+	qcbListerWrapText->setChecked(slLister.bWrapText);
+	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
+	qfListerFont = csSettings->GetListerFont();
+	// packer
+	FillPluginsTree(csSettings->GetPlugins(cSettings::PackerPlugins), qtwPackerPlugins);
+	qcbTreatArchivesLikeDirectories->setChecked(csSettings->GetTreatArchivesLikeDirectories());
+
 	// others
 	// favourite directories
 	qtwFavouriteDirectories->header()->hide();
+	SetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem(), csSettings->GetFavouriteDirectories());
+	qtwFavouriteDirectories->expandAll();
 	// shortcuts
 	qtwShortcutCategory->header()->hide();
 	qtwiShortcutMain = new QTreeWidgetItem(qtwShortcutCategory);
@@ -505,36 +535,6 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutListerOptions->setData(0, Qt::UserRole, cSettings::ListerCategory);
 	qtwShortcutCategory->expandAll();
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
-
-	// plugins
-	// content
-	FillPluginsTree(csSettings->GetPlugins(cSettings::ContentPlugins), qtwContentPlugins);
-	// lister
-	FillPluginsTree(csSettings->GetPlugins(cSettings::ListerPlugins), qtwListerPlugins);
-	qlePluginTimeDisplay->blockSignals(true);
-	qlePluginTimeDisplay->setText(csSettings->GetPluginTimeDisplay());
-	qlePluginTimeDisplay->blockSignals(false);
-	slLister = csSettings->GetListerSettings();
-	if (slLister.qsCharSet == qsANSI) {
-		qrbListerANSI->setChecked(true);
-	} else {
-		if (slLister.qsCharSet == qsASCII) {
-			qrbListerASCII->setChecked(true);
-		} else {
-			qrbListerVariableCharWidth->setChecked(true);
-		} // if else
-	} // if else
-	qcbListerWrapText->setChecked(slLister.bWrapText);
-	qcbListerFitImageToWindow->setChecked(slLister.bFitImageToWindow);
-	qfListerFont = csSettings->GetListerFont();
-	// packer
-	FillPluginsTree(csSettings->GetPlugins(cSettings::PackerPlugins), qtwPackerPlugins);
-	qcbTreatArchivesLikeDirectories->setChecked(csSettings->GetTreatArchivesLikeDirectories());
-
-	// others
-	// favourite directories
-	SetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem(), csSettings->GetFavouriteDirectories());
-	qtwFavouriteDirectories->expandAll();
 } // FillOptions
 
 // fills plugin information into tree
@@ -781,6 +781,12 @@ void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
 		qfToDo |= RefreshFavouriteDirectories;
 	} // if
 } // on_qleFavouriteTarget_textChanged
+
+// date/time format for plugin changed
+void cOptionsDialog::on_qlePluginDateTimeDisplay_textEdited(const QString &text)
+{
+	qfToDo |= RefreshContent;
+} // on_qlePluginDateTimeDisplay_textEdited
 
 // time format for plugin changed
 void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
@@ -1512,9 +1518,10 @@ void cOptionsDialog::SaveOptions()
 	// plugins
 	// content
 	csSettings->SetPlugins(cSettings::ContentPlugins, GetPluginList(qtwContentPlugins));
+	csSettings->SetPluginDateTimeDisplay(qlePluginDateTimeDisplay->text());
+	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	// lister
 	csSettings->SetPlugins(cSettings::ListerPlugins, GetPluginList(qtwListerPlugins));
-	csSettings->SetPluginTimeDisplay(qlePluginTimeDisplay->text());
 	if (qrbListerANSI->isChecked()) {
 		slLister.qsCharSet = qsANSI;
 	} else {
