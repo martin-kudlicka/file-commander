@@ -503,6 +503,9 @@ QList<cSettings::sPlugin> cSettings::GetPlugins(const ePlugin &epPlugin)
 			break;
 		case PackerPlugins:
 			iCount = qsSettings.beginReadArray(qsPLUGINS__PACKER);
+			break;
+		default:
+			iCount = 0;
 	} // switch
 
 	for (iI = 0; iI < iCount; iI++) {

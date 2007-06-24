@@ -553,6 +553,9 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iARCHIVE) {
 											dwAttributes |= FILE_ATTRIBUTE_ARCHIVE;
 										} // if
+										break;
+									default:
+										dwAttributes = 0;
 								} // switch
 								if (dwAttributes & FILE_ATTRIBUTE_READONLY) {
 									qsAttributes = 'r';
@@ -1129,6 +1132,9 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 				break;
 			case Archive:
 				bDirectory = qhiTab.value().saArchive.qhFiles.value(ctwTree->topLevelItem(iI)).FileAttr & cPackerPlugin::iDIRECTORY;
+				break;
+			default:
+				bDirectory = false;
 		} // switch
 
 		if (bDirectory) {

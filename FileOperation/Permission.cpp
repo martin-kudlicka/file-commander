@@ -39,8 +39,9 @@ cPermission::eChoice cPermission::ShowDialog(const QString &qsFilename, const QS
 			break;
 		case QMessageBox::Cancel:
 			ecResponse = Cancel;
+			break;
 		default:
-			;
+			ecResponse = Cancel;
 	} // switch
 
 	return ecResponse;
