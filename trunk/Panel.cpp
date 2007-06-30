@@ -1151,16 +1151,20 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 		} // switch
 
 		if (bDirectory) {
-			iDirectoriesTotal++;
-			if (ctwTree->topLevelItem(iI)->isSelected()) {
-				int iColumnExtension;
+			int iColumnSize;
+			qint64 qi64DirectorySize;
 
+			iDirectoriesTotal++;
+
+			// size for directory can be known too
+			iColumnSize = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
+			if (iColumnSize != -1) {
+				qi64DirectorySize = ctwTree->topLevelItem(iI)->data(iColumnSize, Qt::UserRole).toLongLong();
+				qi64TotalSize += qi64DirectorySize;
+			} // if
+			if (ctwTree->topLevelItem(iI)->isSelected()) {
 				iDirectories++;
-				iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
-				if (iColumnExtension != -1) {
-					// size for directory can be known too
-					qi64Size += ctwTree->topLevelItem(iI)->data(iColumnExtension, Qt::UserRole).toLongLong();
-				} // if
+				qi64Size += qi64DirectorySize;
 			} // if
 		} else {
 			iFilesTotal++;
@@ -1225,6 +1229,9 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
 				// show the size in size column
 				qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+
+				// refresh selected items size
+				on_ctwTree_itemSelectionChanged(static_cast<cTreeWidget *>(qswDir->currentWidget()));
 			} // if
 			break;
 		case Qt::Key_Enter:
