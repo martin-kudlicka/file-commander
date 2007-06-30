@@ -1344,6 +1344,10 @@ void cOptionsDialog::PrepareColumnsMenu()
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsNAME));
 	qaAction = qmNative->addAction(qsEXTENSION);
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsEXTENSION));
+	qaAction = qmNative->addAction(qsNAME_WITH_EXTENSION);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsNAME_WITH_EXTENSION));
+	qaAction = qmNative->addAction(qsSIZE);
+	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsSIZE));
 	qaAction = qmNative->addAction(qsDATE_TIME);
 	qaAction->setData(QString("%1|%2").arg(qsNATIVE2).arg(qsDATE_TIME));
 #ifdef Q_WS_WIN
