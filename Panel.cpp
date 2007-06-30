@@ -1159,7 +1159,7 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 				iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
 				if (iColumnExtension != -1) {
 					// size for directory can be known too
-					qi64Size += ctwTree->topLevelItem(iI)->data(iColumnExtension, Qt::UserRole).toInt();
+					qi64Size += ctwTree->topLevelItem(iI)->data(iColumnExtension, Qt::UserRole).toLongLong();
 				} // if
 			} // if
 		} else {
