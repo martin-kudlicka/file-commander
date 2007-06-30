@@ -12,6 +12,7 @@
 #include <QtCore/QUrl>
 #include <QtGui/QMessageBox>
 #include <QtGui/QLineEdit>
+#include <QtGui/QFileIconProvider>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -449,6 +450,8 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 			// native
 			if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsICON) {
 				// icon
+				QFileIconProvider qfipIcon;
+
 				switch (elType) {
 					case LocalDirectory:
 						qtwiFile->setIcon(iI, qfipIcon.icon(*static_cast<const QFileInfo *>(vData)));

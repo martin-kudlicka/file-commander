@@ -10,7 +10,6 @@
 #include <QtCore/QHash>
 #include "Plugins/ContentPlugin.h"
 #include <QtCore/QFileInfo>
-#include <QtGui/QFileIconProvider>
 #include "Panel/ShellMenu.h"
 #include <QtCore/QFileSystemWatcher>
 #include "FileOperation/FileRoutine.h"
@@ -166,7 +165,6 @@ class cPanel : public QObject
 		cShellMenu *csmMenu;															///< right click "native" shell menu
 		QComboBox *qcbCommand;														///< command combo box
 		QComboBox *qcbDrive;															///< drive
-		QFileIconProvider qfipIcon;												///< icons
 		QFileSystemWatcher qfswWatcher;											///< watching directory changes
 		QHash<int, sTab> qhTabs;													///< tabs in current panel
 		QHash<QString, QString> qhLastPaths;									///< last visited paths for drives
