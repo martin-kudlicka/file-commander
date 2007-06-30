@@ -583,8 +583,8 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 	qlDirectories.append(".");
 	memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	while (!spiPlugin.trhReadHeader(hArchive, &thdHeaderData)) {
-		if (!qlDirectories.contains(QFileInfo(thdHeaderData.FileName).path())
-			|| thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY && !qlDirectories.contains(thdHeaderData.FileName)) {
+		if (!qlDirectories.contains(QDir::toNativeSeparators(QFileInfo(thdHeaderData.FileName).path()))
+			|| thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY && !qlDirectories.contains(QDir::toNativeSeparators(thdHeaderData.FileName))) {
 			// create directory and ".." directory in each archive directory
 			QString qsDirectory, qsDotDot;
 			tHeaderData thdDirectory, thdDotDot;
@@ -603,7 +603,7 @@ QList<tHeaderData> cArchiveOperation::ReadArchiveFiles(const HANDLE &hArchive, c
 			thdDirectory.FileAttr = cPackerPlugin::iDIRECTORY;
 			qlFiles.append(thdDirectory);
 
-			qlDirectories.append(qsDirectory);
+			qlDirectories.append(QDir::toNativeSeparators(qsDirectory));
 
 			// create ".." directory
 			strcpy(thdDotDot.FileName, qsDotDot.toLatin1().constData());
