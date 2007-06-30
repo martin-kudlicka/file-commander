@@ -500,85 +500,105 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 								qtwiFile->setText(iI, QFileInfo(static_cast<const tHeaderData *>(vData)->FileName).suffix());
 						} // switch
 					} else {
-						if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsSIZE) {
-							// size
+						if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME_WITH_EXTENSION) {
+							// name with extension
+							QString qsName;
+
 							switch (elType) {
 								case LocalDirectory:
-									if (static_cast<const QFileInfo *>(vData)->isDir()) {
-										qtwiFile->setText(iI, tr("<DIR>"));
-									} else {
-										qtwiFile->setText(iI, GetSizeString(static_cast<const QFileInfo *>(vData)->size()));
-									} // if else
+									qsName = qsName = static_cast<const QFileInfo *>(vData)->fileName();
+									if (static_cast<const QFileInfo *>(vData)->isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+										qsName = '[' + qsName + ']';
+									} // if
 									break;
 								case Archive:
-									if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
-										qtwiFile->setText(iI, tr("<DIR>"));
-									} else {
-										qtwiFile->setText(iI, GetSizeString(static_cast<const tHeaderData *>(vData)->UnpSize));
-									} // if else
+									qsName = QFileInfo(static_cast<const tHeaderData *>(vData)->FileName).fileName();
+									if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY && csSettings->GetShowBracketsAroundDirectoryName()) {
+										qsName = '[' + qsName + ']';
+									} // if
 							} // switch
+							qtwiFile->setText(iI, qsName);
 						} else {
-							if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsDATE_TIME) {
-								// date/time
+							if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsSIZE) {
+								// size
 								switch (elType) {
 									case LocalDirectory:
-										qtwiFile->setText(iI, DateTime(static_cast<const QFileInfo *>(vData)->lastModified()));
-										break;
-									case Archive:
-										qtwiFile->setText(iI, DateTime(ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
-								} // switch
-							}
-#ifdef Q_WS_WIN
-							else {
-								// attributes
-								DWORD dwAttributes;
-								QString qsAttributes;
-
-								switch (elType ) {
-									case LocalDirectory:
-										dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(static_cast<const QFileInfo *>(vData)->filePath().unicode()));
-										break;
-									case Archive:
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iREAD_ONLY) {
-											dwAttributes = FILE_ATTRIBUTE_READONLY;
+										if (static_cast<const QFileInfo *>(vData)->isDir()) {
+											qtwiFile->setText(iI, tr("<DIR>"));
 										} else {
-											dwAttributes = 0;
+											qtwiFile->setText(iI, GetSizeString(static_cast<const QFileInfo *>(vData)->size()));
 										} // if else
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iHIDDEN) {
-											dwAttributes |= FILE_ATTRIBUTE_HIDDEN;
-										} // if
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iSYSTEM) {
-											dwAttributes |= FILE_ATTRIBUTE_SYSTEM;
-										} // if
-										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iARCHIVE) {
-											dwAttributes |= FILE_ATTRIBUTE_ARCHIVE;
-										} // if
 										break;
-									default:
-										dwAttributes = 0;
+									case Archive:
+										if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
+											qtwiFile->setText(iI, tr("<DIR>"));
+										} else {
+											qtwiFile->setText(iI, GetSizeString(static_cast<const tHeaderData *>(vData)->UnpSize));
+										} // if else
 								} // switch
-								if (dwAttributes & FILE_ATTRIBUTE_READONLY) {
-									qsAttributes = 'r';
-								} // if
-								if (dwAttributes & FILE_ATTRIBUTE_ARCHIVE) {
-									qsAttributes += 'a';
-								} // if
-								if (dwAttributes & FILE_ATTRIBUTE_HIDDEN) {
-									qsAttributes += 'h';
-								} // if
-								if (dwAttributes & FILE_ATTRIBUTE_SYSTEM) {
-									qsAttributes += 's';
-								} // if
-								if (dwAttributes & FILE_ATTRIBUTE_COMPRESSED) {
-									qsAttributes += 'c';
-								} // if
-								if (dwAttributes & FILE_ATTRIBUTE_ENCRYPTED) {
-									qsAttributes += 'e';
-								} // if
+							} else {
+								if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsDATE_TIME) {
+									// date/time
+									switch (elType) {
+										case LocalDirectory:
+											qtwiFile->setText(iI, DateTime(static_cast<const QFileInfo *>(vData)->lastModified()));
+											break;
+										case Archive:
+											qtwiFile->setText(iI, DateTime(ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
+									} // switch
+								}
+#ifdef Q_WS_WIN
+								else {
+									// attributes
+									DWORD dwAttributes;
+									QString qsAttributes;
 
-								qtwiFile->setText(iI, qsAttributes);
-							} // if else
+									switch (elType ) {
+										case LocalDirectory:
+											dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(static_cast<const QFileInfo *>(vData)->filePath().unicode()));
+											break;
+										case Archive:
+											if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iREAD_ONLY) {
+												dwAttributes = FILE_ATTRIBUTE_READONLY;
+											} else {
+												dwAttributes = 0;
+											} // if else
+											if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iHIDDEN) {
+												dwAttributes |= FILE_ATTRIBUTE_HIDDEN;
+											} // if
+											if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iSYSTEM) {
+												dwAttributes |= FILE_ATTRIBUTE_SYSTEM;
+											} // if
+											if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iARCHIVE) {
+												dwAttributes |= FILE_ATTRIBUTE_ARCHIVE;
+											} // if
+											break;
+										default:
+											dwAttributes = 0;
+									} // switch
+									if (dwAttributes & FILE_ATTRIBUTE_READONLY) {
+										qsAttributes = 'r';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_ARCHIVE) {
+										qsAttributes += 'a';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_HIDDEN) {
+										qsAttributes += 'h';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_SYSTEM) {
+										qsAttributes += 's';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_COMPRESSED) {
+										qsAttributes += 'c';
+									} // if
+									if (dwAttributes & FILE_ATTRIBUTE_ENCRYPTED) {
+										qsAttributes += 'e';
+									} // if
+
+									qtwiFile->setText(iI, qsAttributes);
+								} // if else
 #endif
+							} // if else
 						} // if else
 					} // if else
 				} // if else
@@ -1964,6 +1984,10 @@ void cPanel::Sort(const int &iIndex)
 
 	// sort at first by name if possible (to have sorted the rest by filename as second condition)
 	iColumnName = GetNativeColumnIndex(qsNAME, iIndex);
+	if (iColumnName == -1) {
+		// or by name with extension
+		iColumnName = GetNativeColumnIndex(qsNAME_WITH_EXTENSION, iIndex);
+	} // if
 	if (iColumnName != -1) {
 		ssSort.iSortedColumn = iColumnName;
 		ssSort.soSortOrder = Qt::AscendingOrder;

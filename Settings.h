@@ -31,6 +31,7 @@ const QString qsMAXIMIZED = "Maximized";
 const QString qsMEGABYTES = "Megabytes";
 const QString qsMINUTES = "minute(s)";
 const QString qsNAME = "Name";
+const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsNORMAL = "Normal";
