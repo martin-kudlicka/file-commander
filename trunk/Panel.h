@@ -243,9 +243,6 @@ class cPanel : public QObject
 																							/**< \param iTabIndex tab bar index to set text in */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
-		QDateTime ToQDateTime(const int &iDateTime);							///< converts packer plugin's date time format to QDateTime
-																							/**< \param iDateTime packed file date time
-																								  \return date time in Qt format */
 		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
 																							///< compare items by text
 																							/**< \param qtwiItem1 1st item

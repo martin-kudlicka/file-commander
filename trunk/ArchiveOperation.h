@@ -50,6 +50,9 @@ class cArchiveOperation : private QObject
 																									  \param saSourceArchive source archive info
 																									  \param qlSourceSelected source archive files to manipulate with
 																									  \param qsDestination destination path */
+		static QDateTime ToQDateTime(const int &iDateTime);							///< converts packer plugin's date time format to QDateTime
+																								/**< \param iDateTime packed file date time
+																									  \return date time in Qt format */
 		void UnpackSelectedFiles(const QFileInfoList &qfilArchives, const QString &qsDestination, cPackerPlugin *cppPackerPlugin);
 																								///< unpack selected archives
 																								/**< \param qfilArchives list of archive files
