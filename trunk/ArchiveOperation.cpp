@@ -76,7 +76,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const QFileInfo &qfiSou
 					} // if else
 				} else {
 					// no rename
-					return cCopyMove::Cancel;
+					break;
 				} // if else
 			} // while
 			if (*ecConflictCurrent == cCopyMoveConflict::Cancel) {
@@ -326,33 +326,30 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 					// check disk space on target
 					ecrCheck = CheckDiskSpace(qsSource, QFileInfo(qsTarget).path(), thdHeaderData.UnpSize, &ecDiskSpaceCurrent, &ecDiskSpace);
 					if (ecrCheck == cCopyMove::NextFile) {
-						continue;
-					} else {
-						if (ecrCheck == cCopyMove::Cancel) {
-							break;
-						} // if
-					} // if else
+						saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+					} // if
+					if (ecrCheck != cCopyMove::Nothing) {
+						break;
+					} // if
 
 					// conflict solving
 					ecrCheck = CheckConflict(QFileInfo(qsSource), &qsTarget, &ecConflictCurrent, &ecConflict);
 					if (ecrCheck == cCopyMove::NextFile) {
-						continue;
-					} else {
-						if (ecrCheck == cCopyMove::Cancel) {
-							break;
-						} // if
-					} // if else
+						saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+					} // if
+					if (ecrCheck != cCopyMove::Nothing) {
+						break;
+					} // if
 
 #ifdef Q_WS_WIN
 					// check readonly permission
 					ecrCheck = CheckPermission(qsTarget, &ecPermissionCurrent, &ecPermission);
 					if (ecrCheck == cCopyMove::NextFile) {
-						continue;
-					} else {
-						if (ecrCheck == cCopyMove::Cancel) {
-							break;
-						} // if
-					} // if else
+						saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+					} // if
+					if (ecrCheck != cCopyMove::Nothing) {
+						break;
+					} // if
 #endif
 
 					// make destination path if doesn't exist
