@@ -13,6 +13,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QFileIconProvider>
+#include "ArchiveOperation/ArchiveFilePropertiesDialog.h"
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -549,7 +550,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 											qtwiFile->setText(iI, DateTime(static_cast<const QFileInfo *>(vData)->lastModified()));
 											break;
 										case Archive:
-											qtwiFile->setText(iI, DateTime(ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
+											qtwiFile->setText(iI, DateTime(cArchiveOperation::ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
 									} // switch
 								}
 #ifdef Q_WS_WIN
@@ -1179,10 +1180,10 @@ void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column)
 				} // if else
 			} else {
 				// double click on file
-				// TODO on_ctwTree_itemActivated archive file activated
-				;
+				cArchiveFilePropertiesDialog cafpdFileProperties(qmwParent, thdFile);
+
+				cafpdFileProperties.exec();
 			} // if else
-			;
 	} // switch
 } // on_ctwTree_itemActivated
 
@@ -2126,22 +2127,6 @@ void cPanel::SortBy(const int &iColumn)
 	// sort again
 	Sort(qswDir->currentIndex());
 } // SortBy
-
-// converts packer plugin's date time format to QDateTime
-QDateTime cPanel::ToQDateTime(const int &iDateTime)
-{
-	QDate qdDate;
-	QDateTime qdtDateTime;
-	QTime qtTime;
-
-	qdDate.setDate((iDateTime >> 25) + 1980, (iDateTime >> 21) & 0xF, (iDateTime >> 16) & 0x1F);
-	qtTime.setHMS((iDateTime >> 11) & 0x1F, (iDateTime >> 5) & 0x3F, (iDateTime & 0x1F) * 2);
-
-	qdtDateTime.setDate(qdDate);
-	qdtDateTime.setTime(qtTime);
-
-	return qdtDateTime;
-} // ToQDateTime
 
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
