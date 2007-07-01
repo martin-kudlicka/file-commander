@@ -774,7 +774,7 @@ void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
 		case cPanel::Archive:
 			// extract from archive to local directory
 			cArchiveOperation caoArchiveOperation(this, &csSettings);
-			QList<tHeaderData> qlSourceAll, qlSourceSelected;
+			QList<tHeaderData> qlSourceSelected;
 			cArchiveOperation::sArchive saSourceArchive;
 
 			saSourceArchive = cpSource->GetArchiveInfo();
