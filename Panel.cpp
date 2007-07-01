@@ -17,6 +17,8 @@
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 
+const QChar qcFILE_SEPARATOR = ';';
+
 // destructor
 cPanel::~cPanel()
 {
@@ -83,8 +85,8 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
-	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, QTreeWidgetItem *)));
-	connect(ctwTree, SIGNAL(DragEvent(cTreeWidget *)), SLOT(on_ctwTree_DragEvent(cTreeWidget *)));
+	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
 	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));
 
 	// set tab properties
@@ -992,39 +994,62 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 } // on_ctwTree_customContextMenuRequested
 
 // start dragging of selected objects
-void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
+void cPanel::on_ctwTree_DragEvent()
 {
-	QStringList qfilFiles;
-
-	qfilFiles = GetSelectedItemsStringList();
-
-	if (qfilFiles.count() > 0) {
-		int iI;
+	if (static_cast<cTreeWidget *>(qswDir->currentWidget())->selectedItems().count() > 0) {
 		QDrag *qdDrag;
-		QList<QTreeWidgetItem *> qlFiles;
+		QList<QTreeWidgetItem *> qlIgnore;
 		QList<QUrl> qlUrls;
 		QMimeData *qmdMimeData;
 
-		for (iI = 0; iI < qfilFiles.count(); iI++) {
-			qlUrls.append(QUrl::fromLocalFile(qfilFiles.at(iI)));
-		} // for
-
 		qmdMimeData = new QMimeData();
-		qmdMimeData->setUrls(qlUrls);
-
-		qdDrag = new QDrag(ctwSource);
+		qdDrag = new QDrag(static_cast<cTreeWidget *>(qswDir->currentWidget()));
 		qdDrag->setMimeData(qmdMimeData);
 
-		// get files from current directory to not be able drag on them
-		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles);
-		while (qhiFiles.hasNext()) {
-			qhiFiles.next();
-			if (qhiFiles.value().isFile()) {
-				qlFiles.append(qhiFiles.key());
-			} // if
-		} // while
+		if (GetLocation() == LocalDirectory) {
+			// dragging from local directory
+			int iI;
+			QStringList qslFiles;
 
-		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel(qlFiles);
+			qslFiles = GetSelectedItemsStringList();
+			for (iI = 0; iI < qslFiles.count(); iI++) {
+				qlUrls.append(QUrl::fromLocalFile(qslFiles.at(iI)));
+			} // for
+			qmdMimeData->setUrls(qlUrls);
+
+			// get files from current directory to not be able drag on them
+			QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFiles(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles);
+			while (qhiFiles.hasNext()) {
+				qhiFiles.next();
+				if (qhiFiles.value().isFile()) {
+					qlIgnore.append(qhiFiles.key());
+				} // if
+			} // while
+		} else {
+			// dragging from archive
+			int iI;
+			QList<tHeaderData> qlFiles;
+			QStringList qslFiles;
+
+			qmdMimeData->setData(qsMIME__ARCHIVE_INFORMATION, QVariant(reinterpret_cast<int>(&qhTabs[qswDir->currentIndex()].saArchive)).toString().toLatin1());
+
+			qlFiles = GetSelectedItemsArchiveList();
+			for (iI = 0; iI < qlFiles.count(); iI++) {
+				qslFiles.append(qlFiles.at(iI).FileName);
+			} // for
+			qmdMimeData->setData(qsMIME__ARCHIVE_FILES, qslFiles.join(qcFILE_SEPARATOR).toLatin1());
+
+			// get files from current directory to not be able drag on them
+			QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFiles(qhTabs.value(qswDir->currentIndex()).saArchive.qhFiles);
+			while (qhiFiles.hasNext()) {
+				qhiFiles.next();
+				if (!(qhiFiles.value().FileAttr & cPackerPlugin::iDIRECTORY)) {
+					qlIgnore.append(qhiFiles.key());
+				} // if
+			} // while
+		} // if else
+
+		static_cast<cTreeWidget *>(qswDir->currentWidget())->StartDragFromPanel(qlIgnore);
 		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
 		static_cast<cTreeWidget *>(qswDir->currentWidget())->StopDragFromPanel();
 		qtwiLastMovedOver = NULL;
@@ -1032,10 +1057,9 @@ void cPanel::on_ctwTree_DragEvent(cTreeWidget *ctwSource)
 } // on_ctwTree_DragEvent
 
 // drop event occured
-void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, QTreeWidgetItem *qtwiDroppedOn)
+void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, const QString &qsArchiveInformation, const QString &qsArchiveFiles, QTreeWidgetItem *qtwiDroppedOn)
 {
 	cFileRoutine::eOperation eoOperation;
-	int iI;
 	QFileInfoList qfilFiles;
 	QString qsDestination;
 
@@ -1063,18 +1087,42 @@ void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, con
 		} // if else
 	} // if else
 
-	// get list of source files
-	for (iI = 0; iI < clUrls.count(); iI++) {
-		qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
-	} // for
-
+	// destination path
 	if (qtwiDroppedOn && qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiDroppedOn).isDir()) {
 		qsDestination = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiDroppedOn).filePath();
 	} else {
 		qsDestination = GetPath();
 	} // if else
 
-	cfoFileOperation->Operate(eoOperation, qfilFiles, qsDestination);
+	if (clUrls.count() > 0) {
+		// copy/move from local directory
+		int iI;
+
+		// get list of source files
+		for (iI = 0; iI < clUrls.count(); iI++) {
+			qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
+		} // for
+
+		cfoFileOperation->Operate(eoOperation, qfilFiles, qsDestination);
+	} else {
+		// copy/move from archive
+		cArchiveOperation caoArchiveOperation(qmwParent, csSettings);
+		int iI;
+		QList<tHeaderData> qlSourceSelected;
+		QStringList qslToExtract;
+		cArchiveOperation::sArchive *saArchive;
+
+		saArchive = reinterpret_cast<cArchiveOperation::sArchive *>(qsArchiveInformation.toInt());
+		// get list of source files
+		qslToExtract = qsArchiveFiles.split(qcFILE_SEPARATOR);
+		for (iI = 0; iI < saArchive->qlFiles.count(); iI++) {
+			if (qslToExtract.contains(saArchive->qlFiles.at(iI).FileName)) {
+				qlSourceSelected.append(saArchive->qlFiles.at(iI));
+			} // if
+		} // for
+
+		caoArchiveOperation.Operate(cArchiveOperation::Extract, *saArchive, qlSourceSelected, qsDestination);
+	} // if else
 } // on_ctwTree_DropEvent
 
 // dir view got focus

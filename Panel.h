@@ -262,12 +262,13 @@ class cPanel : public QObject
 																							/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);	///< show tree view context menu
 																							/**< \param pos position of context menu */
-		void on_ctwTree_DragEvent(cTreeWidget *ctwSource);					///< start dragging of selected objects
-																							/**< \param ctwSource source dir view */
-		void on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, QTreeWidgetItem *qtwiDroppedOn);
+		void on_ctwTree_DragEvent();												///< start dragging of selected objects
+		void on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, const QString &qsArchiveInformation, const QString &qsArchiveFiles, QTreeWidgetItem *qtwiDroppedOn);
 																							///< drop event occured
 																							/**< \param edaAction action to do in this event with source
 																								  \param clUrls source objects location
+																								  \param qsArchiveInformation address of archive information structure
+																								  \param qsArchiveFiles files to extract from archive
 																								  \param qtwiDroppedOn item dropped on */
 		void on_ctwTree_GotFocus();												///< dir view got focus
 		void on_ctwTree_itemActivated(QTreeWidgetItem *item, int column);

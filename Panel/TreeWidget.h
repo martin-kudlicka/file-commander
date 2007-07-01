@@ -5,6 +5,9 @@
 
 #include <QtGui/QTreeWidget>
 
+const QString qsMIME__ARCHIVE_FILES = "text/archive_files";
+const QString qsMIME__ARCHIVE_INFORMATION = "text/archive_information";
+
 class cTreeWidget : public QTreeWidget
 {
 	Q_OBJECT
@@ -47,12 +50,13 @@ class cTreeWidget : public QTreeWidget
 																								/**< \param event event description */
 
 	signals:
-		void DragEvent(cTreeWidget *ctwSource);									///< start dragging of selected objects
-																								/**< \param ctwSource source dir view */
-		void DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, QTreeWidgetItem *qtwiDroppedOn);
+		void DragEvent();																	///< start dragging of selected objects
+		void DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &clUrls, const QString &qsArchiveInformatio, const QString &qsArchiveFiles, QTreeWidgetItem *qtwiDroppedOn);
 																								///< drop event occured
 																								/**< \param edaAction action to do in this event with source
 																									  \param clUrls source objects location
+																									  \param qsArchiveInformation address of archive information structure
+																									  \param qsArchiveFiles files to extract from archive
 																									  \param qtwiDroppedOn item dropped on */
 		void GotFocus();																	///< dir view got focus
 		void itemSelectionChanged(const cTreeWidget *ctwTree);				///< selection changed it directory view

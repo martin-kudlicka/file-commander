@@ -15,7 +15,7 @@ cTreeWidget::cTreeWidget()
 // drag enter event
 void cTreeWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-	if (event->mimeData()->hasUrls()) {
+	if (event->mimeData()->hasUrls() || event->mimeData()->hasFormat(qsMIME__ARCHIVE_INFORMATION)) {
 		event->acceptProposedAction();
 	} // if
 } // dragEnterEvent
@@ -43,9 +43,9 @@ void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
 void cTreeWidget::dropEvent(QDropEvent *event)
 {
 	if (event->mouseButtons() == Qt::LeftButton) {
-		emit DropEvent(CopyDropAction, event->mimeData()->urls(), itemAt(event->pos()));
+		emit DropEvent(CopyDropAction, event->mimeData()->urls(), event->mimeData()->data(qsMIME__ARCHIVE_INFORMATION), event->mimeData()->data(qsMIME__ARCHIVE_FILES), itemAt(event->pos()));
 	} else {
-		emit DropEvent(ChooseDropAction, event->mimeData()->urls(), itemAt(event->pos()));
+		emit DropEvent(ChooseDropAction, event->mimeData()->urls(), event->mimeData()->data(qsMIME__ARCHIVE_INFORMATION), event->mimeData()->data(qsMIME__ARCHIVE_FILES), itemAt(event->pos()));
 	} // if else
 	event->acceptProposedAction();
 } // dropEvent
@@ -86,7 +86,7 @@ void cTreeWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (event->buttons() & (Qt::LeftButton | Qt::RightButton)) {
 		if ((event->pos() - qpDragStart).manhattanLength() >= QApplication::startDragDistance()) {
-			emit DragEvent(this);
+			emit DragEvent();
 		} // if
 	} // if
 } // mouseMoveEvent
