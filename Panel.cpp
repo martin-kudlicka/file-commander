@@ -995,17 +995,23 @@ void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 		csmMenu.Show(qslSelected, static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 	} else {
 		// archive context menu for archives
-		QAction *qaProperties, *qaSelected;
+		QAction *qaCopy, *qaProperties, *qaSelected;
 		QMenu qmArchive;
 
 		// archive context menu items
+		qaCopy = qmArchive.addAction(tr("&Copy"));
+		qmArchive.addSeparator();
 		qaProperties = qmArchive.addAction(tr("&Properties"));
 
 		qaSelected = qmArchive.exec(static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
 
-		if (qaSelected == qaProperties) {
-			on_ctwTree_itemActivated(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem(), 0);
-		} // if
+		if (qaSelected == qaCopy) {
+			emit CopyArchiveFiles();
+		} else {
+			if (qaSelected == qaProperties) {
+				on_ctwTree_itemActivated(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem(), 0);
+			} // if
+		} // if else
 	} // if else
 } // on_ctwTree_customContextMenuRequested
 
