@@ -84,6 +84,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 	private slots:
 		void on_cpLeft_GotFocus();												///< left panel got focus
+		void on_cpPanel_CopyArchiveFiles();									///< copy of archive files called
 		void on_cpPanel_Delete();												///< delete marked files
 		void on_cpRight_GotFocus();											///< right panel got focus
 		void on_qaAbout_triggered(bool checked = false);				///< about is selected

@@ -247,6 +247,7 @@ class cPanel : public QObject
 																								  \param qtwiItem2 2nd item */
 
 	signals:
+		void CopyArchiveFiles();													///< copy of archive files called
 		void Delete();																	///< delete marked files
 		void GotFocus();																///< panel got focus
 		void InterruptContentDelayed();											///< interrupt delayed content processing before refresh dir view content
