@@ -10,7 +10,6 @@
 #include <QtCore/QHash>
 #include "Plugins/ContentPlugin.h"
 #include <QtCore/QFileInfo>
-#include "Panel/ShellMenu.h"
 #include <QtCore/QFileSystemWatcher>
 #include "FileOperation/FileRoutine.h"
 #include "Panel/TreeWidget.h"
@@ -162,7 +161,6 @@ class cPanel : public QObject
 		cFileOperation *cfoFileOperation;										///< handling file operations
 		cPackerPlugin *cppPackerPlugin;											///< access to packer plugins
 		cSettings *csSettings;														///< main settings
-		cShellMenu *csmMenu;															///< right click "native" shell menu
 		QComboBox *qcbCommand;														///< command combo box
 		QComboBox *qcbDrive;															///< drive
 		QFileSystemWatcher qfswWatcher;											///< watching directory changes

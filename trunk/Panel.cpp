@@ -14,6 +14,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QFileIconProvider>
 #include "ArchiveOperation/ArchiveFilePropertiesDialog.h"
+#include "Panel/ShellMenu.h"
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -23,7 +24,6 @@ const QChar qcFILE_SEPARATOR = ';';
 // destructor
 cPanel::~cPanel()
 {
-	delete csmMenu;
 	ccpdContentPluginDelayed->deleteLater();
 } // ~cPanel
 
@@ -240,12 +240,6 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	this->qcbCommand = qcbCommand;
 	this->cfoFileOperation = cfoFileOperation;
 	this->qleQuickSearch = qleQuickSearch;
-
-	csmMenu = new cShellMenu(
-#ifdef Q_WS_WIN
-	qswDir->winId()
-#endif
-	);
 
 	// signals for controls
 	connect(qcbDrive, SIGNAL(activated(int)), SLOT(on_qcbDrive_activated(int)));
@@ -978,20 +972,41 @@ void cPanel::on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sO
 // show tree view context menu
 void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
 {
-	int iI;
-	QStringList qslSelected;
+	if (GetLocation() == LocalDirectory) {
+		// shell context menu for local directory
+		int iI;
+		cShellMenu csmMenu(
+#ifdef Q_WS_WIN
+			qswDir->winId()
+#endif
+		);
+		QStringList qslSelected;
 
-	qslSelected = GetSelectedItemsStringList();
+		qslSelected = GetSelectedItemsStringList();
 
-	for (iI = 0; iI < qslSelected.count(); iI++) {
-		if (qslSelected.at(iI).endsWith("..")) {
-			// replace ".." with current path
-			qslSelected.replace(iI, QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath));
-			break;
+		for (iI = 0; iI < qslSelected.count(); iI++) {
+			if (qslSelected.at(iI).endsWith("..")) {
+				// replace ".." with current path
+				qslSelected.replace(iI, QDir::toNativeSeparators(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath));
+				break;
+			} // if
+		} // for
+
+		csmMenu.Show(qslSelected, static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	} else {
+		// archive context menu for archives
+		QAction *qaProperties, *qaSelected;
+		QMenu qmArchive;
+
+		// archive context menu items
+		qaProperties = qmArchive.addAction(tr("&Properties"));
+
+		qaSelected = qmArchive.exec(static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+
+		if (qaSelected == qaProperties) {
+			on_ctwTree_itemActivated(static_cast<cTreeWidget *>(qswDir->currentWidget())->currentItem(), 0);
 		} // if
-	} // for
-
-	csmMenu->Show(qslSelected, static_cast<cTreeWidget *>(qswDir->currentWidget())->viewport()->mapToGlobal(pos));
+	} // if else
 } // on_ctwTree_customContextMenuRequested
 
 // start dragging of selected objects
