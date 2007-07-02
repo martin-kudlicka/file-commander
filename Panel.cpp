@@ -25,7 +25,6 @@ const QChar qcFILE_SEPARATOR = ';';
 cPanel::~cPanel()
 {
 	ccpdContentPluginDelayed->deleteLater();
-	cidIconsDelayed->deleteLater();
 } // ~cPanel
 
 // actualize volume information - disk name and space
@@ -257,11 +256,6 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbD
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
 
-	// delayed icons
-	cidIconsDelayed = new cIconsDelayed();
-	connect(cidIconsDelayed, SIGNAL(GotIcon(const cIconsDelayed::sOutput &)), SLOT(on_cidIconsDelayed_GotIcon(const cIconsDelayed::sOutput &)));
-	connect(this, SIGNAL(InterruptIconsDelayed()), cidIconsDelayed, SLOT(on_InterruptIconsDelayed()));
-
 	// event filters
 	qcbCommand->installEventFilter(this);
 	qtbTab->installEventFilter(this);
@@ -444,7 +438,7 @@ void cPanel::FeedToPanel(const QFileInfoList &qfilFiles)
 } // FeedToPanel
 
 // fill directory view item accodring to content of vData
-void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<cIconsDelayed::sParameters> *qlIconsParameters)
+void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters)
 {
 	int iI;
 
@@ -454,22 +448,10 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 			if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsICON) {
 				// icon
 				QFileIconProvider qfipIcon;
-				cIconsDelayed::sParameters spParameters;
 
 				switch (elType) {
 					case LocalDirectory:
-						// set default icons (fast)
-						if (static_cast<const QFileInfo *>(vData)->isDir()) {
-							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::Folder));
-						} else {
-							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::File));
-						} // if else
-
-						// load right icons later
-						spParameters.siInput.qsFilename = static_cast<const QFileInfo *>(vData)->filePath();
-						spParameters.soOutput.qtwiItem = qtwiFile;
-						spParameters.soOutput.iColumn = iI;
-						qlIconsParameters->append(spParameters);
+						qtwiFile->setIcon(iI, qfipIcon.icon(*static_cast<const QFileInfo *>(vData)));
 						break;
 					case Archive:
 						if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
@@ -986,12 +968,6 @@ void cPanel::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDela
 {
 	soOutput.qtwiItem->setText(soOutput.iColumn, soOutput.qsValue);
 } // on_ccpdContentPluginDelayed_GotColumnValue
-
-// got column value (icon)
-void cPanel::on_cidIconsDelayed_GotIcon(const cIconsDelayed::sOutput &soOutput)
-{
-	soOutput.qtwiItem->setIcon(soOutput.iColumn, soOutput.qiIcon);
-} // on_cidIconsDelayed_GotIcon
 
 // show tree view context menu
 void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos)
@@ -1630,13 +1606,10 @@ void cPanel::RefreshContent(const QString &qsFocusTo /* QString() */)
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 {
 	int iI;
-	QList<cIconsDelayed::sParameters> qlIconsParameters;
 	QList<cContentPluginDelayed::sParameters> qlParameters;
 
 	// interrupt delayed content processing
 	emit InterruptContentDelayed();
-	// interrupt delayed icons processing
-	emit InterruptIconsDelayed();
 
 	switch (qhTabs.value(iIndex).elLocation) {
 		case LocalDirectory:
@@ -1667,7 +1640,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 				qhTabs[iIndex].sldLocalDirectory.qhFiles.insert(qtwiFile, qfilFiles.at(iI));
 
 				// fill columns
-				FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters, &qlIconsParameters);
+				FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters);
 			} // for
 			break;
 		case Archive:
@@ -1691,7 +1664,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 					qhTabs[iIndex].saArchive.qhFiles.insert(qtwiFile, qhTabs.value(iIndex).saArchive.qlFiles.at(iI));
 
 					// fill columns
-					FillDirViewItem(iIndex, Archive, qtwiFile, &qhTabs.value(iIndex).saArchive.qlFiles.at(iI), NULL, NULL);
+					FillDirViewItem(iIndex, Archive, qtwiFile, &qhTabs.value(iIndex).saArchive.qlFiles.at(iI), NULL);
 				} // if
 			} // for
 	} // switch
@@ -1708,10 +1681,6 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 	if (qlParameters.count() > 0) {
 		// start thread to query content plugins values
 		ccpdContentPluginDelayed->Start(qlParameters);
-	} // if
-	if (qlIconsParameters.count() > 0) {
-		// start thread to get icons from files
-		cidIconsDelayed->Start(qlIconsParameters);
 	} // if
 } // RefreshContent
 
