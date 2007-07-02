@@ -13,9 +13,9 @@ cCopyMoveConflict::cCopyMoveConflict()
 } // cCopyMoveConflict
 
 // show conflict dialog (single thread)
-cCopyMoveConflict::eChoice cCopyMoveConflict::Exec(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
+cCopyMoveConflict::eChoice cCopyMoveConflict::Exec(const QString &qsOperation, const char *cSourceFileName, const int &iSourceSize, const QDateTime &qdtSourceDateTime, const QFileInfo &qfiDestination)
 {
-	return ShowDialog(qsOperation, qfiSource, qfiDestination);
+	return ShowDialog(qsOperation, tr("Overwrite %1\n\t%2 byte, %3\nWith %4\n\t%5 byte, %6").arg(qfiDestination.fileName()).arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()).arg(cSourceFileName).arg(iSourceSize).arg(qdtSourceDateTime.toString()));
 } // Exec
 
 // show conflict dialog (multithread)
@@ -23,13 +23,13 @@ void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSou
 {
 	eChoice ecResponse;
 
-	ecResponse = ShowDialog(qsOperation, qfiSource, qfiDestination);
+	ecResponse = ShowDialog(qsOperation, tr("Overwrite %1\n\t%2 byte, %3\nWith %4\n\t%5 byte, %6").arg(qfiDestination.fileName()).arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()).arg(qfiSource.fileName()).arg(qfiSource.size()).arg(qfiSource.lastModified().toString()));
 
 	emit Finished(ecResponse);
 } // Show
 
 // show conflict dialog
-cCopyMoveConflict::eChoice cCopyMoveConflict::ShowDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination)
+cCopyMoveConflict::eChoice cCopyMoveConflict::ShowDialog(const QString &qsOperation, const QString &qsText)
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -38,7 +38,7 @@ cCopyMoveConflict::eChoice cCopyMoveConflict::ShowDialog(const QString &qsOperat
 	// prepare dialog
 	qmbDialog.setIcon(QMessageBox::Warning);
 	qmbDialog.setWindowTitle(qsOperation);
-	qmbDialog.setText(tr("Overwrite %1\n\t%2 byte, %3\nWith %4\n\t%5 byte, %6").arg(qfiDestination.fileName()).arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()).arg(qfiSource.fileName()).arg(qfiSource.size()).arg(qfiSource.lastModified().toString()));
+	qmbDialog.setText(qsText);
 	qpbOverwrite = qmbDialog.addButton(tr("&Overwrite"), QMessageBox::YesRole);
 	qpbCancel = qmbDialog.addButton(QMessageBox::Cancel);
 	qpbOverwriteAll = qmbDialog.addButton(tr("Overwrite &all"), QMessageBox::YesRole);

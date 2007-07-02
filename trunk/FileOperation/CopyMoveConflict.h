@@ -25,18 +25,19 @@ class cCopyMoveConflict : public QObject
 
 		cCopyMoveConflict();															///< constructor
 
-		eChoice Exec(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+		eChoice Exec(const QString &qsOperation, const char *cSourceFileName, const int &iSourceSize, const QDateTime &qdtSourceDateTime, const QFileInfo &qfiDestination);
 																							///< show conflict dialog (single thread)
 																							/**< \param qsOperation type of operation - copy or move
-																								  \param qfiSource source file information
+																								  \param cSourceFileName source file name
+																								  \param iSourceSize source file size
+																								  \param qdtSourceDateTime source file date/time
 																								  \param qfiDestination destination file information */
 
 	private:
-		eChoice ShowDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination);
+		eChoice ShowDialog(const QString &qsOperation, const QString &qsText);
 																							///< show conflict dialog
 																							/**< \param qsOperation type of operation - copy or move
-																								  \param qfiSource source file information
-																								  \param qfiDestination destination file information */
+																								  \param qsText conflict text to show */
 
 	signals:
 		void Finished(const cCopyMoveConflict::eChoice &ecResponse);	///< dialog closed with user response
