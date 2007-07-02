@@ -1251,6 +1251,7 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 
 			// size for directory can be known too
 			iColumnSize = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
+			qi64DirectorySize = 0;
 			if (iColumnSize != -1) {
 				qi64DirectorySize = ctwTree->topLevelItem(iI)->data(iColumnSize, Qt::UserRole).toLongLong();
 				qi64TotalSize += qi64DirectorySize;

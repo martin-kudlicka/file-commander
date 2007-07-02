@@ -12,7 +12,7 @@
 #include "OptionsDialog.h"
 
 const QString qsAPPLICATION = "File Commander";
-const QString qsVERSION = "0.0.0.2 rev 345";
+const QString qsVERSION = "0.0.0.3 rev 367";
 
 /// application's main window
 
