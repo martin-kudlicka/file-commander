@@ -438,7 +438,7 @@ void cPanel::FeedToPanel(const QFileInfoList &qfilFiles)
 } // FeedToPanel
 
 // fill directory view item accodring to content of vData
-void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters)
+void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<sIcon> *qlIcons)
 {
 	int iI;
 
@@ -448,10 +448,14 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 			if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsICON) {
 				// icon
 				QFileIconProvider qfipIcon;
+				sIcon siIcon;
 
 				switch (elType) {
-					case LocalDirectory:
-						qtwiFile->setIcon(iI, qfipIcon.icon(*static_cast<const QFileInfo *>(vData)));
+					case LocalDirectory:						
+						siIcon.qtwiItem = qtwiFile;
+						siIcon.iColumn = iI;
+						siIcon.qsFile = static_cast<const QFileInfo *>(vData)->filePath();
+						qlIcons->append(siIcon);
 						break;
 					case Archive:
 						if (static_cast<const tHeaderData *>(vData)->FileAttr & cPackerPlugin::iDIRECTORY) {
@@ -1606,6 +1610,7 @@ void cPanel::RefreshContent(const QString &qsFocusTo /* QString() */)
 void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 {
 	int iI;
+	QList<sIcon> qlIcons;
 	QList<cContentPluginDelayed::sParameters> qlParameters;
 
 	// interrupt delayed content processing
@@ -1640,7 +1645,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 				qhTabs[iIndex].sldLocalDirectory.qhFiles.insert(qtwiFile, qfilFiles.at(iI));
 
 				// fill columns
-				FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters);
+				FillDirViewItem(iIndex, LocalDirectory, qtwiFile, &qfilFiles.at(iI), &qlParameters, &qlIcons);
 			} // for
 			break;
 		case Archive:
@@ -1664,7 +1669,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 					qhTabs[iIndex].saArchive.qhFiles.insert(qtwiFile, qhTabs.value(iIndex).saArchive.qlFiles.at(iI));
 
 					// fill columns
-					FillDirViewItem(iIndex, Archive, qtwiFile, &qhTabs.value(iIndex).saArchive.qlFiles.at(iI), NULL);
+					FillDirViewItem(iIndex, Archive, qtwiFile, &qhTabs.value(iIndex).saArchive.qlFiles.at(iI), NULL, NULL);
 				} // if
 			} // for
 	} // switch
@@ -1682,6 +1687,8 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 		// start thread to query content plugins values
 		ccpdContentPluginDelayed->Start(qlParameters);
 	} // if
+	
+	ShowIcons(qlIcons);
 } // RefreshContent
 
 // refresh current dir view with custom files
@@ -2014,6 +2021,19 @@ void cPanel::SetTabText(const int &iTabIndex)
 
 	qtbTab->setTabText(iTabIndex, qsTabText);
 } // SetTabText
+
+// show icons by files in directory view
+void cPanel::ShowIcons(QList<sIcon> &qlIcons)
+{
+	int iI;
+	
+	for (iI = 0; iI < qlIcons.count(); iI++) {
+		QFileIconProvider qfipIcon;
+		
+		qlIcons.at(iI).qtwiItem->setIcon(qlIcons.at(iI).iColumn, qfipIcon.icon(qlIcons.at(iI).qsFile));
+		QApplication::processEvents();
+	} // for
+} // ShowIcons
 
 // sort dir content and show
 void cPanel::Sort(const int &iIndex)

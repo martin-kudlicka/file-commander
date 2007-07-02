@@ -134,6 +134,13 @@ class cPanel : public QObject
 			SearchDown																	///< search down
 		};
 
+		/// icon to load
+		struct sIcon {
+			QTreeWidgetItem *qtwiItem;												///< item to show icon by
+			int iColumn;																///< icon's column
+			QString qsFile;															///< file path to extract icon from
+		};
+		/// listed local directory information
 		struct sLocalDirectory {
 			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
 			QString qsPath;															///< path in local directory
@@ -194,13 +201,14 @@ class cPanel : public QObject
 																							/**< \param watched filtered object
 																								  \param event event description
 																								  \return true if event is handled */
-		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters);
+		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<sIcon> *qlIcons);
 																							///< fill directory view item accodring to content of vData
 																							/**< \param iIndex directory view tab index
 																								  \param elType type of item
 																								  \param qtwiItem item to fill
 																								  \param vData data to fill by
-																								  \param qlParameters parameters for delayed content plugins */
+																								  \param qlParameters parameters for delayed content plugins
+																								  \param qlIcons icons to load */
 		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
 																							///< find index of native column
 																							/**< \param qsColumn native column name
@@ -239,6 +247,8 @@ class cPanel : public QObject
 																							/**< \param qsPath new path */
 		void SetTabText(const int &iTabIndex);									///< set text in tab bar
 																							/**< \param iTabIndex tab bar index to set text in */
+		void ShowIcons(QList<sIcon> &qlIcons);									///< show icons by files in directory view
+																							/**< \param qlIcons icon list description to show */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
 		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
