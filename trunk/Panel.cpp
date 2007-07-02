@@ -458,6 +458,14 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 
 				switch (elType) {
 					case LocalDirectory:
+						// set default icons (fast)
+						if (static_cast<const QFileInfo *>(vData)->isDir()) {
+							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::Folder));
+						} else {
+							qtwiFile->setIcon(iI, qfipIcon.icon(QFileIconProvider::File));
+						} // if else
+
+						// load right icons later
 						spParameters.siInput.qsFilename = static_cast<const QFileInfo *>(vData)->filePath();
 						spParameters.soOutput.qtwiItem = qtwiFile;
 						spParameters.soOutput.iColumn = iI;
