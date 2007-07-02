@@ -20,6 +20,7 @@
 #include "FileOperation.h"
 #include "Plugins/PackerPlugin.h"
 #include "ArchiveOperation.h"
+#include "Panel/IconsDelayed.h"
 
 class cPanel : public QObject
 {
@@ -134,12 +135,6 @@ class cPanel : public QObject
 			SearchDown																	///< search down
 		};
 
-		/// icon to load
-		struct sIcon {
-			QTreeWidgetItem *qtwiItem;												///< item to show icon by
-			int iColumn;																///< icon's column
-			QString qsFile;															///< file path to extract icon from
-		};
 		/// listed local directory information
 		struct sLocalDirectory {
 			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
@@ -166,6 +161,7 @@ class cPanel : public QObject
 		cContentPlugin *ccpContentPlugin;										///< access to content plugins
 		cContentPluginDelayed *ccpdContentPluginDelayed;					///< thread to get delayed content plugins values
 		cFileOperation *cfoFileOperation;										///< handling file operations
+		cIconsDelayed *cidIconsDelayed;											///< thread to get delayed icons from files
 		cPackerPlugin *cppPackerPlugin;											///< access to packer plugins
 		cSettings *csSettings;														///< main settings
 		QComboBox *qcbCommand;														///< command combo box
@@ -201,14 +197,14 @@ class cPanel : public QObject
 																							/**< \param watched filtered object
 																								  \param event event description
 																								  \return true if event is handled */
-		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<sIcon> *qlIcons);
+		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<cIconsDelayed::sParameters> *qlIconsParameters);
 																							///< fill directory view item accodring to content of vData
 																							/**< \param iIndex directory view tab index
 																								  \param elType type of item
 																								  \param qtwiItem item to fill
 																								  \param vData data to fill by
 																								  \param qlParameters parameters for delayed content plugins
-																								  \param qlIcons icons to load */
+																								  \param qlIconsParameters icons to load */
 		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
 																							///< find index of native column
 																							/**< \param qsColumn native column name
@@ -247,8 +243,6 @@ class cPanel : public QObject
 																							/**< \param qsPath new path */
 		void SetTabText(const int &iTabIndex);									///< set text in tab bar
 																							/**< \param iTabIndex tab bar index to set text in */
-		void ShowIcons(QList<sIcon> &qlIcons);									///< show icons by files in directory view
-																							/**< \param qlIcons icon list description to show */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
 		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
@@ -261,10 +255,14 @@ class cPanel : public QObject
 		void Delete();																	///< delete marked files
 		void GotFocus();																///< panel got focus
 		void InterruptContentDelayed();											///< interrupt delayed content processing before refresh dir view content
+		void InterruptIconsDelayed();												///< interrupt delayed icons processing before refresh dir view content
 
 	private slots:
-		void on_ccdContentDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput);
+		void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput);
 																							///< got golumn value from plugin
+																							/**< \param soOutput information to update dir view */
+		void on_cidIconsDelayed_GotIcon(const cIconsDelayed::sOutput &soOutput);
+																							///< got column value (icon)
 																							/**< \param soOutput information to update dir view */
 		void on_ctwTree_customContextMenuRequested(const QPoint &pos);	///< show tree view context menu
 																							/**< \param pos position of context menu */

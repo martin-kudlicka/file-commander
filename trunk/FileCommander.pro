@@ -30,6 +30,7 @@ HEADERS = MainWindow.h \
 			 Panel/Process.h \
 			 Panel/SelectDriveDialog.h \
 			 Panel/SelectFilesDialog.h \
+			 Panel/IconsDelayed.h \
 			 FileOperation.h \
 			 FileOperation/FileOperationDialog.h \
 			 FileOperation/FileRoutine.h \
@@ -78,6 +79,7 @@ SOURCES = FileCommander.cpp \
 			 Panel/Process.cpp \
 			 Panel/SelectDriveDialog.cpp \
 			 Panel/SelectFilesDialog.cpp \
+			 Panel/IconsDelayed.cpp \
 			 FileOperation.cpp \
 			 FileOperation/FileOperationDialog.cpp \
 			 FileOperation/FileRoutine.cpp \

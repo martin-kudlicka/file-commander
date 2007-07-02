@@ -27,15 +27,11 @@ void cContentPluginDelayed::run()
 	int iI;
 
 	for (iI = 0; iI < qlParameters.count() && !bStop; iI++) {
-		QString qsValue;
-		sOutput soOutput;
-
 		qsCurrentFile = qlParameters.at(iI).siInput.qsFilename;
 		qsCurrentPlugin = qlParameters.at(iI).siInput.qsPlugin;
 
-		soOutput = qlParameters.at(iI).soOutput;
-		soOutput.qsValue = ccpContentPlugin->GetPluginValue(qlParameters.at(iI).siInput.qsFilename, qlParameters.at(iI).siInput.qsPlugin, qlParameters.at(iI).siInput.qsColumn, qlParameters.at(iI).siInput.qsUnit);
-		emit GotColumnValue(soOutput);
+		qlParameters[iI].soOutput.qsValue = ccpContentPlugin->GetPluginValue(qlParameters.at(iI).siInput.qsFilename, qlParameters.at(iI).siInput.qsPlugin, qlParameters.at(iI).siInput.qsColumn, qlParameters.at(iI).siInput.qsUnit);
+		emit GotColumnValue(qlParameters.at(iI).soOutput);
 	} // for
 } // run
 
