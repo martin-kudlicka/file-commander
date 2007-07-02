@@ -75,9 +75,9 @@ class cArchiveOperation : private QObject
 		static qint64 qi64TotalValue;													///< total progress
 		QMainWindow *qmwParent;															///< parent window for dialogs
 
-		cCopyMove::eCheckResult CheckConflict(const QFileInfo &qfiSource, QString *qsTarget, cCopyMoveConflict::eChoice *ecConflictCurrent, cCopyMoveConflict::eChoice *ecConflict);
+		cCopyMove::eCheckResult CheckConflict(const tHeaderData &thdSource, QString *qsTarget, cCopyMoveConflict::eChoice *ecConflictCurrent, cCopyMoveConflict::eChoice *ecConflict);
 																								///< check existing destination file conflict
-																								/**< \param qfiSource source file to check conflict for
+																								/**< \param thdSource source file to check conflict for
 																									  \param qsTarget target file in conflict
 																									  \param ecConflictCurrent conflict current user answer
 																									  \param ecConflict conflict permanent user answer

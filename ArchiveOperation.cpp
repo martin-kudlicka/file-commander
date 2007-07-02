@@ -27,7 +27,7 @@ cArchiveOperation::cArchiveOperation(QMainWindow *qmwParent, cSettings *csSettin
 } // cArchiveOperation
 
 // check existing destination file conflict
-cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const QFileInfo &qfiSource, QString *qsTarget, cCopyMoveConflict::eChoice *ecConflictCurrent, cCopyMoveConflict::eChoice *ecConflict)
+cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const tHeaderData &thdSource, QString *qsTarget, cCopyMoveConflict::eChoice *ecConflictCurrent, cCopyMoveConflict::eChoice *ecConflict)
 {
 	if (QFile::exists(*qsTarget)) {
 		*ecConflictCurrent = cCopyMoveConflict::Ask;
@@ -38,7 +38,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const QFileInfo &qfiSou
 				cCopyMoveConflict ccmcConflictDialog;
 
 				// conflict dialog
-				*ecConflictCurrent = ccmcConflictDialog.Exec(tr("Extract"), qfiSource, QFileInfo(*qsTarget));
+				*ecConflictCurrent = ccmcConflictDialog.Exec(tr("Extract"), thdSource.FileName, thdSource.UnpSize, ToQDateTime(thdSource.FileTime), QFileInfo(*qsTarget));
 
 				// solve conflict
 				switch (*ecConflictCurrent) {
@@ -95,7 +95,7 @@ cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const QFileInfo &qfiSou
 			} else {
 				if (*ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
 					// overwrite all older
-					if (qfiSource.lastModified() > QFileInfo(*qsTarget).lastModified()) {
+					if (ToQDateTime(thdSource.FileTime) > QFileInfo(*qsTarget).lastModified()) {
 						// target file is older -> delete it
 						QFile::remove(*qsTarget);
 					} else {
@@ -333,7 +333,7 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 					} // if
 
 					// conflict solving
-					ecrCheck = CheckConflict(QFileInfo(qsSource), &qsTarget, &ecConflictCurrent, &ecConflict);
+					ecrCheck = CheckConflict(thdHeaderData, &qsTarget, &ecConflictCurrent, &ecConflict);
 					if (ecrCheck == cCopyMove::NextFile) {
 						saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 					} // if
