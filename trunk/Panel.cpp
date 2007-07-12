@@ -176,13 +176,10 @@ void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 		if (bCloseAllOtherTabs) {
 			int iI;
 
-			qhTabs.insert(0, qhTabs.value(iTabIndex));
-			qtbTab->setTabText(0, qtbTab->tabText(iTabIndex));
-			qswDir->insertWidget(0, qswDir->widget(iTabIndex));
-			for (iI = qhTabs.count() - 1; iI > 0; iI--) {
-				qhTabs.remove(iI);
-				qtbTab->removeTab(iI);
-				qswDir->removeWidget(qswDir->widget(iTabIndex));
+			for (iI = qhTabs.count() - 1; iI >= 0; iI--) {
+				if (iI != iTabIndex) {
+					CloseTab(iI);
+				} // if
 			} // for
 		} // if
 	} // if
@@ -195,6 +192,8 @@ void cPanel::CloseTab(const int &iTabIndex)
 		int iI;
 
 		// reposition of tabs following remove tab
+		delete qhTabs.value(iTabIndex).qlColumns;
+		delete qhTabs.value(iTabIndex).swWidgets;
 		for (iI = iTabIndex + 1; iI < qhTabs.count(); iI++) {
 			qhTabs.insert(iI - 1, qhTabs.value(iI));
 		} // for
