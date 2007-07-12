@@ -111,16 +111,19 @@ cCopyMove::eCheckResult cArchiveOperation::CheckConflict(const tHeaderData &thdS
 } // CheckConflict
 
 // continue after unsuccessfull file extraction
-void cArchiveOperation::CheckContinue(const QString &qsSource, eContinue *ecContinueCurrent, eContinue *ecContinue)
+void cArchiveOperation::CheckContinue(const QString &qsSource, const int &iErrorCode, eContinue *ecContinueCurrent, eContinue *ecContinue)
 {
 	if (*ecContinue != YesToAll) {
 		QMessageBox qmbContinue;
 		QPushButton *qpbNo, *qpbYes, *qpbYesToAll;
+		QString qsError;
+
+		qsError = GetErrorString(iErrorCode);
 
 		// prepare dialog
 		qmbContinue.setIcon(QMessageBox::Warning);
 		qmbContinue.setWindowTitle(tr("Continue"));
-		qmbContinue.setText(tr("Error while extracting file\n%2\nContinue?").arg(qsSource));
+		qmbContinue.setText(tr("Error while extracting file\n%1:\n%2\nContinue?").arg(qsSource).arg(qsError));
 		qpbYes = qmbContinue.addButton(tr("&Yes"), QMessageBox::NoRole);
 		qpbNo = qmbContinue.addButton(tr("&No"), QMessageBox::YesRole);
 		qpbYesToAll = qmbContinue.addButton(tr("Yes to &all"), QMessageBox::YesRole);
@@ -320,7 +323,7 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 					saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 				} else {
 					cCopyMove::eCheckResult ecrCheck;
-					int iExtract;
+					int iErrorCode;
 					QDir qdDir;
 
 					// check disk space on target
@@ -356,15 +359,15 @@ void cArchiveOperation::ExtractFiles(const sArchive &saSourceArchive, const QLis
 					qdDir.mkpath(QFileInfo(qsTarget).path());
 
 					// extract file
-					iExtract = saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
+					iErrorCode = saSourceArchive.spiPlugin.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
 
-					if (iExtract) {
+					if (iErrorCode) {
 						if (bCanceled) {
 							// user abort
 							ecContinueCurrent = No;
 						} else {
 							// other fault
-							CheckContinue(qsSource, &ecContinueCurrent, &ecContinue);
+							CheckContinue(qsSource, iErrorCode, &ecContinueCurrent, &ecContinue);
 						} // if else
 					} // if
 				} // if else
@@ -438,6 +441,45 @@ cFileOperation::sObjects cArchiveOperation::GetCount(const QList<tHeaderData> &q
 
 	return soCount;
 } // GetCount
+
+// get error string from error code
+QString cArchiveOperation::GetErrorString(const int &iError)
+{
+	switch (iError) {
+		case E_END_ARCHIVE:
+			return tr("no more files in archive");
+		case E_NO_MEMORY:
+			return tr("not enough memory");
+		case E_BAD_DATA:
+			return tr("data is bad");
+		case E_BAD_ARCHIVE:
+			return tr("CRC error in archive data");
+		case E_UNKNOWN_FORMAT:
+			return tr("archive format unknown");
+		case E_EOPEN:
+			return tr("Cannot open existing file");
+		case E_ECREATE:
+			return tr("cannot create file");
+		case E_ECLOSE:
+			return tr("error closing file");
+		case E_EREAD:
+			return tr("error reading from file");
+		case E_EWRITE:
+			return tr("error writing to file");
+		case E_SMALL_BUF:
+			return tr("buffer too small");
+		case E_EABORTED:
+			return tr("function aborted by user");
+		case E_NO_FILES:
+			return tr("no files found");
+		case E_TOO_MANY_FILES:
+			return tr("too many files to pack");
+		case E_NOT_SUPPORTED:
+			return tr("function not supported");
+	} // switch
+	
+	return QString();
+} // ///< get error string from error code
 
 // operation canceled
 void cArchiveOperation::on_ccmdDialog_OperationCanceled()

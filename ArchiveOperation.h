@@ -82,9 +82,10 @@ class cArchiveOperation : private QObject
 																									  \param ecConflictCurrent conflict current user answer
 																									  \param ecConflict conflict permanent user answer
 																									  \return action after conflict check */
-		void CheckContinue(const QString &qsSource, eContinue *ecContinueCurrent, eContinue *ecContinue);
+		void CheckContinue(const QString &qsSource, const int &iErrorCode, eContinue *ecContinueCurrent, eContinue *ecContinue);
 																								///< continue after unsuccessfull file extraction
 																								/**< \param qsSource unsuccessfully extracted file
+																									  \param iErrorCode error code to get error string from
 																									  \param ecContinueCurrent continue current user answer
 																									  \param ecContinue continue permanent user answer */
 		cCopyMove::eCheckResult CheckDiskSpace(const QString &qsSource, const QString &qsTargetPath, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpaceCurrent, cDiskSpace::eChoice *ecDiskSpace);
@@ -118,6 +119,9 @@ class cArchiveOperation : private QObject
 																								///< count of objects
 																								/**< \param qlArchive objects to count
 																									  \return count of objects */
+		QString GetErrorString(const int &iError);								///< get error string from error code
+																								/**< \param iError error code
+																									  \return error string */
 #ifdef Q_WS_WIN
 		static int __stdcall ProcessDataProc(char *cFileName, int iSize);	///< callback progress function
 																								/**< \param cFileName file processed
