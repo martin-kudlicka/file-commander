@@ -1,6 +1,7 @@
 #include "FileOperation/FileOperationDialog.h"
 
 #include <QtGui/QFileDialog>
+#include <QtGui/QDirModel>
 
 // constructor
 cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *csSettings)
@@ -11,6 +12,10 @@ cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *cs
 	// assign shortcut
 	qpbEnqueue->setText(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) + ' ' + qpbEnqueue->text());
 	qpbEnqueue->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE)));
+
+	// completer
+	qcDestination.setModel(new QDirModel(&qcDestination));
+	qcbDestination->setCompleter(&qcDestination);
 } // cCopyMoveDialog
 
 // Browse button clicked on

@@ -678,6 +678,10 @@ void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, c
 
 	if (cufdUnpackDialog.exec() == QDialog::Accepted) {
 		int iI;
+		QString qsNewDestination;
+
+		// get possibly modified destination
+		qsNewDestination = cufdUnpackDialog.qcbDestination->currentText();
 
 		for (iI = 0; iI < qfilArchives.count(); iI++) {
 			sArchive saArchive;
@@ -686,7 +690,7 @@ void cArchiveOperation::UnpackSelectedFiles(const QFileInfoList &qfilArchives, c
 				// archive file supported
 				QString qsPath;
 
-				qsPath = QDir::cleanPath(qsDestination);
+				qsPath = QDir::cleanPath(qsNewDestination);
 				if (cufdUnpackDialog.qcbSeparatedSubdirectory->isChecked()) {
 					QDir qdDir;
 

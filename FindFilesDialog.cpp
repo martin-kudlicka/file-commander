@@ -7,6 +7,7 @@
 #include <QtGui/QTextCursor>
 #include "ListerMainWindow.h"
 #include <QtGui/QInputDialog>
+#include <QtGui/QDirModel>
 
 // constructor
 cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings *csSettings, cListerPlugin *clpListerPlugin)
@@ -50,6 +51,10 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings
 
 	// refresh list of saved settings
 	RefreshSavedSettings();
+
+	// completer
+	qcSearchIn.setModel(new QDirModel(&qcSearchIn));
+	qcbSearchIn->setCompleter(&qcSearchIn);
 } // cFindFilesDialog
 
 // catch dialog close
