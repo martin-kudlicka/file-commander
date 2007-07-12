@@ -1983,7 +1983,7 @@ void cPanel::SetPath(const QString &qsPath)
 				qsNewWidgetPath = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath + '/' + QFileInfo(qhTabs.value(qswDir->currentIndex()).saArchive.qsArchive).fileName() + '/' + qhTabs.value(qswDir->currentIndex()).saArchive.qsPath;
 			} // if else
 			qhTabs[qswDir->currentIndex()].swWidgets->qsPath = qsNewWidgetPath;
-			qlGlobalPath->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsPath);
+			qlGlobalPath->setText(qsNewWidgetPath);
 			// refresh directory view
 			RefreshContent(qswDir->currentIndex());
 	} // switch
