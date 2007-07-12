@@ -1334,8 +1334,8 @@ void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent, QTreeWidgetItem *qtwiIte
 				// ctrl+shift+enter -> copy filePath to command line
 				qsName = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiItem).filePath();
 			} else {
-				qsName = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiItem).fileName();
 				// ctrl+enter -> copy fileName to command line
+				qsName = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiItem).fileName();
 			} // if else
 			if (qsName.contains(' ')) {
 				qsName = '"' + qsName + '"';
