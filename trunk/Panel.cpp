@@ -117,11 +117,11 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	// add path to watcher
 	qfswWatcher.addPath(stiTabInfo.qsPath);
 
-	// set header, refresh content only in first added tab
-	RefreshHeader(iIndex, qhTabs.count() == 1);
-
 	// set sorting
 	ctwTree->header()->setSortIndicator(stiTabInfo.ssSort.iSortedColumn, stiTabInfo.ssSort.soSortOrder);
+
+	// set header, refresh content only in first added tab
+	RefreshHeader(iIndex, qhTabs.count() == 1);
 
 	// connect signals to slots
 	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
@@ -527,6 +527,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 											qtwiFile->setText(iI, tr("<DIR>"));
 										} else {
 											qtwiFile->setText(iI, GetSizeString(static_cast<const QFileInfo *>(vData)->size()));
+											qtwiFile->setData(iI, Qt::UserRole, static_cast<const QFileInfo *>(vData)->size());
 										} // if else
 										break;
 									case Archive:
@@ -534,6 +535,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 											qtwiFile->setText(iI, tr("<DIR>"));
 										} else {
 											qtwiFile->setText(iI, GetSizeString(static_cast<const tHeaderData *>(vData)->UnpSize));
+											qtwiFile->setData(iI, Qt::UserRole, static_cast<const tHeaderData *>(vData)->UnpSize);
 										} // if else
 								} // switch
 							} else {
@@ -542,9 +544,11 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 									switch (elType) {
 										case LocalDirectory:
 											qtwiFile->setText(iI, DateTime(static_cast<const QFileInfo *>(vData)->lastModified()));
+											qtwiFile->setData(iI, Qt::UserRole, static_cast<const QFileInfo *>(vData)->lastModified());
 											break;
 										case Archive:
 											qtwiFile->setText(iI, DateTime(cArchiveOperation::ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime)));
+											qtwiFile->setData(iI, Qt::UserRole, cArchiveOperation::ToQDateTime(static_cast<const tHeaderData *>(vData)->FileTime));
 									} // switch
 								}
 #ifdef Q_WS_WIN
@@ -1231,6 +1235,8 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 	qi64TotalSize = 0;
 	for (iI = 0; iI < ctwTree->topLevelItemCount(); iI++) {
 		bool bDirectory;
+		int iColumnSize;
+		qint64 qi64DetectedSize;
 
 		switch (qhiTab.value().elLocation) {
 			case LocalDirectory:
@@ -1243,29 +1249,27 @@ void cPanel::on_ctwTree_itemSelectionChanged(const cTreeWidget *ctwTree)
 				bDirectory = false;
 		} // switch
 
+		iColumnSize = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
+		qi64DetectedSize = 0;
 		if (bDirectory) {
-			int iColumnSize;
-			qint64 qi64DirectorySize;
-
 			iDirectoriesTotal++;
 
 			// size for directory can be known too
-			iColumnSize = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
-			qi64DirectorySize = 0;
 			if (iColumnSize != -1) {
-				qi64DirectorySize = ctwTree->topLevelItem(iI)->data(iColumnSize, Qt::UserRole).toLongLong();
-				qi64TotalSize += qi64DirectorySize;
+				qi64DetectedSize = ctwTree->topLevelItem(iI)->data(iColumnSize, Qt::UserRole).toLongLong();
+				qi64TotalSize += qi64DetectedSize;
 			} // if
 			if (ctwTree->topLevelItem(iI)->isSelected()) {
 				iDirectories++;
-				qi64Size += qi64DirectorySize;
+				qi64Size += qi64DetectedSize;
 			} // if
 		} else {
 			iFilesTotal++;
-			qi64TotalSize += qhiTab.value().sldLocalDirectory.qhFiles.value(ctwTree->topLevelItem(iI)).size();
+			qi64DetectedSize = ctwTree->topLevelItem(iI)->data(iColumnSize, Qt::UserRole).toLongLong();
+			qi64TotalSize += qi64DetectedSize;
 			if (ctwTree->topLevelItem(iI)->isSelected()) {
 				iFiles++;
-				qi64Size += qhiTab.value().sldLocalDirectory.qhFiles.value(ctwTree->topLevelItem(iI)).size();
+				qi64Size += qi64DetectedSize;
 			} // if
 		} // if else
 	} // for
@@ -2067,26 +2071,6 @@ void cPanel::Sort(const int &iIndex)
 		ssSort.soSortOrder = Qt::AscendingOrder;
 		ssSort.bCaseSensitive = csSettings->GetCaseSensitiveSorting();
 		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
-		for (iI = 0; iI < qlDirectories.count(); iI++) {
-			bool bFound;
-
-			bFound = false;
-			switch (qhTabs.value(iIndex).elLocation) {
-				case LocalDirectory:
-					if (qhTabs.value(iIndex).sldLocalDirectory.qhFiles.value(qlDirectories.at(iI)).fileName() == "..") {
-						bFound = true;
-					} // if
-					break;
-				case Archive:
-					if (!strcmp(qhTabs.value(iIndex).saArchive.qhFiles.value(qlDirectories.at(iI)).FileName, "..")) {
-						bFound = true;
-					} // if
-			} // switch
-			if (bFound) {
-				qlDirectories.move(iI, 0);
-				break;
-			} // if
-		} // for
 		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
 	} // if
 
@@ -2094,29 +2078,49 @@ void cPanel::Sort(const int &iIndex)
 	ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->sortColumn();
 	ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(iIndex))->header()->sortIndicatorOrder();
 	ssSort.bCaseSensitive = csSettings->GetCaseSensitiveSorting();
-	if ((qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder) || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
-		// let ".." be the first if possible
-		bool bDotDotFirst;
+	if ((qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder)
+		 || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsEXTENSION
+		 || (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsNAME_WITH_EXTENSION && ssSort.soSortOrder == Qt::DescendingOrder)
+		 || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsATTRIBUTES
+		 || qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsPlugin != qsNO) {
+		// string sort
+		qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
+		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
+	} else {
+		if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsSIZE) {
+			// qint64 sort
+			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByQInt64);
+			qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByQInt64);
+		} else {
+			if (qhTabs.value(iIndex).qlColumns->at(ssSort.iSortedColumn).qsIdentifier == qsDATE_TIME) {
+				// QDateTime sort
+				qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByQDateTime);
+				qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByQDateTime);
+			} // if else
+		} // if else
+	} // if else
 
-		bDotDotFirst = false;
+	// move ".." directory to the first position
+	for (iI = 0; iI < qlDirectories.count(); iI++) {
+		bool bFound;
+
+		bFound = false;
 		switch (qhTabs.value(iIndex).elLocation) {
 			case LocalDirectory:
-				if (qhTabs.value(iIndex).sldLocalDirectory.qhFiles.value(qlDirectories.front()).fileName() == "..") {
-					bDotDotFirst = true;
+				if (qhTabs.value(iIndex).sldLocalDirectory.qhFiles.value(qlDirectories.at(iI)).fileName() == "..") {
+					bFound = true;
 				} // if
 				break;
 			case Archive:
-				if (QFileInfo(qhTabs.value(iIndex).saArchive.qhFiles.value(qlDirectories.front()).FileName).fileName() == "..") {
-					bDotDotFirst = true;
+				if (!strcmp(qhTabs.value(iIndex).saArchive.qhFiles.value(qlDirectories.at(iI)).FileName, "..")) {
+					bFound = true;
 				} // if
 		} // switch
-		if (bDotDotFirst) {
-			qStableSort(++qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
-		} else {
-			qStableSort(qlDirectories.begin(), qlDirectories.end(), &cPanel::TreeSortByString);
-		} // if else
-		qStableSort(qlFiles.begin(), qlFiles.end(), &cPanel::TreeSortByString);
-	} // if
+		if (bFound) {
+			qlDirectories.move(iI, 0);
+			break;
+		} // if
+	} // for
 
 	// show the result
 	static_cast<cTreeWidget *>(qswDir->widget(iIndex))->addTopLevelItems(qlDirectories);
@@ -2149,6 +2153,52 @@ void cPanel::SortBy(const int &iColumn)
 	// sort again
 	Sort(qswDir->currentIndex());
 } // SortBy
+
+// compare items by QDateTime
+bool cPanel::TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
+{
+	QDateTime qdtItem1, qdtItem2;
+
+	qdtItem1 = qtwiItem1->data(ssSort.iSortedColumn, Qt::UserRole).toDateTime();
+	qdtItem2 = qtwiItem2->data(ssSort.iSortedColumn, Qt::UserRole).toDateTime();
+
+	if ((qdtItem1 < qdtItem2 && ssSort.soSortOrder == Qt::AscendingOrder) || (qdtItem1 <= qdtItem2 && ssSort.soSortOrder == Qt::DescendingOrder)) {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return true;
+		} else {
+			return false;
+		} // if else
+	} else {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return false;
+		} else {
+			return true;
+		} // if else
+	} // if else
+} // TreeSortByQDateTime
+
+// compare items by qint64
+bool cPanel::TreeSortByQInt64(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
+{
+	qint64 qi64Item1, qi64Item2;
+
+	qi64Item1 = qtwiItem1->data(ssSort.iSortedColumn, Qt::UserRole).toLongLong();
+	qi64Item2 = qtwiItem2->data(ssSort.iSortedColumn, Qt::UserRole).toLongLong();
+
+	if ((qi64Item1 < qi64Item2 && ssSort.soSortOrder == Qt::AscendingOrder) || (qi64Item1 <= qi64Item2 && ssSort.soSortOrder == Qt::DescendingOrder)) {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return true;
+		} else {
+			return false;
+		} // if else
+	} else {
+		if (ssSort.soSortOrder == Qt::AscendingOrder) {
+			return false;
+		} else {
+			return true;
+		} // if else
+	} // if else
+} // TreeSortByQInt64
 
 // compare items by text
 bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
