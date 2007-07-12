@@ -60,6 +60,8 @@ void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 	iIndex = qcbFilter->findText(qsFilter);
 	if (iIndex > 0) {
 		qcbFilter->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
 		qcbFilter->insertItem(0, qsFilter);
 		qcbFilter->setEditText(qsFilter);
 	} // if

@@ -29,6 +29,8 @@ const QString qsFILE_SIZE = "FileSize";
 const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
 const QString qsFILE_SIZE_TYPE = "FileSizeType";
 const QString qsFILE_SIZE_VALUE = "FileSizeValue";
+const QString qsFIND_FILES_SEARCH_FOR = "FindFilesSearchFor";
+const QString qsFIND_FILES_SEARCH_IN = "FindFilesSearchIn";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
 const QString qsFULL_TEXT = "FullText";
@@ -319,6 +321,12 @@ QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FindFilesSearchFor:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
+			break;
+		case FindFilesSearchIn:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
 			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
@@ -959,6 +967,12 @@ void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboB
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FindFilesSearchFor:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
+			break;
+		case FindFilesSearchIn:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
 			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);

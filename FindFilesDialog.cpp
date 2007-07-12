@@ -20,10 +20,14 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cSettings
 	this->csSettings = csSettings;
 	this->clpListerPlugin = clpListerPlugin;
 
+	// history
+	qcbSearchFor->addItems(csSettings->GetComboBoxHistory(cSettings::FindFilesSearchFor));
+	qcbSearchIn->addItems(csSettings->GetComboBoxHistory(cSettings::FindFilesSearchIn));
+
 	if (cpPanel) {
 		// find files called from application's main menu
 		qfilSelectedDirectories = cpPanel->GetSelectedItemsFileList(QDir::Dirs);
-		qcbSearchIn->insertItem(0, cpPanel->GetPath());
+		qcbSearchIn->setEditText(cpPanel->GetPath());
 	} else {
 		// find files called from file marking
 		qcbSearchIn->setEnabled(false);
@@ -451,6 +455,32 @@ void cFindFilesDialog::on_qpbSaveFind_clicked(bool checked /* false */)
 // start button is clicked on
 void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
+	int iIndex;
+	QString qsSearchFor, qsSearchIn;
+
+	// save history
+	qsSearchFor = qcbSearchFor->currentText();
+	iIndex = qcbSearchFor->findText(qsSearchFor);
+	if (iIndex > 0) {
+		qcbSearchFor->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
+		qcbSearchFor->insertItem(0, qsSearchFor);
+		qcbSearchFor->setEditText(qsSearchFor);
+	} // if
+	qsSearchIn = qcbSearchIn->currentText();
+	iIndex = qcbSearchIn->findText(qsSearchIn);
+	if (iIndex > 0) {
+		qcbSearchIn->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
+		qcbSearchIn->insertItem(0, qsSearchIn);
+		qcbSearchIn->setEditText(qsSearchIn);
+	} // if
+	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchFor, qcbSearchFor);
+	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchIn, qcbSearchIn);
+
+	// search for files
 	qpbStart->setEnabled(false);
 	qpbFeedToPanel->setEnabled(false);
 	qpbStop->setEnabled(true);
