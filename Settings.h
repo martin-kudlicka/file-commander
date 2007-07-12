@@ -6,6 +6,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QDateTime>
 #include <QtCore/QPair>
+#include <QtGui/QComboBox>
 
 const QString qsANSI = "ANSI";
 const QString qsASCII = "ASCII";
@@ -98,6 +99,12 @@ const QString qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS = "Close all other 
 class cSettings : private QObject
 {
 	public:
+		/// combo box's history type
+		enum eHistoryType {
+			CommandLineHistory,											///< main window's command line
+			UnpackFilesFilter,											///< unpack files's filter
+			UnpackFilesDestination										///< unpack files's destination
+		};
 		/// plugin type
 		enum ePlugin {
 			ContentPlugins,												///< content plugin type
@@ -222,6 +229,10 @@ class cSettings : private QObject
 																				///< get column names in column set
 																				/**< \param qsColumnSet name of column set
 																					  \return list of columns in column set */
+		QStringList GetComboBoxHistory(const eHistoryType &ehtHistory);
+																				///< get history of specified type
+																				/**< \param ehtHistory type of history to retreive
+																					  \return history string list */
 		bool GetConfirmCloseOfAllTabs();								///< confirm close of all tabs in tab bar
 																				/**< return confirm close of all tabs flag */
 		int GetCopyMoveBufferSize();									///< copy/move buffer size
@@ -325,6 +336,10 @@ class cSettings : private QObject
 																				/**< \param bCaseSensitive true if sorting is case sensitive */
 		void SetCloseTabOnDoubleClick(const bool &bClose);		///< close tab on double click
 																				/**< \param bClose can close tab on double click if true */
+		void SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboBox *qcbComboBox);
+																				///< save combo box's history
+																				/**< \param ehtHistory history (combo box) type
+																					  \param qcbComboBox combo box of which history to save */
 		void SetConfirmCloseOfAllTabs(const bool &bClose);		///< confirm close of all tabs
 																				/**< \param bClose confirm close of all tabs flag */
 		void SetCopyMoveBufferSize(const int &iSize);			///< copy/move buffer size

@@ -10,6 +10,7 @@ const QString qsASK_TO_DELETE_NON_EMPTY_DIRECTORY = "AskToDeleteNonEmptyDirector
 const QString qsBUFFER_SIZE = "BufferSize";
 const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
+const QString qsCOMMAND_LINE = "CommandLine";
 const QString qsDATE_TIME_BETWEEN = "DateTimeBetween";
 const QString qsDATE_TIME_FROM = "DateTimeFrom";
 const QString qsDATE_TIME_TO = "DateTimeTo";
@@ -32,6 +33,7 @@ const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
 const QString qsFULL_TEXT = "FullText";
 const QString qsHEIGHT = "Height";
+const QString qsHISTORY = "History";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
 const QString qsNOT_OLDER_THAN = "NotOlderThan";
@@ -60,6 +62,8 @@ const QString qsTARGET = "Target";
 const QString qsTARGET_ENABLED = "TargetEnabled";
 const QString qsTREAT_ARCHIVES_LIKE_DIRECTORIES = "TreatArchivesLikeDirectories";
 const QString qsTRUE = "true";
+const QString qsUNPACK_FILES_DESTINATION = "UnpackFilesDestination";
+const QString qsUNPACK_FILES_FILTER = "UnpackFilesFilter";
 const QString qsUNIT = "Unit";
 const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
@@ -303,6 +307,40 @@ bool cSettings::GetCloseTabOnDoubleClick()
 {
 	return qsSettings.value(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, true).toBool();
 } // GetCloseTabOnDoubleClick
+
+// get history of specified type
+QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
+{
+	int iI;
+	QStringList qslHistory;
+
+	qsSettings.beginGroup(qsHISTORY);
+	switch (ehtHistory) {
+		case CommandLineHistory:
+			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case UnpackFilesFilter:
+			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
+			break;
+		case UnpackFilesDestination:
+			qsSettings.beginGroup(qsUNPACK_FILES_DESTINATION);
+	} // switch
+
+	iI = 1;
+	while (true) {
+		if (qsSettings.contains(QVariant(iI).toString())) {
+			qslHistory.append(qsSettings.value(QVariant(iI).toString()).toString());
+			iI++;
+		} else {
+			break;
+		} // if else
+	} // while
+
+	qsSettings.endGroup();
+	qsSettings.endGroup();
+
+	return qslHistory;
+} // GetComboBoxHistory
 
 // confirm close of all tabs in tab bar
 bool cSettings::GetConfirmCloseOfAllTabs()
@@ -907,6 +945,33 @@ void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)
 {
 	qsSettings.setValue(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, bClose);
 } // SetCloseTabOnDoubleClick
+
+// save combo box's history
+void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboBox *qcbComboBox)
+{
+	int iI;
+
+	qsSettings.beginGroup(qsHISTORY);
+	switch (ehtHistory) {
+		case CommandLineHistory:
+			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case UnpackFilesFilter:
+			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
+			break;
+		case UnpackFilesDestination:
+			qsSettings.beginGroup(qsUNPACK_FILES_DESTINATION);
+	} // switch
+
+	qsSettings.remove("");
+
+	for (iI = 0; iI < qcbComboBox->count(); iI++) {
+		qsSettings.setValue(QVariant(iI + 1).toString(), qcbComboBox->itemText(iI));
+	} // for
+
+	qsSettings.endGroup();
+	qsSettings.endGroup();
+} // SetComboBoxHistory
 
 // confirm close of all tabs
 void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)

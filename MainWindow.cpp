@@ -18,6 +18,7 @@ cMainWindow::~cMainWindow()
 	if (csSettings.GetSaveSettingsOnQuit()) {
 		SaveSettings();
 	} // if
+	csSettings.SetComboBoxHistory(cSettings::CommandLineHistory, qcbCommand);
 
 	delete qsLeftDrive;
 	delete qsRightDrive;
@@ -275,6 +276,10 @@ cMainWindow::cMainWindow()
 
 	// set focus to left panel
 	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
+
+	// history
+	qcbCommand->addItems(csSettings.GetComboBoxHistory(cSettings::CommandLineHistory));
+	qcbCommand->clearEditText();
 } // cMainWindow
 
 // event filter
