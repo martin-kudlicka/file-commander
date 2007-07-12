@@ -134,6 +134,19 @@ class cPanel : public QObject
 			SearchDown																	///< search down
 		};
 
+		/// last visited path
+		struct sLastPath {
+			QString qsLocalDirectory;												///< path in local directory
+			QString qsArchive;														///< path in archive
+			QString qsPathInArchive;												///< path in archive
+			QString qsShow;															///< path to show in history view
+			eLocation elLocation;													///< location of the directory view
+		};
+		/// directory history information
+		struct sHistory {
+			QList<sLastPath> qlLastPaths;											///< list of last visited paths
+			int iPosition;																///< current position in last paths list
+		};
 		/// listed local directory information
 		struct sLocalDirectory {
 			QHash<QTreeWidgetItem *, QFileInfo> qhFiles;						///< info about files listed in dir panel
@@ -154,6 +167,7 @@ class cPanel : public QObject
 			eLocation elLocation;													///< location of the directory view
 			sLocalDirectory sldLocalDirectory;									///< local directory information
 			cArchiveOperation::sArchive saArchive;								///< archive information
+			sHistory shHistory;														///< directory history information
 		};
 
 		bool bNewDirectory;															///< creating new directory
@@ -183,6 +197,8 @@ class cPanel : public QObject
 
 		void ActualizeVolumeInfo();												///< actualize volume information - disk name and space
 		void ActualizeWidgets();													///< actualize widgets with info about current directory view
+		void AddHistory(const int &iIndex);										///< add current path to last paths history
+																							/**< \param iIndex tab index to add history */
 		QString DateTime(const QDateTime &qdtDateTime);						///< convert QDateTime to user defined format
 																							/**< \param qdtDateTime date/time to convert
 																								  \return formatted date/time string */
