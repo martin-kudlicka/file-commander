@@ -60,6 +60,78 @@ void cPanel::ActualizeWidgets()
 	qlSelected->setText(qhTabs.value(qswDir->currentIndex()).swWidgets->qsSelected);
 } // ActualizeWidgets
 
+// add current path to last paths history
+void cPanel::AddHistory(const int &iIndex)
+{
+	bool bAdd;
+	sTab *stTab;
+
+	stTab = &qhTabs[iIndex];
+
+	if (stTab->shHistory.qlLastPaths.isEmpty()) {
+		// list is clear -> new tab
+		bAdd = true;
+	} else {
+		int *iHistoryIndex;
+		sLastPath *slpLastPath;
+
+		iHistoryIndex = &stTab->shHistory.iPosition;
+		slpLastPath = &stTab->shHistory.qlLastPaths[*iHistoryIndex];
+
+		if (stTab->elLocation == slpLastPath->elLocation) {
+			switch (stTab->elLocation) {
+				case LocalDirectory:
+					if (stTab->sldLocalDirectory.qsPath == slpLastPath->qsLocalDirectory) {
+						bAdd = false;
+					} else {
+						bAdd = true;
+					} // if else
+					break;
+				case Archive:
+					if (stTab->sldLocalDirectory.qsPath == slpLastPath->qsLocalDirectory && stTab->saArchive.qsArchive == slpLastPath->qsArchive
+						 && stTab->saArchive.qsPath == slpLastPath->qsPathInArchive) {
+						bAdd = false;
+					} else {
+						bAdd = true;
+					} // if else
+			} // switch
+		} else {
+			// different path than previous
+			bAdd = true;
+		} // if else
+	} // if else
+
+	if (bAdd) {
+		// add to history
+		sLastPath slpLastPath;
+
+		slpLastPath.elLocation = stTab->elLocation;
+		slpLastPath.qsShow = stTab->swWidgets->qsPath;
+		slpLastPath.qsLocalDirectory = stTab->sldLocalDirectory.qsPath;
+		if (stTab->elLocation == Archive) {
+			slpLastPath.qsArchive = stTab->saArchive.qsArchive;
+			slpLastPath.qsPathInArchive = stTab->saArchive.qsPath;
+		} // if
+
+		if (stTab->shHistory.qlLastPaths.isEmpty()) {
+			// add as the first record
+			stTab->shHistory.qlLastPaths.append(slpLastPath);
+			stTab->shHistory.iPosition = 0;
+		} else {
+			if (stTab->shHistory.iPosition == stTab->shHistory.qlLastPaths.count() - 1) {
+				// add to the last (next) position
+				stTab->shHistory.qlLastPaths.append(slpLastPath);
+				stTab->shHistory.iPosition++;
+			} else {
+				// move current record to the last position and add new one
+				stTab->shHistory.qlLastPaths.append(stTab->shHistory.qlLastPaths.takeAt(stTab->shHistory.iPosition));
+				stTab->shHistory.qlLastPaths.append(slpLastPath);
+				stTab->shHistory.iPosition = stTab->shHistory.qlLastPaths.count() - 1;
+			} // if else
+		} // if else
+	} // if
+} // AddHistory
+
 // add new tab with dir view
 int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
@@ -1686,6 +1758,8 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 		// start thread to query content plugins values
 		ccpdContentPluginDelayed->Start(qlParameters);
 	} // if
+
+	AddHistory(iIndex);
 } // RefreshContent
 
 // refresh current dir view with custom files
