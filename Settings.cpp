@@ -748,6 +748,9 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 				if (qsShortcut == qsSHORTCUT__PANELS__TABS__CLOSE_TAB) {
 					return "Ctrl+W";
 				} // if
+				if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL) {
+					return "F2";
+				} // if
 				if (qsShortcut == qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) {
 					return "F3";
 				} // if

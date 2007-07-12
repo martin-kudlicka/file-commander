@@ -559,6 +559,13 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QPushButton" name="qpbTerminal" >
+        <property name="text" >
+         <string>Terminal</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="qpbView" >
         <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>

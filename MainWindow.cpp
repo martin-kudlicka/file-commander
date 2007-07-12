@@ -121,6 +121,8 @@ void cMainWindow::AssignShortcuts()
 	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT)), this);
 	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
 	// main buttons
+	qpbTerminal->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL)));
+	qpbTerminal->setText(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL) + ' ' + qpbTerminal->text());
 	qpbView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW)));
 	qpbView->setText(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW) + ' ' + qpbView->text());
 	qpbEdit->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT)));
@@ -895,6 +897,20 @@ void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */)
 {
 	cpRight->GoToUpDir();
 } // on_qpbRightUpDir_clicked
+
+// terminal button is clicked on
+void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */)
+{
+#ifdef Q_WS_WIN
+	if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
+		cProcess::Execute("command", cpActive->GetPath());
+	} else {
+		cProcess::Execute("cmd", cpActive->GetPath());
+	} // if else
+#else
+	// TODO Linux terminal
+#endif
+} // on_qpbTerminal_clicked
 
 // view button is clicked on
 void cMainWindow::on_qpbView_clicked(bool checked /* false */)

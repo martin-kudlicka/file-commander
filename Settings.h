@@ -86,6 +86,7 @@ const QString qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS = "Save settin
 const QString qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE = "Enqueue";
 const QString qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT = "Drive left";
 const QString qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT = "Drive right";
+const QString qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL = "Terminal";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW = "View";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT = "Edit";
 const QString qsSHORTCUT__PANELS__MAIN_BUTTON__COPY = "Copy";
