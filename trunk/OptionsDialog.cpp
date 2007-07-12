@@ -14,56 +14,57 @@ const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
 // shortcuts
-const QStringList qslSHORTCUTS__LISTER__FILE = QStringList() << qsSHORTCUT__LISTER__FILE__OPEN <<
-																					 qsSHORTCUT__LISTER__FILE__SAVE_AS <<
-																					 qsSHORTCUT__LISTER__FILE__PRINT <<
-																					 qsSHORTCUT__LISTER__FILE__PRINT_SETUP <<
-																					 qsSHORTCUT__LISTER__FILE__CLOSE;
-const QStringList qslSHORTCUTS__LISTER__EDIT = QStringList() << qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT <<
-																					 qsSHORTCUT__LISTER__EDIT__SELECT_ALL <<
-																					 qsSHORTCUT__LISTER__EDIT__FIND <<
-																					 qsSHORTCUT__LISTER__EDIT__FIND_NEXT;
-const QStringList qslSHORTCUTS__LISTER__OPTIONS = QStringList() << qsSHORTCUT__LISTER__OPTIONS__TEXT <<
-																						 qsSHORTCUT__LISTER__OPTIONS__BINARY <<
-																						 qsSHORTCUT__LISTER__OPTIONS__HEX <<
-																						 qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA <<
-																						 qsSHORTCUT__LISTER__OPTIONS__ANSI <<
-																						 qsSHORTCUT__LISTER__OPTIONS__ASCII <<
-																						 qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH <<
-																						 qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT <<
-																						 qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW;
-const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES <<
-																						 qsSHORTCUT__MAIN_MENU__FILE__QUIT;
-const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP <<
-																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP <<
-																						 qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL <<
-																						 qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL <<
-																						 qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION;
-const QStringList qslSHORTCUTS__MAIN_MENU__COMMANDS = QStringList() << qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH <<
-																							  qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES <<
-																							  qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW <<
-																							  qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN;
-const QStringList qslSHORTCUTS__MAIN_MENU__PANEL = QStringList() << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN <<
-																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN <<
-																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN <<
-																						  qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN <<
-																						  qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER <<
-																						  qsSHORTCUT__MAIN_MENU__PANEL__REFRESH;
-const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS <<
-																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION <<
-																									 qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS;
+const QStringList qslSHORTCUTS__LISTER__FILE = QStringList() << qsSHORTCUT__LISTER__FILE__OPEN
+																				 << qsSHORTCUT__LISTER__FILE__SAVE_AS
+																				 << qsSHORTCUT__LISTER__FILE__PRINT
+																				 << qsSHORTCUT__LISTER__FILE__PRINT_SETUP
+																				 << qsSHORTCUT__LISTER__FILE__CLOSE;
+const QStringList qslSHORTCUTS__LISTER__EDIT = QStringList() << qsSHORTCUT__LISTER__EDIT__COPY_AS_TEXT
+																				 << qsSHORTCUT__LISTER__EDIT__SELECT_ALL
+																				 << qsSHORTCUT__LISTER__EDIT__FIND
+																				 << qsSHORTCUT__LISTER__EDIT__FIND_NEXT;
+const QStringList qslSHORTCUTS__LISTER__OPTIONS = QStringList() << qsSHORTCUT__LISTER__OPTIONS__TEXT
+																					 << qsSHORTCUT__LISTER__OPTIONS__BINARY
+																					 << qsSHORTCUT__LISTER__OPTIONS__HEX
+																					 << qsSHORTCUT__LISTER__OPTIONS__MULTIMEDIA
+																					 << qsSHORTCUT__LISTER__OPTIONS__ANSI
+																					 << qsSHORTCUT__LISTER__OPTIONS__ASCII
+																					 << qsSHORTCUT__LISTER__OPTIONS__VARIABLE_CHAR_WIDTH
+																					 << qsSHORTCUT__LISTER__OPTIONS__WRAP_TEXT
+																					 << qsSHORTCUT__LISTER__OPTIONS__FIT_IMAGE_TO_WINDOW;
+const QStringList qslSHORTCUTS__MAIN_MENU__FILE = QStringList() << qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES
+																					 << qsSHORTCUT__MAIN_MENU__FILE__QUIT;
+const QStringList qslSHORTCUTS__MAIN_MENU__MARK = QStringList() << qsSHORTCUT__MAIN_MENU__MARK__SELECT_GROUP
+																					 << qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_GROUP
+																					 << qsSHORTCUT__MAIN_MENU__MARK__SELECT_ALL
+																					 << qsSHORTCUT__MAIN_MENU__MARK__UNSELECT_ALL
+																					 << qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION;
+const QStringList qslSHORTCUTS__MAIN_MENU__COMMANDS = QStringList() << qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH
+																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES
+																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW
+																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN;
+const QStringList qslSHORTCUTS__MAIN_MENU__PANEL = QStringList() << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN
+																					  << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN
+																					  << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN
+																					  << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN
+																					  << qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER
+																					  << qsSHORTCUT__MAIN_MENU__PANEL__REFRESH;
+const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS
+																								 << qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION
+																								 << qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS;
 const QStringList qslSHORTCUTS__OPERATIONS__DIALOG = QStringList() << qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE;
-const QStringList qslSHORTCUTS__PANELS__DIRECTORY_VIEW = QStringList() << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT <<
-																								  qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT;
-const QStringList qslSHORTCUTS__PANELS__MAIN_BUTTON = QStringList() << qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW <<
-																							  qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT <<
-																							  qsSHORTCUT__PANELS__MAIN_BUTTON__COPY <<
-																							  qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE <<
-																							  qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY <<
-																							  qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE;
-const QStringList qslSHORTCUTS__PANELS__TABS = QStringList() << qsSHORTCUT__PANELS__TABS__DUPLICATE_TAB <<
-																					 qsSHORTCUT__PANELS__TABS__CLOSE_TAB <<
-																					 qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS;
+const QStringList qslSHORTCUTS__PANELS__DIRECTORY_VIEW = QStringList() << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT
+																							  << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT;
+const QStringList qslSHORTCUTS__PANELS__MAIN_BUTTON = QStringList() << qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__COPY
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__MOVE
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__NEW_DIRECTORY
+																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__DELETE;
+const QStringList qslSHORTCUTS__PANELS__TABS = QStringList() << qsSHORTCUT__PANELS__TABS__DUPLICATE_TAB
+																				 << qsSHORTCUT__PANELS__TABS__CLOSE_TAB
+																				 << qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS;
 
 // destructor
 cOptionsDialog::~cOptionsDialog()

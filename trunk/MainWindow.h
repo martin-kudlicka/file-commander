@@ -158,6 +158,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbRightUpDir_clicked(bool checked = false);			///< right up dir button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qpbTerminal_clicked(bool checked = false);				///< terminal button is clicked on
+																						/**< \param checked true if button is checkable and checked */
 		void on_qpbView_clicked(bool checked = false);					///< view button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qsLeftDrive_activated();										///< left drive shortcut activated
