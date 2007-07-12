@@ -40,6 +40,8 @@ class cSelectFilesDialog : public QDialog, public Ui::qdSelectFiles
 	private slots:
 		void on_qpbDefine_clicked(bool checked = false);	///< define button is clicked on
 																			/**< \param checked true if button is checkable and checked */
+		void on_qpbOK_clicked(bool checked = false);			///< OK button is clicked on
+																			/**< \param checked true if button is checkable and checked */
 }; // cSelectFilesDialog
 
 #endif

@@ -22,6 +22,9 @@ cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType
 	} // if else
 
 	RefreshFindSets();
+
+	// history
+	qcbFilter->addItems(csSettings->GetComboBoxHistory(cSettings::SelectFilesFilter));
 } // cSelectFilesDialog
 
 // event filter
@@ -46,6 +49,24 @@ void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
 	cffdFind.exec();
 	RefreshFindSets();
 } // on_qpbDefine_clicked
+
+// OK button is clicked on
+void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
+{
+	int iIndex;
+	QString qsFilter;
+
+	qsFilter = qcbFilter->currentText();
+	iIndex = qcbFilter->findText(qsFilter);
+	if (iIndex > 0) {
+		qcbFilter->removeItem(iIndex);
+		qcbFilter->insertItem(0, qsFilter);
+		qcbFilter->setEditText(qsFilter);
+	} // if
+	csSettings->SetComboBoxHistory(cSettings::SelectFilesFilter, qcbFilter);
+
+	accept();
+} // on_qpbOK_clicked
 
 // refresh finds sets from settings file
 void cSelectFilesDialog::RefreshFindSets()

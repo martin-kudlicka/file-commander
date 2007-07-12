@@ -17,7 +17,7 @@ cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qs
 	// history
 	qcbDestination->addItems(csSettings->GetComboBoxHistory(cSettings::UnpackFilesDestination));
 	qcbFilter->addItems(csSettings->GetComboBoxHistory(cSettings::UnpackFilesFilter));
-	qcbFilter->clearEditText();
+	//qcbFilter->clearEditText();
 
 	qcbDestination->setEditText(qsDestination);
 } // cUnpackFilesDialog
@@ -26,17 +26,22 @@ cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qs
 void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
 	int iIndex;
+	QString qsDestination, qsFilter;
 
-	iIndex = qcbDestination->findText(qcbDestination->currentText());
+	qsDestination = qcbDestination->currentText();
+	iIndex = qcbDestination->findText(qsDestination);
 	if (iIndex > 0) {
 		qcbDestination->removeItem(iIndex);
+		qcbDestination->insertItem(0, qsDestination);
+		qcbDestination->setEditText(qsDestination);
 	} // if
-	qcbDestination->insertItem(0, qcbDestination->currentText());
-	iIndex = qcbFilter->findText(qcbFilter->currentText());
+	qsFilter = qcbFilter->currentText();
+	iIndex = qcbFilter->findText(qsFilter);
 	if (iIndex > 0) {
 		qcbFilter->removeItem(iIndex);
+		qcbFilter->insertItem(0, qsFilter);
+		qcbFilter->setEditText(qsFilter);
 	} // if
-	qcbFilter->insertItem(0, qcbFilter->currentText());
 	csSettings->SetComboBoxHistory(cSettings::UnpackFilesDestination, qcbDestination);
 	csSettings->SetComboBoxHistory(cSettings::UnpackFilesFilter, qcbFilter);
 
