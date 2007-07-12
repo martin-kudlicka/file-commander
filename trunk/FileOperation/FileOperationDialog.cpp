@@ -2,6 +2,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QDirModel>
+#include <QtGui/QLineEdit>
 
 // constructor
 cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *csSettings)
@@ -85,6 +86,7 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 		delete qcbDestination;
 		delete qpbBrowse;
 	} else {
+		qcbDestination->lineEdit()->setSelection(0, qcbDestination->currentText().length());
 		qcbDestination->setFocus(Qt::OtherFocusReason);
 	} // if else
 
