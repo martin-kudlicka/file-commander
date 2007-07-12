@@ -102,6 +102,7 @@ class cSettings : private QObject
 		/// combo box's history type
 		enum eHistoryType {
 			CommandLineHistory,											///< main window's command line
+			SelectFilesFilter,											///< select files's filter
 			UnpackFilesFilter,											///< unpack files's filter
 			UnpackFilesDestination										///< unpack files's destination
 		};

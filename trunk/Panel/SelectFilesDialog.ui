@@ -108,26 +108,22 @@
    <property name="rootIsDecorated" >
     <bool>false</bool>
    </property>
+   <column>
+    <property name="text" >
+     <string>1</string>
+    </property>
+   </column>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>qcbFilter</tabstop>
+  <tabstop>qpbOK</tabstop>
+  <tabstop>qpbCancel</tabstop>
+  <tabstop>qpbDefine</tabstop>
+  <tabstop>qtwFindSets</tabstop>
+ </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>qpbOK</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>qdSelectFiles</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>131</x>
-     <y>211</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>130</x>
-     <y>131</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>qpbCancel</sender>
    <signal>clicked(bool)</signal>

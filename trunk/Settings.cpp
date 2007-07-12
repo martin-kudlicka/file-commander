@@ -53,6 +53,7 @@ const QString qsFULL_TEXT_NOT_CONTAINING_TEXT = "FullTextNotContainingText";
 const QString qsFULL_TEXT_REGULAR_EXPRESSION = "FullTextRegularExpression";
 const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsSEARCH_IN = "SearchIn";
+const QString qsSELECT_FILES_FILTER = "SelectFilesFilter";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsSOURCE = "Source";
@@ -318,6 +319,9 @@ QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case SelectFilesFilter:
+			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
 			break;
 		case UnpackFilesFilter:
 			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
@@ -955,6 +959,9 @@ void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboB
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case SelectFilesFilter:
+			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
 			break;
 		case UnpackFilesFilter:
 			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
