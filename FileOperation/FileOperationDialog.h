@@ -36,6 +36,7 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 																	  \return user action */
 
 		private:
+			cSettings *csSettings;						///< application's settings file
 			eUserAction euaResult;						///< dialog result
 			QCompleter qcDestination;					///< completer for destination combo box
 
