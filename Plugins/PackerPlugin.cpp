@@ -24,6 +24,9 @@ void cPackerPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
+	QString qsCurrentPath;
+
+	qsCurrentPath = QDir::currentPath();
 
 	// get plugin file list
 	qlPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
@@ -35,6 +38,7 @@ void cPackerPlugin::Load()
 			QLibrary qlLibrary;
 
 			// load plugin
+			QDir::setCurrent(QFileInfo(qlPlugins.at(iI).qsName).path());
 			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
 			qlLibrary.load();
 
@@ -65,4 +69,6 @@ void cPackerPlugin::Load()
 			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);
 		} // if
 	} // for
+
+	QDir::setCurrent(qsCurrentPath);
 } // Load
