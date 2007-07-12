@@ -242,6 +242,14 @@ class cPanel : public QObject
 																							/**< \param iTabIndex tab bar index to set text in */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
+		static bool TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																							///< compare items by QDateTime
+																							/**< \param qtwiItem1 1st item
+																								  \param qtwiItem2 2nd item */
+		static bool TreeSortByQInt64(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																							///< compare items by qint64
+																							/**< \param qtwiItem1 1st item
+																								  \param qtwiItem2 2nd item */
 		static bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
 																							///< compare items by text
 																							/**< \param qtwiItem1 1st item
