@@ -17,7 +17,6 @@ cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qs
 	// history
 	qcbDestination->addItems(csSettings->GetComboBoxHistory(cSettings::UnpackFilesDestination));
 	qcbFilter->addItems(csSettings->GetComboBoxHistory(cSettings::UnpackFilesFilter));
-	//qcbFilter->clearEditText();
 
 	qcbDestination->setEditText(qsDestination);
 } // cUnpackFilesDialog
@@ -32,6 +31,8 @@ void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 	iIndex = qcbDestination->findText(qsDestination);
 	if (iIndex > 0) {
 		qcbDestination->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
 		qcbDestination->insertItem(0, qsDestination);
 		qcbDestination->setEditText(qsDestination);
 	} // if
@@ -39,6 +40,8 @@ void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 	iIndex = qcbFilter->findText(qsFilter);
 	if (iIndex > 0) {
 		qcbFilter->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
 		qcbFilter->insertItem(0, qsFilter);
 		qcbFilter->setEditText(qsFilter);
 	} // if
