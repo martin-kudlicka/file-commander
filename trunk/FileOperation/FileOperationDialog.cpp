@@ -9,6 +9,8 @@ cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *cs
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
+	this->csSettings = csSettings;
+
 	// assign shortcut
 	qpbEnqueue->setText(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) + ' ' + qpbEnqueue->text());
 	qpbEnqueue->setShortcut(QKeySequence(csSettings->GetShortcut(cSettings::OperationsCategory, qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE)));
@@ -16,6 +18,10 @@ cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *cs
 	// completer
 	qcDestination.setModel(new QDirModel(&qcDestination));
 	qcbDestination->setCompleter(&qcDestination);
+
+	// history
+	qcbDestination->addItems(csSettings->GetComboBoxHistory(cSettings::FileOperationDestination));
+	qcbFilter->addItems(csSettings->GetComboBoxHistory(cSettings::FileOperationFilter));
 } // cCopyMoveDialog
 
 // Browse button clicked on
@@ -65,7 +71,6 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 	} // switch
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);
-	qcbFilter->setEditText(*qsFilter);
 	if (bArchive) {
 		qpbEnqueue->setEnabled(false);
 	} // if
@@ -86,10 +91,39 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 	euaAction = static_cast<eUserAction>(exec());
 
 	if (euaAction != CancelAction) {
+		int iIndex;
+		QString qsDestinationHistory, qsFilterHistory;
+
 		if (eoOperation != cFileRoutine::DeleteOperation) {
 			*qsDestination = qcbDestination->currentText();
 		} // if
 		*qsFilter = qcbFilter->currentText();
+
+		// save history
+		if (eoOperation != cFileRoutine::DeleteOperation) {
+			qsDestinationHistory = qcbDestination->currentText();
+			iIndex = qcbDestination->findText(qsDestinationHistory);
+			if (iIndex > 0) {
+				qcbDestination->removeItem(iIndex);
+			} // if
+			if (iIndex != 0) {
+				qcbDestination->insertItem(0, qsDestinationHistory);
+				qcbDestination->setEditText(qsDestinationHistory);
+			} // if
+		} // if
+		qsFilterHistory = qcbFilter->currentText();
+		iIndex = qcbFilter->findText(qsFilterHistory);
+		if (iIndex > 0) {
+			qcbFilter->removeItem(iIndex);
+		} // if
+		if (iIndex != 0) {
+			qcbFilter->insertItem(0, qsFilterHistory);
+			qcbFilter->setEditText(qsFilterHistory);
+		} // if
+		if (eoOperation != cFileRoutine::DeleteOperation) {
+			csSettings->SetComboBoxHistory(cSettings::FileOperationDestination, qcbDestination);
+		} // if
+		csSettings->SetComboBoxHistory(cSettings::FileOperationFilter, qcbFilter);
 	} // if
 
 	return euaAction;

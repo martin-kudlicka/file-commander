@@ -102,6 +102,8 @@ class cSettings : private QObject
 		/// combo box's history type
 		enum eHistoryType {
 			CommandLineHistory,											///< main window's command line
+			FileOperationDestination,									///< file opeartion's destination
+			FileOperationFilter,											///< file operation's filter
 			FindFilesSearchFor,											///< find files's search for
 			FindFilesSearchIn,											///< find files's search in
 			SelectFilesFilter,											///< select files's filter

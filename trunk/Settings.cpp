@@ -24,6 +24,8 @@ const QString qsEXTENSIONS = "Extensions";
 const QString qsEXTERNAL_EDITOR = "ExternalEditor";
 const QString qsEXTERNAL_VIEWER = "ExternalViewer";
 const QString qsFALSE = "false";
+const QString qsFILE_OPERATION_DESTINATION = "FileOperationDestination";
+const QString qsFILE_OPERATION_FILTER = "FileOperationFilter";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsFILE_SIZE = "FileSize";
 const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
@@ -34,6 +36,11 @@ const QString qsFIND_FILES_SEARCH_IN = "FindFilesSearchIn";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
 const QString qsFULL_TEXT = "FullText";
+const QString qsFULL_TEXT_CASE_SENSITIVE = "FullTextCaseSensitive";
+const QString qsFULL_TEXT_HEX = "FullTextHex";
+const QString qsFULL_TEXT_NOT_CONTAINING_TEXT = "FullTextNotContainingText";
+const QString qsFULL_TEXT_REGULAR_EXPRESSION = "FullTextRegularExpression";
+const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsHEIGHT = "Height";
 const QString qsHISTORY = "History";
 const QString qsLISTER = "Lister";
@@ -49,11 +56,6 @@ const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
 const QString qsSEARCH_FOR = "SearchFor";
 const QString qsSEARCH_FOR_REGULAR_EXPRESSION = "SearchForRegularExpression";
 const QString qsSEARCH_FOR_TEXT = "SearchForText";
-const QString qsFULL_TEXT_CASE_SENSITIVE = "FullTextCaseSensitive";
-const QString qsFULL_TEXT_HEX = "FullTextHex";
-const QString qsFULL_TEXT_NOT_CONTAINING_TEXT = "FullTextNotContainingText";
-const QString qsFULL_TEXT_REGULAR_EXPRESSION = "FullTextRegularExpression";
-const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsSEARCH_IN = "SearchIn";
 const QString qsSELECT_FILES_FILTER = "SelectFilesFilter";
 const QString qsSORT_ORDER = "SortOrder";
@@ -321,6 +323,12 @@ QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FileOperationDestination:
+			qsSettings.beginGroup(qsFILE_OPERATION_DESTINATION);
+			break;
+		case FileOperationFilter:
+			qsSettings.beginGroup(qsFILE_OPERATION_FILTER);
 			break;
 		case FindFilesSearchFor:
 			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
@@ -967,6 +975,12 @@ void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboB
 	switch (ehtHistory) {
 		case CommandLineHistory:
 			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FileOperationDestination:
+			qsSettings.beginGroup(qsFILE_OPERATION_DESTINATION);
+			break;
+		case FileOperationFilter:
+			qsSettings.beginGroup(qsFILE_OPERATION_FILTER);
 			break;
 		case FindFilesSearchFor:
 			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
