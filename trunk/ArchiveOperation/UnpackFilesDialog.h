@@ -7,6 +7,7 @@
 
 #include "Settings.h"
 #include <QtGui/QMainWindow>
+#include <QtGui/QCompleter>
 
 class cUnpackFilesDialog : public QDialog, public Ui::qdUnpackFiles
 {
@@ -14,10 +15,13 @@ class cUnpackFilesDialog : public QDialog, public Ui::qdUnpackFiles
 
 	public:
 		cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qsDestination, cSettings *csSettings);
-			///< constructor
-			/**< \param qmwParent parent widget (window) of this dialog
-				  \param qsDestination destination path for extraction
-				  \param csSettings application's settings */
+											///< constructor
+											/**< \param qmwParent parent widget (window) of this dialog
+												  \param qsDestination destination path for extraction
+												  \param csSettings application's settings */
+
+	private:
+		QCompleter qcDestination;	///< completer for destination combo box
 }; // cUnpackFilesDialog
 
 #endif

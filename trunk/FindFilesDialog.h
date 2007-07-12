@@ -7,6 +7,7 @@
 
 #include "Panel.h"
 #include "Plugins/ListerPlugin.h"
+#include <QtGui/QCompleter>
 
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
@@ -47,6 +48,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cListerPlugin *clpListerPlugin;												///< lister plugin's class
 		cPanel *cpPanel;																	///< panel to work with
 		cSettings *csSettings;															///< application's settings file
+		QCompleter qcSearchIn;															///< completer for search in combo box
 		cSettings::sFindSettings sfsCurrentSearch;								///< current search settings
 		QFileInfoList qfilSearch;														///< search result
 		QFileInfoList qfilSelectedDirectories;										///< selected directories in dir view

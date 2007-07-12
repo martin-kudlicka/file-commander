@@ -8,6 +8,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QInputDialog>
 #include <QtGui/QFontDialog>
+#include <QtGui/QDirModel>
 
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
@@ -178,6 +179,13 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 #ifndef Q_WS_WIN
 	qcbDeleteToRecycleBin->deleteLater();
 #endif
+
+	// completers
+	qcDirModel.setModel(new QDirModel(&qcDirModel));
+	qleExternalViewer->setCompleter(&qcDirModel);
+	qleExternalEditor->setCompleter(&qcDirModel);
+	qleFavouriteSource->setCompleter(&qcDirModel);
+	qleFavouriteTarget->setCompleter(&qcDirModel);
 } // cConfigurationDialog
 
 // create left toolbar for navigation

@@ -8,6 +8,7 @@
 #include "FileOperation/FileRoutine.h"
 #include <QtGui/QMainWindow>
 #include "Settings.h"
+#include <QtGui/QCompleter>
 
 class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 {
@@ -36,6 +37,7 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 
 		private:
 			eUserAction euaResult;						///< dialog result
+			QCompleter qcDestination;					///< completer for destination combo box
 
 		private slots:
 			void on_qpbBrowse_clicked(bool checked = false);

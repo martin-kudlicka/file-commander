@@ -10,6 +10,7 @@
 #include <QtCore/QTimer>
 #include <QtGui/QShortcut>
 #include "OptionsDialog.h"
+#include <QtGui/QCompleter>
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.3 rev 367";
@@ -42,6 +43,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QAction *qaTabBarDuplicateTab;										///< duplicate current tab
 		QActionGroup *qagColumnSets;											///< column sets
 		QActionGroup *qagSortBy;												///< sort by actions
+		QCompleter qcCommand;													///< completer for command combo box
 		QHash<QAction *, cOptionsDialog::sFavouriteDirectory> qhFavouriteDirectories;
 																						///< favourite directories table
 		QHBoxLayout *qhblBackgroundOperations;								///< layout for background operations

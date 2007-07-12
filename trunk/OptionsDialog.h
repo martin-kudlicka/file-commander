@@ -10,6 +10,7 @@
 #include "Plugins/ContentPlugin.h"
 #include <QtGui/QToolBar>
 #include "Options/NewFavouriteDirectoryDialog.h"
+#include <QtGui/QCompleter>
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
 {
@@ -69,6 +70,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QAction *qaOthers;														///< others options
 		QAction *qaPanels;														///< panels options
 		QAction *qaPlugins;														///< plugins options
+		QCompleter qcDirModel;													///< completer based on dir model
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
 		QFlags<eToDo> qfToDo;													///< actions after confirmation changes
 		QFont qfListerFont;														///< lister font

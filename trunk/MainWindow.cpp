@@ -10,6 +10,7 @@
 #include <QtGui/QHeaderView>
 #include "Common/About.h"
 #include "ArchiveOperation.h"
+#include <QtGui/QDirModel>
 
 // destructor
 cMainWindow::~cMainWindow()
@@ -237,6 +238,8 @@ cMainWindow::cMainWindow()
 	iTabBarIndex = -1;
 	qcbCommand->installEventFilter(this);
 	qagColumnSets = new QActionGroup(this);
+	qcCommand.setModel(new QDirModel(&qcCommand));
+	qcbCommand->setCompleter(&qcCommand);
 
 	// shortcuts
 	AssignShortcuts();
