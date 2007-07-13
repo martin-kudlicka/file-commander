@@ -1,7 +1,6 @@
 #include "Settings.h"
 
 #include <QtCore/QStringList>
-#include "FileOperation/FileRoutine.h"
 #include <QtGui/QFont>
 
 // general
@@ -44,6 +43,7 @@ const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsHEIGHT = "Height";
 const QString qsHISTORY = "History";
 const QString qsLISTER = "Lister";
+const QString qsLOCATION = "Location";
 const QString qsMAIN_MENU = "MainMenu";
 const QString qsNOT_OLDER_THAN = "NotOlderThan";
 const QString qsNOT_OLDER_THAN_COUNT = "NotOlderThanCount";
@@ -51,13 +51,16 @@ const QString qsNOT_OLDER_THAN_TYPE = "NotOlderThanType";
 const QString qsOPERATIONS = "Operations";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
+const QString qsPATH_IN_ARCHIVE = "PathInArchive";
 const QString qsPLUGIN = "Plugin";
+const QString qsPOSITION = "Position";
 const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
 const QString qsSEARCH_FOR = "SearchFor";
 const QString qsSEARCH_FOR_REGULAR_EXPRESSION = "SearchForRegularExpression";
 const QString qsSEARCH_FOR_TEXT = "SearchForText";
 const QString qsSEARCH_IN = "SearchIn";
 const QString qsSELECT_FILES_FILTER = "SelectFilesFilter";
+const QString qsSHOW = "Show";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsSOURCE = "Source";
@@ -261,9 +264,9 @@ void cSettings::CreateFavouriteDirectories(const QList<QPair<QString, cSettings:
 } // CreateFavouriteDirectories
 
 // create new tab in settings file
-void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab)
+void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab)
 {
-	QMap<QString, cFileRoutine::sDriveInfo> qmDrives;
+	int iI;
 
 	if (epPosition == PositionLeft) {
 		qsSettings.beginGroup(QString("%1%2").arg(qsLEFT_PANEL__TABS__).arg(uiIndex));
@@ -271,13 +274,31 @@ void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, cons
 		qsSettings.beginGroup(QString("%1%2").arg(qsRIGHT_PANEL__TABS__).arg(uiIndex));
 	} // if else
 
-	qmDrives = cFileRoutine::GetDrives();
-
 	qsSettings.setValue(qsCOLUMN_SET, stiTab.qsColumnSet);
 	qsSettings.setValue(qsDRIVE, stiTab.qsDrive);
 	qsSettings.setValue(qsPATH, stiTab.qsPath);
 	qsSettings.setValue(qsSORTED_COLUMN, stiTab.ssSort.iSortedColumn);
 	qsSettings.setValue(qsSORT_ORDER, stiTab.ssSort.soSortOrder == Qt::AscendingOrder ? qsASCENDING : qsDESCENDING);
+
+	// history
+	qsSettings.setValue(qsHISTORY + '/' + qsPOSITION, stiTab.shHistory.iPosition);
+	qsSettings.beginWriteArray(qsHISTORY);
+	for (iI = 0; iI < stiTab.shHistory.qlLastPaths.count(); iI++) {
+		sLastPath *slpLastPath;
+
+		qsSettings.setArrayIndex(iI);
+
+		slpLastPath = &stiTab.shHistory.qlLastPaths[iI];
+
+		qsSettings.setValue(qsLOCATION, slpLastPath->qsLocation);
+		qsSettings.setValue(qsSHOW, slpLastPath->qsShow);
+		qsSettings.setValue(qsLOCAL_DIRECTORY, slpLastPath->qsLocalDirectory);
+		if (slpLastPath->qsLocation == qsARCHIVE) {
+			qsSettings.setValue(qsARCHIVE, slpLastPath->qsArchive);
+			qsSettings.setValue(qsPATH_IN_ARCHIVE, slpLastPath->qsPathInArchive);
+		} // if
+	} // for
+	qsSettings.endArray();
 
 	qsSettings.endGroup();
 } // CreateTab
@@ -539,7 +560,6 @@ cSettings::sLister cSettings::GetListerSettings()
 // get maximum items in directory history list
 int cSettings::GetMaximumHistoryDirectoryListSize()
 {
-	int a = qsSettings.value(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, 20).toInt();
 	return qsSettings.value(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, 20).toInt();
 } // GetMaximumHistoryDirectoryListSize
 
@@ -1334,7 +1354,7 @@ void cSettings::SetShowTabBarWithOnlyOneTab(const bool &bShow)
 } // SetShowTabBarWithOnlyOneTab
 
 // save tab settings
-void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs)
+void cSettings::SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs)
 {
 	int iI;
 
@@ -1349,7 +1369,7 @@ void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTa
 
 	// create new tabs
 	for (iI = 0; iI < qlTabs.count(); iI++) {
-		CreateTab(epPosition, iI, qlTabs.at(iI));
+		CreateTab(epPosition, iI, qlTabs[iI]);
 	} // for
 } // SetTabs
 
