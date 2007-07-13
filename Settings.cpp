@@ -84,6 +84,7 @@ const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
 const QString qsDISPLAY__SAVE_SETTINGS_ON_QUIT = "Display/SaveSettingsOnQuit";
 const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
 const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
+const QString qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER = "Display/ShowDirectoryViewHeader"; 
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // Tabs
@@ -848,6 +849,12 @@ bool cSettings::GetShowBracketsAroundDirectoryName()
 	return qsSettings.value(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, true).toBool();
 } // GetShowBracketsAroundDirectoryName
 
+// get directory view header show flag
+bool cSettings::GetShowDirectoryViewHeader()
+{
+	return qsSettings.value(qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER, true).toBool();
+} // GetShowDirectoryViewHeader
+
 // show drive letter in tab
 bool cSettings::GetShowDriveLetter()
 {
@@ -1281,6 +1288,12 @@ void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)
 {
 	qsSettings.setValue(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, bShowBrackets);
 } // SetShowBracketsAroundDirectoryName
+
+// set directory view header show flag
+void cSettings::SetShowDirectoryViewHeader(const bool &bShow)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER, bShow);
+} // SetShowDirectoryViewHeader
 
 // show drive letter in tab
 void cSettings::SetShowDriveLetter(const bool &bShow)

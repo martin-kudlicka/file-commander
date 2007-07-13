@@ -26,7 +26,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			RefreshHeader = 8,													///< dir view header change
 			RefreshTabs = 16,														///< tab change
 			RefreshFavouriteDirectories = 32,								///< favourite directories change
-			RefreshColumnSets = 64												///< column set change
+			RefreshColumnSets = 64,												///< column set change
+			ShowHideDirectoryViewHeader = 128								///< show/hide directory view header
 		};
 		Q_DECLARE_FLAGS(ToDo, eToDo);
 		/// favourite directory
@@ -150,6 +151,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		void on_qcbFavouriteTargetDirectory_stateChanged(int state);
 																						///< set target favourite directory too
 																						/**< \param state set target favourite directory too */
+		void on_qcbShowDirectoryViewHeader_stateChanged(int state);	///< change of show directory header view
+																						/**< \param state show directory header view flag */
 		void on_qcbShowDriveLetter_stateChanged(int state);			///< change of show drive letter in tab bar
 																						/**< \param state show drive letter in tab bar flag */
 		void on_qcbShowHiddenFiles_stateChanged(int state);			///< change of show hidden files

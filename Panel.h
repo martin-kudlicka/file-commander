@@ -133,6 +133,7 @@ class cPanel : public QObject
 		void SetFocus();																///< set focus to current directory view
 		void SetHistoryDirectory(const int &iPosition);						///< set path by directory from history list
 																							/**< \param iPosition directory position in history list */
+		void ShowHideHeaders();														///< show or hide headers in all tabs
 		void SortBy(const int &iColumn);											///< sort by specified column
 																							/**< \param iColumn column position to sort by */
 		void UnselectAll();															///< unselect all files
@@ -268,6 +269,8 @@ class cPanel : public QObject
 																							/**< \param qsPath new path */
 		void SetTabText(const int &iTabIndex);									///< set text in tab bar
 																							/**< \param iTabIndex tab bar index to set text in */
+		void ShowHideHeader(const int &iTabIndex);							///< show or hide header for specified tab
+																							/**< \param iTabIndex tab index to show/hide header */
 		void Sort(const int &iIndex);												///< sort dir content
 																							/**< \param iIndex index of dir view */
 		static bool TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
