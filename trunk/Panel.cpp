@@ -15,6 +15,7 @@
 #include <QtGui/QFileIconProvider>
 #include "ArchiveOperation/ArchiveFilePropertiesDialog.h"
 #include "Panel/ShellMenu.h"
+//#include <QtCore/QDebug>
 
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
@@ -547,11 +548,18 @@ void cPanel::FeedToPanel(const QFileInfoList &qfilFiles)
 void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters)
 {
 	int iI;
+	sTab *stTab;
 
-	for (iI = 0; iI < qhTabs.value(iIndex).qlColumns->count(); iI++) {
-		if (qhTabs.value(iIndex).qlColumns->at(iI).qsPlugin == qsNO) {
+	stTab = &qhTabs[iIndex]; 
+
+	for (iI = 0; iI < stTab->qlColumns->count(); iI++) {
+		cSettings::sColumn *scColumn;
+
+		scColumn = &stTab->qlColumns->operator [](iI);
+
+		if (scColumn->qsPlugin == qsNO) {
 			// native
-			if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsICON) {
+			if (scColumn->qsIdentifier == qsICON) {
 				// icon
 				QFileIconProvider qfipIcon;
 
@@ -567,7 +575,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 						} // if else
 				} // switch
 			} else {
-				if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME) {
+				if (scColumn->qsIdentifier == qsNAME) {
 					// name
 					QString qsName;
 
@@ -596,7 +604,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 					} // switch
 					qtwiFile->setText(iI, qsName);
 				} else {
-					if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsEXTENSION) {
+					if (scColumn->qsIdentifier == qsEXTENSION) {
 						// extension
 						switch (elType) {
 							case LocalDirectory:
@@ -606,7 +614,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 								qtwiFile->setText(iI, QFileInfo(static_cast<const tHeaderData *>(vData)->FileName).suffix());
 						} // switch
 					} else {
-						if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsNAME_WITH_EXTENSION) {
+						if (scColumn->qsIdentifier == qsNAME_WITH_EXTENSION) {
 							// name with extension
 							QString qsName;
 
@@ -625,7 +633,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 							} // switch
 							qtwiFile->setText(iI, qsName);
 						} else {
-							if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsSIZE) {
+							if (scColumn->qsIdentifier == qsSIZE) {
 								// size
 								switch (elType) {
 									case LocalDirectory:
@@ -645,7 +653,7 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 										} // if else
 								} // switch
 							} else {
-								if (qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier == qsDATE_TIME) {
+								if (scColumn->qsIdentifier == qsDATE_TIME) {
 									// date/time
 									switch (elType) {
 										case LocalDirectory:
@@ -719,15 +727,15 @@ void cPanel::FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWi
 				// but only for local directory files
 				int iFlag;
 
-				qtwiFile->setText(iI, ccpContentPlugin->GetPluginValue(static_cast<const QFileInfo *>(vData)->filePath(), qhTabs.value(iIndex).qlColumns->at(iI).qsPlugin, qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iI).qsUnit, &iFlag));
+				qtwiFile->setText(iI, ccpContentPlugin->GetPluginValue(static_cast<const QFileInfo *>(vData)->filePath(), scColumn->qsPlugin, scColumn->qsIdentifier, qhTabs.value(iIndex).qlColumns->at(iI).qsUnit, &iFlag));
 				if (iFlag == ft_delayed) {
 					cContentPluginDelayed::sParameters spParameters;
 
 					// thread input
 					spParameters.siInput.qsFilename = static_cast<const QFileInfo *>(vData)->filePath();
-					spParameters.siInput.qsPlugin = qhTabs.value(iIndex).qlColumns->at(iI).qsPlugin;
-					spParameters.siInput.qsColumn = qhTabs.value(iIndex).qlColumns->at(iI).qsIdentifier;
-					spParameters.siInput.qsUnit = qhTabs.value(iIndex).qlColumns->at(iI).qsUnit;
+					spParameters.siInput.qsPlugin = scColumn->qsPlugin;
+					spParameters.siInput.qsColumn = scColumn->qsIdentifier;
+					spParameters.siInput.qsUnit = scColumn->qsUnit;
 
 					// thread output
 					spParameters.soOutput.qtwiItem = qtwiFile;
@@ -1765,6 +1773,8 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 	int iI;
 	QList<cContentPluginDelayed::sParameters> qlParameters;
 
+	//QTime qtTime;
+	//qtTime.start();
 	// interrupt delayed content processing
 	emit InterruptContentDelayed();
 
@@ -1825,6 +1835,7 @@ void cPanel::RefreshContent(const int &iIndex, QFileInfoList qfilFiles)
 				} // if
 			} // for
 	} // switch
+	//qDebug() << "elapsed: " << qtTime.elapsed() << endl;
 
 	// sort and show files
 	Sort(iIndex);
