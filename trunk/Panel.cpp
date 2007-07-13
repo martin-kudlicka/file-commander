@@ -938,13 +938,18 @@ void cPanel::GoToFile(const QString &qsFile)
 void cPanel::GoToRootDir()
 {
 	QDir qdDir;
+	sTab *stTab;
 
-	qdDir.setPath(qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qsPath);
-	if(!qdDir.isRoot() || qhTabs.value(qswDir->currentIndex()).elLocation == Archive) {
-		if (qhTabs.value(qswDir->currentIndex()).elLocation == Archive) {
-			qhTabs[qswDir->currentIndex()].elLocation = LocalDirectory;
+	stTab = &qhTabs[qswDir->currentIndex()];
+
+	qdDir.setPath(stTab->sldLocalDirectory.qsPath);
+	if(!qdDir.isRoot() || stTab->elLocation == Archive) {
+		if (stTab->elLocation == Archive) {
+			stTab->elLocation = LocalDirectory;
 		} // if
-		SetPath(qdDir.rootPath());
+		while (qdDir.cdUp())
+			;
+		SetPath(qdDir.path());
 	} // if
 } // GoToRootDir
 
