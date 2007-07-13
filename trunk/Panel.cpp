@@ -729,6 +729,23 @@ QHash<QTreeWidgetItem *, QFileInfo> cPanel::GetDirContent()
 	return qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles;
 } // GetDirContent
 
+// retreive history directory list
+cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList()
+{
+	int iI;
+	sHistory *shHistory;
+	sHistoryDirectoryList shdlList;
+
+	shHistory = &qhTabs[qswDir->currentIndex()].shHistory;
+
+	shdlList.iPosition = shHistory->iPosition;
+	for (iI = 0; iI < shHistory->qlLastPaths.count(); iI++) {
+		shdlList.qslDirectories.append(shHistory->qlLastPaths.at(iI).qsShow);
+	} // for
+
+	return shdlList;
+} // GetHistoryDirectoryList
+
 // location of current tab directory view
 cPanel::eLocation cPanel::GetLocation()
 {

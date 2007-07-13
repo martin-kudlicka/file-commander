@@ -146,6 +146,7 @@ void cMainWindow::AssignShortcuts()
 	qaCompareDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES)));
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
 	qaFavouriteDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES)));
+	qaHistoryDirectoryList->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST)));
 	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
 	qaReverseOrder->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER)));
@@ -229,10 +230,14 @@ cMainWindow::cMainWindow()
 	this->addAction(qaTabBarCloseTab);
 	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 	this->addAction(qaTabBarCloseAllOtherTabs);
+
 	// favourites context menu
 	ActualizeFavouriteDirectories();
 	qpbLeftFavourites->setMenu(&qmFavouriteDirectories);
 	qpbRightFavourites->setMenu(&qmFavouriteDirectories);
+	// history directory list context menu
+	qpbLeftHistory->setMenu(&qmHistoryDirectoryList);
+	qpbRightHistory->setMenu(&qmHistoryDirectoryList);
 	// column sets submenu
 	qaColumnSet->setMenu(&qmColumnSets);
 
@@ -261,6 +266,7 @@ cMainWindow::cMainWindow()
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
 	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
+	connect(&qmHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmHistoryDirectoryList_aboutToShow()));
 	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));
 
 	ActualizeDrives();
@@ -521,6 +527,16 @@ void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
 	setWindowState(windowState() ^ Qt::WindowFullScreen);
 } // on_qaFullScreen_triggered
 
+// history directory list is selected
+void cMainWindow::on_qaHistoryDirectoryList_triggered(bool checked /* false */)
+{
+	if (cpActive == cpLeft) {
+		qpbLeftHistory->showMenu();
+	} else {
+		qpbRightHistory->showMenu();
+	} // if else
+} // on_qaHistoryDirectoryList_triggered
+
 // sort by action called
 void cMainWindow::on_qagSortBy_triggered(QAction *action)
 {
@@ -773,6 +789,27 @@ void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action)
 		cpDestination->ChangePath(qhFavouriteDirectories.value(action).qsTarget);
 	} // if
 } // on_qmFavouriteDirectories_triggered
+
+// history directory list is about to show
+void cMainWindow::on_qmHistoryDirectoryList_aboutToShow()
+{
+	cPanel::sHistoryDirectoryList shdlList;
+	int iI;
+
+	shdlList = cpActive->GetHistoryDirectoryList();
+
+	qmHistoryDirectoryList.clear();
+	for (iI = 0; iI < shdlList.qslDirectories.count(); iI++) {
+		QAction *qaDirectory;
+
+		qaDirectory = qmHistoryDirectoryList.addAction(shdlList.qslDirectories.at(iI));
+
+		if (iI == shdlList.iPosition) {
+			qaDirectory->setCheckable(true);
+			qaDirectory->setChecked(true);
+		} // if
+	} // for
+} // on_qmHistoryDirectoryList_aboutToShow
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
