@@ -146,10 +146,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qmColumnSets_triggered(QAction *action);				///< selected column set from column set submenu
 																						/**< \param action column set */
-		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from from favourites context menu
+		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from favourites context menu
 																						/**< \param action favourite directory */
 		void on_qmLeftHistoryDirectoryList_aboutToShow();				///< left history directory list is about to show
+		void on_qmLeftHistoryDirectoryList_triggered(QAction *action);
+																						///< selected directory from left panel's history list
+																						/**< \param action directory information */
 		void on_qmRightHistoryDirectoryList_aboutToShow();				///< right history directory list is about to show
+		void on_qmRightHistoryDirectoryList_triggered(QAction *action);
+																						///< selected directory from right panel's history list
+																						/**< \param action directory information */
 		void on_qpbCopy_clicked(bool checked = false);					///< copy button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);				///< delete button is clicked on

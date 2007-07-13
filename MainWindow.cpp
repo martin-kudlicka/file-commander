@@ -268,6 +268,8 @@ cMainWindow::cMainWindow()
 	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
 	connect(&qmRightHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmRightHistoryDirectoryList_aboutToShow()));
+	connect(&qmLeftHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmLeftHistoryDirectoryList_triggered(QAction *)));
+	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));
 	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));
 
 	ActualizeDrives();
@@ -377,6 +379,7 @@ void cMainWindow::FillHistoryDirectoryList(const cSettings::ePosition &epPositio
 		QAction *qaDirectory;
 
 		qaDirectory = qmHistoryDirectoryList->addAction(shdlList.qslDirectories.at(iI));
+		qaDirectory->setData(iI);
 
 		if (iI == shdlList.iPosition) {
 			qaDirectory->setCheckable(true);
@@ -809,7 +812,7 @@ void cMainWindow::on_qmColumnSets_triggered(QAction *action)
 	cpActive->SetColumnSet(action->text());
 } // on_qmColumnSets_triggered
 
-// selected favourite directory from from favourites context menu
+// selected favourite directory from favourites context menu
 void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action)
 {
 	cPanel *cpDestination, *cpSource;
@@ -828,11 +831,27 @@ void cMainWindow::on_qmLeftHistoryDirectoryList_aboutToShow()
 	FillHistoryDirectoryList(cSettings::PositionLeft);
 } // on_qmHistoryDirectoryList_aboutToShow
 
+// selected directory from left panel's history list
+void cMainWindow::on_qmLeftHistoryDirectoryList_triggered(QAction *action)
+{
+	if (!action->isChecked()) {
+		cpLeft->SetHistoryDirectory(action->data().toInt());
+	} // if
+} // on_qmLeftHistoryDirectoryList_triggered
+
 // right history directory list is about to show
 void cMainWindow::on_qmRightHistoryDirectoryList_aboutToShow()
 {
 	FillHistoryDirectoryList(cSettings::PositionRight);
 } // on_qmRightHistoryDirectoryList_aboutToShow
+
+// selected directory from right panel's history list
+void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action)
+{
+	if (!action->isChecked()) {
+		cpRight->SetHistoryDirectory(action->data().toInt());
+	} // if
+} // on_qmRightHistoryDirectoryList_triggered
 
 // copy button is clicked on
 void cMainWindow::on_qpbCopy_clicked(bool checked /* false */)
