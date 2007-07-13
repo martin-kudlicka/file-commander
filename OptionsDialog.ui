@@ -1597,6 +1597,40 @@
            </property>
           </widget>
          </widget>
+         <widget class="QWidget" name="tab_15" >
+          <attribute name="title" >
+           <string>&amp;Miscellaneous</string>
+          </attribute>
+          <widget class="QLabel" name="label_6" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>167</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Maximum history directory list size:</string>
+           </property>
+          </widget>
+          <widget class="QSpinBox" name="qsbMaximumHistoryDirectoryListSize" >
+           <property name="geometry" >
+            <rect>
+             <x>180</x>
+             <y>10</y>
+             <width>71</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="suffix" >
+            <string> item(s)</string>
+           </property>
+           <property name="minimum" >
+            <number>1</number>
+           </property>
+          </widget>
+         </widget>
         </widget>
        </widget>
       </widget>

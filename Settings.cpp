@@ -74,6 +74,7 @@ const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
 const QString qsWINDOW_STATE = "WindowState";
 const QString qsWRAP_TEXT = "WrapText";
+
 // settings file
 // ColumnSet/
 const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
@@ -103,7 +104,6 @@ const QString qsQUICK_SEARCH__SHOW_SEARCH_WINDOW = "QuickSearch/ShowSearchWindow
 
 // FindFiles
 const QString qsFIND_FILES__ = "FindFiles/";
-// LeftPanel
 // LeftPanel/Tabs/
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 // MainWindow/
@@ -123,9 +123,10 @@ const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 const QString qsPLUGINS__LISTER = "Plugins/Lister";
 const QString qsPLUGINS__PACKER = "Plugins/Packer";
-// RightPanel
 // RightPanel/Tabs/
 const QString qsRIGHT_PANEL__TABS__ = "RightPanel/Tabs/";
+// Miscellaneous/MaximumHistoryDirectoryListSize
+const QString qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE = "Miscellaneous/MaximumHistoryDirectoryListSize";
 
 // collect favourite directories from settings file
 QList<QPair<QString, cSettings::sFavouriteDirectory> > cSettings::CollectFavouriteDirectories()
@@ -534,6 +535,13 @@ cSettings::sLister cSettings::GetListerSettings()
 
 	return slLister;
 } // GetListerSettings
+
+// get maximum items in directory history list
+int cSettings::GetMaximumHistoryDirectoryListSize()
+{
+	int a = qsSettings.value(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, 20).toInt();
+	return qsSettings.value(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, 20).toInt();
+} // GetMaximumHistoryDirectoryListSize
 
 // new tab by shortcut in foreground
 bool cSettings::GetNewTabByShortcutInForeground()
@@ -1144,6 +1152,12 @@ void cSettings::SetListerSettings(const sLister &slLister)
 	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);
 	qsSettings.endGroup();
 } // SetListerSettings
+
+// set maximum items in directory history list
+void cSettings::SetMaximumHistoryDirectoryListSize(const int &iSize)
+{
+	qsSettings.setValue(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, iSize);
+} // SetMaximumHistoryDirectoryListSize
 
 // new tab by shortcut in foreground
 void cSettings::SetNewTabByShortcutInForeground(const bool &bForeground)

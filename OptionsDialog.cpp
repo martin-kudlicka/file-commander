@@ -548,6 +548,8 @@ void cOptionsDialog::FillOptions()
 	qtwiShortcutListerOptions->setData(0, Qt::UserRole, cSettings::ListerCategory);
 	qtwShortcutCategory->expandAll();
 	qtwShortcutItem->setHeaderLabels(QStringList() << tr("Item") << tr("Shortcut"));
+	// miscellaneous
+	qsbMaximumHistoryDirectoryListSize->setValue(csSettings->GetMaximumHistoryDirectoryListSize());
 } // FillOptions
 
 // fills plugin information into tree
@@ -1566,6 +1568,8 @@ void cOptionsDialog::SaveOptions()
 	// others
 	// favourite directories
 	csSettings->SetFavouriteDirectories(GetFavouriteDirectories(qtwFavouriteDirectories->invisibleRootItem()));
+	// miscellaneous
+	csSettings->SetMaximumHistoryDirectoryListSize(qsbMaximumHistoryDirectoryListSize->value());
 } // SaveOptions
 
 // fill favourite directories into tree widget
