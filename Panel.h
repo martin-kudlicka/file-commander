@@ -108,6 +108,8 @@ class cPanel : public QObject
 																							/**< \param qsFile file to find */
 		void GoToRootDir();															///< go to root directory
 		void GoToUpDir();																///< go up one level (directory)
+		void HistoryGoBack();														///< go back in history directory list
+		void HistoryGoFront();														///< go front in history directory list
 		void InvertSelection();														///< invert selection of files
 		bool IsActive();																///< active panel flag
 																							/**< \return true if panel is active */

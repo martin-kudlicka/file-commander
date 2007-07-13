@@ -778,6 +778,12 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT) {
 					return "Alt+F2";
 				} // if
+				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_BACK) {
+					return "Alt+Left";
+				} // if
+				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_FRONT) {
+					return "Alt+Right";
+				} // if
 				break;
 			case OperationsCategory:
 				if (qsShortcut == qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE) {
