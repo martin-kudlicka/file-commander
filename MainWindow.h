@@ -13,7 +13,7 @@
 #include <QtGui/QCompleter>
 
 const QString qsAPPLICATION = "File Commander";
-const QString qsVERSION = "0.0.0.3 rev 367";
+const QString qsVERSION = "0.0.0.4 rev 395";
 
 /// application's main window
 

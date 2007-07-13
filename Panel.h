@@ -142,17 +142,6 @@ class cPanel : public QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;								///< timer interval
 
-		/// columns for faster filling directory view
-		enum eColumn {
-			IconColumn,																	///< icon
-			NameColumn,																	///< name
-			ExtensionColumn,															///< extension
-			NameWithExtensionColumn,												///< name with extenstion
-			SizeColumn,																	///< size
-			DateTimeColumn,															///< date/time
-			AttributesColumn,															///< attributes
-			PluginColumn																///< plugin
-		};
 		/// quick search direction in directory view
 		enum eQuickSearchDirection {
 			SearchUp,																	///< search up
@@ -237,14 +226,13 @@ class cPanel : public QObject
 																							/**< \param watched filtered object
 																								  \param event event description
 																								  \return true if event is handled */
-		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters, QList<eColumn> &qlColumns);
+		void FillDirViewItem(const int &iIndex, const eLocation &elType, QTreeWidgetItem *qtwiFile, const void *vData, QList<cContentPluginDelayed::sParameters> *qlParameters);
 																							///< fill directory view item accodring to content of vData
 																							/**< \param iIndex directory view tab index
 																								  \param elType type of item
 																								  \param qtwiItem item to fill
 																								  \param vData data to fill by
-																								  \param qlParameters parameters for delayed content plugins
-																								  \param qlColumns column list for faster filling */
+																								  \param qlParameters parameters for delayed content plugins */
 		int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
 																							///< find index of native column
 																							/**< \param qsColumn native column name
