@@ -61,7 +61,7 @@ class cPanel : public QObject
 																								  \param qleQuickSearch quick search window */
 		~cPanel();																		///< destructor
 
-		int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
+		int AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
 																							///< add new tab with dir view
 																							/**< \param stiTabInfo new tab description
 																								  \param bStartUp true if tab is added on application startup

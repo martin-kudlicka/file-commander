@@ -148,10 +148,10 @@ void cPanel::AddHistory(const int &iIndex)
 } // AddHistory
 
 // add new tab with dir view
-int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
+int cPanel::AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
 	cTreeWidget *ctwTree;
-	int iIndex;
+	int iI, iIndex;
 	sTab stTab;
 
 	// create tab
@@ -185,10 +185,30 @@ int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	stTab.sldLocalDirectory.qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	stTab.elLocation = LocalDirectory;
+
+	// history
+	stTab.shHistory.iPosition = stiTabInfo.shHistory.iPosition;
+	for (iI = 0; iI < stiTabInfo.shHistory.qlLastPaths.count(); iI++) {
+		sLastPath slpPanel;
+		cSettings::sLastPath *slpSetting;
+
+		slpSetting = &stiTabInfo.shHistory.qlLastPaths[iI];
+
+		slpPanel.qsShow = slpSetting->qsShow;
+		slpPanel.qsLocalDirectory = slpSetting->qsLocalDirectory;
+		slpPanel.qsArchive = slpSetting->qsArchive;
+		slpPanel.qsPathInArchive = slpSetting->qsPathInArchive;
+		if (slpSetting->qsLocation == qsLOCAL_DIRECTORY) {
+			slpPanel.elLocation = LocalDirectory;
+		} else {
+			slpPanel.elLocation = Archive;
+		} // if else
+
+		stTab.shHistory.qlLastPaths.append(slpPanel);
+	} // for
+
 	if (qhTabs.contains(iIndex)) {
 		// move tabs by one place
-		int iI;
-
 		for (iI = qhTabs.count() - 1; iI >= iIndex; iI--) {
 			qhTabs.insert(iI + 1, qhTabs.value(iI));
 		} // for
