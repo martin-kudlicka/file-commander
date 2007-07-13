@@ -910,6 +910,7 @@ bool cSettings::GetShowTabBarWithOnlyOneTab()
 ///< get some information about tab
 cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
+	int iCount, iI;
 	sTabInfo stiTabInfo;
 
 	if (epPosition == PositionLeft) {
@@ -923,6 +924,26 @@ cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QSt
 	stiTabInfo.qsPath = qsSettings.value(qsPATH).toString();
 	stiTabInfo.ssSort.iSortedColumn = qsSettings.value(qsSORTED_COLUMN).toInt();
 	stiTabInfo.ssSort.soSortOrder = qsSettings.value(qsSORT_ORDER).toString() == qsASCENDING ? Qt::AscendingOrder : Qt::DescendingOrder;
+
+	// history
+	stiTabInfo.shHistory.iPosition = qsSettings.value(qsHISTORY + '/' + qsPOSITION).toInt();
+	iCount = qsSettings.beginReadArray(qsHISTORY);
+	for (iI = 0; iI < iCount; iI++) {
+		sLastPath slpLastPath;
+
+		qsSettings.setArrayIndex(iI);
+
+		slpLastPath.qsLocation = qsSettings.value(qsLOCATION).toString();
+		slpLastPath.qsShow = qsSettings.value(qsSHOW).toString();
+		slpLastPath.qsLocalDirectory = qsSettings.value(qsLOCAL_DIRECTORY).toString();
+		if (slpLastPath.qsLocation == qsARCHIVE) {
+			slpLastPath.qsArchive = qsSettings.value(qsARCHIVE).toString();
+			slpLastPath.qsPathInArchive = qsSettings.value(qsPATH_IN_ARCHIVE).toString();
+		} // if
+
+		stiTabInfo.shHistory.qlLastPaths.append(slpLastPath);
+	} // for
+	qsSettings.endArray();
 
 	qsSettings.endGroup();
 
