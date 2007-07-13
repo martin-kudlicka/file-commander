@@ -103,6 +103,7 @@ void cPanel::AddHistory(const int &iIndex)
 
 	if (bAdd) {
 		// add to history
+		int iI;
 		sLastPath slpLastPath;
 
 		slpLastPath.elLocation = stTab->elLocation;
@@ -129,6 +130,16 @@ void cPanel::AddHistory(const int &iIndex)
 				stTab->shHistory.iPosition = stTab->shHistory.qlLastPaths.count() - 1;
 			} // if else
 		} // if else
+		
+		// find previous record of currently added path
+		for (iI = 0; iI < stTab->shHistory.qlLastPaths.count() - 2; iI++) {
+			if (stTab->shHistory.qlLastPaths.at(iI).qsShow == slpLastPath.qsShow) {
+				// remove previous identical record from history list
+				stTab->shHistory.qlLastPaths.removeAt(iI);
+				stTab->shHistory.iPosition--;
+				break;
+			} // if 
+		} // for
 	} // if
 } // AddHistory
 
@@ -1972,6 +1983,54 @@ void cPanel::SetFocus()
 {
 	qswDir->currentWidget()->setFocus(Qt::OtherFocusReason);
 } // SetFocus
+
+// set path by directory from history list
+void cPanel::SetHistoryDirectory(const int &iPosition)
+{
+	sLastPath *slpLastPath;
+	sTab *stTab;
+
+	stTab = &qhTabs[qswDir->currentIndex()];
+	slpLastPath = &stTab->shHistory.qlLastPaths[iPosition];
+
+	stTab->shHistory.iPosition = iPosition;
+
+	if (slpLastPath->elLocation == LocalDirectory) {
+		// new position in local directory
+		stTab->elLocation = LocalDirectory;
+		SetPath(slpLastPath->qsLocalDirectory);
+	} else {
+		// new position in archive
+		if (stTab->elLocation == LocalDirectory) {
+			// going from local directory
+			stTab->sldLocalDirectory.qsPath = slpLastPath->qsLocalDirectory;
+			if (OpenArchive(QFileInfo(slpLastPath->qsArchive))) {
+				// archive opened succesfully
+				SetPath(slpLastPath->qsPathInArchive);
+			} else {
+				// can't open archive -> go to local directory
+				SetPath(slpLastPath->qsLocalDirectory);
+			} // if else
+		} else {
+			// already in archive
+			if (stTab->saArchive.qsArchive == slpLastPath->qsArchive) {
+				// the same archive -> no need to open it again
+				SetPath(slpLastPath->qsPathInArchive);
+			} else {
+				// another archive
+				stTab->sldLocalDirectory.qsPath = slpLastPath->qsLocalDirectory;
+				if (OpenArchive(QFileInfo(slpLastPath->qsArchive))) {
+					// archive opened succesfully
+					SetPath(slpLastPath->qsPathInArchive);
+				} else {
+					// can't open archive -> go to local directory
+					stTab->elLocation = LocalDirectory;
+					SetPath(slpLastPath->qsLocalDirectory);
+				} // if else
+			} // if else
+		} // if else
+	} // if else
+} // SetHistoryDirectory
 
 // set new path for current dir view on selected drive
 void cPanel::SetPath(const QString &qsPath)

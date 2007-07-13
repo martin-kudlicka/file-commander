@@ -129,6 +129,8 @@ class cPanel : public QObject
 		void SetColumnSet(const QString &qsColumnSet);						///< selected another column set for actual directory view
 																							/**< \param qsColumnSet new column set */
 		void SetFocus();																///< set focus to current directory view
+		void SetHistoryDirectory(const int &iPosition);						///< set path by directory from history list
+																							/**< \param iPosition directory position in history list */
 		void SortBy(const int &iColumn);											///< sort by specified column
 																							/**< \param iColumn column position to sort by */
 		void UnselectAll();															///< unselect all files
