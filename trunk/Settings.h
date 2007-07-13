@@ -271,6 +271,8 @@ class cSettings : private QObject
 		sLister GetListerSettings();									///< lister settings
 																				/**< \return lister settings */
 																				/**< \return file size unit */
+		int GetMaximumHistoryDirectoryListSize();					///< get maximum items in directory history list
+																				/**< \return maximum items in directory history list */
 		bool GetNewTabByShortcutInForeground();					///< new tab by shortcut in foreground
 																				/** \return new tab by shortcut in foreground flag */
 		bool GetOpenNewTabNextToCurrentTab();						///< open new tab next to current tab
@@ -380,6 +382,9 @@ class cSettings : private QObject
 																				/**< \param qfFont user defined font for lister */
 		void SetListerSettings(const sLister &slLister);		///< set default lister settings
 																				/**< \param slLister lister settings */
+		void SetMaximumHistoryDirectoryListSize(const int &iSize);
+																				///< set maximum items in directory history list
+																				/**< \param iSize maximum items in directory history list */
 		void SetNewTabByShortcutInForeground(const bool &bForeground);
 																				///< new tab by shortcut in foreground
 																				/**< \param bForeground new tab by shortcut in foreground flag */
