@@ -632,6 +632,10 @@ void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	if (qfToDo & cOptionsDialog::RefreshColumnSets) {
 		ActualizeColumnSets();
 	} // if
+	if (qfToDo & cOptionsDialog::ShowHideDirectoryViewHeader) {
+		cpLeft->ShowHideHeaders();
+		cpRight->ShowHideHeaders();
+	} // if
 } // on_qaOptions_triggered
 
 ///< refresh is selected

@@ -399,6 +399,7 @@ void cOptionsDialog::FillOptions()
 	qcbSaveSettingsOnQuit->setChecked(csSettings->GetSaveSettingsOnQuit());
 	qleDateTimeDisplay->setText(csSettings->GetDateTimeDisplay());
 	qcbCaseSensitiveSorting->setChecked(csSettings->GetCaseSensitiveSorting());
+	qcbShowDirectoryViewHeader->setChecked(csSettings->GetShowDirectoryViewHeader());
 	// tabs
 	qcbConfirmCloseOfAllOtherTabs->setChecked(csSettings->GetConfirmCloseOfAllTabs());
 	qcbShowTabBarWithOnlyOneTab->blockSignals(true);
@@ -724,6 +725,12 @@ void cOptionsDialog::on_qcbFavouriteTargetDirectory_stateChanged(int state)
 		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].bTarget = state == Qt::Checked;
 	} // if
 } // on_qcbFavouriteTargetDirectory_toggled
+
+// change of show directory header view
+void cOptionsDialog::on_qcbShowDirectoryViewHeader_stateChanged(int state)
+{
+	qfToDo |= ShowHideDirectoryViewHeader;
+} // on_qcbShowDirectoryViewHeader_stateChanged
 
 // change of show drive letter in tab bar
 void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
@@ -1474,6 +1481,7 @@ void cOptionsDialog::SaveOptions()
 	csSettings->SetSaveSettingsOnQuit(qcbSaveSettingsOnQuit->isChecked());
 	csSettings->SetDateTimeDisplay(qleDateTimeDisplay->text());
 	csSettings->SetCaseSensitiveSorting(qcbCaseSensitiveSorting->isChecked());
+	csSettings->SetShowDirectoryViewHeader(qcbShowDirectoryViewHeader->isChecked());
 	// tabs
 	csSettings->SetShowTabBarWithOnlyOneTab(qcbShowTabBarWithOnlyOneTab->isChecked());
 	csSettings->SetConfirmCloseOfAllTabs(qcbConfirmCloseOfAllOtherTabs->isChecked());

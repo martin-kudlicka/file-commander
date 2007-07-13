@@ -1836,6 +1836,9 @@ void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* false */)
 	// invalidate content of tab
 	qhTabs[iIndex].bValid = false;
 
+	// show/hide header
+	ShowHideHeader(iIndex);
+
 	// clear previous header contents and fill new information
 	qhTabs.value(iIndex).qlColumns->clear();
 	qslColumns = csSettings->GetColumnsInSet(qhTabs.value(iIndex).qsColumnSet);
@@ -2197,6 +2200,22 @@ void cPanel::SetTabText(const int &iTabIndex)
 
 	qtbTab->setTabText(iTabIndex, qsTabText);
 } // SetTabText
+
+// show or hide header for specified tab
+void cPanel::ShowHideHeader(const int &iTabIndex)
+{
+	static_cast<cTreeWidget *>(qswDir->widget(iTabIndex))->header()->setVisible(csSettings->GetShowDirectoryViewHeader());
+} // ShowHideHeader
+
+// show or hide headers in all tabs
+void cPanel::ShowHideHeaders()
+{
+	int iI;
+
+	for (iI = 0; iI < qhTabs.count(); iI++) {
+		ShowHideHeader(iI);
+	} // for
+} // ShowHideHeaders
 
 // sort dir content and show
 void cPanel::Sort(const int &iIndex)

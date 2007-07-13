@@ -323,6 +323,19 @@
             <string>Save settings on quit</string>
            </property>
           </widget>
+          <widget class="QCheckBox" name="qcbShowDirectoryViewHeader" >
+           <property name="geometry" >
+            <rect>
+             <x>10</x>
+             <y>190</y>
+             <width>161</width>
+             <height>18</height>
+            </rect>
+           </property>
+           <property name="text" >
+            <string>Show directory view header</string>
+           </property>
+          </widget>
          </widget>
          <widget class="QWidget" name="tab_8" >
           <attribute name="title" >
