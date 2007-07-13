@@ -9,6 +9,7 @@
 #include <QtGui/QComboBox>
 
 const QString qsANSI = "ANSI";
+const QString qsARCHIVE = "Archive";
 const QString qsASCII = "ASCII";
 const QString qsASK = "Ask";
 #ifdef Q_WS_WIN
@@ -28,6 +29,7 @@ const QString qsICON = "Icon";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsINTERNAL = "Internal";
 const QString qsKILOBYTES = "Kilobytes";
+const QString qsLOCAL_DIRECTORY = "LocalDirectory";
 const QString qsMAXIMIZED = "Maximized";
 const QString qsMEGABYTES = "Megabytes";
 const QString qsMINUTES = "minute(s)";
@@ -175,6 +177,19 @@ class cSettings : private QObject
 			int iFileSizeValue;											///< file size value
 			QString qsFileSizeType;										///< type of file size value
 		};
+		/// last visited path
+		struct sLastPath {
+			QString qsLocalDirectory;									///< path in local directory
+			QString qsArchive;											///< path in archive
+			QString qsPathInArchive;									///< path in archive
+			QString qsShow;												///< path to show in history view
+			QString qsLocation;											///< location of the directory view
+		};
+		/// directory history information
+		struct sHistory {
+			QList<sLastPath> qlLastPaths;								///< list of last visited paths
+			int iPosition;													///< current position in last paths list
+		};
 		/// lister settings
 		struct sLister {
 			QString qsCharSet;											///< selected char set
@@ -199,6 +214,7 @@ class cSettings : private QObject
 			QString qsDrive;												///< drive
 			QString qsPath;												///< path selected in tab
 			sSort ssSort;													///< sort information
+			sHistory shHistory;											///< tab directory history
 		};
 		/// main window state
 		struct sMainWindowState {
@@ -214,7 +230,7 @@ class cSettings : private QObject
 																				/**< \param qsColumnSet column set to create
 																					  \param qlColumns columns in column set */
 		void CreateDefaultColumnSet();								///< create default (Full) column set
-		void CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab);
+		void CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab);
 																				///< create new tab in settings file
 																				/**< \param epPosition left or right panel
 																					  \param uiIndex index of tab in tab bar
@@ -435,7 +451,7 @@ class cSettings : private QObject
 																				/**< \param bShowHidden show system files in dir view flag */
 		void SetShowTabBarWithOnlyOneTab(const bool &bShow);	///< show tab bar with only one tab
 																				/**< \param bShow show tab bar with only one tab flag */
-		void SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs);
+		void SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs);
 																				///< save tab settings
 																				/**< \param epPosition panel position
 																					  \param qlTabs tab settings */

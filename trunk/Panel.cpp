@@ -1926,14 +1926,38 @@ void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 
 	QHashIterator<int, sTab> qhiTab(qhTabs);
 	while (qhiTab.hasNext()) {
+		int iI;
 		cSettings::sTabInfo stiTab;
 
 		qhiTab.next();
+
+		// visible parameters
 		stiTab.qsColumnSet = qhiTab.value().qsColumnSet;
 		stiTab.qsDrive = qhiTab.value().swWidgets->qsDrive;
 		stiTab.qsPath = qhiTab.value().sldLocalDirectory.qsPath;
 		stiTab.ssSort.iSortedColumn = static_cast<cTreeWidget *>(qswDir->widget(qhiTab.key()))->sortColumn();
 		stiTab.ssSort.soSortOrder = static_cast<cTreeWidget *>(qswDir->widget(qhiTab.key()))->header()->sortIndicatorOrder();
+
+		// history
+		stiTab.shHistory.iPosition = qhiTab.value().shHistory.iPosition;
+		for (iI = 0; iI < qhiTab.value().shHistory.qlLastPaths.count(); iI++) {
+			sLastPath *slpPanel;
+			cSettings::sLastPath slpSetting;
+
+			slpPanel = &const_cast<sTab &>(qhiTab.value()).shHistory.qlLastPaths[iI];
+
+			slpSetting.qsShow = slpPanel->qsShow;
+			slpSetting.qsLocalDirectory = slpPanel->qsLocalDirectory;
+			slpSetting.qsArchive = slpPanel->qsArchive;
+			slpSetting.qsPathInArchive = slpPanel->qsPathInArchive;
+			if (slpPanel->elLocation == LocalDirectory) {
+				slpSetting.qsLocation = qsLOCAL_DIRECTORY;
+			} else {
+				slpSetting.qsLocation = qsARCHIVE;
+			} // if else
+
+			stiTab.shHistory.qlLastPaths.append(slpSetting);
+		} // for
 
 		qlTabs.append(stiTab);
 	} // while
