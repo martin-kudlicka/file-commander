@@ -55,7 +55,9 @@ const QStringList qslSHORTCUTS__MAIN_MENU__CONFIGURATION = QStringList() << qsSH
 																								 << qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS;
 const QStringList qslSHORTCUTS__OPERATIONS__DIALOG = QStringList() << qsSHORTCUT__OPERATIONS__DIALOG__ENQUEUE;
 const QStringList qslSHORTCUTS__PANELS__DIRECTORY_VIEW = QStringList() << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT
-																							  << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT;
+																							  << qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT
+																							  << qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_BACK
+																							  << qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_FRONT;
 const QStringList qslSHORTCUTS__PANELS__MAIN_BUTTON = QStringList() << qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL
 																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__VIEW
 																						  << qsSHORTCUT__PANELS__MAIN_BUTTON__EDIT

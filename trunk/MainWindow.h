@@ -53,6 +53,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QMenu qmLeftHistoryDirectoryList;									///< history directory list menu for left panel
 		QMenu qmRightHistoryDirectoryList;									///< history directory list menu for right panel
 		QMenu qmTabBar;															///< tab bar context menu
+		QShortcut *qsHistoryBack;												///< go back in history directory list
+		QShortcut *qsHistoryFront;												///< go front in history directory list
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
 		QShortcut *qsRightDrive;												///< right drive combo box shortcut
 		QTabBar qtbLeft;															///< left's panel tab bar
@@ -178,6 +180,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbView_clicked(bool checked = false);					///< view button is clicked on
 																						/**< \param checked true if button is checkable and checked */
+		void on_qsHistoryBack_activated();									///< history back shortcut activated
+		void on_qsHistoryFront_activated();									///< history front shortcut activated
 		void on_qsLeftDrive_activated();										///< left drive shortcut activated
 		void on_qsRightDrive_activated();									///< right drive shortcut activated
 		void on_qtbLeft_customContextMenuRequested(const QPoint &pos);

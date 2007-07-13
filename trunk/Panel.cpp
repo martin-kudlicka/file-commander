@@ -1036,6 +1036,30 @@ void cPanel::HideOrShowTabBar()
 	} // if else
 } // HideOrShowTabBar
 
+// go back in history directory list
+void cPanel::HistoryGoBack()
+{
+	sHistory *shHistory;
+
+	shHistory = &qhTabs[qswDir->currentIndex()].shHistory;
+
+	if (shHistory->iPosition > 0) {
+		SetHistoryDirectory(shHistory->iPosition - 1);
+	} // if
+} // HistoryGoBack
+
+// go front in history directory list
+void cPanel::HistoryGoFront()
+{
+	sHistory *shHistory;
+
+	shHistory = &qhTabs[qswDir->currentIndex()].shHistory;
+
+	if (shHistory->iPosition < shHistory->qlLastPaths.count() - 1) {
+		SetHistoryDirectory(shHistory->iPosition + 1);
+	} // if
+} // HistoryGoFront
+
 // invert selection of files
 void cPanel::InvertSelection()
 {

@@ -20,8 +20,6 @@ cMainWindow::~cMainWindow()
 	} // if
 	csSettings.SetComboBoxHistory(cSettings::CommandLineHistory, qcbCommand);
 
-	delete qsLeftDrive;
-	delete qsRightDrive;
 	delete cfoFileOperation;
 	delete qhblBackgroundOperations;
 	cpLeft->deleteLater();
@@ -120,6 +118,8 @@ void cMainWindow::AssignShortcuts()
 	// directory view
 	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT)), this);
 	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
+	qsHistoryBack = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_BACK)), this);
+	qsHistoryFront = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_FRONT)), this);
 	// main buttons
 	qpbTerminal->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL)));
 	qpbTerminal->setText(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL) + ' ' + qpbTerminal->text());
@@ -261,6 +261,8 @@ cMainWindow::cMainWindow()
 	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
+	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
+	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
@@ -1019,6 +1021,18 @@ void cMainWindow::on_qpbView_clicked(bool checked /* false */)
 		} // if
 	} // for
 } // on_qpbView_clicked
+
+// history back shortcut activated
+void cMainWindow::on_qsHistoryBack_activated()
+{
+	cpActive->HistoryGoBack();
+} // on_qsHistoryBack_activated
+
+// history front shortcut activated
+void cMainWindow::on_qsHistoryFront_activated()
+{
+	cpActive->HistoryGoFront();
+} // on_qsHistoryFront_activated
 
 // left drive shortcut activated
 void cMainWindow::on_qsLeftDrive_activated()
