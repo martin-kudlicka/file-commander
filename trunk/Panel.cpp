@@ -117,17 +117,14 @@ void cPanel::AddHistory(const int &iIndex)
 		if (stTab->shHistory.qlLastPaths.isEmpty()) {
 			// add as the first record
 			stTab->shHistory.qlLastPaths.append(slpLastPath);
-			stTab->shHistory.iPosition = 0;
 		} else {
 			if (stTab->shHistory.iPosition == stTab->shHistory.qlLastPaths.count() - 1) {
 				// add to the last (next) position
 				stTab->shHistory.qlLastPaths.append(slpLastPath);
-				stTab->shHistory.iPosition++;
 			} else {
 				// move current record to the last position and add new one
 				stTab->shHistory.qlLastPaths.append(stTab->shHistory.qlLastPaths.takeAt(stTab->shHistory.iPosition));
 				stTab->shHistory.qlLastPaths.append(slpLastPath);
-				stTab->shHistory.iPosition = stTab->shHistory.qlLastPaths.count() - 1;
 			} // if else
 		} // if else
 		
@@ -136,10 +133,17 @@ void cPanel::AddHistory(const int &iIndex)
 			if (stTab->shHistory.qlLastPaths.at(iI).qsShow == slpLastPath.qsShow) {
 				// remove previous identical record from history list
 				stTab->shHistory.qlLastPaths.removeAt(iI);
-				stTab->shHistory.iPosition--;
 				break;
 			} // if 
 		} // for
+
+		// remove oldest records to have less than set in options
+		while (stTab->shHistory.qlLastPaths.count() > csSettings->GetMaximumHistoryDirectoryListSize()) {
+			stTab->shHistory.qlLastPaths.removeAt(0);
+		} // while
+
+		// set position to the last record
+		stTab->shHistory.iPosition = stTab->shHistory.qlLastPaths.count() - 1;
 	} // if
 } // AddHistory
 
