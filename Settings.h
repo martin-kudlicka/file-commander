@@ -72,6 +72,7 @@ const QString qsSHORTCUT__MAIN_MENU__MARK__INVERT_SELECTION = "Invert selection"
 const QString qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES = "Compare directories";
 const QString qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH = "Search...";
 const QString qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES = "Favourite directories";
+const QString qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST = "History directory list";
 const QString qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW = "Branch view";
 const QString qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN = "Fullscreen";
 const QString qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN = "Sort by first column";

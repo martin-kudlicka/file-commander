@@ -30,10 +30,16 @@ class cPanel : public QObject
 		static const qint64 qi64_KILOBYTE = 1024;								///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;							///< 1 megabyte in bytes
 
-		///< location of the directory view
+		/// location of the directory view
 		enum eLocation {
 			LocalDirectory,															///< standard directory
 			Archive																		///< archive contents
+		};
+
+		/// history directory list to show
+		struct sHistoryDirectoryList {
+			QStringList qslDirectories;											///< list of directories to choose from
+			int iPosition;																///< actual directory position in the list
 		};
 
 		cPanel(QMainWindow *qmwParent, QStackedWidget *qswPanel, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin, QMap<QString, cFileRoutine::sDriveInfo> *qmDrives, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileOperation *cfoFileOperation, QLineEdit *qleQuickSearch);
@@ -81,6 +87,8 @@ class cPanel : public QObject
 																							/**< \return column set for current directory view */
 		QHash<QTreeWidgetItem *, QFileInfo> GetDirContent();				///< get content of the directory view
 																							/**< \return content of the directory view */
+		sHistoryDirectoryList GetHistoryDirectoryList();					///< retreive history directory list
+																							/**< \return history directory list */
 		eLocation GetLocation();													///< location of current tab directory view
 																							/**< \return location of current tab directory view */
 		QString GetPath();															///< get path for current dir
@@ -128,7 +136,7 @@ class cPanel : public QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;								///< timer interval
 
-		///< quick search direction in directory view
+		/// quick search direction in directory view
 		enum eQuickSearchDirection {
 			SearchUp,																	///< search up
 			SearchDown																	///< search down

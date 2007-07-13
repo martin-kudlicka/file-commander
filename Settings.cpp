@@ -719,6 +719,9 @@ QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QStri
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES) {
 					return "Ctrl+D";
 				} // if
+				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST) {
+					return "Alt+Down";
+				} // if
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW) {
 					return "Ctrl+B";
 				} // if

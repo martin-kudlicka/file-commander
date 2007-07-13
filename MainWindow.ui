@@ -212,6 +212,22 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="qpbLeftHistory" >
+            <property name="maximumSize" >
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text" >
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -431,6 +447,22 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="qpbRightHistory" >
+            <property name="maximumSize" >
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text" >
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -560,6 +592,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="qpbTerminal" >
+        <property name="focusPolicy" >
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="text" >
          <string>Terminal</string>
         </property>
@@ -670,6 +705,7 @@
     </property>
     <addaction name="qaSearch" />
     <addaction name="qaFavouriteDirectories" />
+    <addaction name="qaHistoryDirectoryList" />
     <addaction name="separator" />
     <addaction name="qaBranchView" />
     <addaction name="separator" />
@@ -803,6 +839,11 @@
   <action name="qaUnpackSelectedFiles" >
    <property name="text" >
     <string>&amp;Unpack selected files...</string>
+   </property>
+  </action>
+  <action name="qaHistoryDirectoryList" >
+   <property name="text" >
+    <string>&amp;History directory list</string>
    </property>
   </action>
  </widget>

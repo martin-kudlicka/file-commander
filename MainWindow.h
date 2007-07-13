@@ -50,6 +50,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
 		QMenu qmColumnSets;														///< column sets submenu
 		QMenu qmFavouriteDirectories;											///< favourite directories context menu
+		QMenu qmHistoryDirectoryList;											///< history directory list menu
 		QMenu qmTabBar;															///< tab bar context menu
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
 		QShortcut *qsRightDrive;												///< right drive combo box shortcut
@@ -101,6 +102,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param checked true if menu item is checkable and checked */
 		void on_qaFullScreen_triggered(bool checked = false);			///< full screen mode is selected
 																						/**< \param checked true if menu item is checkable and checked */
+		void on_qaHistoryDirectoryList_triggered(bool checked = false);
+																						///< history directory list is selected
+																						/**< \param checked true if menu item is checkable and checked */
 		void on_qagSortBy_triggered(QAction *action);					///< sort by action called
 																						/**< \param action column to sort by */
 		void on_qaInvertSelection_triggered(bool checked = false);	///< invert selection is selected
@@ -140,6 +144,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param action column set */
 		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from from favourites context menu
 																						/**< \param action favourite directory */
+		void on_qmHistoryDirectoryList_aboutToShow();					///< history directory list is about to show
 		void on_qpbCopy_clicked(bool checked = false);					///< copy button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);				///< delete button is clicked on
