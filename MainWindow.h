@@ -50,7 +50,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QMap<QString, cFileRoutine::sDriveInfo> qmDrives;				///< drives in system
 		QMenu qmColumnSets;														///< column sets submenu
 		QMenu qmFavouriteDirectories;											///< favourite directories context menu
-		QMenu qmHistoryDirectoryList;											///< history directory list menu
+		QMenu qmLeftHistoryDirectoryList;									///< history directory list menu for left panel
+		QMenu qmRightHistoryDirectoryList;									///< history directory list menu for right panel
 		QMenu qmTabBar;															///< tab bar context menu
 		QShortcut *qsLeftDrive;													///< left drive combo box shortcut
 		QShortcut *qsRightDrive;												///< right drive combo box shortcut
@@ -72,6 +73,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						///< fill favourite directories context menu
 																						/**< \param qmMenu menu to fill in
 																							  \param qlFavouriteDirectories favourites to fill */
+		void FillHistoryDirectoryList(const cSettings::ePosition &epPosition);
+																						///< fill history directory list for specified panel
+																						/**< \param epPosition panel position */
 		void LoadTabs(const cSettings::ePosition &epPosition);		///< load tabs from qsSettings
 																						/**< \param epPos means left or right TabBar */
 		void SaveSettings();														///< save dir view settings
@@ -144,7 +148,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																						/**< \param action column set */
 		void on_qmFavouriteDirectories_triggered(QAction *action);	///< selected favourite directory from from favourites context menu
 																						/**< \param action favourite directory */
-		void on_qmHistoryDirectoryList_aboutToShow();					///< history directory list is about to show
+		void on_qmLeftHistoryDirectoryList_aboutToShow();				///< left history directory list is about to show
+		void on_qmRightHistoryDirectoryList_aboutToShow();				///< right history directory list is about to show
 		void on_qpbCopy_clicked(bool checked = false);					///< copy button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		void on_qpbDelete_clicked(bool checked = false);				///< delete button is clicked on
