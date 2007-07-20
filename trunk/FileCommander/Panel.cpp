@@ -144,11 +144,14 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	ctwTree->header()->setSortIndicator(stiTabInfo.ssSort.iSortedColumn, stiTabInfo.ssSort.soSortOrder);
 
 	// set header, refresh content only in first added tab
-	RefreshHeader(iIndex, qlTabs.count() == 1);
+	RefreshHeader(iIndex);
 
 	// connect other signals to slots
 	//connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
-	connect(stTab.cfsFileSystem, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &)));
+	ConnectFileSystem(stTab.cfsFileSystem);
+
+	// connection for file system created later -> need to call for the first time explicitly
+	on_cfsFileSystem_ContentChanged(stTab.cfsFileSystem);
 
 	HideOrShowTabBar();
 
@@ -186,7 +189,6 @@ const void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 // close tab
 const void cPanel::CloseTab(const int &iTabIndex)
 {
-	// TODO CloseTab
 	if (qlTabs.count() > 1) {
 		qlTabs.at(iTabIndex).cfsFileSystem->deleteLater();
 		qlTabs.removeAt(iTabIndex);
@@ -199,6 +201,14 @@ const void cPanel::CloseTab(const int &iTabIndex)
 		static_cast<cTreeWidget *>(qswDirs->currentWidget())->setFocus(Qt::OtherFocusReason);
 	} // if
 } // CloseTab
+
+// connect new file system's signals/slots
+const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
+{
+	connect(cfsFileSystem, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_cfsFileSystem_ContentChanged(const cFileSystem *)));
+	connect(cfsFileSystem, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &)));
+	connect(cfsFileSystem, SIGNAL(Unaccessible()), SLOT(on_cfsFileSystem_Unaccessible()));
+} // ConnectFileSystem
 
 // constructor
 cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
@@ -371,11 +381,43 @@ const void cPanel::HideOrShowTabBar() const
 	} // if else
 } // HideOrShowTabBar
 
+// directory content changed for filesystem
+const void cPanel::on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem)
+{
+	int iI;
+	sTab *stTab;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		stTab = &qlTabs[iI];
+
+		if (stTab->cfsFileSystem == cfsFileSystem) {
+			break;
+		} // if
+	} // for
+
+	// refresh content
+	if (iI == qswDirs->currentIndex()) {
+		RefreshContent(iI);
+	} else {
+		stTab->bValid = false;
+	} // if
+
+	// actualize widgets
+	stTab->swWidgets.qsPath = cfsFileSystem->GetPath();
+	ActualizeWidgets();
+} // on_cfsFileSystem_ContentChanged
+
 // got column value from content plugin
 const void cPanel::on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const
 {
 	soOutput.qtwiItem->setText(soOutput.iColumn, soOutput.qsValue);
 } // on_cfsFileSystem_GotColumnValue
+
+// file system unacessible
+const void cPanel::on_cfsFileSystem_Unaccessible() const
+{
+	// TODO on_cfsFileSystem_Unaccessible - change drive dialog
+} // on_cfsFileSystem_Unaccessible
 
 // dir view got focus
 const void cPanel::on_ctwTree_GotFocus()
@@ -621,6 +663,35 @@ const void cPanel::SetColumnSet(const QString &qsColumnSet)
 	// refresh header to show changes
 	RefreshHeader(qswDirs->currentIndex(), true);
 } // SetColumnSet
+
+const void cPanel::SetPath(const QString &qsPath)
+{
+	cFileControl::sPathInfo spiPathInfo;
+	int iIndex;
+
+	spiPathInfo = cfcFileControl->GetPathInfo(qsPath);
+
+	iIndex = qcbDrive->findText(spiPathInfo.qsDrive);
+	if (iIndex != -1) {
+		// drive exists -> proceed with set path
+		sTab *stTab;
+
+		stTab = &qlTabs[qswDirs->currentIndex()];
+
+		// change drive
+		qcbDrive->blockSignals(true);
+		qcbDrive->setCurrentIndex(iIndex);
+		qcbDrive->blockSignals(false);
+
+		// possible change of file system
+		if (cfcFileControl->ChangeFileSystem(stTab->cfsFileSystem, spiPathInfo.qsDrive, qsPath)) {
+			ConnectFileSystem(stTab->cfsFileSystem);
+		} // if
+
+		// set path
+		stTab->cfsFileSystem->SetPath(spiPathInfo.qsDrive, spiPathInfo.qsRootPath, qsPath);
+	} // if
+} // SetPath
 
 // set text in tab bar
 const void cPanel::SetTabText(const int &iTabIndex) const

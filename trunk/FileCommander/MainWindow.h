@@ -9,6 +9,7 @@
 #include <QtGui/QShortcut>
 #include "FileControl.h"
 #include "Panel.h"
+#include "OptionsDialog.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.4 rev 395";
@@ -42,6 +43,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QActionGroup *qagColumnSets;												///< column sets action group
 		QActionGroup *qagSortBy;													///< sort by actions
 		QCompleter qcDirModel;														///< completer based on dir model
+		QHash<QAction *, cOptionsDialog::sFavouriteDirectory> qhFavouriteDirectories;
+																							///< favourite directories table
+		QMenu qmFavouriteDirectories;												///< favourite directories context menu
 		QHBoxLayout *qhblBackgroundOperations;									///< layout for background operations
 		QMenu qmColumnSets;															///< column sets submenu
 		QMenu qmTabBar;																///< tab bar context menu
@@ -53,7 +57,12 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTreeView *qtwRightDrives;													///< drives list for right drive combo box
 
 		const void ActualizeColumnSets();										///< actualize column sets submenu
+		const void ActualizeFavouriteDirectories();							///< actualize favourite directories context menu
 		const void AssignShortcuts();												///< assign shortcuts
+		const void FillFavouriteDirectories(QMenu *qmMenu, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+																							///< fill favourite directories context menu
+																							/**< \param qmMenu menu to fill in
+																								  \param qlFavouriteDirectories favourites to fill */
 		const void LoadTabs(const cSettings::ePosition &epPosition);	///< load tabs from qsSettings
 																							/**< \param epPosition tabs for left or right panel */
 		const void SaveSettings() const;											///< save dir view settings
@@ -67,6 +76,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_cpLeft_GotFocus();											///< left panel got focus
 		const void on_cpRight_GotFocus();										///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaFavouriteDirectories_triggered(bool checked = false) const;
+																							///< favourite directories are selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qagSortBy_triggered(QAction *action) const;		///< sort by action called
 																							/**< \param action column to sort by */
@@ -83,6 +95,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */
+		const void on_qmFavouriteDirectories_triggered(QAction *action) const;
+																							///< selected favourite directory from favourites context menu
+																							/**< \param action favourite directory */
 		const void on_qsLeftDrive_activated() const;							///< left drive shortcut activated
 		const void on_qsRightDrive_activated() const;						///< right drive shortcut activated
 		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos);

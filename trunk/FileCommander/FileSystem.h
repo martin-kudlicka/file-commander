@@ -66,6 +66,11 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file check
 																											  \return true if directory */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
+		virtual const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath) = 0;
+																										///< change path for this file system
+																										/**< \param qsDrive drive handled by this file system class
+																											  \param qsRootPath path to root of this file system
+																											  \param qsPath to initialize local file system */
 }; // cFileSystem
 
 #endif

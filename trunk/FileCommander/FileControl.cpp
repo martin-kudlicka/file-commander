@@ -13,6 +13,13 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	this->ccpContentPlugin = ccpContentPlugin;
 } // cFileControl
 
+// change file system according to new drive
+const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
+{
+	// TODO ChangeFileSystem do this after implementing other than local file system
+	return false;
+} // ChangeFileSystem
+
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const
 {
@@ -66,3 +73,26 @@ const QPair<QString, cFileControl::sDrive> cFileControl::GetFirstDrive() const
 
 	return qlDrives.at(0);
 } // GetFirstDrive
+
+// information about path
+const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) const
+{
+	int iI;
+	QList<QPair<QString, sDrive> > qlDrives;
+	sPathInfo spiPathInfo;
+
+	qlDrives = GetDrives();
+
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		QPair<QString, sDrive> *qpDrive;
+
+		qpDrive = &qlDrives[iI];
+		if (qsPath.startsWith(qpDrive->second.qsPath)) {
+			spiPathInfo.qsDrive = qpDrive->first;
+			spiPathInfo.qsRootPath = qpDrive->second.qsPath;
+			break;
+		} // if
+	} // for
+
+	return spiPathInfo;
+} // GetPathInfo

@@ -58,6 +58,8 @@ class cPanel : public QObject
 		const void RefreshTabs() const;									///< refresh tabs
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */
+		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
+																					/**< \param qsPath new path */
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
 		const void SortBy(const int &iColumn);							///< sort by specified column
 																					/**< \param iColumn column position to sort by */
@@ -105,6 +107,9 @@ class cPanel : public QObject
 		const void ActualizeDrives() const;								///< drive list actualization
 		const void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		const void ActualizeWidgets();									///< actualize widgets with info about current directory view
+		const void ConnectFileSystem(const cFileSystem *cfsFileSystem) const;
+																					///< connect new file system's signals/slots
+																					/**< \param cfsFileSystem file system to connect */
 		const QString GetDateTimeString(const QDateTime &qdtDateTime) const;
 																					///< convert QDateTime to user defined format
 																					/**< \param qdtDateTime date/time to convert
@@ -152,9 +157,13 @@ class cPanel : public QObject
 		void GotFocus();														///< panel got focus
 
 	private slots:
+		const void on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem);
+																					///< directory content changed for filesystem
+																					/**< \param cfsFileSystem filesystem identifier */
 		const void on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																					///< got column value from content plugin
 																					/**< \param soOutput information to update dir view */
+		const void on_cfsFileSystem_Unaccessible() const;			///< file system unacessible
 		const void on_ctwTree_GotFocus();								///< dir view got focus
 		const void on_qtTimer_timeout();									///< timer's action
 }; // cPanel
