@@ -4,9 +4,23 @@
 #include <QtGui/QDirModel>
 #include "OptionsDialog.h"
 #include "Common/About.h"
+#include "Panel/TreeWidget.h"
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
+
+// destructor
+cMainWindow::~cMainWindow()
+{
+	if (csSettings.GetSaveSettingsOnQuit()) {
+		SaveSettings();
+	} // if
+
+	cpRight->deleteLater();
+	cpLeft->deleteLater();
+	cfcFileControl->deleteLater();
+	delete cpPlugins;
+} // ~cMainWindow
 
 // assign shortcuts
 const void cMainWindow::AssignShortcuts()
@@ -56,6 +70,7 @@ const void cMainWindow::AssignShortcuts()
 // creates main window
 cMainWindow::cMainWindow()
 {
+	// TODO cMainWindow
 	cSettings::sMainWindowState smwsState;
 	QVBoxLayout *qvblTabBar;
 
@@ -101,9 +116,6 @@ cMainWindow::cMainWindow()
 	static_cast<QVBoxLayout *>(qpbCopy->parentWidget()->layout()->parentWidget()->layout())->insertLayout(0, qhblBackgroundOperations);
 	qhblBackgroundOperations->addStretch();
 
-	// file operations class initizalization
-	//cfoFileOperation = new cFileOperation(this, qhblBackgroundOperations, &csSettings);
-
 	// drive combo boxes preparation
 	qtwLeftDrives = new QTreeView(qcbLeftDrive);
 	qtwLeftDrives->setRootIsDecorated(false);
@@ -116,8 +128,12 @@ cMainWindow::cMainWindow()
 	qtwRightDrives->setModel(qcbRightDrive->model());
 	qcbRightDrive->setView(qtwRightDrives);
 
+	// file control class initizalization
+	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, qcbLeftDrive, qcbRightDrive);
+
 	// create panels
-	// TODO cMainWindow create panels
+	cpLeft = new cPanel(qswLeft, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, qleLeftQuickSearch);
+	cpRight = new cPanel(qswRight, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, qleRightQuickSearch);
 
 	// quick searches
 	qleLeftQuickSearch->hide();
@@ -140,23 +156,95 @@ cMainWindow::cMainWindow()
 	AssignShortcuts();
 
 	// connections
+	connect(cpLeft, SIGNAL(GotFocus()), SLOT(on_cpLeft_GotFocus()));
+	/*connect(cpLeft, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
+	connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
+	connect(cpRight, SIGNAL(GotFocus()), SLOT(on_cpRight_GotFocus()));
+	/*connect(cpRight, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
+	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
+	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
+	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
+	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
+	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));
+	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
+	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
+	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
+	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
+	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
+	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
+	connect(&qmRightHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmRightHistoryDirectoryList_aboutToShow()));
+	connect(&qmLeftHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmLeftHistoryDirectoryList_triggered(QAction *)));
+	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));
+	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));*/
 
-	//ActualizeDrives();
 	// show before change drive dialog can appear
 	show();
-	// load settings
-	// left tabs
-	//LoadTabs(cSettings::PositionLeft);
-	// right tabs
-	//LoadTabs(cSettings::PositionRight);
 
-	// automatic actualizations
-	//connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
-	//qtTimer.start(iTIMER_INTERVAL);
+	// load tabs
+	LoadTabs(cSettings::PositionLeft);
+	LoadTabs(cSettings::PositionRight);
 
 	// set focus to left panel
-	//static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
+	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
+
+// load tabs from qsSettings
+const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
+{
+	int iI;
+	QStringList qslTabs;
+
+	// get tabs
+	qslTabs = csSettings.GetTabs(epPosition);
+
+	if (qslTabs.isEmpty()) {
+		// no tabs created yet -> create one default in settings file
+		cSettings::sTabInfo stiTab;
+		QPair<QString, cFileControl::sDrive> qpDrive;
+
+		qpDrive = cfcFileControl->GetFirstDrive();
+
+		stiTab.qsColumnSet = qsFULL;
+		stiTab.qsPath = qpDrive.second.qsPath;
+		stiTab.qsDrive = qpDrive.first;
+		stiTab.ssSort.iSortedColumn = 1;
+		stiTab.ssSort.soSortOrder = Qt::AscendingOrder;
+		csSettings.CreateTab(epPosition, 0, stiTab);
+		qslTabs.append("0");	// add created tab
+	} // if
+
+	// create tabs
+	for (iI = 0; iI < qslTabs.count(); iI++) {
+		cSettings::sTabInfo stiTabInfo;
+
+		stiTabInfo = csSettings.GetTabInfo(epPosition, qslTabs.at(iI));
+		if (epPosition == cSettings::PositionLeft) {
+			cpLeft->AddTab(stiTabInfo, true);
+		} else {
+			cpRight->AddTab(stiTabInfo, true);
+		} // if else
+	} // for*/
+} // LoadTabs
+
+// left panel got focus
+const void cMainWindow::on_cpLeft_GotFocus()
+{
+	// TODO on_cpLeft_GotFocus
+	cpSource = cpLeft;
+	cpDestination = cpRight;
+	//SetSortByActions();
+	//ActualizeColumnSets();
+} // on_cpLeft_GotFocus
+
+// right panel got focus
+const void cMainWindow::on_cpRight_GotFocus()
+{
+	// TODO on_cpRight_GotFocus
+	cpSource = cpRight;
+	cpDestination = cpLeft;
+	//SetSortByActions();
+	//ActualizeColumnSets();
+} // on_cpRight_GotFocus
 
 // about is selected
 const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
@@ -169,6 +257,7 @@ const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
+	// TODO on_qaOptions_triggered
 	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccpContentPlugin);
 	QFlags<cOptionsDialog::eToDo> qfToDo;
 
@@ -187,8 +276,8 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 		//cpRight->RefreshAllContents();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshHeader) {
-		//cpLeft->RefreshAllHeaders();
-		//cpRight->RefreshAllHeaders();
+		cpLeft->RefreshAllHeaders();
+		cpRight->RefreshAllHeaders();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshTabs) {
 		//cpLeft->RefreshTabs();
@@ -219,3 +308,11 @@ const void cMainWindow::on_qtbRight_customContextMenuRequested(const QPoint &pos
 	// TODO on_qtbRight_customContextMenuRequested
 	//TabBarShowContextMenu(cSettings::PositionRight, pos);
 } // on_qtbRight_customContextMenuRequested
+
+// save dir view settings
+const void cMainWindow::SaveSettings() const
+{
+	// TODO SaveSettings
+	//cpLeft->SaveSettings(cSettings::PositionLeft);
+	//cpRight->SaveSettings(cSettings::PositionRight);
+} // SaveSettings

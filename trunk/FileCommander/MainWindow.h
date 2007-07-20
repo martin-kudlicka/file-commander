@@ -7,6 +7,8 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QCompleter>
 #include <QtGui/QShortcut>
+#include "FileControl.h"
+#include "Panel.h"
 
 const QString qsAPPLICATION = "File Commander";
 const QString qsVERSION = "0.0.0.4 rev 395";
@@ -20,10 +22,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 	public:
 		cMainWindow();															///< creates main window
 																					/**< load plugins, prepare panels, load settings, setup GUI */
+		~cMainWindow();														///< destructor
 
 	private:
 		static const int iTAB_POS = 1;									///< position of TabBar in layout
 
+		cFileControl *cfcFileControl;										///< file operations control
+		cPanel *cpDestination;												///< last nonactive panel
+		cPanel *cpLeft;														///< left directory view panel
+		cPanel *cpRight;														///< right directory view panel
+		cPanel *cpSource;														///< last active panel
 		cPlugins *cpPlugins;													///< application's plugins
 		cSettings csSettings;												///< accessing application's settings
 		QAction *qaTabBarCloseAllOtherTabs;								///< close all other tabs
@@ -40,8 +48,14 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QTreeView *qtwRightDrives;											///< drives list for right drive combo box
 
 		const void AssignShortcuts();										///< assign shortcuts
+		const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition);
+																					///< load tabs from qsSettings
+																					/**< \param epPosition tabs for left or right panel */
+		const void SaveSettings() const;									///< save dir view settings
 
 	private slots:
+		const void on_cpLeft_GotFocus();									///< left panel got focus
+		const void on_cpRight_GotFocus();								///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);	///< about is selected
 																					/**< \param checked true if menu item is checkable and checked */
 		const void on_qaOptions_triggered(bool checked = false);	///< options are selected

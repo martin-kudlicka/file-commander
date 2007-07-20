@@ -8,10 +8,19 @@
 
 const QString qsANSI = "ANSI";
 const QString qsASK = "Ask";
+#ifdef Q_WS_WIN
+const QString qsATTRIBUTES = "Attributes";
+#endif
+const QString qsDATE_TIME = "DateTime";
 const QString qsDYNAMIC = "Dynamic";
+const QString qsEXTENSION = "Extension";
+const QString qsFULL = "Full";					///< full dir panel view (icon, filename, extension, date)
+const QString qsICON = "Icon";
 const QString qsINTERNAL = "Internal";
 const QString qsNAME = "Name";
+const QString qsNO = "no";
 const QString qsONLY_FILES = "OnlyFiles";
+const QString qsSIZE = "Size";
 
 // shortcuts
 const QString qsSHORTCUT__LISTER__FILE__OPEN = "Open...";
@@ -73,6 +82,11 @@ const QString qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS = "Close all other 
 class cSettings : private QObject
 {
 	public:
+		/// panel's position
+		enum ePosition {
+			PositionLeft,																	///< left panel
+			PositionRight																	///< right panel
+		};
 		/// plugin type
 		enum ePlugin {
 			ContentPlugins,																///< content plugin type
@@ -120,6 +134,19 @@ class cSettings : private QObject
 			QString qsExtensions;														///< packer plugin's extensions
 			bool bEnabled;																	///< enable/disable flag
 		};
+		/// sort information
+		struct sSort {
+			int iSortedColumn;															///< column to sort by
+			Qt::SortOrder soSortOrder;													///< sort order
+			bool bCaseSensitive;															///< case sensitive sorting
+		};
+		/// tab info
+		struct sTabInfo {
+			QString qsColumnSet;															///< column set defined in tab
+			QString qsDrive;																///< drive
+			QString qsPath;																///< path selected in tab
+			sSort ssSort;																	///< sort information
+		};
 
 		const void CreateColumnSet(const QString &qsColumnSet);				///< create new empty column set
 																								/**< \param qsColumnSet column set to create */
@@ -127,6 +154,12 @@ class cSettings : private QObject
 																								///< create new column set
 																								/**< \param qsColumnSet column set to create
 																									  \param qlColumns columns in column set */
+		const void CreateDefaultColumnSet();										///< create default (Full) column set
+		const void CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab);
+																								///< create new tab in settings file
+																								/**< \param epPosition left or right panel
+																									  \param uiIndex index of tab in tab bar
+																									  \param stiTab tab information */
 		const QMap <QString, QString> GetAllSettings() const;					///< get all application's settings
 																								/**< \return list of whole settings file */
 		const bool GetAskToDeleteNonEmptyDirectory() const;					///< delete non empty directory
@@ -216,6 +249,14 @@ class cSettings : private QObject
 																								/**< \return true if show system files */
 		const bool GetShowTabBarWithOnlyOneTab() const;							///< show tab bar with only one tab flag
 																								/**< \return true if show tab bar with only tab */
+		const sTabInfo GetTabInfo(const ePosition &epPosition, const QString &qsIndex);
+																								///< get some information about tab
+																								/**< \param epPosition left or right panel
+																									  \param qsIndex index of tab
+																									  \return information about panel's tab */
+		const QStringList GetTabs(const ePosition &epPosition);				///< get tab list for left or right panel
+																								/**< \param epPosition left or right panel
+																									  \return list of tabs in panel */
 		const bool GetTreatArchivesLikeDirectories() const;					///< treat archives like directories
 																								/**< \return browse through archives like by directories if true */
 		const QString GetViewerType() const;										///< viewer type
@@ -246,7 +287,7 @@ class cSettings : private QObject
 																								/**< \param qsEditor external editor command line */
 		const void SetExternalViewer(const QString &qsViewer);				///< external viewer
 																								/**< \param qsViewer external viewer command line */
-		const void SetFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+		const void SetFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories);
 																								///< set favourite directories
 																								/**< \param qlFavouriteDirectories list of favourite directories */
 		const void SetFileOverwrite(const QString &qsMode);					///< set default overwrite behaviour
@@ -266,7 +307,7 @@ class cSettings : private QObject
 																								/**< \param bNextTo open new tab next to current tab flag */
 		const void SetPluginDateTimeDisplay(const QString &qsDateTime);	///< plugin date/time display format
 																								/**< \param qsDateTime user defined date/time display format */
-		const void SetPlugins(const ePlugin &epPlugin, QList<sPlugin> &qlPlugins);
+		const void SetPlugins(const ePlugin &epPlugin, QList<sPlugin> qlPlugins);
 																								///< write plugins into settings file
 																								/**< \param epPlugin plugins type
 																									  \param qlPlugins plugin list */

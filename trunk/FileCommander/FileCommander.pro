@@ -18,6 +18,9 @@ FORMS = MainWindow.ui \
 		  Common/About.ui
 
 HEADERS = MainWindow.h \
+			 FileControl.h \
+			 Panel.h \
+			 Panel/TreeWidget.h \
 			 Settings.h \
 			 OptionsDialog.h \
 			 OptionsDialog/NewFavouriteDirectoryDialog.h \
@@ -38,6 +41,9 @@ HEADERS = MainWindow.h \
 
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
+			 FileControl.cpp \
+			 Panel.cpp \
+			 Panel/TreeWidget.cpp \
 			 Settings.cpp \
 			 OptionsDialog.cpp \
 			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \
