@@ -11,13 +11,8 @@
 #include <QtGui/QDirModel>
 
 const QString qsASCII = "ASCII";
-const QString qsBYTES = "Bytes";
 const QString qsEXTERNAL = "External";
 const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
-const QString qsGIGABYTES = "Gigabytes";
-const QString qsKILOBYTES = "Kilobytes";
-const QString qsMEGABYTES = "Megabytes";
-const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";

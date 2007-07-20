@@ -42,6 +42,10 @@ class cPanel : public QObject
 	private:
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
 
+		static const qint64 qi64_GIGABYTE = 1073741824;				///< 1 gigabyte in bytes
+		static const qint64 qi64_KILOBYTE = 1024;						///< 1 kilobyte in bytes
+		static const qint64 qi64_MEGABYTE = 1048576;					///< 1 megabyte in bytes
+
 		/// strings for widgets
 		struct sWidgets {
 			QString qsDrive;													///< selected drive
@@ -75,7 +79,17 @@ class cPanel : public QObject
 		QTimer qtTimer;														///< timer for periodic actualizations
 
 		const void ActualizeDrives() const;								///< drive list actualization
+		const QString GetDateTimeString(const QDateTime &qdtDateTime) const;
+																					///< convert QDateTime to user defined format
+																					/**< \param qdtDateTime date/time to convert
+																						  \return user defined date/time format */
+		const QString GetSizeString(const qint64 &qi64Size) const;
+																					///< "convert" size to string according to setting in options
+																					/**< \param qi64Size size
+																						  \return file size in string with suffix */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
+		const void RefreshContent(const int &iIndex);				///< refresh dir content
+																					/**< \param iIndex index of dir view */
 		const void RefreshHeader(const int &iIndex, const bool &bContent = false);
 																					///< refresh column's header
 																					/**< \param iIndex index of dir view
