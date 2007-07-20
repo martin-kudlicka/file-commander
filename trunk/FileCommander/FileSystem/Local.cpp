@@ -170,6 +170,12 @@ const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).lastModified();
 } // GetLastModified
 
+// current path on file system
+const QString cLocal::GetPath() const
+{
+	return qdDir.path();
+} // GetPath
+
 // get text for tab in directory view
 const QString cLocal::GetTabText() const
 {

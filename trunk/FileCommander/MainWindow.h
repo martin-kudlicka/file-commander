@@ -32,8 +32,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cPanel *cpLeft;																///< left directory view panel
 		cPanel *cpRight;																///< right directory view panel
 		cPanel *cpSource;																///< last active panel
+		cPanel *cpTabBarAction;														///< selected tab bar for action with tabs
 		cPlugins *cpPlugins;															///< application's plugins
 		cSettings csSettings;														///< accessing application's settings
+		int iTabBarIndex;																///< selected tab for actions on tab bar
 		QAction *qaTabBarCloseAllOtherTabs;										///< close all other tabs
 		QAction *qaTabBarCloseTab;													///< close current tab
 		QAction *qaTabBarDuplicateTab;											///< duplicate current tab
@@ -52,11 +54,14 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 		const void ActualizeColumnSets();										///< actualize column sets submenu
 		const void AssignShortcuts();												///< assign shortcuts
-		const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition);
-																							///< load tabs from qsSettings
+		const void LoadTabs(const cSettings::ePosition &epPosition);	///< load tabs from qsSettings
 																							/**< \param epPosition tabs for left or right panel */
 		const void SaveSettings() const;											///< save dir view settings
 		const void SetSortByActions() const;									///< set sort by actions for sorting columns
+		const void TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor);
+																							///< show context menu for tab
+																							/**< \param epTab left or right tab
+																								  \param qpCursor cursor position on tab */
 
 	private slots:
 		const void on_cpLeft_GotFocus();											///< left panel got focus
@@ -67,12 +72,21 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param action column to sort by */
 		const void on_qaOptions_triggered(bool checked = false);			///< options are selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaTabBarCloseAllOtherTabs_triggered(bool checked = false);
+																							///< close all other tabs called
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaTabBarCloseTab_triggered(bool checked = false);
+																							///< close tab called
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaTabBarDuplicateTab_triggered(bool checked = false);
+																							///< duplicate tab called
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */
-		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos) const;
+		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos);
 																							///< context menu of left tab bar
 																							/**< \param pos cursor position */
-		const void on_qtbRight_customContextMenuRequested(const QPoint &pos) const;
+		const void on_qtbRight_customContextMenuRequested(const QPoint &pos);
 																							///< context menu of right tab bar
 																							/**< \param pos cursor position */
 }; // cMainWindow

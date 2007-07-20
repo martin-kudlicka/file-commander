@@ -18,9 +18,10 @@ class cPanel : public QObject
 	Q_OBJECT
 
 	public:
-		cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch);
 																					///< constructor
-																					/**< \param qswDirs panel for cTreeWidget
+																					/**< \param qmwParent parent window for dialogs
+																						  \param qswDirs panel for cTreeWidget
 																						  \param qcbDrive drive combo box
 																						  \param qlDriveInfo drive name and it's space information
 																						  \param qtbTab panel's tab bar
@@ -38,10 +39,20 @@ class cPanel : public QObject
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
 																						  \return new tab index */
+		const void CloseAllOtherTabs(const int &iTabIndex);		///< close all other tabs than selected
+																					/**< \param iTabIndex selected tab */
+		const void CloseTab(const int &iTabIndex);					///< close tab
+																					/**< \param iTabIndex tab to close */
+		const int DuplicateTab(const int &iTabIndex);				///< create new tab by duplicate one
+																					/**< \param iTabIndex tab to duplicate
+																						  \return new tab index */
 		const QList<cSettings::sColumn> GetColumns() const;		///< columns for current dir view
 																					/**< \return columns for current dir view */
 		const QString GetColumnSet() const;								///< column set for current directory view
 																					/**< \return column set for current directory view */
+		const int GetTabIndex(const QPoint &qpPos) const;			///< find out tab index in tab bar
+																					/**< \param qpPos cursor position in tab bar
+																						  \return tab index */
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
 		const void RefreshTabs() const;									///< refresh tabs
@@ -85,6 +96,7 @@ class cPanel : public QObject
 		QLabel *qlSelected;													///< selected items
 		QLineEdit *qleQuickSearch;											///< quick search window
 		QList<sTab> qlTabs;													///< tabs for dir view
+		QMainWindow *qmwParent;												///< parent window for dialogs
 		QStackedWidget *qswDirs;											///< directory views
 		static QStackedWidget *qswLastActive;							///< last active panel
 		QTabBar *qtbTab;														///< tabs for dir views

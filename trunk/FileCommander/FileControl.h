@@ -35,9 +35,10 @@ class cFileControl : public QObject
 
 		const QList<QPair<QString, sDrive> > GetDrives() const;
 																///< get accessible drives
-		cFileSystem *GetFileSystem(const QString &qsDrive) const;
+		cFileSystem *GetFileSystem(const QString &qsDrive, const QString &qsPath) const;
 																///< get file system for specified drive
 																/**< \param qsDrive drive to get file system for
+																	  \param qsPath startup path
 																	  \return file system handling class */
 		const QPair<QString, sDrive> GetFirstDrive() const;
 																///< returns first accessible drive for application

@@ -3,6 +3,7 @@
 #include "Panel/TreeWidget.h"
 #include <QtGui/QHeaderView>
 #include <QtCore/QDateTime>
+#include <QtGui/QMessageBox>
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
@@ -74,7 +75,7 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	stTab.swWidgets.qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
-	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive);
+	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
 
 	/*// history
 	stTab.shHistory.iPosition = stiTabInfo.shHistory.iPosition;
@@ -120,9 +121,55 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	return iIndex;
 } // AddTab
 
-// constructor
-cPanel::cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
+// close all other tabs than selected
+const void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 {
+	if (qlTabs.count() > 1) {
+		bool bCloseAllOtherTabs;
+
+		if (csSettings->GetConfirmCloseOfAllTabs()) {
+			if (QMessageBox::question(qmwParent, tr("Close all other tabs"), tr("Continue?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+				bCloseAllOtherTabs = true;
+			} else {
+				bCloseAllOtherTabs = false;
+			} // if else
+		} else {
+			bCloseAllOtherTabs = true;
+		} // if else
+
+		if (bCloseAllOtherTabs) {
+			int iI;
+
+			for (iI = qlTabs.count() - 1; iI >= 0; iI--) {
+				if (iI != iTabIndex) {
+					CloseTab(iI);
+				} // if
+			} // for
+		} // if
+	} // if
+} // CloseAllOtherTabs
+
+// close tab
+const void cPanel::CloseTab(const int &iTabIndex)
+{
+	// TODO CloseTab
+	if (qlTabs.count() > 1) {
+		qlTabs.at(iTabIndex).cfsFileSystem->deleteLater();
+		qlTabs.removeAt(iTabIndex);
+		qswDirs->removeWidget(qswDirs->widget(iTabIndex));
+		qtbTab->removeTab(iTabIndex);
+
+		HideOrShowTabBar();
+		//ActualizeWidgets();
+
+		static_cast<cTreeWidget *>(qswDirs->currentWidget())->setFocus(Qt::OtherFocusReason);
+	} // if
+} // CloseTab
+
+// constructor
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
+{
+	this->qmwParent = qmwParent;
 	this->qswDirs = qswDirs;
 	this->qcbDrive = qcbDrive;
 	this->qlDriveInfo = qlDriveInfo;
@@ -140,6 +187,25 @@ cPanel::cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
 } // cPanel
+
+// create new tab by duplicate one
+const int cPanel::DuplicateTab(const int &iTabIndex)
+{
+	cTreeWidget *ctwDir;
+	sTab *stTab;
+	cSettings::sTabInfo stiTabInfo;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iTabIndex));
+	stTab = &qlTabs[iTabIndex];
+
+	stiTabInfo.qsColumnSet = stTab->qsColumnSet;
+	stiTabInfo.qsDrive = stTab->swWidgets.qsDrive;
+	stiTabInfo.qsPath = stTab->cfsFileSystem->GetPath();
+	stiTabInfo.ssSort.iSortedColumn = ctwDir->sortColumn();
+	stiTabInfo.ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
+
+	return AddTab(stiTabInfo);
+} // DuplicateTab
 
 // columns for current dir view
 const QList<cSettings::sColumn> cPanel::GetColumns() const
@@ -224,6 +290,20 @@ const QString cPanel::GetSizeString(const qint64 &qi64Size) const
 		} // if else
 	} // if else
 } // GetSizeString
+
+// find out tab index in tab bar
+const int cPanel::GetTabIndex(const QPoint &qpPos) const
+{
+	int iI;
+
+	for (iI = 0; iI < qtbTab->count(); iI++) {
+		if (qtbTab->tabRect(iI).contains(qpPos)) {
+			return iI;
+		} // if
+	} // for
+
+	return -1;
+} // GetTabIndex
 
 // get available files in tree view
 QList<QTreeWidgetItem *> cPanel::GetTreeWidgetItems() const

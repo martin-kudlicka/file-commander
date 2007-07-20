@@ -164,14 +164,14 @@ cMainWindow::cMainWindow()
 	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin);
 
 	// create panels
-	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
-	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleRightQuickSearch);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleRightQuickSearch);
 
 	// quick searches
 	qleLeftQuickSearch->hide();
-	qleRightQuickSearch->hide();
+	qleRightQuickSearch->hide();	
 
-	// create tab context menu
+	// create tab bar context menu
 	qaTabBarDuplicateTab = qmTabBar.addAction(tr("&Duplicate tab"));
 	addAction(qaTabBarDuplicateTab);
 	qmTabBar.addSeparator();
@@ -184,6 +184,7 @@ cMainWindow::cMainWindow()
 	qaColumnSet->setMenu(&qmColumnSets);
 
 	// variables initialization
+	iTabBarIndex = -1;
 	qagSortBy = new QActionGroup(this);
 	qagColumnSets = new QActionGroup(this);
 	qcDirModel.setModel(new QDirModel(&qcDirModel));
@@ -202,10 +203,10 @@ cMainWindow::cMainWindow()
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
-	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));
+	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));*/
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
-	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));*/
+	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
 	/*connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
@@ -345,6 +346,79 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	} // if
 } // on_qaOptions_triggered
 
+// close all other tabs called
+const void cMainWindow::on_qaTabBarCloseAllOtherTabs_triggered(bool checked /* false */)
+{
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+	} // if
+
+	cpTabBarAction->CloseAllOtherTabs(iTabBarIndex);
+	iTabBarIndex = -1;
+} // on_qaTabBarCloseAllOtherTabs_triggered
+
+// close tab called
+const void cMainWindow::on_qaTabBarCloseTab_triggered(bool checked /* false */)
+{
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+	} // if
+
+	cpTabBarAction->CloseTab(iTabBarIndex);
+	iTabBarIndex = -1;
+} // on_qaTabBarCloseTab_triggered
+
+// duplicate tab called
+const void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false */)
+{
+	bool bForeground;
+	int iNewTab;
+
+	if (iTabBarIndex == -1) {
+		// called by shortcut
+		if (qswLeft->currentWidget()->hasFocus()) {
+			cpTabBarAction = cpLeft;
+			iTabBarIndex = qtbLeft.currentIndex();
+		} else {
+			cpTabBarAction = cpRight;
+			iTabBarIndex = qtbRight.currentIndex();
+		} // if else
+
+		if (csSettings.GetNewTabByShortcutInForeground()) {
+			bForeground = true;
+		} else {
+			bForeground = false;
+		} // if else
+	} else {
+		bForeground = false;
+	} // if else
+
+	iNewTab = cpTabBarAction->DuplicateTab(iTabBarIndex);
+	iTabBarIndex = -1;
+
+	if (bForeground) {
+		if (cpTabBarAction == cpLeft) {
+			qtbLeft.setCurrentIndex(iNewTab);
+		} else {
+			qtbRight.setCurrentIndex(iNewTab);
+		} // if else
+	} // if
+} // on_qaTabBarDuplicateTab_triggered
+
 // selected column set from column set submenu
 const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
 {
@@ -352,17 +426,15 @@ const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
 } // on_qmColumnSets_triggered
 
 // context menu of left tab bar
-const void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos) const
+const void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos)
 {
-	// TODO on_qtbLeft_customContextMenuRequested
-	//TabBarShowContextMenu(cSettings::PositionLeft, pos);
+	TabBarShowContextMenu(cSettings::PositionLeft, pos);
 } // on_qtbLeft_customContextMenuRequested
 
 // context menu of right tab bar
-const void cMainWindow::on_qtbRight_customContextMenuRequested(const QPoint &pos) const
+const void cMainWindow::on_qtbRight_customContextMenuRequested(const QPoint &pos)
 {
-	// TODO on_qtbRight_customContextMenuRequested
-	//TabBarShowContextMenu(cSettings::PositionRight, pos);
+	TabBarShowContextMenu(cSettings::PositionRight, pos);
 } // on_qtbRight_customContextMenuRequested
 
 // save dir view settings
@@ -410,3 +482,36 @@ const void cMainWindow::SetSortByActions() const
 
 	qmPanel->insertActions(qaColumnsSeparator, qagSortBy->actions());
 } // SetSortByActions
+
+// show context menu for tab
+const void cMainWindow::TabBarShowContextMenu(const cSettings::ePosition &epTab, const QPoint &qpCursor)
+{
+	// source panel
+	if (epTab == cSettings::PositionLeft) {
+		cpTabBarAction = cpLeft;
+	} else {
+		cpTabBarAction = cpRight;
+	} // if else
+
+	iTabBarIndex = cpTabBarAction->GetTabIndex(qpCursor);
+
+	if (iTabBarIndex != -1) {
+		QTabBar *qtbTabBar;
+
+		// disable close tab if only one tab is available
+		if (epTab == cSettings::PositionLeft) {
+			qtbTabBar = &qtbLeft;
+		} else {
+			qtbTabBar = &qtbRight;
+		} // if else
+		if (qtbTabBar->count() == 1) {
+			qaTabBarCloseTab->setEnabled(false);
+			qaTabBarCloseAllOtherTabs->setEnabled(false);
+		} else {
+			qaTabBarCloseTab->setEnabled(true);
+			qaTabBarCloseAllOtherTabs->setEnabled(true);
+		} // if else
+
+		qmTabBar.popup(QCursor::pos());
+	} // if
+} // TabBarShowContextMenu

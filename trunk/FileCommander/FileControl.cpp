@@ -35,7 +35,7 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 	return qlDrives;
 } // GetDrives
 
-cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive) const
+cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
 {
 	cFileSystem *cfsFileSystem;
 	int iI;
@@ -49,7 +49,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive) const
 		qpDrive = &qlDrives[iI];
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qpDrive->second.qsPath, csSettings, ccpContentPlugin);
+				case Local:	cfsFileSystem = new cLocal(qsPath, csSettings, ccpContentPlugin);
 			} // switch
 		} // if
 	} // for
