@@ -141,6 +141,12 @@ cPanel::cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo
 	qtTimer.start(iTIMER_INTERVAL);
 } // cPanel
 
+// columns for current dir view
+const QList<cSettings::sColumn> cPanel::GetColumns() const
+{
+	return qlTabs.value(qswDirs->currentIndex()).qlColumns;
+} // GetColumns
+
 //< column set for current directory view
 const QString cPanel::GetColumnSet() const
 {
@@ -218,6 +224,22 @@ const QString cPanel::GetSizeString(const qint64 &qi64Size) const
 		} // if else
 	} // if else
 } // GetSizeString
+
+// get available files in tree view
+QList<QTreeWidgetItem *> cPanel::GetTreeWidgetItems() const
+{
+	cTreeWidget *ctwDir;
+	int iI;
+	QList<QTreeWidgetItem *> qlItems;
+
+	ctwDir = ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+		qlItems.append(ctwDir->topLevelItem(iI));
+	} // for
+
+	return qlItems;
+} // GetTreeWidgetItems
 
 // hide or show tab bar as set in options
 const void cPanel::HideOrShowTabBar() const
@@ -506,7 +528,7 @@ const void cPanel::ShowHideHeaders() const
 } // ShowHideHeaders
 
 // sort dir content and show
-const void cPanel::Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToSort)
+const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort)
 {
 	cSettings::sColumn *scSortedColumn;
 	cTreeWidget *ctwDir;
@@ -603,6 +625,31 @@ const void cPanel::Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToS
 		qlMarked.at(iI)->setSelected(true);
 	} // for
 } // Sort
+
+// sort by specified column
+const void cPanel::SortBy(const int &iColumn)
+{
+	cTreeWidget *ctwDir;
+	Qt::SortOrder soSortOrder;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+	// change sort order
+	if (ctwDir->header()->sortIndicatorSection() == iColumn) {
+		soSortOrder = ctwDir->header()->sortIndicatorOrder();
+		if (soSortOrder == Qt::AscendingOrder) {
+			soSortOrder = Qt::DescendingOrder;
+		} else {
+			soSortOrder = Qt::AscendingOrder;
+		} // if else
+	} else {
+		soSortOrder = Qt::AscendingOrder;
+	} // if else
+	ctwDir->header()->setSortIndicator(iColumn, soSortOrder);
+
+	// sort again
+	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
+} // SortBy
 
 // compare items by QDateTime
 const bool cPanel::TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)

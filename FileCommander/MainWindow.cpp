@@ -93,6 +93,10 @@ const void cMainWindow::AssignShortcuts()
 	qaOptions->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__OPTIONS)));
 	qaSavePosition->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_POSITION)));
 	qaSaveSettings->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__CONFIGURATION__SAVE_SETTINGS)));
+	// sort by
+	if (qagSortBy->actions().count() > 0) {
+		SetSortByActions();
+	} // if
 } // AssignShortcuts
 
 // creates main window
@@ -180,6 +184,7 @@ cMainWindow::cMainWindow()
 	qaColumnSet->setMenu(&qmColumnSets);
 
 	// variables initialization
+	qagSortBy = new QActionGroup(this);
 	qagColumnSets = new QActionGroup(this);
 	qcDirModel.setModel(new QDirModel(&qcDirModel));
 	qcbCommand->setCompleter(&qcDirModel);
@@ -200,9 +205,9 @@ cMainWindow::cMainWindow()
 	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
-	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
+	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));*/
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
-	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
+	/*connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
 	connect(&qmRightHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmRightHistoryDirectoryList_aboutToShow()));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmLeftHistoryDirectoryList_triggered(QAction *)));
@@ -261,20 +266,18 @@ const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 // left panel got focus
 const void cMainWindow::on_cpLeft_GotFocus()
 {
-	// TODO on_cpLeft_GotFocus
 	cpSource = cpLeft;
 	cpDestination = cpRight;
-	//SetSortByActions();
+	SetSortByActions();
 	ActualizeColumnSets();
 } // on_cpLeft_GotFocus
 
 // right panel got focus
 const void cMainWindow::on_cpRight_GotFocus()
 {
-	// TODO on_cpRight_GotFocus
 	cpSource = cpRight;
 	cpDestination = cpLeft;
-	//SetSortByActions();
+	SetSortByActions();
 	ActualizeColumnSets();
 } // on_cpRight_GotFocus
 
@@ -285,6 +288,21 @@ const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
 
 	caAbout.exec();
 } // on_qaAbout_triggered
+
+// sort by action called
+const void cMainWindow::on_qagSortBy_triggered(QAction *action) const
+{
+	int iSortBy;
+
+	// find column to sort by
+	for (iSortBy = 0; iSortBy < qagSortBy->actions().count(); iSortBy++) {
+		if (qagSortBy->actions().at(iSortBy) == action) {
+			break;
+		} // if
+	} // for
+
+	cpSource->SortBy(iSortBy);
+} // on_qagSortBy_triggered
 
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
@@ -354,3 +372,41 @@ const void cMainWindow::SaveSettings() const
 	//cpLeft->SaveSettings(cSettings::PositionLeft);
 	//cpRight->SaveSettings(cSettings::PositionRight);
 } // SaveSettings
+
+// set sort by actions for sorting columns
+const void cMainWindow::SetSortByActions() const
+{
+	int iI;
+	QList<cSettings::sColumn> qlColumns;
+
+	// clear previous actions
+	for (iI = 0; iI < qagSortBy->actions().count(); iI++) {
+		qagSortBy->actions().at(iI)->deleteLater();
+	} // for
+	qagSortBy->actions().clear();
+
+	qlColumns = cpSource->GetColumns();
+
+	for (iI = 0; iI < qlColumns.count(); iI++) {
+		QAction *qaSortBy;
+
+		qaSortBy = new QAction(qlColumns.at(iI).qsName, qagSortBy);
+
+		// set shortcuts
+		switch (iI) {
+			case 0:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN)));
+				break;
+			case 1:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN)));
+				break;
+			case 2:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_THIRD_COLUMN)));
+				break;
+			case 3:
+				qaSortBy->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FOURTH_COLUMN)));
+		} // switch
+	} // for
+
+	qmPanel->insertActions(qaColumnsSeparator, qagSortBy->actions());
+} // SetSortByActions

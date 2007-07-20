@@ -38,6 +38,8 @@ class cPanel : public QObject
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
 																						  \return new tab index */
+		const QList<cSettings::sColumn> GetColumns() const;		///< columns for current dir view
+																					/**< \return columns for current dir view */
 		const QString GetColumnSet() const;								///< column set for current directory view
 																					/**< \return column set for current directory view */
 		const void RefreshAllContents();									///< refresh all dir view contents
@@ -46,6 +48,8 @@ class cPanel : public QObject
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
+		const void SortBy(const int &iColumn);							///< sort by specified column
+																					/**< \param iColumn column position to sort by */
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
@@ -101,6 +105,8 @@ class cPanel : public QObject
 																					///< "convert" size to string according to setting in options
 																					/**< \param qi64Size size
 																						  \return file size in string with suffix */
+		QList<QTreeWidgetItem *> GetTreeWidgetItems() const;		///< get available files in tree view
+																					/**< \return available files in tree view */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
 		const void RefreshContent(const int &iIndex);				///< refresh dir content
 																					/**< \param iIndex index of dir view */
@@ -112,7 +118,7 @@ class cPanel : public QObject
 																					/**< \param iTabIndex tab bar index to set text in */
 		const void ShowHideHeader(const int &iTabIndex) const;	///< show or hide header for specified tab
 																					/**< \param iTabIndex tab index to show/hide header */
-		const void Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToSort);
+		const void Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort);
 																					///< sort dir content
 																					/**< \param iIndex index of dir view
 																						  \param qlToSort files to sort */

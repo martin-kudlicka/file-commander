@@ -38,6 +38,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QAction *qaTabBarCloseTab;													///< close current tab
 		QAction *qaTabBarDuplicateTab;											///< duplicate current tab
 		QActionGroup *qagColumnSets;												///< column sets action group
+		QActionGroup *qagSortBy;													///< sort by actions
 		QCompleter qcDirModel;														///< completer based on dir model
 		QHBoxLayout *qhblBackgroundOperations;									///< layout for background operations
 		QMenu qmColumnSets;															///< column sets submenu
@@ -55,12 +56,15 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							///< load tabs from qsSettings
 																							/**< \param epPosition tabs for left or right panel */
 		const void SaveSettings() const;											///< save dir view settings
+		const void SetSortByActions() const;									///< set sort by actions for sorting columns
 
 	private slots:
 		const void on_cpLeft_GotFocus();											///< left panel got focus
 		const void on_cpRight_GotFocus();										///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qagSortBy_triggered(QAction *action) const;		///< sort by action called
+																							/**< \param action column to sort by */
 		const void on_qaOptions_triggered(bool checked = false);			///< options are selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
