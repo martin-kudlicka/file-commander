@@ -49,6 +49,7 @@ class cFileSystem : public QObject
 																										///< get file's last modified date/time stamp
 																										/**< \param qtwiFile file to check
 																											  \return file's last modified date/time stamp */
+		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
 		virtual const bool IsDir(QTreeWidgetItem *qtwiFile) const = 0;				///< check if file is directory
 																										/**< \param qtwiFile file check
 																											  \return true if directory */
