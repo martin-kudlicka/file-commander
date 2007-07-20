@@ -42,6 +42,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void AssignShortcuts();										///< assign shortcuts
 
 	private slots:
+		const void on_qaAbout_triggered(bool checked = false);	///< about is selected
+																					/**< \param checked true if menu item is checkable and checked */
 		const void on_qaOptions_triggered(bool checked = false);	///< options are selected
 																					/**< \param checked true if menu item is checkable and checked */
 		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos) const;
