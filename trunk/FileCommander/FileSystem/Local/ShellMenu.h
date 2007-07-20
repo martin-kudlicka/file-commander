@@ -5,7 +5,7 @@
 
 #include <QtCore/QPoint>
 #ifdef Q_WS_WIN
-#include "Panel/Win32/ShellContextMenu.h"
+#include "FileSystem/Local/Win32/ShellContextMenu.h"
 #endif
 
 class cShellMenu

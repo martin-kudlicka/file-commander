@@ -75,6 +75,8 @@ class cLocal : public cFileSystem
 																									  \return file's last modified date/time stamp */
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
+		const QFileInfoList GetSelectedFiles() const;						///< selected files in tree view
+																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */
 		const QString GetVolumeName() const;										///< find out name of the disk
@@ -88,6 +90,13 @@ class cLocal : public cFileSystem
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
 																									  \param qsPath to initialize local file system */
+		const void ShowContextMenu(const QPoint &qcPosition
+#ifdef Q_WS_WIN
+			, const HWND hwParent
+#endif
+		) const;																				///< custom context menu on right click
+																								/**< \param qcPosition cursor position on the screen
+																									  \param hwParent parent window to show menu in */
 
 	signals:
 		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem

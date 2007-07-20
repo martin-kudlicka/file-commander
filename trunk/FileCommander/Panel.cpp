@@ -163,9 +163,9 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 		iIndex = qswDirs->insertWidget(qswDirs->currentIndex() + 1, ctwTree);
 	} // if else
 
-	/*// connect signals to slots
+	// connect signals to slots
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
-	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
+	/*connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));*/
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
@@ -512,6 +512,16 @@ const void cPanel::on_cfsFileSystem_Unaccessible() const
 {
 	// TODO on_cfsFileSystem_Unaccessible - change drive dialog
 } // on_cfsFileSystem_Unaccessible
+
+// show tree view context menu
+const void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos) const
+{
+	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ShowContextMenu(pos
+#ifdef Q_WS_WIN
+		, qswDirs->winId()
+#endif
+	);
+} // on_ctwTree_customContextMenuRequested
 
 // dir view got focus
 const void cPanel::on_ctwTree_GotFocus()
