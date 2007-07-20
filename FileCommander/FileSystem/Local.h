@@ -60,6 +60,8 @@ class cLocal : public cFileSystem
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
+		const QString GetPath() const;												///< current path on file system
+																								/**< \return path on file system */
 		const QString GetTabText() const;											///< get text for tab in directory view
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file check
