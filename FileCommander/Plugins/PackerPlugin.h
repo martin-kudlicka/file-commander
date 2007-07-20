@@ -61,8 +61,8 @@ class cPackerPlugin
 		cPackerPlugin(cSettings *csSettings);																///< constructor
 																														/**< \param csSettings application's settings */
 
-		QHash<QString, sPluginInfo> GetPluginsInfo();													///< retrieve packer plugins info
-		void Load();																								///< loads packer plugins
+		const QHash<QString, sPluginInfo> &GetPluginsInfo() const;									///< retrieve packer plugins info
+		const void Load();																						///< loads packer plugins
 
 	private:
 		cSettings *csSettings;																					///< main settings "file"

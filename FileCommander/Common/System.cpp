@@ -4,7 +4,7 @@
 #include <QtCore/QDir>
 
 // settings path for application
-QString cSystem::GetApplicationSettingsPath(const QString &qsApplication)
+const QString cSystem::GetApplicationSettingsPath(const QString &qsApplication)
 {
 	QDir qdDir;
 	QString qsPath;
@@ -15,7 +15,7 @@ QString cSystem::GetApplicationSettingsPath(const QString &qsApplication)
 } // GetApplicationSettingsPath
 
 // common program files path
-QString cSystem::GetCommonFilesPath()
+const QString cSystem::GetCommonFilesPath()
 {
 	// TODO GetCommonFilesPath - Windows only
 	QString qsResult;
@@ -30,7 +30,7 @@ QString cSystem::GetCommonFilesPath()
 } // GetCommonFilesPath
 
 // first available drive in system
-QString cSystem::GetFirstDrive()
+const QString cSystem::GetFirstDrive()
 {
 	QFileInfoList qfilDrives;
 
@@ -39,7 +39,7 @@ QString cSystem::GetFirstDrive()
 } // GetFirstDrive
 
 // Isshou/Common/QT path
-QString cSystem::GetIsshouCommonPath()
+const QString cSystem::GetIsshouCommonPath()
 {
 	QString qsResult;
 
@@ -50,7 +50,7 @@ QString cSystem::GetIsshouCommonPath()
 } // GetIsshouCommonPath
 
 // settings path for applications
-QString cSystem::GetIsshouSettingsPath()
+const QString cSystem::GetIsshouSettingsPath()
 {
 	QDir qdDir;
 	QFileInfo qfiFile;
@@ -63,7 +63,7 @@ QString cSystem::GetIsshouSettingsPath()
 } // GetIsshouSettingsPath
 
 // program files path
-QString cSystem::GetProgramFilesPath()
+const QString cSystem::GetProgramFilesPath()
 {
 	// TODO GetProgramFilesPath - Windows only
 	QString qsResult;

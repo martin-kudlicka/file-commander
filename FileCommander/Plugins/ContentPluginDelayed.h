@@ -37,7 +37,8 @@ class cContentPluginDelayed : public QThread
 																				///< constructor
 																				/**< \param ccpContentPlugin content plugins */
 
-		void Start(const QList<sParameters> &qlParameters);	///< start thread processing
+		const void Start(const QList<sParameters> &qlParameters);
+																				///< start thread processing
 																				/**< \param qlParameters description what to check */
 		void run();															///< main thread
 
@@ -49,12 +50,12 @@ class cContentPluginDelayed : public QThread
 		QString qsCurrentPlugin;										///< currently used plugin
 
 	signals:
-		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput);	
+		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																				///< got golumn value from plugin
 																				/**< \param soOutput information to update dir view */
 
 	private slots:
-		void on_InterruptContentDelayed();							///< interrupt delayed content processing before refresh dir view content
+		const void on_InterruptContentDelayed();					///< interrupt delayed content processing before refresh dir view content
 }; // cContentPluginDelayed
 
 #endif

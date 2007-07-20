@@ -46,10 +46,9 @@ class cContentPlugin
 		cContentPlugin(cSettings *csSettings);								///< constructor
 																						/**< \param csSettings application's settings */
 
-		QHash<QString, sPluginInfo> GetPluginsInfo();
-																						///< retrieve content plugin info
+		const QHash<QString, sPluginInfo> &GetPluginsInfo() const;	///< retrieve content plugin info
 																						/**< \return table of plugin info */
-		QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag = NULL);
+		const QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag = NULL);
 																						///< returns plugin's value for specified column
 																						/**< \param qsFilename file name to probe
 																							  \param qsPlugin name of column's plugin
@@ -57,12 +56,12 @@ class cContentPlugin
 																							  \param qsUnit unit for column value
 																							  \param iFlag delayed/on demand value flag
 																							  \return plugin's column value for specified file */
-		void Load();																///< loads content plugins
+		const void Load();														///< loads content plugins
 																						/** fills qhPlugins */
-		bool Loaded(const QString &qsName);									///< checks if plugin qsName has been succesfully loaded
+		const bool Loaded(const QString &qsName) const;					///< checks if plugin qsName has been succesfully loaded
 																						/**< \param qsName plugin name
 																							  \return true if plugin was succesfully loaded and can be used */
-		void Unload();																///< unloads content plugins
+		const void Unload();														///< unloads content plugins
 
 	private:
 		typedef int (__stdcall *tContentGetSupportedField)(int iFieldIndex, char *cFieldName, char *cUnits, int iMaxLen);
@@ -79,16 +78,16 @@ class cContentPlugin
 		QHash<QString, sPluginInfo> qhPlugins;								///< table of plugins
 																						/**< key is plugin name, value contains plugin's info */
 
-		int GetFieldIndex(const QString &qsPlugin, const QString &qsColumn);
+		const int GetFieldIndex(const QString &qsPlugin, const QString &qsColumn);
 																						///< get index of column in plugin
 																						/**< \param qsPlugin plugin filename
 																							  \param qsColumn plugin's column name
 																							  \return index of column */
-		int GetUnitIndex(const QString &qsUnit, const QString &qsUnits);
+		const int GetUnitIndex(const QString &qsUnit, const QString &qsUnits) const;
 																						///< find index of unit
 																						/**< \param qsUnit unit index to find
 																							  \param qsUnits units to search in */
-		QString ValidateFieldValue(const char *cFieldValue, const int &iType);
+		const QString ValidateFieldValue(const char *cFieldValue, const int &iType) const;
 																						///< "converts" plugin's returned value to QString
 																						/**< \param cFieldValue value returned by plugin
 																							  \param iType type of value

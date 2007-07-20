@@ -14,13 +14,13 @@ cListerPlugin::cListerPlugin(cSettings *csSettings)
 } // cListerPlugin
 
 // retrieve lister plugin info
-QHash<QString, cListerPlugin::sPluginInfo> cListerPlugin::GetPluginsInfo()
+const QHash<QString, cListerPlugin::sPluginInfo> &cListerPlugin::GetPluginsInfo() const
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // loads lister plugins
-void cListerPlugin::Load()
+const void cListerPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
@@ -30,12 +30,15 @@ void cListerPlugin::Load()
 
 	// enumerate plugins
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		if (qlPlugins.at(iI).bEnabled) {
+		cSettings::sPlugin *spPlugin;
+
+		spPlugin = &qlPlugins[iI];
+		if (spPlugin->bEnabled) {
 			sPluginInfo spiPluginInfo;
 			QLibrary qlLibrary;
 
 			// load plugin
-			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
+			qlLibrary.setFileName(spPlugin->qsName);
 			qlLibrary.load();
 
 			// fill plugin properties
@@ -51,7 +54,7 @@ void cListerPlugin::Load()
 				ListDefaultParamStruct ldpsParams;
 				QString qsIniFile;
 
-				qsIniFile = QFileInfo(qlPlugins.at(iI).qsName).path() + '/' + QFileInfo(qlPlugins.at(iI).qsName).completeBaseName() + ".ini";
+				qsIniFile = QFileInfo(spPlugin->qsName).path() + '/' + QFileInfo(spPlugin->qsName).completeBaseName() + ".ini";
 				ldpsParams.PluginInterfaceVersionLow = dwPLUGIN_INTERFACE_VERSION_LOW;
 				ldpsParams.PluginInterfaceVersionHi = dwPLUGIN_INTERFACE_VERSION_HI;
 				strcpy(ldpsParams.DefaultIniName, QDir::toNativeSeparators(qsIniFile).toAscii().constData());
@@ -60,13 +63,13 @@ void cListerPlugin::Load()
 			} // if
 
 			// add new plugin
-			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);
+			qhPlugins.insert(QFileInfo(spPlugin->qsName).fileName(), spiPluginInfo);
 		} // if
 	} // for
 } // Load
 
 // unloads lister plugins
-void cListerPlugin::Unload()
+const void cListerPlugin::Unload()
 {
 	qhPlugins.clear();
 } // Unload

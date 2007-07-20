@@ -14,13 +14,13 @@ cPackerPlugin::cPackerPlugin(cSettings *csSettings)
 } // cPackerPlugin
 
 // retrieve packer plugin info
-QHash<QString, cPackerPlugin::sPluginInfo> cPackerPlugin::GetPluginsInfo()
+const QHash<QString, cPackerPlugin::sPluginInfo> &cPackerPlugin::GetPluginsInfo() const
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // loads packer plugins
-void cPackerPlugin::Load()
+const void cPackerPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
@@ -33,13 +33,16 @@ void cPackerPlugin::Load()
 
 	// enumerate plugins
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		if (qlPlugins.at(iI).bEnabled) {
+		cSettings::sPlugin *spPlugin;
+
+		spPlugin = &qlPlugins[iI];
+		if (spPlugin->bEnabled) {
 			sPluginInfo spiPluginInfo;
 			QLibrary qlLibrary;
 
 			// load plugin
-			QDir::setCurrent(QFileInfo(qlPlugins.at(iI).qsName).path());
-			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
+			QDir::setCurrent(QFileInfo(spPlugin->qsName).path());
+			qlLibrary.setFileName(spPlugin->qsName);
 			qlLibrary.load();
 
 			// fill plugin properties
@@ -57,7 +60,7 @@ void cPackerPlugin::Load()
 				PackDefaultParamStruct pdpsParams;
 				QString qsIniFile;
 
-				qsIniFile = QFileInfo(qlPlugins.at(iI).qsName).path() + '/' + QFileInfo(qlPlugins.at(iI).qsName).completeBaseName() + ".ini";
+				qsIniFile = QFileInfo(spPlugin->qsName).path() + '/' + QFileInfo(spPlugin->qsName).completeBaseName() + ".ini";
 				pdpsParams.PluginInterfaceVersionLow = dwPLUGIN_INTERFACE_VERSION_LOW;
 				pdpsParams.PluginInterfaceVersionHi = dwPLUGIN_INTERFACE_VERSION_HI;
 				strcpy(pdpsParams.DefaultIniName, QDir::toNativeSeparators(qsIniFile).toAscii().constData());
@@ -66,7 +69,7 @@ void cPackerPlugin::Load()
 			} // if
 
 			// add new plugin
-			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);
+			qhPlugins.insert(QFileInfo(spPlugin->qsName).fileName(), spiPluginInfo);
 		} // if
 	} // for
 

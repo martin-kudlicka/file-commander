@@ -21,40 +21,46 @@ cContentPlugin::cContentPlugin(cSettings *csSettings)
 } // cContentPlugin
 
 // get index of column in plugin
-int cContentPlugin::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
+const int cContentPlugin::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 {
 	int iI;
+	sPluginInfo *spiPluginInfo;
 
-	for (iI = 0; iI < qhPlugins.value(qsPlugin).qlFields.count(); iI++) {
-		if (qhPlugins.value(qsPlugin).qlFields.at(iI).qsName == qsColumn) {
+	spiPluginInfo = &qhPlugins[qsPlugin];
+	for (iI = 0; iI < spiPluginInfo->qlFields.count(); iI++) {
+		if (spiPluginInfo->qlFields.at(iI).qsName == qsColumn) {
 			return iI;
 		} // if
 	} // for
 
-	return -1;	// error
+	// error
+	return -1;
 } // GetFieldIndex
 
 // retrieve content plugin info
-QHash<QString, cContentPlugin::sPluginInfo> cContentPlugin::GetPluginsInfo()
+const QHash<QString, cContentPlugin::sPluginInfo> &cContentPlugin::GetPluginsInfo() const
 {
 	return qhPlugins;
 } // GetPluginsInfo
 
 // returns plugin's value for specified column
-QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
+const QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
 {
 	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
 	QString qsFieldValue;
+	sPluginInfo *spiPluginInfo;
+
+	spiPluginInfo = &qhPlugins[qsPlugin];
 
 	iFieldIndex = GetFieldIndex(qsPlugin, qsColumn);
-	iUnitIndex = GetUnitIndex(qsUnit, qhPlugins.value(qsPlugin).qlFields.at(iFieldIndex).qsUnits);
+	iUnitIndex = GetUnitIndex(qsUnit, spiPluginInfo->qlFields.at(iFieldIndex).qsUnits);
 
 	// get value
 	if (iFlag == NULL) {
-		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
+		iType = spiPluginInfo->tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, 0);
 	} else {
-		iType = qhPlugins.value(qsPlugin).tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, CONTENT_DELAYIFSLOW);
+		iType = spiPluginInfo->tcgvContentGetValue(QDir::toNativeSeparators(qsFilename).toLocal8Bit().data(), iFieldIndex, iUnitIndex, cFieldValue, uiMAX_CHAR, CONTENT_DELAYIFSLOW);
 		if (iType == ft_delayed) {
 			iType = ft_string;
 			*iFlag = ft_delayed;
@@ -69,7 +75,7 @@ QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString 
 } // GetPluginValue
 
 // find index of unit
-int cContentPlugin::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
+const int cContentPlugin::GetUnitIndex(const QString &qsUnit, const QString &qsUnits) const
 {
 	QStringList qslUnits;
 
@@ -78,7 +84,7 @@ int cContentPlugin::GetUnitIndex(const QString &qsUnit, const QString &qsUnits)
 } // GetUnitIndex
 
 // loads content plugins
-void cContentPlugin::Load()
+const void cContentPlugin::Load()
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
@@ -88,14 +94,17 @@ void cContentPlugin::Load()
 
 	// enumerate plugins
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		if (qlPlugins.at(iI).bEnabled) {
+		cSettings::sPlugin *spPlugin;
+
+		spPlugin = &qlPlugins[iI];
+		if (spPlugin->bEnabled) {
 			int iField;
 			QLibrary qlLibrary;
 			sPluginInfo spiPluginInfo;
 			tContentGetSupportedField tcgsfContentGetSupportedField;
 
 			// load plugin
-			qlLibrary.setFileName(qlPlugins.at(iI).qsName);
+			qlLibrary.setFileName(spPlugin->qsName);
 			qlLibrary.load();
 			tcgsfContentGetSupportedField = (tContentGetSupportedField)qlLibrary.resolve("ContentGetSupportedField");
 
@@ -105,7 +114,7 @@ void cContentPlugin::Load()
 				ContentDefaultParamStruct cdpsParam;
 				QString qsIniFile;
 
-				qsIniFile = QFileInfo(qlPlugins.at(iI).qsName).path() + '/' + QFileInfo(qlPlugins.at(iI).qsName).completeBaseName() + ".ini";
+				qsIniFile = QFileInfo(spPlugin->qsName).path() + '/' + QFileInfo(spPlugin->qsName).completeBaseName() + ".ini";
 				cdpsParam.size = sizeof(cdpsParam);
 				cdpsParam.PluginInterfaceVersionLow = dwPLUGIN_INTERFACE_VERSION_LOW;
 				cdpsParam.PluginInterfaceVersionHi = dwPLUGIN_INTERFACE_VERSION_HI;
@@ -138,19 +147,19 @@ void cContentPlugin::Load()
 				iField++;
 			} // while
 			// add new plugin
-			qhPlugins.insert(QFileInfo(qlPlugins.at(iI).qsName).fileName(), spiPluginInfo);
+			qhPlugins.insert(QFileInfo(spPlugin->qsName).fileName(), spiPluginInfo);
 		} // if
 	} // for
 } // Load
 
 // checks if plugin qsName has been succesfully loaded
-bool cContentPlugin::Loaded(const QString &qsName)
+const bool cContentPlugin::Loaded(const QString &qsName) const
 {
 	return qhPlugins.contains(qsName);
 } // Loaded
 
 // unloads content plugins
-void cContentPlugin::Unload()
+const void cContentPlugin::Unload()
 {
 	QHashIterator<QString, sPluginInfo> qhiPlugins(qhPlugins);
 
@@ -166,7 +175,7 @@ void cContentPlugin::Unload()
 } // Unload
 
 // "converts" plugin's returned value to QString
-QString cContentPlugin::ValidateFieldValue(const char *cFieldValue, const int &iType)
+const QString cContentPlugin::ValidateFieldValue(const char *cFieldValue, const int &iType) const
 {
 	// TODO ValidateFieldValue other types
 	QString qsValue;
