@@ -103,7 +103,7 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	qtbTab->blockSignals(true);
 	qtbTab->insertTab(iIndex, QString());
 	qtbTab->blockSignals(false);
-	//SetTabText(iIndex);
+	SetTabText(iIndex);
 
 	// set sorting
 	ctwTree->header()->setSortIndicator(stiTabInfo.ssSort.iSortedColumn, stiTabInfo.ssSort.soSortOrder);
@@ -140,6 +140,12 @@ cPanel::cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
 } // cPanel
+
+//< column set for current directory view
+const QString cPanel::GetColumnSet() const
+{
+	return qlTabs.value(qswDirs->currentIndex()).qsColumnSet;
+} // GetColumnSet
 
 // convert QDateTime to user defined format
 const QString cPanel::GetDateTimeString(const QDateTime &qdtDateTime) const
@@ -249,6 +255,20 @@ const void cPanel::on_qtTimer_timeout() const
 	ActualizeDrives();
 } // on_qtTimer_timeout
 
+// refresh all dir view contents
+const void cPanel::RefreshAllContents()
+{
+	int iI;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		if (qswDirs->currentIndex() == iI) {
+			RefreshContent(iI);
+		} else {
+			qlTabs[iI].bValid = false;
+		} // if else
+	} // for
+} // RefreshAllContents
+
 // refresh all dir view headers
 const void cPanel::RefreshAllHeaders()
 {
@@ -298,9 +318,13 @@ const void cPanel::RefreshContent(const int &iIndex)
 							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
 						} else {
 							if (scColumn->qsIdentifier == qsNAME_WITH_EXTENSION) {
-								QString qsNameWithExtension;
+								QString qsNameWithExtension, qsExtension;
 
-								qsNameWithExtension = stTab->cfsFileSystem->GetFileName(qtwiFile) + '.' + stTab->cfsFileSystem->GetFileExtension(qtwiFile);
+								qsNameWithExtension = stTab->cfsFileSystem->GetFileName(qtwiFile);
+								qsExtension = stTab->cfsFileSystem->GetFileExtension(qtwiFile);
+								if (!qsExtension.isEmpty()) {
+									qsNameWithExtension += '.' + qsExtension;
+								} // if
 								qtwiFile->setText(iJ, qsNameWithExtension);
 							} else {
 								if (scColumn->qsIdentifier == qsSIZE) {
@@ -437,11 +461,49 @@ const void cPanel::RefreshHeader(const int &iIndex, const bool &bContent /* fals
 	} // if
 } // RefreshHeader
 
+// refresh tabs
+const void cPanel::RefreshTabs() const
+{
+	int iI;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		SetTabText(iI);
+	} // for
+
+	HideOrShowTabBar();
+} // RefreshTabs
+
+// selected another column set for actual directory view
+const void cPanel::SetColumnSet(const QString &qsColumnSet)
+{
+	qlTabs[qswDirs->currentIndex()].qsColumnSet = qsColumnSet;
+	// change sort column to prevent sorting by nonexisting column number
+	static_cast<cTreeWidget *>(qswDirs->currentWidget())->header()->setSortIndicator(0, Qt::AscendingOrder);
+	// refresh header to show changes
+	RefreshHeader(qswDirs->currentIndex(), true);
+} // SetColumnSet
+
+// set text in tab bar
+const void cPanel::SetTabText(const int &iTabIndex) const
+{
+	qtbTab->setTabText(iTabIndex, qlTabs.at(iTabIndex).cfsFileSystem->GetTabText());
+} // SetTabText
+
 // show or hide header for specified tab
 const void cPanel::ShowHideHeader(const int &iTabIndex) const
 {
 	static_cast<cTreeWidget *>(qswDirs->widget(iTabIndex))->header()->setVisible(csSettings->GetShowDirectoryViewHeader());
 } // ShowHideHeader
+
+// show or hide headers in all tabs
+const void cPanel::ShowHideHeaders() const
+{
+	int iI;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		ShowHideHeader(iI);
+	} // for
+} // ShowHideHeaders
 
 // sort dir content and show
 const void cPanel::Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToSort)

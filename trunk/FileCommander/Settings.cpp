@@ -235,6 +235,7 @@ const void cSettings::CreateFavouriteDirectories(QList<QPair<QString, cSettings:
 // create new tab in settings file
 const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab)
 {
+	// TODO CreateTab
 	//int iI;
 
 	if (epPosition == PositionLeft) {
@@ -779,6 +780,7 @@ const bool cSettings::GetShowTabBarWithOnlyOneTab() const
 // get some information about tab
 const cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
+	// TODO GetTabInfo
 	//int iCount, iI;
 	sTabInfo stiTabInfo;
 

@@ -38,7 +38,14 @@ class cPanel : public QObject
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
 																						  \return new tab index */
+		const QString GetColumnSet() const;								///< column set for current directory view
+																					/**< \return column set for current directory view */
+		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
+		const void RefreshTabs() const;									///< refresh tabs
+		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
+																					/**< \param qsColumnSet new column set */
+		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
@@ -101,6 +108,8 @@ class cPanel : public QObject
 																					///< refresh column's header
 																					/**< \param iIndex index of dir view
 																						  \param bContent refresh content too flag */
+		const void SetTabText(const int &iTabIndex) const;			///< set text in tab bar
+																					/**< \param iTabIndex tab bar index to set text in */
 		const void ShowHideHeader(const int &iTabIndex) const;	///< show or hide header for specified tab
 																					/**< \param iTabIndex tab index to show/hide header */
 		const void Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToSort);

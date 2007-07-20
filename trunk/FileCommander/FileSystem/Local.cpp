@@ -170,6 +170,24 @@ const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).lastModified();
 } // GetLastModified
 
+// get text for tab in directory view
+const QString cLocal::GetTabText() const
+{
+	QString qsTabText;
+
+	if (csSettings->GetShowDriveLetter()) {
+		qsTabText = qdDir.path().at(0) + QString(": ");
+	} // if
+
+	if (qdDir.isRoot()) {
+		qsTabText += '/';
+	} else {
+		qsTabText += qdDir.dirName();
+	} // if else
+
+	return qsTabText;
+} // GetTabText
+
 // check if file is directory
 const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 {

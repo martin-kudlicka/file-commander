@@ -22,6 +22,34 @@ cMainWindow::~cMainWindow()
 	delete cpPlugins;
 } // ~cMainWindow
 
+// actualize column sets submenu
+const void cMainWindow::ActualizeColumnSets()
+{
+	int iI;
+	QString qsActiveColumnSet;
+	QStringList qslColumnSets;
+
+	qsActiveColumnSet = cpSource->GetColumnSet();
+	qagColumnSets->actions().clear();
+	qmColumnSets.clear();
+	qslColumnSets = csSettings.GetColumnSets();
+
+	for (iI = 0; iI < qslColumnSets.count(); iI++) {
+		QAction *qaColumnSet;
+		QString *qsColumnSet;
+
+		qsColumnSet = &qslColumnSets[iI];
+
+		qaColumnSet = qmColumnSets.addAction(*qsColumnSet);
+		// put action to action group to prevent checking more than one action in a time
+		qagColumnSets->addAction(qaColumnSet);
+		qaColumnSet->setCheckable(true);
+		if (qsActiveColumnSet == *qsColumnSet) {
+			qaColumnSet->setChecked(true);
+		} // if
+	} // for
+} // ActualizeColumnSets
+
 // assign shortcuts
 const void cMainWindow::AssignShortcuts()
 {
@@ -148,7 +176,11 @@ cMainWindow::cMainWindow()
 	qaTabBarCloseAllOtherTabs = qmTabBar.addAction(tr("Close &all other tabs"));
 	addAction(qaTabBarCloseAllOtherTabs);
 
+	// column sets submenu
+	qaColumnSet->setMenu(&qmColumnSets);
+
 	// variables initialization
+	qagColumnSets = new QActionGroup(this);
 	qcDirModel.setModel(new QDirModel(&qcDirModel));
 	qcbCommand->setCompleter(&qcDirModel);
 
@@ -174,8 +206,8 @@ cMainWindow::cMainWindow()
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
 	connect(&qmRightHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmRightHistoryDirectoryList_aboutToShow()));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmLeftHistoryDirectoryList_triggered(QAction *)));
-	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));
-	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));*/
+	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));*/
+	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));
 
 	// show before change drive dialog can appear
 	show();
@@ -233,7 +265,7 @@ const void cMainWindow::on_cpLeft_GotFocus()
 	cpSource = cpLeft;
 	cpDestination = cpRight;
 	//SetSortByActions();
-	//ActualizeColumnSets();
+	ActualizeColumnSets();
 } // on_cpLeft_GotFocus
 
 // right panel got focus
@@ -243,7 +275,7 @@ const void cMainWindow::on_cpRight_GotFocus()
 	cpSource = cpRight;
 	cpDestination = cpLeft;
 	//SetSortByActions();
-	//ActualizeColumnSets();
+	ActualizeColumnSets();
 } // on_cpRight_GotFocus
 
 // about is selected
@@ -272,28 +304,34 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 		cpPlugins->Load();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshContent) {
-		//cpLeft->RefreshAllContents();
-		//cpRight->RefreshAllContents();
+		cpLeft->RefreshAllContents();
+		cpRight->RefreshAllContents();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshHeader) {
 		cpLeft->RefreshAllHeaders();
 		cpRight->RefreshAllHeaders();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshTabs) {
-		//cpLeft->RefreshTabs();
-		//cpRight->RefreshTabs();
+		cpLeft->RefreshTabs();
+		cpRight->RefreshTabs();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshFavouriteDirectories) {
 		//ActualizeFavouriteDirectories();
 	} // if
 	if (qfToDo & cOptionsDialog::RefreshColumnSets) {
-		//ActualizeColumnSets();
+		ActualizeColumnSets();
 	} // if
 	if (qfToDo & cOptionsDialog::ShowHideDirectoryViewHeader) {
-		//cpLeft->ShowHideHeaders();
-		//cpRight->ShowHideHeaders();
+		cpLeft->ShowHideHeaders();
+		cpRight->ShowHideHeaders();
 	} // if
 } // on_qaOptions_triggered
+
+// selected column set from column set submenu
+const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
+{
+	cpSource->SetColumnSet(action->text());
+} // on_qmColumnSets_triggered
 
 // context menu of left tab bar
 const void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos) const
