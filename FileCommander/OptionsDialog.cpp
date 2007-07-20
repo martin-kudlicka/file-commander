@@ -10,9 +10,33 @@
 #include <QtGui/QFontDialog>
 #include <QtGui/QDirModel>
 
+const QString qsASCII = "ASCII";
+#ifdef Q_WS_WIN
+const QString qsATTRIBUTES = "Attributes";
+#endif
+const QString qsBYTES = "Bytes";
+const QString qsDATE_TIME = "DateTime";
+const QString qsEXTENSION = "Extension";
+const QString qsEXTERNAL = "External";
+const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
+const QString qsGIGABYTES = "Gigabytes";
+const QString qsICON = "Icon";
+const QString qsKILOBYTES = "Kilobytes";
+const QString qsMEGABYTES = "Megabytes";
+const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
+const QString qsNO = "no";
+const QString qsNO_TO_ALL = "NoToAll";
+const QString qsOVERWRITE_ALL = "OverwriteAll";
+const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
+const QString qsSIZE = "Size";
+const QString qsSKIP_ALL = "SkipAll";
+const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
+const QString qsYES_TO_ALL = "YesToAll";
+
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");
 const QString qsPLUGINS = QT_TR_NOOP("Plugins");
+
 // shortcuts
 const QStringList qslSHORTCUTS__LISTER__FILE = QStringList() << qsSHORTCUT__LISTER__FILE__OPEN
 																				 << qsSHORTCUT__LISTER__FILE__SAVE_AS
@@ -79,7 +103,7 @@ cOptionsDialog::~cOptionsDialog()
 } // ~cOptionsDialog
 
 // add new column to current column set
-QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos /* INT_MAX */)
+QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos /* INT_MAX */) const
 {
 	QLineEdit *qleShow;
 	QSpinBox *qsbWidth;
@@ -121,7 +145,7 @@ QTreeWidgetItem *cOptionsDialog::AddColumnToColumns(const cSettings::sColumn &sc
 } // AddColumnToColumns
 
 // add another plugin into tree
-void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree)
+const void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree) const
 {
 	int iEnabledColumn;
 	QTreeWidgetItem *qtwiItem;
@@ -193,7 +217,7 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 } // cConfigurationDialog
 
 // create left toolbar for navigation
-void cOptionsDialog::CreateToolBar()
+const void cOptionsDialog::CreateToolBar()
 {
 	// create toolbar
 	qtbToolBar = new QToolBar();
@@ -271,7 +295,7 @@ bool cOptionsDialog::eventFilter(QObject *watched, QEvent *event)
 } // eventFilter
 
 // add new favourite directory/submenu
-void cOptionsDialog::FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType)
+const void cOptionsDialog::FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType)
 {
 	bool bInSubmenu;
 	cNewFavouriteDirectoryDialog *cnfdFavourite;
@@ -345,7 +369,7 @@ void cOptionsDialog::FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnf
 } // FavouriteAdd
 
 // fill options with set settings
-void cOptionsDialog::FillOptions()
+const void cOptionsDialog::FillOptions()
 {
 	cSettings::sLister slLister;
 	QString qsValue;
@@ -553,7 +577,7 @@ void cOptionsDialog::FillOptions()
 } // FillOptions
 
 // fills plugin information into tree
-void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree)
+const void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree) const
 {
 	int iI;
 	QStringList qslHeader;
@@ -571,7 +595,7 @@ void cOptionsDialog::FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins,
 } // FillPluginsTree
 
 // fill shortcuts for selected category
-void cOptionsDialog::FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems)
+const void cOptionsDialog::FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems) const
 {
 	int iI;
 
@@ -579,17 +603,20 @@ void cOptionsDialog::FillShortcutItems(const cSettings::eShortcutCategory &escCa
 
 	for (iI = 0; iI < qslItems.count(); iI++) {
 		QTreeWidgetItem *qtwShortcut;
+		QString *qsItem;
+
+		qsItem = &const_cast<QString &>(qslItems[iI]);
 
 		qtwShortcut = new QTreeWidgetItem(qtwShortcutItem);
-		qtwShortcut->setText(0, qslItems.at(iI));
-		qtwShortcut->setText(1, csSettings->GetShortcut(escCategory, qslItems.at(iI)));
+		qtwShortcut->setText(0, *qsItem);
+		qtwShortcut->setText(1, csSettings->GetShortcut(escCategory, *qsItem));
 	} // for
 
 	qtwShortcutItem->resizeColumnToContents(0);
 } // FillShortcutItems
 
 // get information about column from column set
-cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem)
+const cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem) const
 {
 	cSettings::sColumn scColumn;
 
@@ -622,25 +649,32 @@ QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavour
 
 	for (iI = 0; iI < qlChildren.count(); iI++) {
 		cSettings::sFavouriteDirectory sfdFavouriteDirectory;
+		QTreeWidgetItem *qtwiChild;
 
-		if (qlChildren.at(iI)->type() == cNewFavouriteDirectoryDialog::Directory) {
-			sfdFavouriteDirectory.qsSource = qhFavouriteDirectories.value(qlChildren.at(iI)).qsSource;
-			sfdFavouriteDirectory.bTarget = qhFavouriteDirectories.value(qlChildren.at(iI)).bTarget;
-			sfdFavouriteDirectory.qsTarget = qhFavouriteDirectories.value(qlChildren.at(iI)).qsTarget;
+		qtwiChild = qlChildren[iI];
+
+		if (qtwiChild->type() == cNewFavouriteDirectoryDialog::Directory) {
+			sFavouriteDirectory *sfdCurrent;
+
+			sfdCurrent = &qhFavouriteDirectories[qtwiChild];
+
+			sfdFavouriteDirectory.qsSource = sfdCurrent->qsSource;
+			sfdFavouriteDirectory.bTarget = sfdCurrent->bTarget;
+			sfdFavouriteDirectory.qsTarget = sfdCurrent->qsTarget;
 			sfdFavouriteDirectory.bSubmenu = false;
 		} else {
 			sfdFavouriteDirectory.bSubmenu = true;
-			sfdFavouriteDirectory.qlChildFavourites = GetFavouriteDirectories(qlChildren.at(iI));
+			sfdFavouriteDirectory.qlChildFavourites = GetFavouriteDirectories(qtwiChild);
 		} // if else
 
-		qlFavouriteDirectories.append(QPair<QString, cSettings::sFavouriteDirectory>(qlChildren.at(iI)->text(0), sfdFavouriteDirectory));
+		qlFavouriteDirectories.append(QPair<QString, cSettings::sFavouriteDirectory>(qtwiChild->text(0), sfdFavouriteDirectory));
 	} // for
 
 	return qlFavouriteDirectories;
 } // GetFavouriteDirectories
 
 // get info about specified plugins
-QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins)
+QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins) const
 {
 	int iI;
 	QList<cSettings::sPlugin> qlPlugins;
@@ -674,7 +708,7 @@ QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPl
 } // GetPluginList
 
 // clicked on action in tool bar panel
-void cOptionsDialog::on_qagToolBarActions_triggered(QAction *qaAction)
+const void cOptionsDialog::on_qagToolBarActions_triggered(QAction *qaAction) const
 {
 	if (qaAction == qaPanels) {
 		qswTabs->setCurrentIndex(iPANELS_TAB);
@@ -692,7 +726,7 @@ void cOptionsDialog::on_qagToolBarActions_triggered(QAction *qaAction)
 } // on_qagToolBarActions_triggered
 
 // column set changed
-void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
+const void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text) const
 {
 	QStringList qslColumns;
 
@@ -717,7 +751,7 @@ void cOptionsDialog::on_qcbColumnSet_currentIndexChanged(const QString &text)
 } // on_qcbColumnSet_currentIndexChanged
 
 // set target favourite directory too
-void cOptionsDialog::on_qcbFavouriteTargetDirectory_stateChanged(int state)
+const void cOptionsDialog::on_qcbFavouriteTargetDirectory_stateChanged(int state)
 {
 	qleFavouriteTarget->setEnabled(state == Qt::Checked);
 	qpbFavouriteTargetBrowse->setEnabled(state == Qt::Checked);
@@ -729,62 +763,62 @@ void cOptionsDialog::on_qcbFavouriteTargetDirectory_stateChanged(int state)
 } // on_qcbFavouriteTargetDirectory_toggled
 
 // change of show directory header view
-void cOptionsDialog::on_qcbShowDirectoryViewHeader_stateChanged(int state)
+const void cOptionsDialog::on_qcbShowDirectoryViewHeader_stateChanged(int state)
 {
 	qfToDo |= ShowHideDirectoryViewHeader;
 } // on_qcbShowDirectoryViewHeader_stateChanged
 
 // change of show drive letter in tab bar
-void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
+const void cOptionsDialog::on_qcbShowDriveLetter_stateChanged(int state)
 {
 	qfToDo |= RefreshTabs;
 } // on_qcbShowDriveLetter_stateChanged
 
 // change of show hidden files
-void cOptionsDialog::on_qcbShowHiddenFiles_stateChanged(int state)
+const void cOptionsDialog::on_qcbShowHiddenFiles_stateChanged(int state)
 {
 	qfToDo |= RefreshContent;
 } // on_qcbShowHiddenFiles_stateChanged
 
 // change of show system files
-void cOptionsDialog::on_qcbShowSystemFiles_stateChanged(int state)
+const void cOptionsDialog::on_qcbShowSystemFiles_stateChanged(int state)
 {
 	qfToDo |= RefreshContent;
 } // on_qcbShowSystemFiles_stateChanged
 
 // change of show tab bar with only one tab
-void cOptionsDialog::on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state)
+const void cOptionsDialog::on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state)
 {
 	qfToDo |= RefreshTabs;
 } // on_qcbShowTabBarWithOnlyOneTab_stateChanged
 
 // change of show square brackets around directory name
-void cOptionsDialog::on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state)
+const void cOptionsDialog::on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state)
 {
 	qfToDo |= RefreshContent;
 } // on_qcbSquareBracketsAroundDirectoryName_stateChanged
 
 // changes accepted
-void cOptionsDialog::on_qdbbResponse_accepted()
+const void cOptionsDialog::on_qdbbResponse_accepted()
 {
 	SaveOptions();
 	done(qfToDo);
 } // on_qdbbResponse_accepted
 
-void cOptionsDialog::on_qdbbResponse_rejected()
+const void cOptionsDialog::on_qdbbResponse_rejected()
 {
 	csSettings->RestoreSettings(qlOldOptions);
 	done(Nothing);
 } // on_qdbbResponse_rejected
 
 // date/time format changed
-void cOptionsDialog::on_qleDateTimeDisplay_textEdited(const QString &text)
+const void cOptionsDialog::on_qleDateTimeDisplay_textEdited(const QString &text)
 {
 	qfToDo |= RefreshContent;
 } // on_qleDateTimeDisplay_textEdited
 
 // source favourite directory path changed
-void cOptionsDialog::on_qleFavouriteSource_textChanged(const QString &text)
+const void cOptionsDialog::on_qleFavouriteSource_textChanged(const QString &text)
 {
 	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
 		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsSource = text;
@@ -794,7 +828,7 @@ void cOptionsDialog::on_qleFavouriteSource_textChanged(const QString &text)
 } // on_qleFavouriteSource_textChanged
 
 // target favourite directory path changed
-void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
+const void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
 {
 	if (qtwFavouriteDirectories->currentItem() && qtwFavouriteDirectories->currentItem()->type() == cNewFavouriteDirectoryDialog::Directory) {
 		qhFavouriteDirectories[qtwFavouriteDirectories->currentItem()].qsTarget = text;
@@ -804,19 +838,19 @@ void cOptionsDialog::on_qleFavouriteTarget_textChanged(const QString &text)
 } // on_qleFavouriteTarget_textChanged
 
 // date/time format for plugin changed
-void cOptionsDialog::on_qlePluginDateTimeDisplay_textEdited(const QString &text)
+const void cOptionsDialog::on_qlePluginDateTimeDisplay_textEdited(const QString &text)
 {
 	qfToDo |= RefreshContent;
 } // on_qlePluginDateTimeDisplay_textEdited
 
 // time format for plugin changed
-void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
+const void cOptionsDialog::on_qlePluginTimeDisplay_textEdited(const QString &text)
 {
 	qfToDo |= RefreshContent;
 } // on_qlePluginTimeDisplay_textEdited
 
 // shortcut changed
-void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
+const void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 {
 	qtwShortcutItem->currentItem()->setText(1, text);
 	csSettings->SetShortcut(static_cast<cSettings::eShortcutCategory>(qtwShortcutCategory->currentItem()->data(0, Qt::UserRole).toInt()), qtwShortcutItem->currentItem()->text(0), text);
@@ -825,7 +859,7 @@ void cOptionsDialog::on_qleShortcut_textChanged(const QString &text)
 } // on_qleShortcut_textEdited
 
 // changed column name visible in dir view
-void cOptionsDialog::on_qleShow_textEdited(const QString &text)
+const void cOptionsDialog::on_qleShow_textEdited(const QString &text)
 {
 	SaveOption(Columns);
 
@@ -833,7 +867,7 @@ void cOptionsDialog::on_qleShow_textEdited(const QString &text)
 } // on_qleShow_textEdited
 
 // column selected into column set
-void cOptionsDialog::on_qmColumns_triggered(QAction *action)
+const void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 {
 	cSettings::sColumn scColumn;
 	QStringList qslSelection;
@@ -877,7 +911,7 @@ void cOptionsDialog::on_qmColumns_triggered(QAction *action)
 } // on_qmColumns_triggered
 
 // add button is clicked on in content plugins
-void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 {
 	QString qsFile;
 
@@ -895,7 +929,7 @@ void cOptionsDialog::on_qpbAddContentPlugin_clicked(bool checked /* false */)
 } // on_qpbAddContentPlugin_clicked
 
 // add button is clicked on in lister plugins
-void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 {
 	QString qsFile;
 
@@ -913,7 +947,7 @@ void cOptionsDialog::on_qpbAddListerPlugin_clicked(bool checked /* false */)
 } // on_qpbAddListerPlugin_clicked
 
 // add button is clicked on in packer plugins
-void cOptionsDialog::on_qpbAddPackerPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbAddPackerPlugin_clicked(bool checked /* false */)
 {
 	QString qsFile;
 
@@ -941,7 +975,7 @@ void cOptionsDialog::on_qpbAddPackerPlugin_clicked(bool checked /* false */)
 } // on_qpbAddPackerPlugin_clicked
 
 // column down button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 {
 	int iIndex;
 	cSettings::sColumn scColumn;
@@ -957,7 +991,7 @@ void cOptionsDialog::on_qpbColumnDown_clicked(bool checked /* false */)
 } // on_qpbColumnDown_clicked
 
 // column remove button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 {
 	delete qtwColumns->currentItem();
 	SaveOption(Columns);
@@ -966,7 +1000,7 @@ void cOptionsDialog::on_qpbColumnRemove_clicked(bool checked /* false */)
 } // on_qpbColumnRemove_clicked
 
 // column set add button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 {
 	QString qsName;
 
@@ -982,7 +1016,7 @@ void cOptionsDialog::on_qpbColumnSetAdd_clicked(bool checked /* false */)
 } // on_qpbColumnSetAdd_clicked
 
 // column set remove button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 {
 	csSettings->RemoveColumnSet(qcbColumnSet->currentText());
 	qcbColumnSet->removeItem(qcbColumnSet->currentIndex());
@@ -991,7 +1025,7 @@ void cOptionsDialog::on_qpbColumnSetRemove_clicked(bool checked /* false */)
 } // on_qpbColumnSetRemove_clicked
 
 // column up button is clicked on in columns view
-void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 {
 	int iIndex;
 	cSettings::sColumn scColumn;
@@ -1007,7 +1041,7 @@ void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 } // on_qpbColumnUp_clicked
 
 // external editor browse button is clicked on
-void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */)
 {
 	QString qsEditor;
 
@@ -1025,7 +1059,7 @@ void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */
 } // on_qpbExternalEditorBrowse_clicked
 
 // external viewer browse button is clicked on
-void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */)
 {
 	QString qsViewer;
 
@@ -1043,19 +1077,19 @@ void cOptionsDialog::on_qpbExternalViewerBrowse_clicked(bool checked /* false */
 } // on_qpbExternalViewerBrowse_clicked
 
 // add favourite directory button is clicked on
-void cOptionsDialog::on_qpbFavouriteAddDirectory_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbFavouriteAddDirectory_clicked(bool checked /* false */)
 {
 	FavouriteAdd(cNewFavouriteDirectoryDialog::Directory);
 } // on_qpbFavouriteAddDirectory_clicked
 
 // add submenu button is clicked on
-void cOptionsDialog::on_qpbFavouriteAddSubmenu_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbFavouriteAddSubmenu_clicked(bool checked /* false */)
 {
 	FavouriteAdd(cNewFavouriteDirectoryDialog::Submenu);
 } // on_qpbFavouriteAddSubmenu_clicked
 
 // remove favourite button is clicked on
-void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
 {
 	// TODO on_qpbFavouriteRemove_clicked remove subitems from hash
 	qhFavouriteDirectories.remove(qtwFavouriteDirectories->currentItem());
@@ -1065,7 +1099,7 @@ void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
 } // on_qpbFavouriteRemove_clicked
 
 // favourite source browse button is clicked on
-void cOptionsDialog::on_qpbFavouriteSourceBrowse_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbFavouriteSourceBrowse_clicked(bool checked /* false */)
 {
 	QString qsDirectory;
 
@@ -1077,7 +1111,7 @@ void cOptionsDialog::on_qpbFavouriteSourceBrowse_clicked(bool checked /* false *
 } // on_qpbFavouriteSourceBrowse_clicked
 
 // favourite target browse button is clicked on
-void cOptionsDialog::on_qpbFavouriteTargetBrowse_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbFavouriteTargetBrowse_clicked(bool checked /* false */)
 {
 	QString qsDirectory;
 
@@ -1089,7 +1123,7 @@ void cOptionsDialog::on_qpbFavouriteTargetBrowse_clicked(bool checked /* false *
 } // on_qpbFavouriteTargetBrowse_clicked
 
 // change font in lister button is clicked on
-void cOptionsDialog::on_qpbListerChangeFont_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbListerChangeFont_clicked(bool checked /* false */)
 {
 	bool bOK;
 	QFont qfFont;
@@ -1102,7 +1136,7 @@ void cOptionsDialog::on_qpbListerChangeFont_clicked(bool checked /* false */)
 } // on_qpbListerChangeFont_clicked
 
 // remove content plugin button is clicked on
-void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 {
 	delete qtwContentPlugins->selectedItems().at(0);
 
@@ -1110,7 +1144,7 @@ void cOptionsDialog::on_qpbRemoveContentPlugin_clicked(bool checked /* false */)
 } // on_qpbRemoveContentPlugin_clicked
 
 // remove lister plugin button is clicked on
-void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 {
 	delete qtwListerPlugins->selectedItems().at(0);
 
@@ -1118,7 +1152,7 @@ void cOptionsDialog::on_qpbRemoveListerPlugin_clicked(bool checked /* false */)
 } // on_qpbRemoveListerPlugin_clicked
 
 // remove packer plugin button is clicked on
-void cOptionsDialog::on_qpbRemovePackerPlugin_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbRemovePackerPlugin_clicked(bool checked /* false */)
 {
 	delete qtwPackerPlugins->selectedItems().at(0);
 
@@ -1126,43 +1160,43 @@ void cOptionsDialog::on_qpbRemovePackerPlugin_clicked(bool checked /* false */)
 } // on_qpbRemovePackerPlugin_clicked
 
 // shortcut clear button is clicked on
-void cOptionsDialog::on_qpbShortcutClear_clicked(bool checked /* false */)
+const void cOptionsDialog::on_qpbShortcutClear_clicked(bool checked /* false */) const
 {
 	qleShortcut->clear();
 } // on_qpbShortcutClear_clicked
 
 // size in bytes status change
-void cOptionsDialog::on_qrbSizeBytes_toggled(bool checked)
+const void cOptionsDialog::on_qrbSizeBytes_toggled(bool checked)
 {
 	qfToDo |= RefreshContent;
 } // on_qrbSizeBytes_toggled
 
 // dynamic size status change
-void cOptionsDialog::on_qrbSizeDynamic_toggled(bool checked)
+const void cOptionsDialog::on_qrbSizeDynamic_toggled(bool checked)
 {
 	qfToDo |= RefreshContent;
 } // on_qrbSizeDynamic_toggled
 
 // size in gigabytes status change
-void cOptionsDialog::on_qrbSizeGigabytes_toggled(bool checked)
+const void cOptionsDialog::on_qrbSizeGigabytes_toggled(bool checked)
 {
 	qfToDo |= RefreshContent;
 } // on_qrbSizeGigabytes_toggled
 
 // size in kilobytes status change
-void cOptionsDialog::on_qrbSizeKilobytes_toggled(bool checked)
+const void cOptionsDialog::on_qrbSizeKilobytes_toggled(bool checked)
 {
 	qfToDo |= RefreshContent;
 } // on_qrbSizeKilobytes_toggled
 
 // size in megabytes status change
-void cOptionsDialog::on_qrbSizeMegabytes_toggled(bool checked)
+const void cOptionsDialog::on_qrbSizeMegabytes_toggled(bool checked)
 {
 	qfToDo |= RefreshContent;
 } // on_qrbSizeMegabytes_toggled
 
 // changed width of column
-void cOptionsDialog::on_qsbWidth_valueChanged(int val)
+const void cOptionsDialog::on_qsbWidth_valueChanged(int val)
 {
 	SaveOption(Columns);
 
@@ -1170,7 +1204,7 @@ void cOptionsDialog::on_qsbWidth_valueChanged(int val)
 } // on_qsbWidth_valueChanged
 
 // selected cell changed
-void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+const void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const
 {
 	if (current && qtwColumns->indexOfTopLevelItem(qtwColumns->currentItem()) > 0) {
 			qpbColumnUp->setEnabled(true);
@@ -1185,7 +1219,7 @@ void cOptionsDialog::on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, 
 } // on_qtwColumns_currentItemChanged
 
 // selected column changed
-void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
+const void cOptionsDialog::on_qtwColumns_itemSelectionChanged() const
 {
 	if (qtwColumns->selectedItems().count() > 0) {
 		qpbColumnRemove->setEnabled(true);
@@ -1195,13 +1229,13 @@ void cOptionsDialog::on_qtwColumns_itemSelectionChanged()
 } // on_qtwColumns_itemSelectionChanged
 
 // selected content plugin changed
-void cOptionsDialog::on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column)
+const void cOptionsDialog::on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column)
 {
 	qfToDo |= ReloadPlugins;
 } // on_qtwContentPlugins_itemChanged
 
 // selected content plugin changed
-void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
+const void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged() const
 {
 	if (qtwContentPlugins->selectedItems().count() > 0) {
 		qpbRemoveContentPlugin->setEnabled(true);
@@ -1211,19 +1245,22 @@ void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged()
 } // on_qtwContentPlugins_itemSelectionChanged
 
 // another favourite directory is selected
-void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
 	qpbFavouriteRemove->setEnabled(current);
 
 	if (current && current->type() == cNewFavouriteDirectoryDialog::Directory) {
+		sFavouriteDirectory *sfdCurrent;
+
 		qleFavouriteSource->setEnabled(true);
 		qpbFavouriteSourceBrowse->setEnabled(true);
 		qcbFavouriteTargetDirectory->setEnabled(true);
 
 		// set values for currently selected favourite directory
-		qleFavouriteSource->setText(qhFavouriteDirectories.value(current).qsSource);
-		qcbFavouriteTargetDirectory->setChecked(qhFavouriteDirectories.value(current).bTarget);
-		qleFavouriteTarget->setText(qhFavouriteDirectories.value(current).qsTarget);
+		sfdCurrent = &qhFavouriteDirectories[current];
+		qleFavouriteSource->setText(sfdCurrent->qsSource);
+		qcbFavouriteTargetDirectory->setChecked(sfdCurrent->bTarget);
+		qleFavouriteTarget->setText(sfdCurrent->qsTarget);
 	} else {
 		qleFavouriteSource->setEnabled(false);
 		qleFavouriteSource->clear();
@@ -1235,13 +1272,13 @@ void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetIt
 } // on_qtwFavouriteDirectories_currentItemChanged
 
 // selected lister plugin changed
-void cOptionsDialog::on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column)
+const void cOptionsDialog::on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column)
 {
 	qfToDo |= ReloadPlugins;
 } // on_qtwListerPlugins_itemSelectionChanged
 
 // selected lister plugin changed
-void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
+const void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged() const
 {
 	if (qtwListerPlugins->selectedItems().count() > 0) {
 		qpbRemoveListerPlugin->setEnabled(true);
@@ -1251,13 +1288,13 @@ void cOptionsDialog::on_qtwListerPlugins_itemSelectionChanged()
 } // on_qtwListerPlugins_itemSelectionChanged
 
 // selected packer plugin changed
-void cOptionsDialog::on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column)
+const void cOptionsDialog::on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column)
 {
 	qfToDo |= ReloadPlugins;
 } // on_qtwPackerPlugins_itemChanged
 
 // selected packer plugin changed
-void cOptionsDialog::on_qtwPackerPlugins_itemSelectionChanged()
+const void cOptionsDialog::on_qtwPackerPlugins_itemSelectionChanged() const
 {
 	if (qtwPackerPlugins->selectedItems().count() > 0) {
 		qpbRemovePackerPlugin->setEnabled(true);
@@ -1267,7 +1304,7 @@ void cOptionsDialog::on_qtwPackerPlugins_itemSelectionChanged()
 } // on_qtwPackerPlugins_itemSelectionChanged
 
 // selected shortcut category changed
-void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+const void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const
 {
 	qtwShortcutItem->clear();
 
@@ -1333,7 +1370,7 @@ void cOptionsDialog::on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *
 } // on_qtwShortcutCategory_itemSelectionChanged
 
 // selected shortcut changed
-void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+const void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const
 {
 	// set shortcut line edit
 	qleShortcut->blockSignals(true);
@@ -1348,7 +1385,7 @@ void cOptionsDialog::on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *curr
 } // on_qtwShortcutItem_currentItemChanged
 
 // prepare context plugin menu
-void cOptionsDialog::PrepareColumnsMenu()
+const void cOptionsDialog::PrepareColumnsMenu()
 {
 	QAction *qaAction, *qaNative, *qaPlugins;
 	QHash<QString, cContentPlugin::sPluginInfo> qhPlugins;
@@ -1393,32 +1430,40 @@ void cOptionsDialog::PrepareColumnsMenu()
 			qaPlugin = qmPlugins->addAction(qhiPlugins.key());
 
 			qmFields = new QMenu(qmPlugins);
-			for (iI = 0; iI < qhiPlugins.value().qlFields.count() && qhiPlugins.value().qlFields.at(iI).iType != ft_fulltext; iI++) {
-				// plugin's fields (columns)
-				QAction *qaField;
+			for (iI = 0; iI < qhiPlugins.value().qlFields.count(); iI++) {
+				cContentPlugin::sField *sfField;
+				
+				sfField = &const_cast<cContentPlugin::sPluginInfo &>(qhiPlugins.value()).qlFields[iI];
+				if (sfField->iType != ft_fulltext) {
+					// plugin's fields (columns)
+					QAction *qaField;
 
-				qaField = qmFields->addAction(qhiPlugins.value().qlFields.at(iI).qsName);
+					qaField = qmFields->addAction(sfField->qsName);
 
-				if (!qhiPlugins.value().qlFields.at(iI).qsUnits.isEmpty() && qhiPlugins.value().qlFields.at(iI).iType != ft_multiplechoice) {
-					// column's units
-					int iJ;
-					QMenu *qmUnits;
-					QStringList qslUnits;
+					if (!sfField->qsUnits.isEmpty() && sfField->iType != ft_multiplechoice) {
+						// column's units
+						int iJ;
+						QMenu *qmUnits;
+						QStringList qslUnits;
 
-					qslUnits = qhiPlugins.value().qlFields.at(iI).qsUnits.split('|');
+						qslUnits = sfField->qsUnits.split('|');
 
-					qmUnits = new QMenu(qmFields);
-					for (iJ = 0; iJ < qslUnits.count(); iJ++) {
-						QAction *qaUnit;
+						qmUnits = new QMenu(qmFields);
+						for (iJ = 0; iJ < qslUnits.count(); iJ++) {
+							QAction *qaUnit;
+							QString *qsUnit;
 
-						qaUnit = qmUnits->addAction(qslUnits.at(iJ));
-						qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName).arg(qslUnits.at(iJ)));
-					} // for
+							qsUnit = &qslUnits[iJ];
 
-					qaField->setMenu(qmUnits);
-				} else {
-					qaField->setData(QString("%1|%2|%3").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(qhiPlugins.value().qlFields.at(iI).qsName));
-				} // if else
+							qaUnit = qmUnits->addAction(*qsUnit);
+							qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(sfField->qsName).arg(*qsUnit));
+						} // for
+
+						qaField->setMenu(qmUnits);
+					} else {
+						qaField->setData(QString("%1|%2|%3").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(sfField->qsName));
+					} // if else
+				} // if
 			} // for
 			qaPlugin->setMenu(qmFields);
 		} // while
@@ -1427,7 +1472,7 @@ void cOptionsDialog::PrepareColumnsMenu()
 } // PrepareColumnsMenu
 
 // save specific changes into settings file
-void cOptionsDialog::SaveOption(const eOption &eoType)
+const void cOptionsDialog::SaveOption(const eOption &eoType) const
 {
 	int iI;
 	QList<cSettings::sColumn> qlColumns;
@@ -1446,7 +1491,7 @@ void cOptionsDialog::SaveOption(const eOption &eoType)
 } // SaveOption
 
 // save changes into application's settings file
-void cOptionsDialog::SaveOptions()
+const void cOptionsDialog::SaveOptions()
 {
 	cSettings::sLister slLister;
 	QString qsValue;
@@ -1573,30 +1618,33 @@ void cOptionsDialog::SaveOptions()
 } // SaveOptions
 
 // fill favourite directories into tree widget
-void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+const void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
 {
 	int iI;
 
 	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
 		cNewFavouriteDirectoryDialog::eType etType;
+		QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
 		QTreeWidgetItem *qtwiFavouriteDirectory;
 		sFavouriteDirectory sfdFavouriteDirectory;
 
-		if (qlFavouriteDirectories.at(iI).second.bSubmenu) {
+		qpFavourite = &qlFavouriteDirectories[iI];
+
+		if (qpFavourite->second.bSubmenu) {
 			etType = cNewFavouriteDirectoryDialog::Submenu;
 		} else {
 			etType = cNewFavouriteDirectoryDialog::Directory;
 		} // if else
 
 		qtwiFavouriteDirectory = new QTreeWidgetItem(qtwiParent, etType);
-		qtwiFavouriteDirectory->setText(0, qlFavouriteDirectories.at(iI).first);
+		qtwiFavouriteDirectory->setText(0, qpFavourite->first);
 
 		if (etType == cNewFavouriteDirectoryDialog::Submenu) {
-			SetFavouriteDirectories(qtwiFavouriteDirectory, qlFavouriteDirectories.at(iI).second.qlChildFavourites);
+			SetFavouriteDirectories(qtwiFavouriteDirectory, qpFavourite->second.qlChildFavourites);
 		} else {
-			sfdFavouriteDirectory.qsSource = qlFavouriteDirectories.at(iI).second.qsSource;
-			sfdFavouriteDirectory.bTarget = qlFavouriteDirectories.at(iI).second.bTarget;
-			sfdFavouriteDirectory.qsTarget = qlFavouriteDirectories.at(iI).second.qsTarget;
+			sfdFavouriteDirectory.qsSource = qpFavourite->second.qsSource;
+			sfdFavouriteDirectory.bTarget = qpFavourite->second.bTarget;
+			sfdFavouriteDirectory.qsTarget = qpFavourite->second.qsTarget;
 		} // if else
 
 		qhFavouriteDirectories.insert(qtwiFavouriteDirectory, sfdFavouriteDirectory);

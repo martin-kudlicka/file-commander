@@ -1,4 +1,4 @@
-#include "Options/NewFavouriteDirectoryDialog.h"
+#include "OptionsDialog/NewFavouriteDirectoryDialog.h"
 
 // constructor
 cNewFavouriteDirectoryDialog::cNewFavouriteDirectoryDialog(QDialog *qdParent, const eType &etType, QString *qsDirectory, ePosition *epPosition, bool *bInSubmenu)
@@ -31,13 +31,13 @@ cNewFavouriteDirectoryDialog::cNewFavouriteDirectoryDialog(QDialog *qdParent, co
 } // cNewFavouriteDirectoryDialog
 
 // dialog rejected
-void cNewFavouriteDirectoryDialog::on_qpbCancel_clicked(bool checked /* false */)
+const void cNewFavouriteDirectoryDialog::on_qpbCancel_clicked(bool checked /* false */)
 {
 	reject();
 } // on_qpbCancel_clicked
 
 // dialog accepted
-void cNewFavouriteDirectoryDialog::on_qpbOK_clicked(bool checked /* false */)
+const void cNewFavouriteDirectoryDialog::on_qpbOK_clicked(bool checked /* false */)
 {
 	*qsDirectory = qleDirectory->text();
 	if (qgbPosition->isEnabled()) {
@@ -50,5 +50,6 @@ void cNewFavouriteDirectoryDialog::on_qpbOK_clicked(bool checked /* false */)
 	if (qcbPutInSubmenu->isEnabled()) {
 		*bInSubmenu = qcbPutInSubmenu->isChecked();
 	} // if
+
 	accept();
 } // on_qpbOK_clicked

@@ -9,7 +9,7 @@
 #include <QtGui/QMenu>
 #include "Plugins/ContentPlugin.h"
 #include <QtGui/QToolBar>
-#include "Options/NewFavouriteDirectoryDialog.h"
+#include "OptionsDialog/NewFavouriteDirectoryDialog.h"
 #include <QtGui/QCompleter>
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
@@ -95,37 +95,33 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QTreeWidgetItem *qtwiShortcutPanel;									///< shortcut panel category
 		QTreeWidgetItem *qtwiShortcutTabs;									///< shortcut tabs category
 
-		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX);
+		QTreeWidgetItem *AddColumnToColumns(const cSettings::sColumn &scColumn, const int &iPos = INT_MAX) const;
 																						///< add new column to current column set
 																						/**< \param scColumn new column to add
 																							  \param iPos position to insert new column
 																							  \return added row */
-		void AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree);
+		const void AddPluginIntoTree(const cSettings::sPlugin &spPlugin, QTreeWidget *qtwTree) const;
 																						///< add another plugin into tree
 																						/**< \param spPlugin plugin to add
 																							  \param qtwTree tree to put plugin into */
-		void CreateToolBar();													///< create left toolbar for navigation
+		const void CreateToolBar();											///< create left toolbar for navigation
 		bool eventFilter(QObject *watched, QEvent *event);				///< event filter
 																						/**< \param watched filtered object
 																							  \param event event description
 																							  \return true if event is handled */
-		void FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType);
+		const void FavouriteAdd(const cNewFavouriteDirectoryDialog::eType &cnfdType);
 																						///< add new favourite directory/submenu
 																						/**< \param cnfdType type of favourite */
-		void FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree);
+		const void FillOptions();												///< fill options with set settings
+		const void FillPluginsTree(const QList<cSettings::sPlugin> &qlPlugins, QTreeWidget *qtwTree) const;
 																						///< fills plugin information into tree
 																						/**< \param qlPlugins plugin list
 																							  \param qtwTree tree to fill */
-		void FillOptions();														///< fill options with set settings
-		void FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems);
+		const void FillShortcutItems(const cSettings::eShortcutCategory &escCategory, const QStringList &qslItems) const;
 																						///< fill shortcuts for selected category
 																						/**< \param escCategory shortcut category
 																							  \param qslItems shortcut list */
-		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins);
-																						///< get info about specified plugins
-																						/**< \param qtwPlugins plugins to get info
-																							  \return plugin info list */
-		cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem);
+		const cSettings::sColumn GetColumnInfo(QTreeWidgetItem *qtwiItem) const;
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column
 																							  \return column information */
@@ -133,150 +129,171 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< collect favourite directories
 																						/**< \param qtwiParent favourite to start with
 																							  \return list of favourites description */
-		void PrepareColumnsMenu();												///< prepare context columns menu
-		void SaveOption(const eOption &eoType);							///< save specific changes into settings file
+		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins) const;
+																						///< get info about specified plugins
+																						/**< \param qtwPlugins plugins to get info
+																							  \return plugin info list */
+		const void PrepareColumnsMenu();										///< prepare context columns menu
+		const void SaveOption(const eOption &eoType) const;			///< save specific changes into settings file
 																						/**< \param eoType type of changes */
-		void SaveOptions();														///< save changes into application's settings file
-		void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+		const void SaveOptions();												///< save changes into application's settings file
+		const void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
 																						///< fill favourite directories into tree widget
 																						/**< \param qtwiParent favourite to start with
 																							  \param qlFavouriteDirectories list of favourites description */
 
 	private slots:
-		void on_qagToolBarActions_triggered(QAction *qaAction);		///< clicked on action in tool bar panel
+		const void on_qagToolBarActions_triggered(QAction *qaAction) const;
+																						///< clicked on action in tool bar panel
 																						/**< \param qaAction tool bar's action */
-		void on_qcbColumnSet_currentIndexChanged(const QString &text);
+		const void on_qcbColumnSet_currentIndexChanged(const QString &text) const;
 																						///< column set changed
 																						/**< \param text new selected column set */
-		void on_qcbFavouriteTargetDirectory_stateChanged(int state);
+		const void on_qcbFavouriteTargetDirectory_stateChanged(int state);
 																						///< set target favourite directory too
 																						/**< \param state set target favourite directory too */
-		void on_qcbShowDirectoryViewHeader_stateChanged(int state);	///< change of show directory header view
+		const void on_qcbShowDirectoryViewHeader_stateChanged(int state);
+																						///< change of show directory header view
 																						/**< \param state show directory header view flag */
-		void on_qcbShowDriveLetter_stateChanged(int state);			///< change of show drive letter in tab bar
+		const void on_qcbShowDriveLetter_stateChanged(int state);	///< change of show drive letter in tab bar
 																						/**< \param state show drive letter in tab bar flag */
-		void on_qcbShowHiddenFiles_stateChanged(int state);			///< change of show hidden files
+		const void on_qcbShowHiddenFiles_stateChanged(int state);	///< change of show hidden files
 																						/**< \param state show hidden files flag */
-		void on_qcbShowSystemFiles_stateChanged(int state);			///< change of show system files
+		const void on_qcbShowSystemFiles_stateChanged(int state);	///< change of show system files
 																						/**< \param state show system files flag */
-		void on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state);
+		const void on_qcbShowTabBarWithOnlyOneTab_stateChanged(int state);
 																						///< change of show tab bar with only one tab
 																						/**< \param state show tab bar with only one tab flag */
-		void on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state);
+		const void on_qcbSquareBracketsAroundDirectoryName_stateChanged(int state);
 																						///< change of show square brackets around directory name
 																						/**< \param state show square brackets around directory name flag */
-		void on_qdbbResponse_accepted();										///< changes accepted
-		void on_qdbbResponse_rejected();										///< changes rejected
-		void on_qleDateTimeDisplay_textEdited(const QString &text);	///< date/time format changed
+		const void on_qdbbResponse_accepted();								///< changes accepted
+		const void on_qdbbResponse_rejected();								///< changes rejected
+		const void on_qleDateTimeDisplay_textEdited(const QString &text);
+																						///< date/time format changed
 																						/**< \param text new date/time format */
-		void on_qleFavouriteSource_textChanged(const QString &text);
+		const void on_qleFavouriteSource_textChanged(const QString &text);
 																						///< source favourite directory path changed
 																						/**< \param text source favourite directory path */
-		void on_qleFavouriteTarget_textChanged(const QString &text);
+		const void on_qleFavouriteTarget_textChanged(const QString &text);
 																						///< target favourite directory path changed
 																						/**< \param text target favourite directory path */
-		void on_qlePluginDateTimeDisplay_textEdited(const QString &text);
+		const void on_qlePluginDateTimeDisplay_textEdited(const QString &text);
 																						///< date/time format for plugin changed
 																						/**< \param text new date/time format */
-		void on_qlePluginTimeDisplay_textEdited(const QString &text);
+		const void on_qlePluginTimeDisplay_textEdited(const QString &text);
 																						///< time format for plugin changed
 																						/**< \param text new time format */
-		void on_qleShortcut_textChanged(const QString &text);			///< shortcut changed
+		const void on_qleShortcut_textChanged(const QString &text);
+																						///< shortcut changed
 																						/**< \param text new shortcut key sequence */
-		void on_qleShow_textEdited(const QString &text);				///< changed column name visible in dir view
+		const void on_qleShow_textEdited(const QString &text);
+																						///< changed column name visible in dir view
 																						/**< \param text new column name */
-		void on_qmColumns_triggered(QAction *action);					///< column selected into column set
+		const void on_qmColumns_triggered(QAction *action);			///< column selected into column set
 																						/**< \param action selected column (or column's unit) */
-		void on_qpbAddContentPlugin_clicked(bool checked = false);	///< add button is clicked on in content plugins
+		const void on_qpbAddContentPlugin_clicked(bool checked = false);
+																						///< add button is clicked on in content plugins
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbAddListerPlugin_clicked(bool checked = false);	///< add button is clicked on in lister plugins
+		const void on_qpbAddListerPlugin_clicked(bool checked = false);
+																						///< add button is clicked on in lister plugins
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbAddPackerPlugin_clicked(bool checked = false);	///< add button is clicked on in packer plugins
+		const void on_qpbAddPackerPlugin_clicked(bool checked = false);
+																						///< add button is clicked on in packer plugins
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnDown_clicked(bool checked = false);			///< column down button is clicked on in columns view
+		const void on_qpbColumnDown_clicked(bool checked = false);	///< column down button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnRemove_clicked(bool checked = false);		///< column remove button is clicked on in columns view
+		const void on_qpbColumnRemove_clicked(bool checked = false);
+																						///< column remove button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnSetAdd_clicked(bool checked = false);		///< column set add button is clicked on in columns view
+		const void on_qpbColumnSetAdd_clicked(bool checked = false);
+																						///< column set add button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnSetRemove_clicked(bool checked = false);	///< column set remove button is clicked on in columns view
+		const void on_qpbColumnSetRemove_clicked(bool checked = false);
+																						///< column set remove button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbColumnUp_clicked(bool checked = false);				///< column up button is clicked on in columns view
+		const void on_qpbColumnUp_clicked(bool checked = false);		///< column up button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbExternalEditorBrowse_clicked(bool checked = false);
+		const void on_qpbExternalEditorBrowse_clicked(bool checked = false);
 																						///< external editor browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbExternalViewerBrowse_clicked(bool checked = false);
+		const void on_qpbExternalViewerBrowse_clicked(bool checked = false);
 																						///< external viewer browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbFavouriteAddDirectory_clicked(bool checked = false);
+		const void on_qpbFavouriteAddDirectory_clicked(bool checked = false);
 																						///< add favourite directory button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbFavouriteAddSubmenu_clicked(bool checked = false);
+		const void on_qpbFavouriteAddSubmenu_clicked(bool checked = false);
 																						///< add submenu button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbFavouriteRemove_clicked(bool checked = false);	///< remove favourite button is clicked on
+		const void on_qpbFavouriteRemove_clicked(bool checked = false);
+																						///< remove favourite button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbFavouriteSourceBrowse_clicked(bool checked = false);
+		const void on_qpbFavouriteSourceBrowse_clicked(bool checked = false);
 																						///< favourite source browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbFavouriteTargetBrowse_clicked(bool checked = false);
+		const void on_qpbFavouriteTargetBrowse_clicked(bool checked = false);
 																						///< favourite target browse button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbListerChangeFont_clicked(bool checked = false);	///< change font in lister button is clicked on
+		const void on_qpbListerChangeFont_clicked(bool checked = false);
+																						///< change font in lister button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbRemoveContentPlugin_clicked(bool checked = false);
+		const void on_qpbRemoveContentPlugin_clicked(bool checked = false);
 																						///< remove content plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbRemoveListerPlugin_clicked(bool checked = false);
+		const void on_qpbRemoveListerPlugin_clicked(bool checked = false);
 																						///< remove lister plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbRemovePackerPlugin_clicked(bool checked = false);
+		const void on_qpbRemovePackerPlugin_clicked(bool checked = false);
 																						///< remove packer plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qpbShortcutClear_clicked(bool checked = false);		///< shortcut clear button is clicked on
+		const void on_qpbShortcutClear_clicked(bool checked = false) const;
+																						///< shortcut clear button is clicked on
 																						/**< \param checked true if button is checkable and checked */
-		void on_qrbSizeBytes_toggled(bool checked);						///< size in bytes status change
+		const void on_qrbSizeBytes_toggled(bool checked);				///< size in bytes status change
 																						/**< \param checked size in bytes flag */
-		void on_qrbSizeDynamic_toggled(bool checked);					///< dynamic size status change
+		const void on_qrbSizeDynamic_toggled(bool checked);			///< dynamic size status change
 																						/**< \param checked dynamic size flag */
-		void on_qrbSizeGigabytes_toggled(bool checked);					///< size in gigabytes status change
+		const void on_qrbSizeGigabytes_toggled(bool checked);			///< size in gigabytes status change
 																						/**< \param checked size in gigabytes flag */
-		void on_qrbSizeKilobytes_toggled(bool checked);					///< size in kilobytes status change
+		const void on_qrbSizeKilobytes_toggled(bool checked);			///< size in kilobytes status change
 																						/**< \param checked size in kilobytes flag */
-		void on_qrbSizeMegabytes_toggled(bool checked);					///< size in megabytes status change
+		const void on_qrbSizeMegabytes_toggled(bool checked);			///< size in megabytes status change
 																						/**< \param checked size in megabytes flag */
-		void on_qsbWidth_valueChanged(int val);							///< changed width of column
+		const void on_qsbWidth_valueChanged(int val);					///< changed width of column
 																						/**< \param val new column width */
-		void on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+		const void on_qtwColumns_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const;
 																						///< selected cell changed
 																						/**< \param current actually selected item
 																							  \param previously selected item */
-		void on_qtwColumns_itemSelectionChanged();						///< selected column changed
-		void on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column);
+		const void on_qtwColumns_itemSelectionChanged() const;		///< selected column changed
+		const void on_qtwContentPlugins_itemChanged(QTreeWidgetItem *item, int column);
 																						///< selected content plugin changed
 																						/**< \param item selected content plugin
 																							  \param column changed column of plugin list */
-		void on_qtwContentPlugins_itemSelectionChanged();				///< selected content plugin changed
-		void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+		const void on_qtwContentPlugins_itemSelectionChanged() const;
+																						///< selected content plugin changed
+		const void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< another favourite directory is selected
 																						/**< \param current new favourite directory
 																							  \param previous old favourite directory */
-		void on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column);
+		const void on_qtwListerPlugins_itemChanged(QTreeWidgetItem *item, int column);
 																						///< selected lister plugin changed
 																						/**< \param item selected lister plugin
 																							  \param column changed column of plugin list */
-		void on_qtwListerPlugins_itemSelectionChanged();				///< selected lister plugin changed
-		void on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column);
+		const void on_qtwListerPlugins_itemSelectionChanged() const;
+																						///< selected lister plugin changed
+		const void on_qtwPackerPlugins_itemChanged(QTreeWidgetItem *item, int column);
 																						///< selected packer plugin changed
 																						/**< \param item selected packer plugin
 																							  \param column changed column of plugin list */
-		void on_qtwPackerPlugins_itemSelectionChanged();				///< selected packer plugin changed
-		void on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+		const void on_qtwPackerPlugins_itemSelectionChanged() const;
+																						///< selected packer plugin changed
+		const void on_qtwShortcutCategory_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const;
 																						///< selected shortcut category changed
 																						/**< \param current current shortcut category
 																							  \param previous old shortcut category */
-		void on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+		const void on_qtwShortcutItem_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const;
 																						///< selected shortcut changed
 																						/**< \param current current shortcut
 																							  \param previous old shortcut */

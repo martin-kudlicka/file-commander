@@ -1,29 +1,362 @@
 #include "Settings.h"
 
+#include <QtCore/QStringList>
+#include <QtGui/QFont>
+
+const QString qsASK_TO_DELETE_NON_EMPTY_DIRECTORY = "AskToDeleteNonEmptyDirectory";
+const QString qsBUFFER_SIZE = "BufferSize";
+const QString qsCHAR_SET = "CharSet";
+const QString qsCOLUMN_SET = "ColumnSet";
+#ifdef Q_WS_WIN
+const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
+#endif
 const QString qsENABLED = "Enabled";
 const QString qsEXTENSIONS = "Extensions";
+const QString qsEXTERNAL_EDITOR = "ExternalEditor";
+const QString qsEXTERNAL_VIEWER = "ExternalViewer";
+const QString qsFALSE = "false";
+const QString qsFILE_OVERWRITE = "FileOverwrite";
+const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
+const QString qsFONT = "Font";
 const QString qsHEIGHT = "Height";
+const QString qsIDENTIFIER = "Identifier";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
-const QString qsNAME = "Name";
 const QString qsNORMAL = "Normal";
 const QString qsOPERATIONS = "Operations";
 const QString qsPANELS = "Panels";
+const QString qsPLUGIN = "Plugin";
+const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
+const QString qsSOURCE = "Source";
+const QString qsSUBMENU = "Submenu";
+const QString qsTARGET = "Target";
+const QString qsTARGET_ENABLED = "TargetEnabled";
+const QString qsTREAT_ARCHIVES_LIKE_DIRECTORIES = "TreatArchivesLikeDirectories";
 const QString qsTRUE = "true";
+const QString qsUNIT = "Unit";
+const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
 const QString qsWINDOW_STATE = "WindowState";
+const QString qsWRAP_TEXT = "WrapText";
 
 // settings file
+// ColumnSet/
+const QString qsCOLUMN_SET__ = qsCOLUMN_SET + "/";
+// Display
+const QString qsDISPLAY__CASE_SENSITIVE_SORTING = "Display/CaseSensitiveSorting";
+const QString qsDISPLAY__DATE_TIME_DISPLAY = "Display/DateTimeDisplay";
+const QString qsDISPLAY__FILE_SIZE_IN = "Display/FileSizeIn";
+const QString qsDISPLAY__SAVE_SETTINGS_ON_QUIT = "Display/SaveSettingsOnQuit";
+const QString qsDISPLAY__SELECTION_MODE = "Display/SelectionMode";
+const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBracketsAroundDirectoryName";
+const QString qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER = "Display/ShowDirectoryViewHeader"; 
+const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
+const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
 // MainWindow/
 const QString qsMAIN_WINDOW = "MainWindow";
+// Miscellaneous
+const QString qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE = "Miscellaneous/MaximumHistoryDirectoryListSize";
+// Operations/
+const QString qsOPERATIONS__ = "Operations/";
+// Others/FavouriteDirectories
+const QString qsOTHERS__FAVOURITE_DIRECTORIES = "Others/FavouriteDirectories";
 // Others/Shortcuts
 const QString qsOTHERS__SHORTCUTS__ = "Others/Shortcuts/";
 // Plugins
 const QString qsPLUGINS__CONTENT = "Plugins/Content";
 const QString qsPLUGINS__DATE_TIME_DISPLAY = "Plugins/DateTimeDisplay";
 const QString qsPLUGINS__LISTER = "Plugins/Lister";
+const QString qsPLUGINS__LISTER__SETTINGS__ = "Plugins/Lister/Settings/";
 const QString qsPLUGINS__PACKER = "Plugins/Packer";
+const QString qsPLUGINS__PACKER__SETTINGS__ = "Plugins/Packer/Settings/";
 const QString qsPLUGINS__TIME_DISPLAY = "Plugins/TimeDisplay";
+// Quick search
+const QString qsQUICK_SEARCH__ALT = "QuickSearch/Alt";
+const QString qsQUICK_SEARCH__CTRL = "QuickSearch/Ctrl";
+const QString qsQUICK_SEARCH__ENABLED = "QuickSearch/Enabled";
+const QString qsQUICK_SEARCH__SHIFT = "QuickSearch/Shift";
+const QString qsQUICK_SEARCH__SHOW_SEARCH_WINDOW = "QuickSearch/ShowSearchWindow";
+// Tabs
+const QString qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK = "Tabs/CloseTabOnDoubleClick";
+const QString qsTABS__CONFIRM_CLOSE_OF_ALL_TABS = "Tabs/ConfirmCloseOfAllTabs";
+const QString qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND = "Tabs/NewTabByShortcutInForeground";
+const QString qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB = "Tabs/OpenNewTabNextToCurrentTab";
+const QString qsTABS__SHOW_DRIVE_LETTER = "Tabs/ShowDriveLetter";
+const QString qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB = "Tabs/ShowTabBarWithOnlyOneTab";
+
+// collect favourite directories from settings file
+const QList<QPair<QString, cSettings::sFavouriteDirectory> > cSettings::CollectFavouriteDirectories()
+{
+	int iI;
+	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
+	QStringList qslFavouriteDirectories;
+
+	qslFavouriteDirectories = qsSettings.childGroups();
+	for (iI = 0; iI < qslFavouriteDirectories.count(); iI++) {
+		sFavouriteDirectory sfdFavouriteDirectory;
+
+		qsSettings.beginGroup(QVariant(iI).toString());
+
+		sfdFavouriteDirectory.bSubmenu = qsSettings.value(qsSUBMENU).toBool();
+		if (sfdFavouriteDirectory.bSubmenu) {
+			sfdFavouriteDirectory.qlChildFavourites = CollectFavouriteDirectories();
+		} else {
+			sfdFavouriteDirectory.qsSource = qsSettings.value(qsSOURCE).toString();
+			sfdFavouriteDirectory.bTarget = qsSettings.value(qsTARGET_ENABLED).toBool();
+			sfdFavouriteDirectory.qsTarget = qsSettings.value(qsTARGET).toString();
+		} // if else
+
+		qlFavouriteDirectories.append(QPair<QString, cSettings::sFavouriteDirectory>(qsSettings.value(qsNAME).toString(), sfdFavouriteDirectory));
+
+		qsSettings.endGroup();
+	} // for
+
+	return qlFavouriteDirectories;
+} // CollectFavouriteDirectories
+
+// create new empty column set
+const void cSettings::CreateColumnSet(const QString &qsColumnSet)
+{
+	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
+	// write something to create group
+	qsSettings.setValue(".","");
+	qsSettings.remove(".");
+	qsSettings.endGroup();
+} // CreateColumnSet
+
+// create new column set
+const void cSettings::CreateColumnSet(const QString &qsColumnSet, QList<sColumn> &qlColumns)
+{
+	int iI;
+
+	qsSettings.beginWriteArray(qsCOLUMN_SET__ + qsColumnSet);
+	qsSettings.remove("");
+
+	for (iI = 0; iI < qlColumns.count(); iI++) {
+		sColumn *scColumn;
+
+		qsSettings.setArrayIndex(iI);
+
+		scColumn = &qlColumns[iI];
+		qsSettings.setValue(qsIDENTIFIER, scColumn->qsIdentifier);
+		qsSettings.setValue(qsNAME, scColumn->qsName);
+		qsSettings.setValue(qsPLUGIN, scColumn->qsPlugin);
+		qsSettings.setValue(qsUNIT, scColumn->qsUnit);
+		qsSettings.setValue(qsWIDTH, scColumn->iWidth);
+	} // for
+
+	qsSettings.endArray();
+} // CreateColumnSet
+
+// create favourite directories
+const void cSettings::CreateFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	int iI;
+
+	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
+		QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
+
+		qpFavourite = &qlFavouriteDirectories[iI];
+		qsSettings.beginGroup(QVariant(iI).toString());
+
+		qsSettings.setValue(qsNAME, qpFavourite->first);
+		qsSettings.setValue(qsSUBMENU, qpFavourite->second.bSubmenu);
+
+		if (qpFavourite->second.bSubmenu) {
+			CreateFavouriteDirectories(qpFavourite->second.qlChildFavourites);
+		} else {
+			qsSettings.setValue(qsSOURCE, qpFavourite->second.qsSource);
+			qsSettings.setValue(qsTARGET_ENABLED, qpFavourite->second.bTarget);
+			qsSettings.setValue(qsTARGET, qpFavourite->second.qsTarget);
+		} // if else
+
+		qsSettings.endGroup();
+	} // for
+} // CreateFavouriteDirectories
+
+// get all application's settings
+const QMap <QString, QString> cSettings::GetAllSettings() const
+{
+	int iI;
+	QMap <QString, QString> qlSettings;
+	QStringList qslKeys;
+
+	qslKeys = qsSettings.allKeys();
+	for (iI = 0; iI < qslKeys.count(); iI++) {
+		QString *qsKey;
+
+		qsKey = &qslKeys[iI];
+		qlSettings.insert(*qsKey, qsSettings.value(*qsKey).toString());
+	} // for
+
+	return qlSettings;
+} // GetAllSettings
+
+// delete non empty directory
+const bool cSettings::GetAskToDeleteNonEmptyDirectory() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, true).toBool();
+} // GetAskToDeleteNonEmptyDirectory
+
+// case sensitive sorting
+const bool cSettings::GetCaseSensitiveSorting() const
+{
+	return qsSettings.value(qsDISPLAY__CASE_SENSITIVE_SORTING).toBool();
+} // GetCaseSensitiveSorting
+
+// close tab in tab bar on double click
+const bool cSettings::GetCloseTabOnDoubleClick() const
+{
+	return qsSettings.value(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, true).toBool();
+} // GetCloseTabOnDoubleClick
+
+// get some information about column
+const cSettings::sColumn cSettings::GetColumnInfo(const QString &qsColumnSet, const QString &qsColumn)
+{
+	sColumn scColumn;
+
+	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet + "/" + qsColumn);
+	scColumn.qsIdentifier = qsSettings.value(qsIDENTIFIER).toString();
+	scColumn.qsName = qsSettings.value(qsNAME).toString();
+	scColumn.qsPlugin = qsSettings.value(qsPLUGIN).toString();
+	scColumn.qsUnit = qsSettings.value(qsUNIT).toString();
+	scColumn.iWidth = qsSettings.value(qsWIDTH).toInt();
+	qsSettings.endGroup();
+
+	return scColumn;
+} // GetColumnInfo
+
+// get column sets
+const QStringList cSettings::GetColumnSets()
+{
+	QStringList qsColumnSets;
+
+	qsSettings.beginGroup(qsCOLUMN_SET__);
+	qsColumnSets = qsSettings.childGroups();
+	qsSettings.endGroup();
+
+	return qsColumnSets;
+} // GetColumnSets
+
+// get column names in column set
+const QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
+{
+	QStringList qslColumns;
+
+	qsSettings.beginGroup(qsCOLUMN_SET__ + qsColumnSet);
+	qslColumns = qsSettings.childGroups();
+	qsSettings.endGroup();
+
+	return qslColumns;
+} // GetColumnsInSet
+
+// confirm close of all tabs in tab bar
+const bool cSettings::GetConfirmCloseOfAllTabs() const
+{
+	return qsSettings.value(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS).toBool();
+} // GetConfirmCloseOfAllTabs
+
+// copy/move buffer size
+const int cSettings::GetCopyMoveBufferSize() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsBUFFER_SIZE, 32).toInt();
+} // GetCopyMoveBufferSize
+
+// date/time display format
+const QString cSettings::GetDateTimeDisplay() const
+{
+	return qsSettings.value(qsDISPLAY__DATE_TIME_DISPLAY, "%d.%o.%y %h:%m").toString();
+} // GetDateTimeDisplay
+
+#ifdef Q_WS_WIN
+// delete files to recycle bin
+const bool cSettings::GetDeleteToRecycleBin() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsDELETE_TO_RECYCLE_BIN, true).toBool();
+} // GetDeleteToRecycleBin
+#endif
+
+// external editor
+const QString cSettings::GetExternalEditor() const
+{
+	// TODO GetExternalEditor other OS than Windows
+	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_EDITOR, "notepad %1").toString();
+} // GetExternalEditor
+
+// external viewer
+const QString cSettings::GetExternalViewer() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsEXTERNAL_VIEWER).toString();
+} // GetExternalViewer
+
+// get favourite directories
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cSettings::GetFavouriteDirectories()
+{
+	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
+
+	qsSettings.beginGroup(qsOTHERS__FAVOURITE_DIRECTORIES);
+
+	// collect them
+	qlFavouriteDirectories = CollectFavouriteDirectories();
+
+	qsSettings.endGroup();
+
+	return qlFavouriteDirectories;
+} // GetFavouriteDirectories
+
+// find out file overwrite mode
+const QString cSettings::GetFileOverwrite() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsFILE_OVERWRITE, qsASK).toString();
+} // GetFileOverwrite
+
+// unit for files size
+const QString cSettings::GetFileSizeIn() const
+{
+	return qsSettings.value(qsDISPLAY__FILE_SIZE_IN, qsDYNAMIC).toString();
+} // GetFileSizeIn
+
+// font used in lister
+const QFont cSettings::GetListerFont() const
+{
+	QFont qfFont;
+
+	qfFont.fromString(qsSettings.value(qsPLUGINS__LISTER__SETTINGS__ + qsFONT).toString());
+
+	return qfFont;
+} // GetListerFont
+
+// lister settings
+const cSettings::sLister cSettings::GetListerSettings()
+{
+	sLister slLister;
+
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS__);
+	slLister.qsCharSet = qsSettings.value(qsCHAR_SET, qsANSI).toString();
+	slLister.bWrapText = qsSettings.value(qsWRAP_TEXT, true).toBool();
+	slLister.bFitImageToWindow = qsSettings.value(qsFIT_IMAGE_TO_WINDOW).toBool();
+	qsSettings.endGroup();
+
+	return slLister;
+} // GetListerSettings
+
+// get maximum items in directory history list
+const int cSettings::GetMaximumHistoryDirectoryListSize() const
+{
+	return qsSettings.value(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, 20).toInt();
+} // GetMaximumHistoryDirectoryListSize
+
+// new tab by shortcut in foreground
+const bool cSettings::GetNewTabByShortcutInForeground() const
+{
+	return qsSettings.value(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND, true).toBool();
+} // GetNewTabByShortcutInForeground
+
+// open new tab next to current tab
+const bool cSettings::GetOpenNewTabNextToCurrentTab() const
+{
+	return qsSettings.value(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB).toBool();
+} // GetOpenNewTabNextToCurrentTab
 
 // plugin date/time display format
 const QString cSettings::GetPluginDateTimeDisplay() const
@@ -80,6 +413,54 @@ const QString cSettings::GetPluginTimeDisplay() const
 {
 	return qsSettings.value(qsPLUGINS__TIME_DISPLAY, "%h:%m:%s").toString();
 } // GetPluginTimeDisplay
+
+// alt key activity in quick search
+const bool cSettings::GetQuickSearchAlt() const
+{
+	return qsSettings.value(qsQUICK_SEARCH__ALT, true).toBool();
+} // GetQuickSearchAlt
+
+// ctrl key activity in quick search
+const bool cSettings::GetQuickSearchCtrl() const
+{
+	return qsSettings.value(qsQUICK_SEARCH__CTRL, true).toBool();
+} // GetQuickSearchCtrl
+
+// enabled/disabled quick search
+const bool cSettings::GetQuickSearchEnabled() const
+{
+	return qsSettings.value(qsQUICK_SEARCH__ENABLED, true).toBool();
+} // GetQuickSearchEnabled
+
+// shift key activity in quick search
+const bool cSettings::GetQuickSearchShift() const
+{
+	return qsSettings.value(qsQUICK_SEARCH__SHIFT).toBool();
+} // GetQuickSearchShift
+
+// quick search window visibility
+const bool cSettings::GetQuickSearchShowSearchWindow() const
+{
+	return qsSettings.value(qsQUICK_SEARCH__SHOW_SEARCH_WINDOW, true).toBool();
+} // GetQuickSearchShowSearchWindow
+
+// find out readonly file overwrite mode
+const QString cSettings::GetReadonlyFileOverwrite() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsREADONLY_FILE_OVERWRITE, qsASK).toString();
+} // GetReadonlyFileOverwrite
+
+// save settings on quit option
+const bool cSettings::GetSaveSettingsOnQuit() const
+{
+	return qsSettings.value(qsDISPLAY__SAVE_SETTINGS_ON_QUIT, true).toBool();
+} // GetSaveSettingsOnQuit
+
+// selection mode of files and directories
+const QString cSettings::GetSelectionMode() const
+{
+	return qsSettings.value(qsDISPLAY__SELECTION_MODE, qsONLY_FILES).toString();
+} // GetSelectionMode
 
 // find shortcut
 const QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const QString &qsShortcut) const
@@ -138,6 +519,9 @@ const QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES) {
 					return "Ctrl+D";
 				} // if
+				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST) {
+					return "Alt+Down";
+				} // if
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW) {
 					return "Ctrl+B";
 				} // if
@@ -193,6 +577,12 @@ const QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const
 				} // if
 				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT) {
 					return "Alt+F2";
+				} // if
+				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_BACK) {
+					return "Alt+Left";
+				} // if
+				if (qsShortcut == qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_FRONT) {
+					return "Alt+Right";
 				} // if
 				break;
 			case OperationsCategory:
@@ -252,6 +642,54 @@ const QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const
 	} // if else
 } // GetShortcut
 
+// square brackets around directory name
+const bool cSettings::GetShowBracketsAroundDirectoryName() const
+{
+	return qsSettings.value(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, true).toBool();
+} // GetShowBracketsAroundDirectoryName
+
+// get directory view header show flag
+const bool cSettings::GetShowDirectoryViewHeader() const
+{
+	return qsSettings.value(qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER, true).toBool();
+} // GetShowDirectoryViewHeader
+
+// show drive letter in tab
+const bool cSettings::GetShowDriveLetter() const
+{
+	return qsSettings.value(qsTABS__SHOW_DRIVE_LETTER).toBool();
+} // GetShowDriveLetter
+
+// show hidden files in dir view flag
+const bool cSettings::GetShowHiddenFiles() const
+{
+	return qsSettings.value(qsDISPLAY__SHOW_HIDDEN_FILES).toBool();
+} // GetShowHiddenFiles
+
+// show system files in dir view flag
+const bool cSettings::GetShowSystemFiles() const
+{
+	return qsSettings.value(qsDISPLAY__SHOW_SYSTEM_FILES).toBool();
+} // GetShowSystemFiles
+
+// show tab bar with only one tab flag
+const bool cSettings::GetShowTabBarWithOnlyOneTab() const
+{
+	return qsSettings.value(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB).toBool();
+} // GetShowTabBarWithOnlyOneTab
+
+// treat archives like directories
+const bool cSettings::GetTreatArchivesLikeDirectories() const
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsTREAT_ARCHIVES_LIKE_DIRECTORIES, true).toBool();
+} // GetTreatArchivesLikeDirectories
+
+// viewer type
+const QString cSettings::GetViewerType() const
+{
+	return qsSettings.value(qsOPERATIONS__ + qsVIEWER_TYPE, qsINTERNAL).toString();
+} // GetViewerType
+
 // retrieve startup main window parameters
 const cSettings::sMainWindowState cSettings::GetWindowState()
 {
@@ -265,3 +703,313 @@ const cSettings::sMainWindowState cSettings::GetWindowState()
 
 	return smwsState;
 } // GetWindowState
+
+// remove column set
+const void cSettings::RemoveColumnSet(const QString &qsColumnSet)
+{
+	qsSettings.remove(qsCOLUMN_SET__ + qsColumnSet);
+} // RemoveColumnSet
+
+// restore old application's settings
+const void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)
+{
+	qsSettings.clear();
+
+	QMapIterator<QString, QString> qmiSettings(qmSettings);
+	while (qmiSettings.hasNext()) {
+		qmiSettings.next();
+		qsSettings.setValue(qmiSettings.key(), qmiSettings.value());
+	} // while
+} // RestoreSettings
+
+// delete non empty directory
+const void cSettings::SetAskToDeleteNonEmptyDirectory(const bool &bAsk)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsASK_TO_DELETE_NON_EMPTY_DIRECTORY, bAsk);
+} // SetAskToDeleteNonEmptyDirectory
+
+// case sensitive sorting
+const void cSettings::SetCaseSensitiveSorting(const bool &bCaseSensitive)
+{
+	qsSettings.setValue(qsDISPLAY__CASE_SENSITIVE_SORTING, bCaseSensitive);
+} // SetCaseSensitiveSorting
+
+// close tab on double click
+const void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)
+{
+	qsSettings.setValue(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, bClose);
+} // SetCloseTabOnDoubleClick
+
+// confirm close of all tabs
+const void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)
+{
+	qsSettings.setValue(qsTABS__CONFIRM_CLOSE_OF_ALL_TABS, bClose);
+} // SetConfirmCloseOfAllTabs
+
+// copy/move buffer size
+const void cSettings::SetCopyMoveBufferSize(const int &iSize)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsBUFFER_SIZE, iSize);
+} // SetCopyMoveBufferSize
+
+// date/time display format
+const void cSettings::SetDateTimeDisplay(const QString &qsDateTime)
+{
+	qsSettings.setValue(qsDISPLAY__DATE_TIME_DISPLAY, qsDateTime);
+} // SetDateTimeDisplay
+
+#ifdef Q_WS_WIN
+// delete files to recycle bin
+const void cSettings::SetDeleteToRecycleBin(const bool &bRecycleBin)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsDELETE_TO_RECYCLE_BIN, bRecycleBin);
+} // SetDeleteToRecycleBin
+#endif
+
+// external editor
+const void cSettings::SetExternalEditor(const QString &qsEditor)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_EDITOR, qsEditor);
+} // SetExternalEditor
+
+// external viewer
+const void cSettings::SetExternalViewer(const QString &qsViewer)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsEXTERNAL_VIEWER, qsViewer);
+} // SetExternalViewer
+
+// set favourite directories
+const void cSettings::SetFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+{
+	qsSettings.beginGroup(qsOTHERS__FAVOURITE_DIRECTORIES);
+
+	// clear current favourite directories
+	qsSettings.remove("");
+
+	// set new one
+	CreateFavouriteDirectories(qlFavouriteDirectories);
+
+	qsSettings.endGroup();
+} // SetFavouriteDirectories
+
+// set default overwrite behaviour
+const void cSettings::SetFileOverwrite(const QString &qsMode)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsFILE_OVERWRITE, qsMode);
+} // SetFileOverwrite
+
+// set file size mode
+const void cSettings::SetFileSizeIn(const QString &qsSize)
+{
+	qsSettings.setValue(qsDISPLAY__FILE_SIZE_IN, qsSize);
+} // SetFileSizeIn
+
+// font used in lister
+const void cSettings::SetListerFont(const QFont &qfFont)
+{
+	qsSettings.setValue(qsPLUGINS__LISTER__SETTINGS__ + qsFONT, qfFont.toString());
+} // SetListerFont
+
+// set default lister settings
+const void cSettings::SetListerSettings(const sLister &slLister)
+{
+	qsSettings.beginGroup(qsPLUGINS__LISTER__SETTINGS__);
+	qsSettings.setValue(qsCHAR_SET, slLister.qsCharSet);
+	qsSettings.setValue(qsWRAP_TEXT, slLister.bWrapText);
+	qsSettings.setValue(qsFIT_IMAGE_TO_WINDOW, slLister.bFitImageToWindow);
+	qsSettings.endGroup();
+} // SetListerSettings
+
+// set maximum items in directory history list
+const void cSettings::SetMaximumHistoryDirectoryListSize(const int &iSize)
+{
+	qsSettings.setValue(qsMISCELLANEOUS__MAXIMUM_HISTORY_DIRECTORY_LIST_SIZE, iSize);
+} // SetMaximumHistoryDirectoryListSize
+
+// new tab by shortcut in foreground
+const void cSettings::SetNewTabByShortcutInForeground(const bool &bForeground)
+{
+	qsSettings.setValue(qsTABS__NEW_TAB_BY_SHORTCUT_IN_FOREGROUND, bForeground);
+} // SetNewTabByShortcutInForeground
+
+// open new tab next to current tab
+const void cSettings::SetOpenNewTabNextToCurrentTab(const bool &bNextTo)
+{
+	qsSettings.setValue(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB, bNextTo);
+} // SetOpenNewTabNextToCurrentTab
+
+// plugin date/time display format
+const void cSettings::SetPluginDateTimeDisplay(const QString &qsDateTime)
+{
+	qsSettings.setValue(qsPLUGINS__DATE_TIME_DISPLAY, qsDateTime);
+} // SetPluginDateTimeDisplay
+
+// write plugins into settings file
+const void cSettings::SetPlugins(const ePlugin &epPlugin, QList<sPlugin> &qlPlugins)
+{
+	int iI;
+
+	switch (epPlugin) {
+		// TODO GetPlugins - other plugin types
+		case ContentPlugins:
+			qsSettings.beginWriteArray(qsPLUGINS__CONTENT);
+			break;
+		case ListerPlugins:
+			qsSettings.beginWriteArray(qsPLUGINS__LISTER);
+			break;
+		case PackerPlugins:
+			qsSettings.beginWriteArray(qsPLUGINS__PACKER);
+	} // switch
+
+	qsSettings.remove("");
+
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		QString qsKey, qsValue;
+		sPlugin *spPlugin;
+
+		qsSettings.setArrayIndex(iI);
+		spPlugin = &qlPlugins[iI];
+
+		qsKey = qsNAME;
+		qsValue = spPlugin->qsName;
+		qsSettings.setValue(qsKey, qsValue);
+		if (epPlugin == PackerPlugins) {
+			qsKey = qsEXTENSIONS;
+			qsValue = spPlugin->qsExtensions;
+			qsSettings.setValue(qsKey, qsValue);
+		} // if
+		qsKey = qsENABLED;
+		if (spPlugin->bEnabled) {
+			qsValue = qsTRUE;
+		} else {
+			qsValue = qsFALSE;
+		} // if else
+		qsSettings.setValue(qsKey, qsValue);
+	} // for
+
+	qsSettings.endArray();
+} // SetPlugins
+
+///< plugin time display format
+const void cSettings::SetPluginTimeDisplay(const QString &qsTime)
+{
+	qsSettings.setValue(qsPLUGINS__TIME_DISPLAY, qsTime);
+} // SetPluginTimeDisplay
+
+// alt key activity in quick search
+const void cSettings::SetQuickSearchAlt(const bool &bAlt)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__ALT, bAlt);
+} // SetQuickSearchAlt
+
+// ctrl key activity in quick search
+const void cSettings::SetQuickSearchCtrl(const bool &bCtrl)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__CTRL, bCtrl);
+} // SetQuickSearchCtrl
+
+// enabled/disabled quick search
+const void cSettings::SetQuickSearchEnabled(const bool &bEnable)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__ENABLED, bEnable);
+} // SetQuickSearchEnabled
+
+// shift key activity in quick search
+const void cSettings::SetQuickSearchShift(const bool &bShift)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__SHIFT, bShift);
+} // SetQuickSearchShift
+
+// quick search window visibility
+const void cSettings::SetQuickSearchShowSearchWindow(const bool &bShow)
+{
+	qsSettings.setValue(qsQUICK_SEARCH__SHOW_SEARCH_WINDOW, bShow);
+} // SetQuickSearchShowSearchWindow
+
+// set default readonly overwrite behaviour
+const void cSettings::SetReadonlyFileOverwrite(const QString &qsMode)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsREADONLY_FILE_OVERWRITE, qsMode);
+} // SetReadonlyFileOverwrite
+
+// save settings on quit option
+const void cSettings::SetSaveSettingsOnQuit(const bool &bSave)
+{
+	qsSettings.setValue(qsDISPLAY__SAVE_SETTINGS_ON_QUIT, bSave);
+} // SetSaveSettingsOnQuit
+
+// set selection mode of files and directories
+const void cSettings::SetSelectionMode(const QString &qsMode)
+{
+	qsSettings.setValue(qsDISPLAY__SELECTION_MODE, qsMode);
+} // SetSelectionMode
+
+// set shortcut
+const void cSettings::SetShortcut(const eShortcutCategory &escCategory, const QString &qsName, const QString &qsShortcut)
+{
+	QString qsCategory;
+
+	switch (escCategory) {
+		case MainMenuCategory:
+			qsCategory = qsMAIN_MENU;
+			break;
+		case PanelsCategory:
+			qsCategory = qsPANELS;
+			break;
+		case OperationsCategory:
+			qsCategory = qsOPERATIONS;
+			break;
+		case ListerCategory:
+			qsCategory = qsLISTER;
+	} // switch
+
+	qsSettings.setValue(qsOTHERS__SHORTCUTS__ + qsCategory + '/' + qsName, qsShortcut);
+} // SetShortcut
+
+// square brackets around directory name
+const void cSettings::SetShowBracketsAroundDirectoryName(const bool &bShowBrackets)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME, bShowBrackets);
+} // SetShowBracketsAroundDirectoryName
+
+// set directory view header show flag
+const void cSettings::SetShowDirectoryViewHeader(const bool &bShow)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER, bShow);
+} // SetShowDirectoryViewHeader
+
+// show drive letter in tab
+const void cSettings::SetShowDriveLetter(const bool &bShow)
+{
+	qsSettings.setValue(qsTABS__SHOW_DRIVE_LETTER, bShow);
+} // SetShowDriveLetter
+
+// set show hidden files in dir view
+const void cSettings::SetShowHiddenFiles(const bool &bShowHidden)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_HIDDEN_FILES, bShowHidden);
+} // SetShowHiddenFiles
+
+// set show system files in dir view
+const void cSettings::SetShowSystemFiles(const bool &bShowSystem)
+{
+	qsSettings.setValue(qsDISPLAY__SHOW_SYSTEM_FILES, bShowSystem);
+} // SetShowSystemFiles
+
+// show tab bar with only one tab
+const void cSettings::SetShowTabBarWithOnlyOneTab(const bool &bShow)
+{
+	qsSettings.setValue(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB, bShow);
+} // SetShowTabBarWithOnlyOneTab
+
+// treat archives like directories
+const void cSettings::SetTreatArchivesLikeDirectories(const bool &bLikeDirectories)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsTREAT_ARCHIVES_LIKE_DIRECTORIES, bLikeDirectories);
+} // SetTreatArchivesLikeDirectories
+
+// viewer type
+const void cSettings::SetViewerType(const QString &qsType)
+{
+	qsSettings.setValue(qsOPERATIONS__ + qsVIEWER_TYPE, qsType);
+} // SetViewerType
