@@ -5,13 +5,54 @@
 #include <windows.h>
 #endif
 
+// destructor
+cLocal::~cLocal()
+{
+	ccpdContentPluginDelayed->deleteLater();
+} // ~cLocal
+
 // constructor
-cLocal::cLocal(const QString &qsPath, cSettings *csSettings)
+cLocal::cLocal(const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
 	this->csSettings = csSettings;
+	this->ccpContentPlugin = ccpContentPlugin;
 
 	qdDir.setPath(qsPath);
+
+	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
+	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
+	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
 } // cLocal
+
+// get value from content plugin
+const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)
+{
+	int iFlag;
+	QFileInfo *qfiFile;
+	QString qsValue;
+
+	qfiFile = &qhFiles[sContent.qtwiFile];
+
+	qsValue = ccpContentPlugin->GetPluginValue(qfiFile->filePath(), sContent.qsPlugin, sContent.qsColumn, sContent.qsUnit, &iFlag);
+
+	if (iFlag == ft_delayed) {
+		cContentPluginDelayed::sParameters spParameters;
+
+		// thread input
+		spParameters.siInput.qsFilename = qfiFile->filePath();
+		spParameters.siInput.qsPlugin = sContent.qsPlugin;
+		spParameters.siInput.qsColumn = sContent.qsColumn;
+		spParameters.siInput.qsUnit = sContent.qsUnit;
+
+		// thread output
+		spParameters.soOutput.qtwiItem = sContent.qtwiFile;
+		spParameters.soOutput.iColumn = sContent.iColumn;
+
+		qqContentDelayedParameters.enqueue(spParameters);
+	} // if
+
+	return qsValue;
+} // GetContentPluginValue
 
 // get tree items for current directory
 const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
@@ -19,6 +60,9 @@ const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
 	int iI;
 	QDir::Filters fFilters;
 	QFileInfoList qfilFiles;
+
+	// interrupt delayed content processing
+	emit InterruptContentDelayed();
 
 	// set filter
 	fFilters = QDir::Dirs | QDir::Files;
@@ -32,8 +76,15 @@ const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
 	// get files
 	qfilFiles = qdDir.entryInfoList(fFilters);
 
-	// add files to hash table
+	// clear hash table
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		delete qhiFile.key();
+	} // while
 	qhFiles.clear();
+
+	// add files to hash table
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
 		qhFiles.insert(new QTreeWidgetItem(), qfilFiles.at(iI));
 	} // for
@@ -86,7 +137,7 @@ const QIcon cLocal::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 } // GetFileIcon
 
 // get file name without extension
-const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile)
+const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
 	QString qsName;
 	QFileInfo *qfiFile;
@@ -100,7 +151,7 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile)
 		qsName = qfiFile->completeBaseName();
 	} // if else
 
-	if (qfiFile->isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+	if (qfiFile->isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
 		qsName = '[' + qsName + ']';
 	} // if
 
@@ -124,3 +175,16 @@ const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).isDir();
 } // IsDir
+
+// got golumn value from plugin
+const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const
+{
+	emit GotColumnValue(soOutput);
+} // on_ccpdContentPluginDelayed_GotColumnValue
+
+// start retreiving of content delayed values
+const void cLocal::RetreiveContentDelayedValues()
+{
+	ccpdContentPluginDelayed->Start(qqContentDelayedParameters);
+	qqContentDelayedParameters.clear();
+} // RetreiveContentDelayedValues

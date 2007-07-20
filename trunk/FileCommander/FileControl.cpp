@@ -5,11 +5,12 @@
 #include "FileSystem/Local.h"
 
 // constructor
-cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
+cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
+	this->ccpContentPlugin = ccpContentPlugin;
 } // cFileControl
 
 // get accessible drives
@@ -48,7 +49,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive) const
 		qpDrive = &qlDrives[iI];
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qpDrive->second.qsPath, csSettings);
+				case Local:	cfsFileSystem = new cLocal(qpDrive->second.qsPath, csSettings, ccpContentPlugin);
 			} // switch
 		} // if
 	} // for

@@ -27,24 +27,22 @@ const void cContentPluginDelayed::on_InterruptContentDelayed()
 // main thread
 void cContentPluginDelayed::run()
 {
-	int iI;
+	while (!qqParameters.empty() && !bStop) {
+		sParameters spParameters;
 
-	for (iI = 0; iI < qlParameters.count() && !bStop; iI++) {
-		sParameters *spParameters;
+		spParameters = qqParameters.dequeue();
+		qsCurrentFile = spParameters.siInput.qsFilename;
+		qsCurrentPlugin = spParameters.siInput.qsPlugin;
 
-		spParameters = &qlParameters[iI];
-		qsCurrentFile = spParameters->siInput.qsFilename;
-		qsCurrentPlugin = spParameters->siInput.qsPlugin;
-
-		spParameters->soOutput.qsValue = ccpContentPlugin->GetPluginValue(spParameters->siInput.qsFilename, spParameters->siInput.qsPlugin, spParameters->siInput.qsColumn, spParameters->siInput.qsUnit);
-		emit GotColumnValue(spParameters->soOutput);
+		spParameters.soOutput.qsValue = ccpContentPlugin->GetPluginValue(spParameters.siInput.qsFilename, spParameters.siInput.qsPlugin, spParameters.siInput.qsColumn, spParameters.siInput.qsUnit);
+		emit GotColumnValue(spParameters.soOutput);
 	} // for
 } // run
 
 // start thread processing
-const void cContentPluginDelayed::Start(const QList<sParameters> &qlParameters)
+const void cContentPluginDelayed::Start(const QQueue<sParameters> &qqParameters)
 {
-	this->qlParameters = qlParameters;
+	this->qqParameters = qqParameters;
 	bStop = false;
 	start();
 } // Start

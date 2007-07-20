@@ -11,6 +11,7 @@
 #include "FileSystem.h"
 #include <QtCore/QTimer>
 #include "FileControl.h"
+#include "Plugins/ContentPluginDelayed.h"
 
 class cPanel : public QObject
 {
@@ -32,7 +33,7 @@ class cPanel : public QObject
 																						  \param cfcFileControl file operations control
 																						  \param qleQuickSearch quick search window */
 
-		const int AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
+		const int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
 																					///< add new tab with dir view
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
@@ -77,12 +78,18 @@ class cPanel : public QObject
 		static QStackedWidget *qswLastActive;							///< last active panel
 		QTabBar *qtbTab;														///< tabs for dir views
 		QTimer qtTimer;														///< timer for periodic actualizations
+		static cSettings::sSort ssSort;									///< sort information
 
 		const void ActualizeDrives() const;								///< drive list actualization
 		const QString GetDateTimeString(const QDateTime &qdtDateTime) const;
 																					///< convert QDateTime to user defined format
 																					/**< \param qdtDateTime date/time to convert
 																						  \return user defined date/time format */
+		const int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
+																					///< find index of native column
+																					/**< \param qsColumn native column name
+																						  \param iTabIndex tab index
+																						  \return index of native column */
 		const QString GetSizeString(const qint64 &qi64Size) const;
 																					///< "convert" size to string according to setting in options
 																					/**< \param qi64Size size
@@ -96,11 +103,30 @@ class cPanel : public QObject
 																						  \param bContent refresh content too flag */
 		const void ShowHideHeader(const int &iTabIndex) const;	///< show or hide header for specified tab
 																					/**< \param iTabIndex tab index to show/hide header */
+		const void Sort(const int &iIndex, const QList<QTreeWidgetItem *> &qlToSort);
+																					///< sort dir content
+																					/**< \param iIndex index of dir view
+																						  \param qlToSort files to sort */
+		static const bool TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																					///< compare items by QDateTime
+																					/**< \param qtwiItem1 1st item
+																						  \param qtwiItem2 2nd item */
+		static const bool TreeSortByQInt64(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																					///< compare items by qint64
+																					/**< \param qtwiItem1 1st item
+																						  \param qtwiItem2 2nd item */
+		static const bool TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
+																					///< compare items by text
+																					/**< \param qtwiItem1 1st item
+																						  \param qtwiItem2 2nd item */
 
 	signals:
 		void GotFocus();														///< panel got focus
 
 	private slots:
+		const void on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
+																					///< got column value from content plugin
+																					/**< \param soOutput information to update dir view */
 		const void on_ctwTree_GotFocus();								///< dir view got focus
 		const void on_qtTimer_timeout() const;							///< timer's action
 }; // cPanel
