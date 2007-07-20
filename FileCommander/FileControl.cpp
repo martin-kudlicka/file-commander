@@ -49,7 +49,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 		qpDrive = &qlDrives[iI];
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qsPath, csSettings, ccpContentPlugin);
+				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, csSettings, ccpContentPlugin);
 			} // switch
 		} // if
 	} // for

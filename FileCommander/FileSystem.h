@@ -16,6 +16,11 @@ class cFileSystem : public QObject
 			QString qsUnit;																		///< column's unit
 			int iColumn;																			///< column index to update in directory view (qtwiFile)
 		};
+		/// disk space
+		struct sDiskSpace {
+			qint64 qi64Free;																		///< free disk space
+			qint64 qi64Total;																		///< total disk space
+		};
 
 		virtual ~cFileSystem();																	///< destructor
 
@@ -25,6 +30,8 @@ class cFileSystem : public QObject
 																											  \return content plugin (nondelayed) value */
 		virtual const QList<QTreeWidgetItem *> GetDirectoryContent() = 0;			///< get tree items for current directory
 																										/**< \return  tree items for current directory */
+		virtual const sDiskSpace GetDiskSpace() const = 0;								///< find out disk space information
+																										/**< \return disk space information */
 #ifdef Q_WS_WIN
 		virtual const QString GetFileAttr(QTreeWidgetItem *qtwiFile) const = 0;	///< get file attributes
 																										/**< \param qtwiFile file to find attributes for
@@ -52,6 +59,9 @@ class cFileSystem : public QObject
 		virtual const QString GetPath() const = 0;										///< current path on file system
 																										/**< \return path on file system */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
+																										/**< \return tab text */
+		virtual const QString GetVolumeName() const = 0;								///< find out name of the disk
+																										/**< \return name of the disk */
 		virtual const bool IsDir(QTreeWidgetItem *qtwiFile) const = 0;				///< check if file is directory
 																										/**< \param qtwiFile file check
 																											  \return true if directory */
