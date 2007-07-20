@@ -3,7 +3,7 @@
 #ifndef LOCAL_H
 #define LOCAL_H
 
-class cLocal : private cFileSystem
+class cLocal : public cFileSystem
 {
 }; // cLocal
 

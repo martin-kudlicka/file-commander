@@ -6,15 +6,22 @@
 #include "Settings.h"
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QMainWindow>
+#include "FileSystem.h"
 
 class cFileControl : public QObject
 {
 	Q_OBJECT
 
 	public:
+		/// drive types
+		enum eDriveType {
+			Local												///< local drive
+		};
+
 		/// drive information
 		struct sDrive {
 			QString qsPath;								///< path to drive's root
+			eDriveType edtType;							///< drive type
 			// TODO sDrive add drive type and show next to drive letters
 		};
 
@@ -25,7 +32,11 @@ class cFileControl : public QObject
 																	  \param csSettings application's configuration */
 
 		const QList<QPair<QString, sDrive> > GetDrives() const;
-																		///< get accessible drives
+																///< get accessible drives
+		cFileSystem *GetFileSystem(const QString &qsDrive) const;
+																///< get file system for specified drive
+																/**< \param qsDrive drive to get file system for
+																	  \return file system handling class */
 		const QPair<QString, sDrive> GetFirstDrive() const;
 																///< returns first accessible drive for application
 																/**< \param first accessible drive for application */

@@ -72,6 +72,7 @@ const int cPanel::AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 	stTab.swWidgets.qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
+	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive);
 
 	/*// history
 	stTab.shHistory.iPosition = stiTabInfo.shHistory.iPosition;
