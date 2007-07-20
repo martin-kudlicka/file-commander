@@ -68,6 +68,8 @@ const void cMainWindow::AssignShortcuts()
 	// directory view
 	qsLeftDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_LEFT)), this);
 	qsRightDrive = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__DRIVE_RIGHT)), this);
+	qsHistoryBack = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_BACK)), this);
+	qsHistoryFront = new QShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__DIRECTORY_VIEW__HISTORY_FRONT)), this);
 	// main buttons
 	qpbTerminal->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL)));
 	qpbTerminal->setText(csSettings.GetShortcut(cSettings::PanelsCategory, qsSHORTCUT__PANELS__MAIN_BUTTON__TERMINAL) + ' ' + qpbTerminal->text());
@@ -193,6 +195,10 @@ cMainWindow::cMainWindow()
 	qpbLeftFavourites->setMenu(&qmFavouriteDirectories);
 	qpbRightFavourites->setMenu(&qmFavouriteDirectories);
 
+	// history directory list context menu
+	qpbLeftHistory->setMenu(&qmLeftHistoryDirectoryList);
+	qpbRightHistory->setMenu(&qmRightHistoryDirectoryList);
+
 	// column sets submenu
 	qaColumnSet->setMenu(&qmColumnSets);
 
@@ -215,17 +221,17 @@ cMainWindow::cMainWindow()
 	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
-	/*connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
-	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));*/
+	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
+	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
 	connect(qaTabBarCloseAllOtherTabs, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseAllOtherTabs_triggered(bool)));
 	connect(qagSortBy, SIGNAL(triggered(QAction *)), SLOT(on_qagSortBy_triggered(QAction *)));
 	connect(&qmFavouriteDirectories, SIGNAL(triggered(QAction *)), SLOT(on_qmFavouriteDirectories_triggered(QAction *)));
-	/*connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
+	connect(&qmLeftHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmLeftHistoryDirectoryList_aboutToShow()));
 	connect(&qmRightHistoryDirectoryList, SIGNAL(aboutToShow()), SLOT(on_qmRightHistoryDirectoryList_aboutToShow()));
 	connect(&qmLeftHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmLeftHistoryDirectoryList_triggered(QAction *)));
-	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));*/
+	connect(&qmRightHistoryDirectoryList, SIGNAL(triggered(QAction *)), SLOT(on_qmRightHistoryDirectoryList_triggered(QAction *)));
 	connect(&qmColumnSets, SIGNAL(triggered(QAction *)), SLOT(on_qmColumnSets_triggered(QAction *)));
 
 	// show before change drive dialog can appear
@@ -267,6 +273,38 @@ const void cMainWindow::FillFavouriteDirectories(QMenu *qmMenu, QList<QPair<QStr
 		} // if else
 	} // for
 } // FillFavouriteDirectories
+
+// fill history directory list for specified panel
+const void cMainWindow::FillHistoryDirectoryList(const cSettings::ePosition &epPosition)
+{
+	cPanel *cpPanel;
+	int iI;
+	QMenu *qmHistoryDirectoryList;
+	cPanel::sHistoryDirectoryList shdlList;
+
+	if (epPosition == cSettings::PositionLeft) {
+		cpPanel = cpLeft;
+		qmHistoryDirectoryList = &qmLeftHistoryDirectoryList;
+	} else {
+		cpPanel = cpRight;
+		qmHistoryDirectoryList = &qmRightHistoryDirectoryList;
+	} // if else
+
+	shdlList = cpPanel->GetHistoryDirectoryList();
+
+	qmHistoryDirectoryList->clear();
+	for (iI = 0; iI < shdlList.qslDirectories.count(); iI++) {
+		QAction *qaDirectory;
+
+		qaDirectory = qmHistoryDirectoryList->addAction(shdlList.qslDirectories.at(iI));
+		qaDirectory->setData(iI);
+
+		if (iI == shdlList.iPosition) {
+			qaDirectory->setCheckable(true);
+			qaDirectory->setChecked(true);
+		} // if
+	} // for
+} // FillHistoryDirectoryList
 
 // load tabs from qsSettings
 const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
@@ -486,6 +524,46 @@ const void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action) con
 		cpDestination->SetPath(qhFavouriteDirectories.value(action).qsTarget);
 	} // if
 } // on_qmFavouriteDirectories_triggered
+
+// history directory list is about to show
+const void cMainWindow::on_qmLeftHistoryDirectoryList_aboutToShow()
+{
+	FillHistoryDirectoryList(cSettings::PositionLeft);
+} // on_qmHistoryDirectoryList_aboutToShow
+
+// selected directory from left panel's history list
+const void cMainWindow::on_qmLeftHistoryDirectoryList_triggered(QAction *action) const
+{
+	if (!action->isChecked()) {
+		cpLeft->SetHistoryDirectory(action->data().toInt());
+	} // if
+} // on_qmLeftHistoryDirectoryList_triggered
+
+// right history directory list is about to show
+const void cMainWindow::on_qmRightHistoryDirectoryList_aboutToShow()
+{
+	FillHistoryDirectoryList(cSettings::PositionRight);
+} // on_qmRightHistoryDirectoryList_aboutToShow
+
+// selected directory from right panel's history list
+const void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action) const
+{
+	if (!action->isChecked()) {
+		cpRight->SetHistoryDirectory(action->data().toInt());
+	} // if
+} // on_qmRightHistoryDirectoryList_triggered
+
+// history back shortcut activated
+const void cMainWindow::on_qsHistoryBack_activated() const
+{
+	cpSource->HistoryGoBack();
+} // on_qsHistoryBack_activated
+
+// history front shortcut activated
+const void cMainWindow::on_qsHistoryFront_activated() const
+{
+	cpSource->HistoryGoFront();
+} // on_qsHistoryFront_activated
 
 // left drive shortcut activated
 const void cMainWindow::on_qsLeftDrive_activated() const

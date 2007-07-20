@@ -22,6 +22,7 @@ const QString qsFILE_OVERWRITE = "FileOverwrite";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
 const QString qsHEIGHT = "Height";
+const QString qsHISTORY = "History";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
@@ -30,7 +31,9 @@ const QString qsOPERATIONS = "Operations";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
+const QString qsPOSITION = "Position";
 const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
+const QString qsSHOW = "Show";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsSOURCE = "Source";
@@ -235,8 +238,7 @@ const void cSettings::CreateFavouriteDirectories(QList<QPair<QString, cSettings:
 // create new tab in settings file
 const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab)
 {
-	// TODO CreateTab
-	//int iI;
+	int iI;
 
 	if (epPosition == PositionLeft) {
 		qsSettings.beginGroup(QString("%1%2").arg(qsLEFT_PANEL__TABS__).arg(uiIndex));
@@ -250,7 +252,7 @@ const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex
 	qsSettings.setValue(qsSORTED_COLUMN, stiTab.ssSort.iSortedColumn);
 	qsSettings.setValue(qsSORT_ORDER, stiTab.ssSort.soSortOrder == Qt::AscendingOrder ? qsASCENDING : qsDESCENDING);
 
-	/*// history
+	// history
 	qsSettings.setValue(qsHISTORY + '/' + qsPOSITION, stiTab.shHistory.iPosition);
 	qsSettings.beginWriteArray(qsHISTORY);
 	for (iI = 0; iI < stiTab.shHistory.qlLastPaths.count(); iI++) {
@@ -260,15 +262,10 @@ const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex
 
 		slpLastPath = &stiTab.shHistory.qlLastPaths[iI];
 
-		qsSettings.setValue(qsLOCATION, slpLastPath->qsLocation);
 		qsSettings.setValue(qsSHOW, slpLastPath->qsShow);
-		qsSettings.setValue(qsLOCAL_DIRECTORY, slpLastPath->qsLocalDirectory);
-		if (slpLastPath->qsLocation == qsARCHIVE) {
-			qsSettings.setValue(qsARCHIVE, slpLastPath->qsArchive);
-			qsSettings.setValue(qsPATH_IN_ARCHIVE, slpLastPath->qsPathInArchive);
-		} // if
+		qsSettings.setValue(qsPATH, slpLastPath->qsPath);
 	} // for
-	qsSettings.endArray();*/
+	qsSettings.endArray();
 
 	qsSettings.endGroup();
 } // CreateTab
@@ -780,8 +777,7 @@ const bool cSettings::GetShowTabBarWithOnlyOneTab() const
 // get some information about tab
 const cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, const QString &qsIndex)
 {
-	// TODO GetTabInfo
-	//int iCount, iI;
+	int iCount, iI;
 	sTabInfo stiTabInfo;
 
 	if (epPosition == PositionLeft) {
@@ -796,7 +792,7 @@ const cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, con
 	stiTabInfo.ssSort.iSortedColumn = qsSettings.value(qsSORTED_COLUMN).toInt();
 	stiTabInfo.ssSort.soSortOrder = qsSettings.value(qsSORT_ORDER).toString() == qsASCENDING ? Qt::AscendingOrder : Qt::DescendingOrder;
 
-	/*// history
+	// history
 	stiTabInfo.shHistory.iPosition = qsSettings.value(qsHISTORY + '/' + qsPOSITION).toInt();
 	iCount = qsSettings.beginReadArray(qsHISTORY);
 	for (iI = 0; iI < iCount; iI++) {
@@ -804,17 +800,12 @@ const cSettings::sTabInfo cSettings::GetTabInfo(const ePosition &epPosition, con
 
 		qsSettings.setArrayIndex(iI);
 
-		slpLastPath.qsLocation = qsSettings.value(qsLOCATION).toString();
 		slpLastPath.qsShow = qsSettings.value(qsSHOW).toString();
-		slpLastPath.qsLocalDirectory = qsSettings.value(qsLOCAL_DIRECTORY).toString();
-		if (slpLastPath.qsLocation == qsARCHIVE) {
-			slpLastPath.qsArchive = qsSettings.value(qsARCHIVE).toString();
-			slpLastPath.qsPathInArchive = qsSettings.value(qsPATH_IN_ARCHIVE).toString();
-		} // if
+		slpLastPath.qsPath = qsSettings.value(qsPATH).toString();
 
 		stiTabInfo.shHistory.qlLastPaths.append(slpLastPath);
 	} // for
-	qsSettings.endArray();*/
+	qsSettings.endArray();
 
 	qsSettings.endGroup();
 

@@ -18,6 +18,12 @@ class cPanel : public QObject
 	Q_OBJECT
 
 	public:
+		/// history directory list to show
+		struct sHistoryDirectoryList {
+			QStringList qslDirectories;									///< list of directories to choose from
+			int iPosition;														///< actual directory position in the list
+		};
+
 		cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch);
 																					///< constructor
 																					/**< \param qmwParent parent window for dialogs
@@ -33,6 +39,7 @@ class cPanel : public QObject
 																						  \param qcbCommand command combo box
 																						  \param cfcFileControl file operations control
 																						  \param qleQuickSearch quick search window */
+		~cPanel();																		///< destructor
 
 		const int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
 																					///< add new tab with dir view
@@ -50,14 +57,20 @@ class cPanel : public QObject
 																					/**< \return columns for current dir view */
 		const QString GetColumnSet() const;								///< column set for current directory view
 																					/**< \return column set for current directory view */
+		const sHistoryDirectoryList GetHistoryDirectoryList();	///< retreive history directory list
+																					/**< \return history directory list */
 		const int GetTabIndex(const QPoint &qpPos) const;			///< find out tab index in tab bar
 																					/**< \param qpPos cursor position in tab bar
 																						  \return tab index */
+		const void HistoryGoBack();										///< go back in history directory list
+		const void HistoryGoFront();										///< go front in history directory list
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
 		const void RefreshTabs() const;									///< refresh tabs
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */
+		const void SetHistoryDirectory(const int &iPosition);		///< set path by directory from history list
+																					/**< \param iPosition directory position in history list */
 		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
 																					/**< \param qsPath new path */
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
@@ -83,7 +96,7 @@ class cPanel : public QObject
 			QString qsColumnSet;												///< column set for tab
 			sWidgets swWidgets;												///< to remember displayed strings
 			cFileSystem *cfsFileSystem;									///< attached file system handle
-			//sHistory shHistory;											///< directory history information
+			cSettings::sHistory shHistory;								///< directory history information
 		};
 
 		cContentPlugin *ccpContentPlugin;								///< access to content plugins
@@ -107,6 +120,8 @@ class cPanel : public QObject
 		const void ActualizeDrives() const;								///< drive list actualization
 		const void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
 		const void ActualizeWidgets();									///< actualize widgets with info about current directory view
+		const void AddHistory(const int &iIndex);						///< add current path to last paths history
+																					/**< \param iIndex tab index to add history */
 		const void ConnectFileSystem(const cFileSystem *cfsFileSystem) const;
 																					///< connect new file system's signals/slots
 																					/**< \param cfsFileSystem file system to connect */
