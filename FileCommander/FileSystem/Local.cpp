@@ -11,19 +11,33 @@ cLocal::~cLocal()
 	ccpdContentPluginDelayed->deleteLater();
 } // ~cLocal
 
+// check if current path available
+const bool cLocal::CheckPath()
+{
+	while (!qdDir.exists()) {
+		// invalid path
+		if (!qdDir.cdUp()) {
+			// even root doesn't exists
+			emit Unaccessible();
+			return false;
+		} // if
+	} // while
+
+	// path OK
+	return true;
+} // CheckPath
+
 // constructor
 cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
-	this->qsDrive = qsDrive;
-	this->qsRootPath = qsRootPath;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
-
-	qdDir.setPath(qsPath);
 
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
+
+	SetPath(qsDrive, qsRootPath, qsPath);
 } // cLocal
 
 // get value from content plugin
@@ -59,44 +73,50 @@ const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sConten
 // get tree items for current directory
 const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
 {
-	int iI;
-	QDir::Filters fFilters;
-	QFileInfoList qfilFiles;
+	if (CheckPath()) {
+		// file system accessible
+		int iI;
+		QDir::Filters fFilters;
+		QFileInfoList qfilFiles;
 
-	// interrupt delayed content processing
-	emit InterruptContentDelayed();
+		// interrupt delayed content processing
+		emit InterruptContentDelayed();
 
-	// set filter
-	fFilters = QDir::Dirs | QDir::Files;
-	if (csSettings->GetShowSystemFiles()) {
-		fFilters |= QDir::System;
-	} // if
-	if (csSettings->GetShowHiddenFiles()) {
-		fFilters |= QDir::Hidden;
-	} // if
-
-	// get files
-	qfilFiles = qdDir.entryInfoList(fFilters);
-
-	// clear hash table
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-		delete qhiFile.key();
-	} // while
-	qhFiles.clear();
-
-	// add files to hash table
-	for (iI = 0; iI < qfilFiles.count(); iI++) {
-		QFileInfo *qfiFile;
-
-		qfiFile = &qfilFiles[iI];
-		if (qfiFile->fileName() != ".") {
-			qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
+		// set filter
+		fFilters = QDir::Dirs | QDir::Files;
+		if (csSettings->GetShowSystemFiles()) {
+			fFilters |= QDir::System;
 		} // if
-	} // for
+		if (csSettings->GetShowHiddenFiles()) {
+			fFilters |= QDir::Hidden;
+		} // if
 
-	return qhFiles.keys();
+		// get files
+		qfilFiles = qdDir.entryInfoList(fFilters);
+
+		// clear hash table
+		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+		while (qhiFile.hasNext()) {
+			qhiFile.next();
+			delete qhiFile.key();
+		} // while
+		qhFiles.clear();
+
+		// add files to hash table
+		for (iI = 0; iI < qfilFiles.count(); iI++) {
+			QFileInfo *qfiFile;
+
+			qfiFile = &qfilFiles[iI];
+			if (qfiFile->fileName() != ".") {
+				qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
+			} // if
+		} // for
+
+		return qhFiles.keys();
+	} else {
+		// file system unacessible
+		return QList<QTreeWidgetItem *>();
+	} // if else
 } // GetDirectoryContent
 
 // find out disk space information
@@ -260,3 +280,13 @@ const void cLocal::RetreiveContentDelayedValues()
 	ccpdContentPluginDelayed->Start(qqContentDelayedParameters);
 	qqContentDelayedParameters.clear();
 } // RetreiveContentDelayedValues
+
+// change path for this file system
+const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath)
+{
+	this->qsDrive = qsDrive;
+	this->qsRootPath = qsRootPath;
+	qdDir.setPath(qsPath);
+
+	emit ContentChanged(this);
+} // SetPath

@@ -38,6 +38,8 @@ class cLocal : public cFileSystem
 		QString qsDrive;																	///< drive handled by this file system class
 		QString qsRootPath;																///< path to root of this file system
 
+		const bool CheckPath();															///< check if current path available
+																								/**< \return true if avalable (at least some upper directory) */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
@@ -79,12 +81,20 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file check
 																									  \return true if directory */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
+		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath);
+																								///< change path for this file system
+																								/**< \param qsDrive drive handled by this file system class
+																									  \param qsRootPath path to root of this file system
+																									  \param qsPath to initialize local file system */
 
 	signals:
+		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
+																								/**< \param cfsFileSystem filesystem identifier */
 		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
 		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
+		void Unaccessible() const;														///< file system unaccessible
 
 	private slots:
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
