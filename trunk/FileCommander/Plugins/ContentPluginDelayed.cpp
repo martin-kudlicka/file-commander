@@ -8,15 +8,18 @@ cContentPluginDelayed::cContentPluginDelayed(cContentPlugin *ccpContentPlugin)
 } // cContentPluginDelayed
 
 // interrupt delayed content processing before refresh dir view content
-void cContentPluginDelayed::on_InterruptContentDelayed()
+const void cContentPluginDelayed::on_InterruptContentDelayed()
 {
 	QHash<QString, cContentPlugin::sPluginInfo> qhPlugins;
 
 	bStop = true;
 	qhPlugins = ccpContentPlugin->GetPluginsInfo();
 	if (isRunning()) {
-		if (qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue) {
-			qhPlugins.value(qsCurrentPlugin).tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
+		cContentPlugin::sPluginInfo *spiPluginInfo;
+
+		spiPluginInfo = &qhPlugins[qsCurrentPlugin];
+		if (spiPluginInfo->tcsgvContentStopGetValue) {
+			spiPluginInfo->tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
 		} // if
 	} // if
 } // on_InterruptContentDelayed
@@ -27,16 +30,19 @@ void cContentPluginDelayed::run()
 	int iI;
 
 	for (iI = 0; iI < qlParameters.count() && !bStop; iI++) {
-		qsCurrentFile = qlParameters.at(iI).siInput.qsFilename;
-		qsCurrentPlugin = qlParameters.at(iI).siInput.qsPlugin;
+		sParameters *spParameters;
 
-		qlParameters[iI].soOutput.qsValue = ccpContentPlugin->GetPluginValue(qlParameters.at(iI).siInput.qsFilename, qlParameters.at(iI).siInput.qsPlugin, qlParameters.at(iI).siInput.qsColumn, qlParameters.at(iI).siInput.qsUnit);
-		emit GotColumnValue(qlParameters.at(iI).soOutput);
+		spParameters = &qlParameters[iI];
+		qsCurrentFile = spParameters->siInput.qsFilename;
+		qsCurrentPlugin = spParameters->siInput.qsPlugin;
+
+		spParameters->soOutput.qsValue = ccpContentPlugin->GetPluginValue(spParameters->siInput.qsFilename, spParameters->siInput.qsPlugin, spParameters->siInput.qsColumn, spParameters->siInput.qsUnit);
+		emit GotColumnValue(spParameters->soOutput);
 	} // for
 } // run
 
 // start thread processing
-void cContentPluginDelayed::Start(const QList<sParameters> &qlParameters)
+const void cContentPluginDelayed::Start(const QList<sParameters> &qlParameters)
 {
 	this->qlParameters = qlParameters;
 	bStop = false;

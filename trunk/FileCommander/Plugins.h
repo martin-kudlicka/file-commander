@@ -19,8 +19,8 @@ class cPlugins
 														/**< \param csSettings application's settings */
 		~cPlugins();								///< destructor
 
-		void Load();								///< loads all plugins
-		void Unload();								///< unload all plugins
+		const void Load() const;				///< loads all plugins
+		const void Unload() const;				///< unload all plugins
 
 	private:
 		cSettings *csSettings;					///< main settings

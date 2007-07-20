@@ -18,7 +18,7 @@ cPlugins::~cPlugins()
 } // ~cPlugins
 
 // loads all plugins
-void cPlugins::Load()
+const void cPlugins::Load() const
 {
 	ccpContentPlugin->Load();
 	clpListerPlugin->Load();
@@ -26,7 +26,7 @@ void cPlugins::Load()
 } // Load
 
 // unload all plugins
-void cPlugins::Unload()
+const void cPlugins::Unload() const
 {
 	ccpContentPlugin->Unload();
 	clpListerPlugin->Unload();
