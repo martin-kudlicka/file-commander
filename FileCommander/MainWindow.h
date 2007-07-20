@@ -45,10 +45,14 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		QCompleter qcDirModel;														///< completer based on dir model
 		QHash<QAction *, cOptionsDialog::sFavouriteDirectory> qhFavouriteDirectories;
 																							///< favourite directories table
-		QMenu qmFavouriteDirectories;												///< favourite directories context menu
 		QHBoxLayout *qhblBackgroundOperations;									///< layout for background operations
 		QMenu qmColumnSets;															///< column sets submenu
+		QMenu qmFavouriteDirectories;												///< favourite directories context menu
+		QMenu qmLeftHistoryDirectoryList;										///< history directory list menu for left panel
+		QMenu qmRightHistoryDirectoryList;										///< history directory list menu for right panel
 		QMenu qmTabBar;																///< tab bar context menu
+		QShortcut *qsHistoryBack;													///< go back in history directory list
+		QShortcut *qsHistoryFront;													///< go front in history directory list
 		QShortcut *qsLeftDrive;														///< left drive combo box shortcut
 		QShortcut *qsRightDrive;													///< right drive combo box shortcut
 		QTabBar qtbLeft;																///< left's panel tab bar
@@ -63,6 +67,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							///< fill favourite directories context menu
 																							/**< \param qmMenu menu to fill in
 																								  \param qlFavouriteDirectories favourites to fill */
+		const void FillHistoryDirectoryList(const cSettings::ePosition &epPosition);
+																							///< fill history directory list for specified panel
+																							/**< \param epPosition panel position */
 		const void LoadTabs(const cSettings::ePosition &epPosition);	///< load tabs from qsSettings
 																							/**< \param epPosition tabs for left or right panel */
 		const void SaveSettings() const;											///< save dir view settings
@@ -98,6 +105,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qmFavouriteDirectories_triggered(QAction *action) const;
 																							///< selected favourite directory from favourites context menu
 																							/**< \param action favourite directory */
+		const void on_qmLeftHistoryDirectoryList_aboutToShow();			///< left history directory list is about to show
+		const void on_qmLeftHistoryDirectoryList_triggered(QAction *action) const;
+																							///< selected directory from left panel's history list
+																							/**< \param action directory information */
+		const void on_qmRightHistoryDirectoryList_aboutToShow();			///< right history directory list is about to show
+		const void on_qmRightHistoryDirectoryList_triggered(QAction *action) const;
+																							///< selected directory from right panel's history list
+																							/**< \param action directory information */
+		const void on_qsHistoryBack_activated() const;						///< history back shortcut activated
+		const void on_qsHistoryFront_activated() const;						///< history front shortcut activated
 		const void on_qsLeftDrive_activated() const;							///< left drive shortcut activated
 		const void on_qsRightDrive_activated() const;						///< right drive shortcut activated
 		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos);

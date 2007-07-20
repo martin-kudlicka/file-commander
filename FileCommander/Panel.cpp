@@ -8,6 +8,16 @@
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
 
+// destructor
+cPanel::~cPanel()
+{
+	int iI;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		qlTabs.at(iI).cfsFileSystem->deleteLater();
+	} // for
+} // ~cPanel
+
 // drive list actualization
 const void cPanel::ActualizeDrives() const
 {
@@ -70,12 +80,74 @@ const void cPanel::ActualizeWidgets()
 	qlSelected->setText(stTab->swWidgets.qsSelected);
 } // ActualizeWidgets
 
+// add current path to last paths history
+const void cPanel::AddHistory(const int &iIndex)
+{
+	bool bAdd;
+	sTab *stTab;
+
+	stTab = &qlTabs[iIndex];
+
+	if (stTab->shHistory.qlLastPaths.isEmpty()) {
+		// list is clear -> new tab
+		bAdd = true;
+	} else {
+		if (stTab->cfsFileSystem->GetPath() == stTab->shHistory.qlLastPaths[stTab->shHistory.iPosition].qsPath) {
+			// same path as the last
+			bAdd = false;
+		} else {
+			// different path than previous
+			bAdd = true;
+		} // if else
+	} // if else
+
+	if (bAdd) {
+		// add to history
+		int iI;
+		cSettings::sLastPath slpLastPath;
+
+		slpLastPath.qsShow = stTab->cfsFileSystem->GetPath();
+		slpLastPath.qsPath = slpLastPath.qsShow;
+
+		if (stTab->shHistory.qlLastPaths.isEmpty()) {
+			// add as the first record
+			stTab->shHistory.qlLastPaths.append(slpLastPath);
+		} else {
+			if (stTab->shHistory.iPosition == stTab->shHistory.qlLastPaths.count() - 1) {
+				// add to the last (next) position
+				stTab->shHistory.qlLastPaths.append(slpLastPath);
+			} else {
+				// move current record to the last position and add new one
+				stTab->shHistory.qlLastPaths.append(stTab->shHistory.qlLastPaths.takeAt(stTab->shHistory.iPosition));
+				stTab->shHistory.qlLastPaths.append(slpLastPath);
+			} // if else
+		} // if else
+		
+		// find previous record of currently added path
+		for (iI = 0; iI < stTab->shHistory.qlLastPaths.count() - 2; iI++) {
+			if (stTab->shHistory.qlLastPaths.at(iI).qsShow == slpLastPath.qsShow) {
+				// remove previous identical record from history list
+				stTab->shHistory.qlLastPaths.removeAt(iI);
+				break;
+			} // if 
+		} // for
+
+		// remove oldest records to have less than set in options
+		while (stTab->shHistory.qlLastPaths.count() > csSettings->GetMaximumHistoryDirectoryListSize()) {
+			stTab->shHistory.qlLastPaths.removeAt(0);
+		} // while
+
+		// set position to the last record
+		stTab->shHistory.iPosition = stTab->shHistory.qlLastPaths.count() - 1;
+	} // if
+} // AddHistory
+
 // add new tab with dir view
 const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
 	// TODO AddTab
 	cTreeWidget *ctwTree;
-	int /*iI, */iIndex;
+	int iIndex;
 	sTab stTab;
 
 	// create tab
@@ -111,26 +183,8 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
 
-	/*// history
-	stTab.shHistory.iPosition = stiTabInfo.shHistory.iPosition;
-	for (iI = 0; iI < stiTabInfo.shHistory.qlLastPaths.count(); iI++) {
-		sLastPath slpPanel;
-		cSettings::sLastPath *slpSetting;
-
-		slpSetting = &stiTabInfo.shHistory.qlLastPaths[iI];
-
-		slpPanel.qsShow = slpSetting->qsShow;
-		slpPanel.qsLocalDirectory = slpSetting->qsLocalDirectory;
-		slpPanel.qsArchive = slpSetting->qsArchive;
-		slpPanel.qsPathInArchive = slpSetting->qsPathInArchive;
-		if (slpSetting->qsLocation == qsLOCAL_DIRECTORY) {
-			slpPanel.elLocation = LocalDirectory;
-		} else {
-			slpPanel.elLocation = Archive;
-		} // if else
-
-		stTab.shHistory.qlLastPaths.append(slpPanel);
-	} // for*/
+	// history
+	stTab.shHistory = stiTabInfo.shHistory;
 
 	qlTabs.insert(iIndex, stTab);
 
@@ -282,6 +336,23 @@ const QString cPanel::GetDateTimeString(const QDateTime &qdtDateTime) const
 	return qsDateTime;
 } // GetDateTimeString
 
+// retreive history directory list
+const cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList()
+{
+	int iI;
+	cSettings::sHistory *shHistory;
+	sHistoryDirectoryList shdlList;
+
+	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+
+	shdlList.iPosition = shHistory->iPosition;
+	for (iI = 0; iI < shHistory->qlLastPaths.count(); iI++) {
+		shdlList.qslDirectories.append(shHistory->qlLastPaths.at(iI).qsShow);
+	} // for
+
+	return shdlList;
+} // GetHistoryDirectoryList
+
 // find index of native column
 const int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
 {
@@ -381,6 +452,30 @@ const void cPanel::HideOrShowTabBar() const
 	} // if else
 } // HideOrShowTabBar
 
+// go back in history directory list
+const void cPanel::HistoryGoBack()
+{
+	cSettings::sHistory *shHistory;
+
+	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+
+	if (shHistory->iPosition > 0) {
+		SetHistoryDirectory(shHistory->iPosition - 1);
+	} // if
+} // HistoryGoBack
+
+// go front in history directory list
+const void cPanel::HistoryGoFront()
+{
+	cSettings::sHistory *shHistory;
+
+	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+
+	if (shHistory->iPosition < shHistory->qlLastPaths.count() - 1) {
+		SetHistoryDirectory(shHistory->iPosition + 1);
+	} // if
+} // HistoryGoFront
+
 // directory content changed for filesystem
 const void cPanel::on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem)
 {
@@ -467,7 +562,6 @@ const void cPanel::RefreshAllHeaders()
 // refresh dir content
 const void cPanel::RefreshContent(const int &iIndex)
 {
-	// TODO RefreshContent
 	cTreeWidget *ctwDir;
 	int iI;
 	QList<QTreeWidgetItem *> qlFiles;
@@ -562,7 +656,7 @@ const void cPanel::RefreshContent(const int &iIndex)
 
 	stTab->cfsFileSystem->RetreiveContentDelayedValues();
 
-	//AddHistory(iIndex);
+	AddHistory(iIndex);
 } // RefreshContent
 
 // refresh column's header
@@ -663,6 +757,17 @@ const void cPanel::SetColumnSet(const QString &qsColumnSet)
 	// refresh header to show changes
 	RefreshHeader(qswDirs->currentIndex(), true);
 } // SetColumnSet
+
+// set path by directory from history list
+const void cPanel::SetHistoryDirectory(const int &iPosition)
+{
+	sTab *stTab;
+
+	stTab = &qlTabs[qswDirs->currentIndex()];
+
+	stTab->shHistory.iPosition = iPosition;
+	SetPath(stTab->shHistory.qlLastPaths.at(iPosition).qsPath);
+} // SetHistoryDirectory
 
 const void cPanel::SetPath(const QString &qsPath)
 {

@@ -16,7 +16,7 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 // change file system according to new drive
 const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
 {
-	// TODO ChangeFileSystem do this after implementing other than local file system
+	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one)
 	return false;
 } // ChangeFileSystem
 

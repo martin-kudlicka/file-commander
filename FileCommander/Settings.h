@@ -121,6 +121,15 @@ class cSettings : private QObject
 			QString qsTarget;																///< path for destination panel
 			QList<QPair<QString, sFavouriteDirectory> > qlChildFavourites;	///< can contain children favourites if bSubmenu is true
 		};
+		/// last visited path
+		struct sLastPath {
+			QString qsPath;																///< path to set
+			QString qsShow;																///< path to show in history view
+		};
+		struct sHistory {
+			QList<sLastPath> qlLastPaths;												///< list of last visited paths
+			int iPosition;																	///< current position in last paths list
+		};
 		/// lister settings
 		struct sLister {
 			QString qsCharSet;															///< selected char set
@@ -151,6 +160,7 @@ class cSettings : private QObject
 			QString qsDrive;																///< drive
 			QString qsPath;																///< path selected in tab
 			sSort ssSort;																	///< sort information
+			sHistory shHistory;															///< tab directory history
 		};
 
 		const void CreateColumnSet(const QString &qsColumnSet);				///< create new empty column set
