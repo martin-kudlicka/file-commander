@@ -12,8 +12,10 @@ cLocal::~cLocal()
 } // ~cLocal
 
 // constructor
-cLocal::cLocal(const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
+cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
+	this->qsDrive = qsDrive;
+	this->qsRootPath = qsRootPath;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
 
@@ -86,11 +88,41 @@ const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
 
 	// add files to hash table
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
-		qhFiles.insert(new QTreeWidgetItem(), qfilFiles.at(iI));
+		QFileInfo *qfiFile;
+
+		qfiFile = &qfilFiles[iI];
+		if (qfiFile->fileName() != ".") {
+			qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
+		} // if
 	} // for
 
 	return qhFiles.keys();
 } // GetDirectoryContent
+
+// find out disk space information
+const cFileSystem::sDiskSpace cLocal::GetDiskSpace() const
+{
+	sDiskSpace sdsInfo;
+
+#ifdef Q_WS_WIN
+	ULARGE_INTEGER uliFree, uliTotal;
+
+	GetDiskFreeSpaceEx(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), &uliFree, &uliTotal, NULL);
+	sdsInfo.qi64Free = uliFree.QuadPart;
+	sdsInfo.qi64Total = uliTotal.QuadPart;
+#else
+	/*struct stat stst;
+	struct statfs stfs;
+
+	if ( ::stat(sDirPath.local8Bit(),&stst) == -1 ) return false;
+	if ( ::statfs(sDirPath.local8Bit(),&stfs) == -1 ) return false;
+
+	fFree = stfs.f_bavail * ( stst.st_blksize / fKB );
+	fTotal = stfs.f_blocks * ( stst.st_blksize / fKB );*/
+#endif
+
+	return sdsInfo;
+} // GetDiskSpace
 
 #ifdef Q_WS_WIN
 // get file attributes
@@ -193,6 +225,22 @@ const QString cLocal::GetTabText() const
 
 	return qsTabText;
 } // GetTabText
+
+// find out name of the disk
+const QString cLocal::GetVolumeName() const
+{
+	QString qsName;
+
+#ifdef Q_WS_WIN
+	qsName.fill(32, uiVOLUME_NAME * sizeof(WCHAR));
+	GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName.data()), qsName.size() / sizeof(WCHAR), NULL, NULL, NULL, NULL, 0);
+	qsName = qsName.left(qsName.trimmed().size() - 1);
+#else
+	qsName = qsDrive;
+#endif
+
+	return qsName;
+} // GetVolumeName
 
 // check if file is directory
 const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const

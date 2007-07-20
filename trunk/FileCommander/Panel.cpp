@@ -40,6 +40,36 @@ const void cPanel::ActualizeDrives() const
 	} // if
 } // ActualizeDrives
 
+// actualize volume information - disk name and space
+const void cPanel::ActualizeVolumeInfo()
+{
+	if (!qlTabs.isEmpty() && qlTabs.value(qswDirs->currentIndex()).bValid) {
+		cFileSystem::sDiskSpace sdsInfo;
+		QString qsName;
+		sTab *stTab;
+
+		stTab = &qlTabs[qswDirs->currentIndex()];
+
+		qsName = stTab->cfsFileSystem->GetVolumeName();
+		sdsInfo = stTab->cfsFileSystem->GetDiskSpace();
+		qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(GetSizeString(sdsInfo.qi64Free)).arg(GetSizeString(sdsInfo.qi64Total)));
+	} // if
+} // ActualizeVolumeInfo
+
+// actualize widgets with info about current directory view
+const void cPanel::ActualizeWidgets()
+{
+	sTab *stTab;
+
+	stTab = &qlTabs[qswDirs->currentIndex()];
+
+	SetTabText(qswDirs->currentIndex());
+
+	ActualizeVolumeInfo();
+	qlPath->setText(stTab->swWidgets.qsPath);
+	qlSelected->setText(stTab->swWidgets.qsSelected);
+} // ActualizeWidgets
+
 // add new tab with dir view
 const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
@@ -71,8 +101,12 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
 	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));*/
 
+	// drive letter in combo
+	qcbDrive->blockSignals(true);
+	qcbDrive->setCurrentIndex(qcbDrive->findText(stiTabInfo.qsDrive));
+	qcbDrive->blockSignals(false);
+
 	// set tab properties
-	stTab.swWidgets.qsDrive = stiTabInfo.qsDrive;
 	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
 	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
@@ -160,7 +194,7 @@ const void cPanel::CloseTab(const int &iTabIndex)
 		qtbTab->removeTab(iTabIndex);
 
 		HideOrShowTabBar();
-		//ActualizeWidgets();
+		ActualizeWidgets();
 
 		static_cast<cTreeWidget *>(qswDirs->currentWidget())->setFocus(Qt::OtherFocusReason);
 	} // if
@@ -183,6 +217,8 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDr
 	this->cfcFileControl = cfcFileControl;
 	this->qleQuickSearch = qleQuickSearch;
 
+	ActualizeDrives();
+
 	// automatic actualizations
 	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
 	qtTimer.start(iTIMER_INTERVAL);
@@ -199,7 +235,7 @@ const int cPanel::DuplicateTab(const int &iTabIndex)
 	stTab = &qlTabs[iTabIndex];
 
 	stiTabInfo.qsColumnSet = stTab->qsColumnSet;
-	stiTabInfo.qsDrive = stTab->swWidgets.qsDrive;
+	stiTabInfo.qsDrive = qcbDrive->currentText();
 	stiTabInfo.qsPath = stTab->cfsFileSystem->GetPath();
 	stiTabInfo.ssSort.iSortedColumn = ctwDir->sortColumn();
 	stiTabInfo.ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
@@ -352,9 +388,10 @@ const void cPanel::on_ctwTree_GotFocus()
 } // on_ctwTree_GotFocus
 
 // timer's action
-const void cPanel::on_qtTimer_timeout() const
+const void cPanel::on_qtTimer_timeout()
 {
 	ActualizeDrives();
+	ActualizeVolumeInfo();
 } // on_qtTimer_timeout
 
 // refresh all dir view contents

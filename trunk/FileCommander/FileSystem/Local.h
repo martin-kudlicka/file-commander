@@ -15,14 +15,18 @@ class cLocal : public cFileSystem
 	Q_OBJECT
 
 	public:
-		cLocal(const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
+		cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
 																								///< constructor
-																								/**< \param qsPath to initialize local file system
+																								/**< \param qsDrive drive handled by this file system class
+																									  \param qsRootPath path to root of this file system
+																									  \param qsPath to initialize local file system
 																				 					  \param csSettings main settings
 																				 					  \param ccpContentPlugin content plugin interface */
 		~cLocal();																			///< destructor
 
 	private:
+		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
+
 		cContentPlugin *ccpContentPlugin;											///< content plugin interface
 		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
 		cSettings *csSettings;															///< main settings
@@ -31,6 +35,8 @@ class cLocal : public cFileSystem
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
 																								///< parameters for content delayed values
+		QString qsDrive;																	///< drive handled by this file system class
+		QString qsRootPath;																///< path to root of this file system
 
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
@@ -38,6 +44,9 @@ class cLocal : public cFileSystem
 																									  \return content plugin (nondelayed) value */
 		const QList<QTreeWidgetItem *> GetDirectoryContent();					///< get tree items for current directory
 																								/**< \return  tree items for current directory */
+		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
+																								/**< \param qsPath path to detect space information
+																									  \return disk space information */
 #ifdef Q_WS_WIN
 		const QString GetFileAttr(QTreeWidgetItem *qtwiFile) const;			///< get file attributes
 																								/**< \param qtwiFile file to find attributes for
@@ -63,6 +72,9 @@ class cLocal : public cFileSystem
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
 		const QString GetTabText() const;											///< get text for tab in directory view
+																								/**< \return tab text */
+		const QString GetVolumeName() const;										///< find out name of the disk
+																								/**< \return name of the disk */
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file check
 																									  \return true if directory */

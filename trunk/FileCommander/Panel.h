@@ -71,7 +71,6 @@ class cPanel : public QObject
 
 		/// strings for widgets
 		struct sWidgets {
-			QString qsDrive;													///< selected drive
 			QString qsPath;													///< path on drive
 			QString qsSelected;												///< selected item info
 		};
@@ -104,6 +103,8 @@ class cPanel : public QObject
 		static cSettings::sSort ssSort;									///< sort information
 
 		const void ActualizeDrives() const;								///< drive list actualization
+		const void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
+		const void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		const QString GetDateTimeString(const QDateTime &qdtDateTime) const;
 																					///< convert QDateTime to user defined format
 																					/**< \param qdtDateTime date/time to convert
@@ -155,7 +156,7 @@ class cPanel : public QObject
 																					///< got column value from content plugin
 																					/**< \param soOutput information to update dir view */
 		const void on_ctwTree_GotFocus();								///< dir view got focus
-		const void on_qtTimer_timeout() const;							///< timer's action
+		const void on_qtTimer_timeout();									///< timer's action
 }; // cPanel
 
 #endif
