@@ -9,7 +9,6 @@
 #include <QtGui/QLabel>
 #include "Plugins/ContentPlugin.h"
 #include "FileSystem.h"
-#include <QtCore/QTimer>
 #include "FileControl.h"
 #include "Plugins/ContentPluginDelayed.h"
 
@@ -117,7 +116,6 @@ class cPanel : public QObject
 		QStackedWidget *qswDirs;											///< directory views
 		static QStackedWidget *qswLastActive;							///< last active panel
 		QTabBar *qtbTab;														///< tabs for dir views
-		QTimer qtTimer;														///< timer for periodic actualizations
 		static cSettings::sSort ssSort;									///< sort information
 
 		const void ActualizeDrives() const;								///< drive list actualization
@@ -158,6 +156,7 @@ class cPanel : public QObject
 																					///< sort dir content
 																					/**< \param iIndex index of dir view
 																						  \param qlToSort files to sort */
+		void timerEvent(QTimerEvent *event);							///< automatic actualizations
 		static const bool TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2);
 																					///< compare items by QDateTime
 																					/**< \param qtwiItem1 1st item
@@ -186,7 +185,6 @@ class cPanel : public QObject
 		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
 																					///< click on header in tree (dir) view
 																					/**< \param logicalIndex column index clicked on */
-		const void on_qtTimer_timeout();									///< timer's action
 }; // cPanel
 
 #endif
