@@ -284,8 +284,7 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDr
 	ActualizeDrives();
 
 	// automatic actualizations
-	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
-	qtTimer.start(iTIMER_INTERVAL);
+	startTimer(iTIMER_INTERVAL);
 } // cPanel
 
 // create new tab by duplicate one
@@ -529,13 +528,6 @@ const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
 	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
 } // on_qhvTreeHeader_sectionClicked
-
-// timer's action
-const void cPanel::on_qtTimer_timeout()
-{
-	ActualizeDrives();
-	ActualizeVolumeInfo();
-} // on_qtTimer_timeout
 
 // refresh all dir view contents
 const void cPanel::RefreshAllContents()
@@ -979,6 +971,13 @@ const void cPanel::SortBy(const int &iColumn)
 	// sort again
 	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
 } // SortBy
+
+// automatic actualizations
+void cPanel::timerEvent(QTimerEvent *event)
+{
+	ActualizeDrives();
+	ActualizeVolumeInfo();
+} // timerEvent
 
 // compare items by QDateTime
 const bool cPanel::TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const QTreeWidgetItem *qtwiItem2)
