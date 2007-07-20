@@ -12,10 +12,36 @@ cLocal::~cLocal()
 	ccpdContentPluginDelayed->deleteLater();
 } // ~cLocal
 
+// activate current file
+const void cLocal::ActivateCurrent()
+{
+	QFileInfo *qfiFile;
+
+	qfiFile = &qhFiles[qhFiles.constBegin().key()->treeWidget()->currentItem()];
+
+	if (qfiFile->isDir()) {
+		// directory
+#ifdef Q_WS_WIN
+		if (PathExists(qdDir.path() + '/' + qfiFile->fileName())) {
+#endif
+			qdDir.cd(qfiFile->fileName());
+			emit ContentChanged(this);
+#ifdef Q_WS_WIN
+		} // if
+#endif
+	} else {
+		// file
+	} // if else
+} // ActivateCurrent
+
 // check if current path available
 const bool cLocal::CheckPath()
 {
+#ifdef Q_WS_WIN
+	while (!PathExists(qdDir.path())) {
+#else
 	while (!qdDir.exists()) {
+#endif
 		// invalid path
 		if (!qdDir.cdUp()) {
 			// even root doesn't exists
@@ -297,6 +323,26 @@ const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPlug
 {
 	emit GotColumnValue(soOutput);
 } // on_ccpdContentPluginDelayed_GotColumnValue
+
+#ifdef Q_WS_WIN
+// check if path is valid
+const bool cLocal::PathExists(const QString &qsPath) const
+{
+	bool bResult;
+	HANDLE hHandle;
+	WIN32_FIND_DATA fdFindData;
+
+	hHandle = FindFirstFile(reinterpret_cast<LPCWSTR>(QString(qsPath + "/*").unicode()), &fdFindData);
+	if (hHandle == INVALID_HANDLE_VALUE) {
+		bResult = false;
+	} else {
+		bResult = true;
+	} // if else
+	FindClose(hHandle);
+
+	return bResult;
+} // PathExists
+#endif
 
 // start retreiving of content delayed values
 const void cLocal::RetreiveContentDelayedValues()
