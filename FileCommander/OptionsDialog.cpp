@@ -11,24 +11,16 @@
 #include <QtGui/QDirModel>
 
 const QString qsASCII = "ASCII";
-#ifdef Q_WS_WIN
-const QString qsATTRIBUTES = "Attributes";
-#endif
 const QString qsBYTES = "Bytes";
-const QString qsDATE_TIME = "DateTime";
-const QString qsEXTENSION = "Extension";
 const QString qsEXTERNAL = "External";
 const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
 const QString qsGIGABYTES = "Gigabytes";
-const QString qsICON = "Icon";
 const QString qsKILOBYTES = "Kilobytes";
 const QString qsMEGABYTES = "Megabytes";
 const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
-const QString qsNO = "no";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
-const QString qsSIZE = "Size";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 const QString qsYES_TO_ALL = "YesToAll";
@@ -1618,7 +1610,7 @@ const void cOptionsDialog::SaveOptions()
 } // SaveOptions
 
 // fill favourite directories into tree widget
-const void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+const void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories)
 {
 	int iI;
 

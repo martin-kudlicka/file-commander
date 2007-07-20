@@ -137,7 +137,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		const void SaveOption(const eOption &eoType) const;			///< save specific changes into settings file
 																						/**< \param eoType type of changes */
 		const void SaveOptions();												///< save changes into application's settings file
-		const void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+		const void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories);
 																						///< fill favourite directories into tree widget
 																						/**< \param qtwiParent favourite to start with
 																							  \param qlFavouriteDirectories list of favourites description */
