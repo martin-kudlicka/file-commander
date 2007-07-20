@@ -96,6 +96,7 @@ const void cMainWindow::AssignShortcuts()
 	qaCompareDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__MARK__COMPARE_DIRECTORIES)));
 	qaSearch->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__SEARCH)));
 	qaFavouriteDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES)));
+	qaHistoryDirectoryList->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST)));
 	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
 	qaReverseOrder->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER)));
@@ -396,6 +397,16 @@ const void cMainWindow::on_qagSortBy_triggered(QAction *action) const
 
 	cpSource->SortBy(iSortBy);
 } // on_qagSortBy_triggered
+
+// history directory list is selected
+const void cMainWindow::on_qaHistoryDirectoryList_triggered(bool checked /* false */) const
+{
+	if (cpSource == cpLeft) {
+		qpbLeftHistory->showMenu();
+	} else {
+		qpbRightHistory->showMenu();
+	} // if else
+} // on_qaHistoryDirectoryList_triggered
 
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)

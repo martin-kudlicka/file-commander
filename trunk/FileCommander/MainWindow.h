@@ -89,6 +89,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qagSortBy_triggered(QAction *action) const;		///< sort by action called
 																							/**< \param action column to sort by */
+		const void on_qaHistoryDirectoryList_triggered(bool checked = false) const;
+																							///< history directory list is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaOptions_triggered(bool checked = false);			///< options are selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaTabBarCloseAllOtherTabs_triggered(bool checked = false);
