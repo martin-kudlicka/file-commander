@@ -11,13 +11,18 @@ const QString qsASK = "Ask";
 #ifdef Q_WS_WIN
 const QString qsATTRIBUTES = "Attributes";
 #endif
+const QString qsBYTES = "Bytes";
 const QString qsDATE_TIME = "DateTime";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
 const QString qsFULL = "Full";					///< full dir panel view (icon, filename, extension, date)
+const QString qsGIGABYTES = "Gigabytes";
 const QString qsICON = "Icon";
 const QString qsINTERNAL = "Internal";
+const QString qsKILOBYTES = "Kilobytes";
+const QString qsMEGABYTES = "Megabytes";
 const QString qsNAME = "Name";
+const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO = "no";
 const QString qsONLY_FILES = "OnlyFiles";
 const QString qsSIZE = "Size";
