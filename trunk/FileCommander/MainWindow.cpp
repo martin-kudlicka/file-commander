@@ -2,6 +2,7 @@
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QDirModel>
+#include "OptionsDialog.h"
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
@@ -155,6 +156,46 @@ cMainWindow::cMainWindow()
 	// set focus to left panel
 	//static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
+
+// options are selected
+const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
+{
+	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccpContentPlugin);
+	QFlags<cOptionsDialog::eToDo> qfToDo;
+
+	qfToDo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
+
+	if (qfToDo & cOptionsDialog::ReassignShortcuts) {
+		retranslateUi(this);
+		AssignShortcuts();
+	} // if
+	if (qfToDo & cOptionsDialog::ReloadPlugins) {
+		cpPlugins->Unload();
+		cpPlugins->Load();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshContent) {
+		//cpLeft->RefreshAllContents();
+		//cpRight->RefreshAllContents();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshHeader) {
+		//cpLeft->RefreshAllHeaders();
+		//cpRight->RefreshAllHeaders();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshTabs) {
+		//cpLeft->RefreshTabs();
+		//cpRight->RefreshTabs();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshFavouriteDirectories) {
+		//ActualizeFavouriteDirectories();
+	} // if
+	if (qfToDo & cOptionsDialog::RefreshColumnSets) {
+		//ActualizeColumnSets();
+	} // if
+	if (qfToDo & cOptionsDialog::ShowHideDirectoryViewHeader) {
+		//cpLeft->ShowHideHeaders();
+		//cpRight->ShowHideHeaders();
+	} // if
+} // on_qaOptions_triggered
 
 // context menu of left tab bar
 const void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos) const

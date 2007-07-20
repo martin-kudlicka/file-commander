@@ -12,10 +12,14 @@ CONFIG(release, debug|release) {
 	OBJECTS_DIR = Release/Obj
 }
 
-FORMS = MainWindow.ui
+FORMS = MainWindow.ui \
+		  OptionsDialog.ui \
+		  OptionsDialog/NewFavouriteDirectoryDialog.ui
 
 HEADERS = MainWindow.h \
 			 Settings.h \
+			 OptionsDialog.h \
+			 OptionsDialog/NewFavouriteDirectoryDialog.h \
 			 Plugins.h \
 			 Plugins/ContentPlugin.h \
 			 Plugins/ContentPluginDelayed.h \
@@ -33,6 +37,8 @@ HEADERS = MainWindow.h \
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 Settings.cpp \
+			 OptionsDialog.cpp \
+			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \
 			 Plugins.cpp \
 			 Plugins/ContentPlugin.cpp \
 			 Plugins/ContentPluginDelayed.cpp \
