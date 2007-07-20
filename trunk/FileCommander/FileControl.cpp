@@ -2,6 +2,7 @@
 
 #include <QtCore/QFileInfoList>
 #include <QtCore/QDir>
+#include "FileSystem/Local.h"
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -26,11 +27,34 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 
 		qfiDrive = &qfilDrives[iI];
 		sdDrive.qsPath = qfiDrive->path();
+		sdDrive.edtType = Local;
 		qlDrives.append(QPair<QString, sDrive>(qfiDrive->path().at(0), sdDrive));
 	} // for
 
 	return qlDrives;
 } // GetDrives
+
+cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive) const
+{
+	cFileSystem *cfsFileSystem;
+	int iI;
+	QList<QPair<QString, sDrive> > qlDrives;
+
+	qlDrives = GetDrives();
+
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		QPair<QString, sDrive> *qpDrive;
+
+		qpDrive = &qlDrives[iI];
+		if (qpDrive->first == qsDrive) {
+			switch (qpDrive->second.edtType) {
+				case Local:	cfsFileSystem = new cLocal();
+			} // switch
+		} // if
+	} // for
+
+	return cfsFileSystem;
+} // GetFileSystem
 
 // returns first accessible drive for application
 const QPair<QString, cFileControl::sDrive> cFileControl::GetFirstDrive() const
