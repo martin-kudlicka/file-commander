@@ -49,6 +49,8 @@ class cLocal : public cFileSystem
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
 																								/**< \param qsPath path to detect space information
 																									  \return disk space information */
+		const QString &GetDrive() const;												///< drive represented by file system
+																								/**< \return drive represented by file system */
 #ifdef Q_WS_WIN
 		const QString GetFileAttr(QTreeWidgetItem *qtwiFile) const;			///< get file attributes
 																								/**< \param qtwiFile file to find attributes for

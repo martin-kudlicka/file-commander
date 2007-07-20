@@ -592,9 +592,8 @@ const void cMainWindow::on_qtbRight_customContextMenuRequested(const QPoint &pos
 // save dir view settings
 const void cMainWindow::SaveSettings() const
 {
-	// TODO SaveSettings
-	//cpLeft->SaveSettings(cSettings::PositionLeft);
-	//cpRight->SaveSettings(cSettings::PositionRight);
+	cpLeft->SaveSettings(cSettings::PositionLeft);
+	cpRight->SaveSettings(cSettings::PositionRight);
 } // SaveSettings
 
 // set sort by actions for sorting columns

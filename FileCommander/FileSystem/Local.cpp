@@ -144,6 +144,12 @@ const cFileSystem::sDiskSpace cLocal::GetDiskSpace() const
 	return sdsInfo;
 } // GetDiskSpace
 
+// drive represented by file system
+const QString &cLocal::GetDrive() const
+{
+	return qsDrive;
+} // GetDrive
+
 #ifdef Q_WS_WIN
 // get file attributes
 const QString cLocal::GetFileAttr(QTreeWidgetItem *qtwiFile) const

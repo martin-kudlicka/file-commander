@@ -32,6 +32,8 @@ class cFileSystem : public QObject
 																										/**< \return  tree items for current directory */
 		virtual const sDiskSpace GetDiskSpace() const = 0;								///< find out disk space information
 																										/**< \return disk space information */
+		virtual const QString &GetDrive() const = 0;										///< drive represented by file system
+																										/**< \return drive represented by file system */
 #ifdef Q_WS_WIN
 		virtual const QString GetFileAttr(QTreeWidgetItem *qtwiFile) const = 0;	///< get file attributes
 																										/**< \param qtwiFile file to find attributes for

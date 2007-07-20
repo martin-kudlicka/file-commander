@@ -1152,6 +1152,26 @@ const void cSettings::SetShowTabBarWithOnlyOneTab(const bool &bShow)
 	qsSettings.setValue(qsTABS__SHOW_TAB_BAR_WITH_ONLY_ONE_TAB, bShow);
 } // SetShowTabBarWithOnlyOneTab
 
+// save tab settings
+const void cSettings::SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs)
+{
+	int iI;
+
+	// remove old tabs
+	if (epPosition == PositionLeft) {
+		qsSettings.beginGroup(qsLEFT_PANEL__TABS__);
+	} else {
+		qsSettings.beginGroup(qsRIGHT_PANEL__TABS__);
+	} // if else
+	qsSettings.remove("");
+	qsSettings.endGroup();
+
+	// create new tabs
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		CreateTab(epPosition, iI, qlTabs[iI]);
+	} // for
+} // SetTabs
+
 // treat archives like directories
 const void cSettings::SetTreatArchivesLikeDirectories(const bool &bLikeDirectories)
 {
