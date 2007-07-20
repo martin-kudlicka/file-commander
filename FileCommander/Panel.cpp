@@ -201,7 +201,7 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	RefreshHeader(iIndex);
 
 	// connect other signals to slots
-	//connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
+	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 	ConnectFileSystem(stTab.cfsFileSystem);
 
 	// connection for file system created later -> need to call for the first time explicitly
@@ -523,6 +523,12 @@ const void cPanel::on_ctwTree_GotFocus()
 		emit GotFocus();
 	} // if
 } // on_ctwTree_GotFocus
+
+// click on header in tree (dir) view
+const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
+{
+	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
+} // on_qhvTreeHeader_sectionClicked
 
 // timer's action
 const void cPanel::on_qtTimer_timeout()
