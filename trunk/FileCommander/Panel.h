@@ -181,6 +181,10 @@ class cPanel : public QObject
 																					///< got column value from content plugin
 																					/**< \param soOutput information to update dir view */
 		const void on_cfsFileSystem_Unaccessible() const;			///< file system unacessible
+		const void on_ctwTree_itemActivated(QTreeWidgetItem *item, int column) const;
+																					///< double click in tree view
+																					/**< \param item item clicked on
+																						  \param column column in item clicked in */
 		const void on_ctwTree_customContextMenuRequested(const QPoint &pos) const;
 																					///< show tree view context menu
 																					/**< \param pos position of context menu */

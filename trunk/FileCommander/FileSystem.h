@@ -24,6 +24,7 @@ class cFileSystem : public QObject
 
 		virtual ~cFileSystem();																	///< destructor
 
+		virtual const void ActivateCurrent() = 0;											///< activate current file
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin
 																										/**< \param sContent request description

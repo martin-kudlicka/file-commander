@@ -38,6 +38,7 @@ class cLocal : public cFileSystem
 		QString qsDrive;																	///< drive handled by this file system class
 		QString qsRootPath;																///< path to root of this file system
 
+		const void ActivateCurrent();													///< activate current file
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
@@ -84,6 +85,11 @@ class cLocal : public cFileSystem
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file check
 																									  \return true if directory */
+#ifdef Q_WS_WIN
+		const bool PathExists(const QString &qsPath) const;					///< check if path is valid
+																								/**< \param qsPath path to test
+																									  \return true if path exists and is accessible */
+#endif
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath);
 																								///< change path for this file system

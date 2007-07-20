@@ -165,8 +165,8 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 
 	// connect signals to slots
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
-	/*connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
-	connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
+	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
+	/*connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));*/
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 	/*connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)));
@@ -512,6 +512,12 @@ const void cPanel::on_cfsFileSystem_Unaccessible() const
 {
 	// TODO on_cfsFileSystem_Unaccessible - change drive dialog
 } // on_cfsFileSystem_Unaccessible
+
+// double click in tree view
+const void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column) const
+{
+	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ActivateCurrent();
+} // on_ctwTree_itemActivated
 
 // show tree view context menu
 const void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos) const
