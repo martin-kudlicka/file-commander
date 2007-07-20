@@ -5,6 +5,38 @@
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 
+// drive list actualization
+const void cPanel::ActualizeDrives() const
+{
+	QList<QPair<QString, cFileControl::sDrive> > qlDrives;
+
+	qlDrives = cfcFileControl->GetDrives();
+
+	if (qcbDrive->count() != qlDrives.count()) {
+		// assume drives have changed
+		int iI;
+		QString qsDrive;
+
+		qsDrive = qcbDrive->currentText();
+		qcbDrive->blockSignals(true);
+
+		for (iI = 0; iI < qlDrives.count(); iI++) {
+			qcbDrive->addItem(qlDrives.at(iI).first);
+		} // for
+
+		// check for selected drive change, changes are handled in Panel class
+		if (qcbDrive->findText(qsDrive) == -1) {
+			// selected drive changed
+			qcbDrive->blockSignals(false);
+			qcbDrive->setCurrentIndex(-1);
+		} else {
+			// selected drive not changed
+			qcbDrive->setCurrentIndex(qcbDrive->findText(qsDrive));
+			qcbDrive->blockSignals(false);
+		} // if else
+	} // if
+} // ActualizeDrives
+
 // add new tab with dir view
 const int cPanel::AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
 {
@@ -85,9 +117,10 @@ const int cPanel::AddTab(cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /
 } // AddTab
 
 // constructor
-cPanel::cPanel(QStackedWidget *qswDirs, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, QLineEdit *qleQuickSearch)
+cPanel::cPanel(QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
 {
 	this->qswDirs = qswDirs;
+	this->qcbDrive = qcbDrive;
 	this->qlDriveInfo = qlDriveInfo;
 	this->qtbTab = qtbTab;
 	this->qlPath = qlPath;
@@ -96,7 +129,12 @@ cPanel::cPanel(QStackedWidget *qswDirs, QLabel *qlDriveInfo, QTabBar *qtbTab, QL
 	this->ccpContentPlugin = ccpContentPlugin;
 	this->qlGlobalPath = qlGlobalPath;
 	this->qcbCommand = qcbCommand;
+	this->cfcFileControl = cfcFileControl;
 	this->qleQuickSearch = qleQuickSearch;
+
+	// automatic actualizations
+	connect(&qtTimer, SIGNAL(timeout()), SLOT(on_qtTimer_timeout()));
+	qtTimer.start(iTIMER_INTERVAL);
 } // cPanel
 
 // hide or show tab bar as set in options
@@ -122,6 +160,12 @@ const void cPanel::on_ctwTree_GotFocus()
 		emit GotFocus();
 	} // if
 } // on_ctwTree_GotFocus
+
+// timer's action
+const void cPanel::on_qtTimer_timeout() const
+{
+	ActualizeDrives();
+} // on_qtTimer_timeout
 
 // refresh all dir view headers
 const void cPanel::RefreshAllHeaders()

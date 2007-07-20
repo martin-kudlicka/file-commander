@@ -19,6 +19,8 @@ FORMS = MainWindow.ui \
 
 HEADERS = MainWindow.h \
 			 FileControl.h \
+			 FileSystem.h \
+			 FileSystem/Local.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Settings.h \
@@ -42,6 +44,8 @@ HEADERS = MainWindow.h \
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 FileControl.cpp \
+			 FileSystem.cpp \
+			 FileSystem/Local.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Settings.cpp \

@@ -129,11 +129,11 @@ cMainWindow::cMainWindow()
 	qcbRightDrive->setView(qtwRightDrives);
 
 	// file control class initizalization
-	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, qcbLeftDrive, qcbRightDrive);
+	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings);
 
 	// create panels
-	cpLeft = new cPanel(qswLeft, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, qleLeftQuickSearch);
-	cpRight = new cPanel(qswRight, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, qleRightQuickSearch);
+	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
+	cpRight = new cPanel(qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleRightQuickSearch);
 
 	// quick searches
 	qleLeftQuickSearch->hide();
