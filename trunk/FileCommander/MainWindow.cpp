@@ -199,10 +199,10 @@ cMainWindow::cMainWindow()
 	connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
 	connect(cpRight, SIGNAL(GotFocus()), SLOT(on_cpRight_GotFocus()));
 	/*connect(cpRight, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
-	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
+	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
-	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
+	/*connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
 	connect(qsHistoryFront, SIGNAL(activated()), SLOT(on_qsHistoryFront_activated()));*/
 	connect(qaTabBarDuplicateTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarDuplicateTab_triggered(bool)));
 	connect(qaTabBarCloseTab, SIGNAL(triggered(bool)), SLOT(on_qaTabBarCloseTab_triggered(bool)));
@@ -424,6 +424,18 @@ const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
 {
 	cpSource->SetColumnSet(action->text());
 } // on_qmColumnSets_triggered
+
+// left drive shortcut activated
+const void cMainWindow::on_qsLeftDrive_activated() const
+{
+	qcbLeftDrive->showPopup();
+} // on_qsLeftDrive_activated
+
+// right drive shortcut activated
+const void cMainWindow::on_qsRightDrive_activated() const
+{
+	qcbRightDrive->showPopup();
+} // on_qsRightDrive_activated
 
 // context menu of left tab bar
 const void cMainWindow::on_qtbLeft_customContextMenuRequested(const QPoint &pos)

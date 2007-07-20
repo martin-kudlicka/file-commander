@@ -83,6 +83,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */
+		const void on_qsLeftDrive_activated() const;							///< left drive shortcut activated
+		const void on_qsRightDrive_activated() const;						///< right drive shortcut activated
 		const void on_qtbLeft_customContextMenuRequested(const QPoint &pos);
 																							///< context menu of left tab bar
 																							/**< \param pos cursor position */
