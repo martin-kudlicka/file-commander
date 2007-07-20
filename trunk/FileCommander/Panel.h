@@ -183,6 +183,9 @@ class cPanel : public QObject
 																					/**< \param soOutput information to update dir view */
 		const void on_cfsFileSystem_Unaccessible() const;			///< file system unacessible
 		const void on_ctwTree_GotFocus();								///< dir view got focus
+		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
+																					///< click on header in tree (dir) view
+																					/**< \param logicalIndex column index clicked on */
 		const void on_qtTimer_timeout();									///< timer's action
 }; // cPanel
 
