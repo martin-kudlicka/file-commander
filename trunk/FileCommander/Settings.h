@@ -362,6 +362,10 @@ class cSettings : private QObject
 																								/**< \param bShowHidden show system files in dir view flag */
 		const void SetShowTabBarWithOnlyOneTab(const bool &bShow);			///< show tab bar with only one tab
 																								/**< \param bShow show tab bar with only one tab flag */
+		const void SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs);
+																								///< save tab settings
+																								/**< \param epPosition panel position
+																									  \param qlTabs tab settings */
 		const void SetTreatArchivesLikeDirectories(const bool &bLikeDirectories);
 																								///< treat archives like directories
 																								/**< \param bLikeDirectories browse through archives like by directories if true */

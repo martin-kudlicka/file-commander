@@ -748,6 +748,36 @@ const void cPanel::RefreshTabs() const
 	HideOrShowTabBar();
 } // RefreshTabs
 
+// save panel settings
+const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
+{
+	int iI;
+	QList<cSettings::sTabInfo> qlTabsToSave;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		cTreeWidget *ctwDir;
+		sTab *stTab;
+		cSettings::sTabInfo stiTab;
+
+		ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iI));
+		stTab = &qlTabs[iI];
+
+		// visible parameters
+		stiTab.qsColumnSet = stTab->qsColumnSet;
+		stiTab.qsDrive = stTab->cfsFileSystem->GetDrive();
+		stiTab.qsPath = stTab->cfsFileSystem->GetPath();
+		stiTab.ssSort.iSortedColumn = ctwDir->sortColumn();
+		stiTab.ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
+
+		// history
+		stiTab.shHistory = stTab->shHistory;
+
+		qlTabsToSave.append(stiTab);
+	} // for
+
+	csSettings->SetTabs(epPosition, qlTabsToSave);
+} // SaveSettings
+
 // selected another column set for actual directory view
 const void cPanel::SetColumnSet(const QString &qsColumnSet)
 {
