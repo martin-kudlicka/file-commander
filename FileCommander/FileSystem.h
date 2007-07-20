@@ -73,6 +73,13 @@ class cFileSystem : public QObject
 																										/**< \param qsDrive drive handled by this file system class
 																											  \param qsRootPath path to root of this file system
 																											  \param qsPath to initialize local file system */
+		virtual const void ShowContextMenu(const QPoint &qcPosition
+#ifdef Q_WS_WIN
+			, const HWND hwParent
+#endif
+		) const = 0;																				///< custom context menu on right click
+																										/**< \param qcPosition cursor position on the screen
+																											  \param hwParent parent window to show menu in */
 }; // cFileSystem
 
 #endif

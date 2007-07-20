@@ -21,6 +21,8 @@ HEADERS = MainWindow.h \
 			 FileControl.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
+			 FileSystem/Local/ShellMenu.h \
+			 FileSystem/Local/Win32/ShellContextMenu.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Settings.h \
@@ -46,6 +48,8 @@ SOURCES = FileCommander.cpp \
 			 FileControl.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
+			 FileSystem/Local/ShellMenu.cpp \
+			 FileSystem/Local/Win32/ShellContextMenu.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Settings.cpp \

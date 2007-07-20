@@ -4,6 +4,7 @@
 #ifdef Q_WS_WIN
 #include <windows.h>
 #endif
+#include "FileSystem/Local/ShellMenu.h"
 
 // destructor
 cLocal::~cLocal()
@@ -234,6 +235,23 @@ const QString cLocal::GetPath() const
 	return qdDir.path();
 } // GetPath
 
+// selected files in tree view
+const QFileInfoList cLocal::GetSelectedFiles() const
+{
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	QFileInfoList qfilSelected;
+
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.key()->isSelected()) {
+			qfilSelected.append(qhiFile.value());
+		} // if
+	} // while
+
+	return qfilSelected;
+} // GetSelectedFiles
+
 // get text for tab in directory view
 const QString cLocal::GetTabText() const
 {
@@ -296,3 +314,40 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 
 	emit ContentChanged(this);
 } // SetPath
+
+// custom context menu on right click
+const void cLocal::ShowContextMenu(const QPoint &qcPosition
+#ifdef Q_WS_WIN
+		, const HWND hwParent
+#endif
+	) const
+{
+	// shell context menu
+	cShellMenu csmMenu(
+#ifdef Q_WS_WIN
+		hwParent
+#endif
+	);
+	int iI;
+	QFileInfoList qfilSelected;
+	QStringList qslSelected;
+
+	qfilSelected = GetSelectedFiles();
+
+#ifdef Q_WS_WIN
+	for (iI = 0; iI < qfilSelected.count(); iI++) {
+		QFileInfo *qfiFile;
+
+		qfiFile = &qfilSelected[iI];
+
+		if (qfiFile->fileName() == "..") {
+			// replace ".." with current path
+			qslSelected.append(QDir::toNativeSeparators((qfiFile->path())));
+		} else {
+			qslSelected.append(QDir::toNativeSeparators((qfiFile->filePath())));
+		} // if else
+	} // for
+
+	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
+#endif
+} // ShowContextMenu

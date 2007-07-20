@@ -1,4 +1,4 @@
-#include "Panel/ShellMenu.h"
+#include "FileSystem/Local/ShellMenu.h"
 
 #ifdef Q_WS_WIN
 // constructor
