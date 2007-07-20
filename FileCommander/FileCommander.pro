@@ -14,7 +14,8 @@ CONFIG(release, debug|release) {
 
 FORMS = MainWindow.ui \
 		  OptionsDialog.ui \
-		  OptionsDialog/NewFavouriteDirectoryDialog.ui
+		  OptionsDialog/NewFavouriteDirectoryDialog.ui \
+		  Common/About.ui
 
 HEADERS = MainWindow.h \
 			 Settings.h \
@@ -29,7 +30,8 @@ HEADERS = MainWindow.h \
 			 Plugins/PackerPlugin.h \
 			 Plugins/WCXHead.h \
 			 Plugins/TotalCommanderInterface.h \
-			 Common/System.h
+			 Common/System.h \
+			 Common/About.h
 //win32 {
 //	 HEADERS += Panel/Win32/ShellContextMenu.h
 //}
@@ -44,7 +46,8 @@ SOURCES = FileCommander.cpp \
 			 Plugins/ContentPluginDelayed.cpp \
 			 Plugins/ListerPlugin.cpp \
 			 Plugins/PackerPlugin.cpp \
-			 Common/System.cpp
+			 Common/System.cpp \
+			 Common/About.cpp
 //win32 {
 //	 SOURCES += Panel/Win32/ShellContextMenu.cpp
 //}

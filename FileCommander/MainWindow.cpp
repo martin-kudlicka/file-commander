@@ -3,6 +3,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QDirModel>
 #include "OptionsDialog.h"
+#include "Common/About.h"
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
@@ -156,6 +157,14 @@ cMainWindow::cMainWindow()
 	// set focus to left panel
 	//static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
+
+// about is selected
+const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
+{
+	cAbout caAbout(this, qsAPPLICATION, qsVERSION);
+
+	caAbout.exec();
+} // on_qaAbout_triggered
 
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
