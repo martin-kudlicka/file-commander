@@ -129,7 +129,7 @@ cMainWindow::cMainWindow()
 	qcbRightDrive->setView(qtwRightDrives);
 
 	// file control class initizalization
-	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings);
+	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin);
 
 	// create panels
 	cpLeft = new cPanel(qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
@@ -223,7 +223,7 @@ const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} else {
 			cpRight->AddTab(stiTabInfo, true);
 		} // if else
-	} // for*/
+	} // for
 } // LoadTabs
 
 // left panel got focus

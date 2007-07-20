@@ -6,6 +6,7 @@
 #include <QtCore/QThread>
 #include <QtGui/QTreeWidgetItem>
 #include "Plugins/ContentPlugin.h"
+#include <QtCore/QQueue>
 
 class cContentPluginDelayed : public QThread
 {
@@ -37,15 +38,15 @@ class cContentPluginDelayed : public QThread
 																				///< constructor
 																				/**< \param ccpContentPlugin content plugins */
 
-		const void Start(const QList<sParameters> &qlParameters);
+		const void Start(const QQueue<sParameters> &qqParameters);
 																				///< start thread processing
-																				/**< \param qlParameters description what to check */
+																				/**< \param qqParameters description what to check */
 		void run();															///< main thread
 
 	private:
 		bool bStop;															///< interrupt thread process
 		cContentPlugin *ccpContentPlugin;							///< content plugins
-		QList<sParameters> qlParameters;								///< description what to check
+		QQueue<sParameters> qqParameters;							///< description of what to check
 		QString qsCurrentFile;											///< currently checked file
 		QString qsCurrentPlugin;										///< currently used plugin
 

@@ -7,20 +7,35 @@
 #include <QtCore/QDir>
 #include "Settings.h"
 #include <QtGui/QFileIconProvider>
+#include "Plugins/ContentPlugin.h"
+#include "Plugins/ContentPluginDelayed.h"
 
 class cLocal : public cFileSystem
 {
+	Q_OBJECT
+
 	public:
-		cLocal(const QString &qsPath, cSettings *csSettings);					///< constructor
+		cLocal(const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
+																								///< constructor
 																								/**< \param qsPath to initialize local file system
-																				 					  \param csSettings main settings */
+																				 					  \param csSettings main settings
+																				 					  \param ccpContentPlugin content plugin interface */
+		~cLocal();																			///< destructor
 
 	private:
+		cContentPlugin *ccpContentPlugin;											///< content plugin interface
+		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
-		
+		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
+																								///< parameters for content delayed values
+
+		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
+																								///< get value from content plugin
+																								/**< \param sContent request description
+																									  \return content plugin (nondelayed) value */
 		const QList<QTreeWidgetItem *> GetDirectoryContent();					///< get tree items for current directory
 																								/**< \return  tree items for current directory */
 #ifdef Q_WS_WIN
@@ -34,8 +49,10 @@ class cLocal : public cFileSystem
 		const QIcon GetFileIcon(QTreeWidgetItem *qtwiFile) const;			///< get icon for specified file
 																								/**< \param qtwiFile file to find icon for
 																									  \return file icon */
-		const QString GetFileName(QTreeWidgetItem *qtwiFile);					///< get file name without extension
+		const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
+																								///< get file name without extension
 																								/**< \param qtwiFile file to find name for
+																									  \param bBracketsAllowed brackets around file name allowed flag
 																									  \return file name without extension */
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
@@ -46,6 +63,18 @@ class cLocal : public cFileSystem
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file check
 																									  \return true if directory */
+		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
+
+	signals:
+		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
+																								///< got golumn value from plugin
+																								/**< \param soOutput information to update dir view */
+		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
+
+	private slots:
+		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
+																								///< got golumn value from plugin
+																								/**< \param soOutput information to update dir view */
 }; // cLocal
 
 #endif

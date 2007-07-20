@@ -7,6 +7,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QMainWindow>
 #include "FileSystem.h"
+#include "Plugins/ContentPlugin.h"
 
 class cFileControl : public QObject
 {
@@ -25,11 +26,12 @@ class cFileControl : public QObject
 			// TODO sDrive add drive type and show next to drive letters
 		};
 
-		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
+		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
 																///< constructor
 																/**< \param qmwParent parent window for dialogs
 																	  \param qbnlOperations layout for background and queued operations
-																	  \param csSettings application's configuration */
+																	  \param csSettings application's configuration
+																	  \param ccpContentPlugin content plugin interface */
 
 		const QList<QPair<QString, sDrive> > GetDrives() const;
 																///< get accessible drives
@@ -41,6 +43,7 @@ class cFileControl : public QObject
 																///< returns first accessible drive for application
 																/**< \param first accessible drive for application */
 	private:
+		cContentPlugin *ccpContentPlugin;			///< content plugin interface
 		cSettings *csSettings;							///< application's configuration
 		QHBoxLayout *qhblOperations;					///< background and queued operation windows
 		QMainWindow *qmwParent;							///< parent window for dialogs
