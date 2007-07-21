@@ -150,6 +150,23 @@ const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
 	} // if else
 } // GetDirectoryContent
 
+// get currently selected directory size
+const qint64 cLocal::GetDirectorySize() const
+{
+	int iI;
+	QFileInfoList qfilFiles;
+	qint64 qi64Size;
+
+	qfilFiles = GetFiles(qhFiles.value(qhFiles.constBegin().key()->treeWidget()->currentItem()));
+
+	qi64Size = 0;
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		qi64Size += qfilFiles.at(iI).size();
+	} // for
+
+	return qi64Size;
+} // GetDirectorySize
+
 // find out disk space information
 const cFileSystem::sDiskSpace cLocal::GetDiskSpace() const
 {
@@ -252,6 +269,55 @@ const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).filePath();
 } // GetFilePath
+
+// return list of sources (within subdirectories too)
+const QFileInfoList cLocal::GetFiles(const QFileInfo &qfiFile, const QString &qsFilter /* "*" */) const
+{
+	QFileInfoList qfilSources;
+
+	if (qfiFile.isDir()) {
+		QFileInfoList qfilDirectories;
+
+		qfilSources.append(qfiFile);
+		qfilDirectories.append(qfiFile);
+
+		// process subdirectories
+		while (!qfilDirectories.isEmpty()) {
+			int iI;
+			QDir qdDirContent;
+			QFileInfo qfiDir;
+			QFileInfoList qfilDirContent;
+
+			// get directory content
+			qfiDir = qfilDirectories.takeFirst();
+			qdDirContent.setPath(qfiDir.filePath());
+			qdDirContent.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+			qfilDirContent = qdDirContent.entryInfoList();
+
+			// filter sources and add next directories
+			for (iI = 0; iI < qfilDirContent.count(); iI++) {
+				QFileInfo *qfilFile;
+
+				qfilFile = &qfilDirContent[iI];
+
+				if (qfilFile->isDir()) {
+					qfilDirectories.append(*qfilFile);
+					qfilSources.append(*qfilFile);
+				} else {
+					if (SuitsFilter(qfilFile->fileName(), qsFilter)) {
+						qfilSources.append(*qfilFile);
+					} // if
+				} // if else
+			} // for
+		} // while
+	} else {
+		if (SuitsFilter(qfiFile.fileName(), qsFilter)) {
+			qfilSources.append(qfiFile);
+		} // if
+	} // if else
+
+	return qfilSources;
+} // GetFiles
 
 // get file size
 const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
@@ -415,3 +481,42 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
 } // ShowContextMenu
+
+const bool cLocal::SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression /* false */) const
+{
+	int iI;
+	QStringList qslFilter;
+
+	qslFilter = qsFilter.split(';');
+	if (qslFilter.count() == 1 && qslFilter.at(0).isEmpty() && !bRegularExpression) {
+		qslFilter.append("*.*");
+	} // if
+#ifdef Q_WS_WIN
+	// correct *.* to *
+	for (iI = 0; iI < qslFilter.count(); iI++) {
+		if (qslFilter.at(iI) == "*.*") {
+			qslFilter[iI] = "*";
+		} // if
+	} // for
+#endif
+
+	// search for
+	for (iI = 0; iI < qslFilter.count(); iI++) {
+		QRegExp qreExpression(qslFilter.at(iI), Qt::CaseInsensitive);
+
+		if (bRegularExpression) {
+			// regular expression
+			if (qreExpression.indexIn(qsName) != -1) {
+				return true;
+			} // if
+		} else {
+			// wildcard
+			qreExpression.setPatternSyntax(QRegExp::Wildcard);
+			if (qreExpression.exactMatch(qsName)) {
+				return true;
+			} // if
+		} // if else
+	} // for
+
+	return false;
+} // SuitsFilter

@@ -746,12 +746,8 @@ const void cPanel::on_ctwTree_itemSelectionChanged()
 // space pressed in dir view
 const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 {
-	// TODO on_ctwTree_KeyPressed
 	cTreeWidget *ctwDir;
-	/*int iColumnExtension, iI;
-	QFileInfo qfiFile;
-	QFileInfoList qfilFiles;
-	qint64 qi64Size;*/
+	int iI;
 	QString qsName;
 	sTab *stTab;
 
@@ -763,43 +759,50 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 			stTab->cfsFileSystem->GoToUpDir();
 			break;
 		case Qt::Key_Space:
-			/*qfiFile = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiItem);
-
 			// refresh content plugin values
-			for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
-				if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
-					qtwiItem->setText(iI, ccpContentPlugin->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+			for (iI = 0; iI < stTab->qlColumns.count(); iI++) {
+				if (stTab->qlColumns.at(iI).qsPlugin != qsNO) {
+					cSettings::sColumn *scColumn;
+					cFileSystem::sContentPluginRequest scprContent;
+
+					scColumn = &stTab->qlColumns[iI];
+
+					scprContent.qtwiFile = ctwDir->currentItem();
+					scprContent.qsPlugin = scColumn->qsPlugin;
+					scprContent.qsColumn = scColumn->qsIdentifier;
+					scprContent.qsUnit = scColumn->qsUnit;
+					scprContent.iColumn = iI;
+
+					stTab->cfsFileSystem->GetContentPluginValue(scprContent);
 				} // if
 			} // for
+			stTab->cfsFileSystem->RetreiveContentDelayedValues();
 
-			if (qfiFile.isFile()) {
-				// selected item is file
-				return;
+			if (stTab->cfsFileSystem->IsDir(ctwDir->currentItem())) {
+				// proceed only with directory as current item
+				int iColumnExtension;
+
+				// check if there is native size column
+				iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDirs->currentIndex());
+				if (iColumnExtension != -1) {
+					qint64 qi64Size;
+
+					// check if size already calculated
+					qi64Size = ctwDir->currentItem()->data(iColumnExtension, Qt::UserRole).toLongLong();
+					if (qi64Size == 0) {
+						// not calculated yet
+						qi64Size = stTab->cfsFileSystem->GetDirectorySize();
+
+						// put size to data to count with it when selecting files
+						ctwDir->currentItem()->setData(iColumnExtension, Qt::UserRole, qi64Size);
+						// show the size in size column
+						ctwDir->currentItem()->setText(iColumnExtension, GetSizeString(qi64Size));
+
+						// refresh selected items size
+						on_ctwTree_itemSelectionChanged();
+					} // if
+				} // if
 			} // if
-
-			iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
-			if (iColumnExtension == -1) {
-				// no place to show occupied space
-				return;
-			} // if
-
-			qi64Size = qtwiItem->data(iColumnExtension, Qt::UserRole).toLongLong();
-			if (qi64Size == 0) {
-				// count only if not counted yet
-				qfilFiles = cFileRoutine::GetSources(qfiFile);
-				qi64Size = 0;
-				for (iI = 0; iI < qfilFiles.count(); iI++) {
-					qi64Size += qfilFiles.at(iI).size();
-				} // for
-
-				// put size to data to count with it when selecting files
-				qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
-				// show the size in size column
-				qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
-
-				// refresh selected items size
-				on_ctwTree_itemSelectionChanged(static_cast<cTreeWidget *>(qswDir->currentWidget()));
-			} // if*/
 			break;
 		case Qt::Key_Enter:
 		case Qt::Key_Return:
