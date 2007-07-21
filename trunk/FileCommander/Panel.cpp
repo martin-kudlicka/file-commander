@@ -166,8 +166,8 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	// connect signals to slots
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
-	/*connect(ctwTree, SIGNAL(itemSelectionChanged(const cTreeWidget *)), SLOT(on_ctwTree_itemSelectionChanged(const cTreeWidget *)));
-	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));*/
+	connect(ctwTree, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
+	//connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 	/*connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
@@ -538,6 +538,61 @@ const void cPanel::on_ctwTree_GotFocus()
 		emit GotFocus();
 	} // if
 } // on_ctwTree_GotFocus
+
+// changed selected items in current directory view
+const void cPanel::on_ctwTree_itemSelectionChanged()
+{
+	cTreeWidget *ctwDir;
+	int iDirectories, iDirectoriesTotal, iFiles, iFilesTotal, iI;
+	qint64 qi64Size, qi64TotalSize;
+	sTab *stTab;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+	iDirectories = 0;
+	iDirectoriesTotal = 0;
+	iFiles = 0;
+	iFilesTotal = 0;
+	qi64Size = 0;
+	qi64TotalSize = 0;
+	stTab = &qlTabs[qswDirs->currentIndex()];
+
+	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+		bool bDirectory;
+		int iColumnSize;
+		qint64 qi64DetectedSize;
+		QTreeWidgetItem *qtwiFile;
+
+		qtwiFile = ctwDir->topLevelItem(iI);
+		bDirectory = stTab->cfsFileSystem->IsDir(qtwiFile);
+
+		iColumnSize = GetNativeColumnIndex(qsSIZE, qswDirs->currentIndex());
+		qi64DetectedSize = 0;
+		if (bDirectory) {
+			iDirectoriesTotal++;
+
+			// size for directory can be known too
+			if (iColumnSize != -1) {
+				qi64DetectedSize = qtwiFile->data(iColumnSize, Qt::UserRole).toLongLong();
+				qi64TotalSize += qi64DetectedSize;
+			} // if
+			if (qtwiFile->isSelected()) {
+				iDirectories++;
+				qi64Size += qi64DetectedSize;
+			} // if
+		} else {
+			iFilesTotal++;
+			qi64DetectedSize = qtwiFile->data(iColumnSize, Qt::UserRole).toLongLong();
+			qi64TotalSize += qi64DetectedSize;
+			if (qtwiFile->isSelected()) {
+				iFiles++;
+				qi64Size += qi64DetectedSize;
+			} // if
+		} // if else
+	} // for
+
+	stTab->swWidgets.qsSelected = tr("%1 / %2 in %3 / %4 files and %5 / %6 directories").arg(GetSizeString(qi64Size)).arg(GetSizeString(qi64TotalSize)).arg(iFiles).arg(iFilesTotal).arg(iDirectories).arg(iDirectoriesTotal);
+	ActualizeWidgets();
+} // on_ctwTree_itemSelectionChanged
 
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
