@@ -1165,6 +1165,12 @@ const void cPanel::RefreshTabs() const
 	HideOrShowTabBar();
 } // RefreshTabs
 
+// reverse sort order
+const void cPanel::ReverseOrder()
+{
+	SortBy(static_cast<cTreeWidget *>(qswDirs->currentWidget())->header()->sortIndicatorSection());
+} // ReverseOrder
+
 // save panel settings
 const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 {
@@ -1219,9 +1225,18 @@ const void cPanel::SelectAll() const
 // selected another column set for actual directory view
 const void cPanel::SetColumnSet(const QString &qsColumnSet)
 {
+	int iColumnName;
+
 	qlTabs[qswDirs->currentIndex()].qsColumnSet = qsColumnSet;
 	// change sort column to prevent sorting by nonexisting column number
-	static_cast<cTreeWidget *>(qswDirs->currentWidget())->header()->setSortIndicator(0, Qt::AscendingOrder);
+	iColumnName = GetNativeColumnIndex(qsNAME, qswDirs->currentIndex());
+	if (iColumnName == -1) {
+		iColumnName = GetNativeColumnIndex(qsNAME_WITH_EXTENSION, qswDirs->currentIndex());
+		if (iColumnName == -1) {
+			iColumnName = 0;
+		} // if
+	} // if
+	static_cast<cTreeWidget *>(qswDirs->currentWidget())->header()->setSortIndicator(iColumnName, Qt::AscendingOrder);
 	// refresh header to show changes
 	RefreshHeader(qswDirs->currentIndex(), true);
 } // SetColumnSet

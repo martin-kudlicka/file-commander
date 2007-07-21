@@ -72,6 +72,7 @@ class cPanel : public QObject
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
 		const void RefreshTabs() const;									///< refresh tabs
+		const void ReverseOrder();											///< reverse sort order
 		const void SaveSettings(const cSettings::ePosition &epPosition);
 																					///< save panel settings
 																					/**< \param epPosition panel's position */

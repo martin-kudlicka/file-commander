@@ -110,6 +110,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaOptions_triggered(bool checked = false);			///< options are selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaReverseOrder_triggered(bool checked = false) const;
+																							///< reverse order is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaSelectAll_triggered(bool checked = false) const;
 																							///< select all selected
 																							/**< \param checked true if menu item is checkable and checked */
