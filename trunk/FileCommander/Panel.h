@@ -45,6 +45,7 @@ class cPanel : public QObject
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
 																						  \return new tab index */
+		const void BranchView() const;									///< branch view for current directory
 		const void CloseAllOtherTabs(const int &iTabIndex);		///< close all other tabs than selected
 																					/**< \param iTabIndex selected tab */
 		const void CloseTab(const int &iTabIndex);					///< close tab

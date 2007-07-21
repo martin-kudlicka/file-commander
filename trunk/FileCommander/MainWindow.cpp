@@ -418,6 +418,12 @@ const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
 	caAbout.exec();
 } // on_qaAbout_triggered
 
+// branch view is selected
+const void cMainWindow::on_qaBranchView_triggered(bool checked /* false */) const
+{
+	cpSource->BranchView();
+} // on_qaBranchView_triggered
+
 // compare directories is selected
 const void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */) const
 {
@@ -435,6 +441,12 @@ const void cMainWindow::on_qaFavouriteDirectories_triggered(bool checked /* fals
 		} // if else
 	} // if
 } // on_qaFavouriteDirectories_triggered
+
+// full screen mode is selected
+const void cMainWindow::on_qaFullScreen_triggered(bool checked /* false */)
+{
+	setWindowState(windowState() ^ Qt::WindowFullScreen);
+} // on_qaFullScreen_triggered
 
 // sort by action called
 const void cMainWindow::on_qagSortBy_triggered(QAction *action) const
