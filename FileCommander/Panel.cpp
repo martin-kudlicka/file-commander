@@ -516,6 +516,12 @@ const int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabI
 	return -1;
 } // GetNativeColumnIndex
 
+// path in current directory view
+const QString cPanel::GetPath() const
+{
+	return qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetPath();
+} // GetPath
+
 // "convert" size to string according to setting in options
 const QString cPanel::GetSizeString(const qint64 &qi64Size) const
 {

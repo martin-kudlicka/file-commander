@@ -570,6 +570,12 @@ const void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action
 	} // if
 } // on_qmRightHistoryDirectoryList_triggered
 
+// terminal button is clicked on
+const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
+{
+	cfcFileControl->StartTerminal(cpSource->GetPath());
+} // on_qpbTerminal_clicked
+
 // history back shortcut activated
 const void cMainWindow::on_qsHistoryBack_activated() const
 {

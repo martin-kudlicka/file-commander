@@ -54,6 +54,9 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
+		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
+																						/**< \param qsPath path to start shell in */
+
 	private:
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
 		cSettings *csSettings;													///< application's configuration
