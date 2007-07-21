@@ -142,6 +142,7 @@ class cPanel : public QObject
 		QList<QTreeWidgetItem *> GetTreeWidgetItems() const;		///< get available files in tree view
 																					/**< \return available files in tree view */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
+		const void RefreshContent();										///< refresh current dir content
 		const void RefreshContent(const int &iIndex);				///< refresh dir content
 																					/**< \param iIndex index of dir view */
 		const void RefreshHeader(const int &iIndex, const bool &bContent = false);
@@ -193,6 +194,8 @@ class cPanel : public QObject
 		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
 																					///< click on header in tree (dir) view
 																					/**< \param logicalIndex column index clicked on */
+		const void on_qtbTab_currentChanged(int index);				///< tab bar's index changed
+																					/**< \param index new tab bar index */
 }; // cPanel
 
 #endif
