@@ -89,6 +89,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_cpRight_GotFocus();										///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaCompareDirectories_triggered(bool checked = false) const;
+																							///< compare directories is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaFavouriteDirectories_triggered(bool checked = false) const;
 																							///< favourite directories are selected
 																							/**< \param checked true if menu item is checkable and checked */
@@ -97,7 +100,13 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qaHistoryDirectoryList_triggered(bool checked = false) const;
 																							///< history directory list is selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaInvertSelection_triggered(bool checked = false) const;
+																							///< invert selection is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaOptions_triggered(bool checked = false);			///< options are selected
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaSelectAll_triggered(bool checked = false) const;
+																							///< select all selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaTabBarCloseAllOtherTabs_triggered(bool checked = false);
 																							///< close all other tabs called
@@ -107,6 +116,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaTabBarDuplicateTab_triggered(bool checked = false);
 																							///< duplicate tab called
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaUnselectAll_triggered(bool checked = false) const;
+																							///< unselect all selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */

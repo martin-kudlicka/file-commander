@@ -43,6 +43,10 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qsDrive drive to get file system for
 																							  \param startup path */
+		const void CompareDirectories(cFileSystem *cfsLeft, cFileSystem *cfsRight) const;
+																						///< compare directories in both panels
+																						/**< \param cfsLeft left panel's file system
+																							  \param cfsRight right panel's file system */
 		const QList<QPair<QString, sDrive> > GetDrives() const;		///< get accessible drives
 		cFileSystem *GetFileSystem(const QString &qsDrive, const QString &qsPath) const;
 																						///< get file system for specified drive

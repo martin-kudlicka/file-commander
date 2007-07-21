@@ -482,6 +482,12 @@ const QString cPanel::GetDateTimeString(const QDateTime &qdtDateTime) const
 	return qsDateTime;
 } // GetDateTimeString
 
+// file system for active directory view
+cFileSystem *cPanel::GetFileSystem()
+{
+	return qlTabs.value(qswDirs->currentIndex()).cfsFileSystem;
+} // GetFileSystem
+
 // retreive history directory list
 const cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList()
 {
@@ -574,22 +580,6 @@ const int cPanel::GetTabIndex(const QPoint &qpPos) const
 	return -1;
 } // GetTabIndex
 
-// get available files in tree view
-QList<QTreeWidgetItem *> cPanel::GetTreeWidgetItems() const
-{
-	cTreeWidget *ctwDir;
-	int iI;
-	QList<QTreeWidgetItem *> qlItems;
-
-	ctwDir = ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
-
-	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
-		qlItems.append(ctwDir->topLevelItem(iI));
-	} // for
-
-	return qlItems;
-} // GetTreeWidgetItems
-
 // hide or show tab bar as set in options
 const void cPanel::HideOrShowTabBar() const
 {
@@ -627,6 +617,27 @@ const void cPanel::HistoryGoFront()
 		SetHistoryDirectory(shHistory->iPosition + 1);
 	} // if
 } // HistoryGoFront
+
+// invert selection of files
+const void cPanel::InvertSelection() const
+{
+	cTreeWidget *ctwDir;
+	int iI;
+	QString qsMode;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+	qsMode = csSettings->GetSelectionMode();
+
+	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+		if (qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->IsDir(ctwDir->topLevelItem(iI))) {
+			if (qsMode == qsFILES_AND_DIRECTORIES) {
+				ctwDir->topLevelItem(iI)->setSelected(!ctwDir->topLevelItem(iI)->isSelected());
+			} // if
+		} else {
+			ctwDir->topLevelItem(iI)->setSelected(!ctwDir->topLevelItem(iI)->isSelected());
+		} // if else
+	} // for
+} // InvertSelection
 
 // directory content changed for filesystem
 const void cPanel::on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem)
@@ -846,7 +857,7 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
-	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
+	Sort(qswDirs->currentIndex(), qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
 } // on_qhvTreeHeader_sectionClicked
 
 // tab bar's index changed
@@ -1178,6 +1189,27 @@ const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 	csSettings->SetTabs(epPosition, qlTabsToSave);
 } // SaveSettings
 
+// select all files
+const void cPanel::SelectAll() const
+{
+	cTreeWidget *ctwDir;
+	int iI;
+	QString qsMode;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+	qsMode = csSettings->GetSelectionMode();
+
+	if (qsMode == qsONLY_FILES) {
+		for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+			if (qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->IsFile(ctwDir->topLevelItem(iI))) {
+				ctwDir->topLevelItem(iI)->setSelected(true);
+			} // if
+		} // for
+	} else {
+		ctwDir->selectAll();
+	} // if else
+} // SelectAll
+
 // selected another column set for actual directory view
 const void cPanel::SetColumnSet(const QString &qsColumnSet)
 {
@@ -1377,7 +1409,7 @@ const void cPanel::SortBy(const int &iColumn)
 	ctwDir->header()->setSortIndicator(iColumn, soSortOrder);
 
 	// sort again
-	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
+	Sort(qswDirs->currentIndex(), qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
 } // SortBy
 
 // automatic actualizations
@@ -1460,3 +1492,9 @@ const bool cPanel::TreeSortByString(const QTreeWidgetItem *qtwiItem1, const QTre
 		} // if else
 	} // if else
 } // TreeSortByString
+
+// unselect all files
+const void cPanel::UnselectAll() const
+{
+	static_cast<cTreeWidget *>(qswDirs->currentWidget())->clearSelection();
+} // UnselectAll

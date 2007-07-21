@@ -12,7 +12,6 @@
 
 const QString qsASCII = "ASCII";
 const QString qsEXTERNAL = "External";
-const QString qsFILES_AND_DIRECTORIES = "FilesAndDirectories";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";

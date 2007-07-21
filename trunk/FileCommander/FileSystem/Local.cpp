@@ -102,51 +102,57 @@ const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sConten
 } // GetContentPluginValue
 
 // get tree items for current directory
-const QList<QTreeWidgetItem *> cLocal::GetDirectoryContent()
+QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* true */)
 {
-	if (CheckPath()) {
-		// file system accessible
-		int iI;
-		QDir::Filters fFilters;
-		QFileInfoList qfilFiles;
+	if (bRefresh) {
+		// reload
+		if (CheckPath()) {
+			// file system accessible
+			int iI;
+			QDir::Filters fFilters;
+			QFileInfoList qfilFiles;
 
-		// interrupt delayed content processing
-		emit InterruptContentDelayed();
+			// interrupt delayed content processing
+			emit InterruptContentDelayed();
 
-		// set filter
-		fFilters = QDir::Dirs | QDir::Files;
-		if (csSettings->GetShowSystemFiles()) {
-			fFilters |= QDir::System;
-		} // if
-		if (csSettings->GetShowHiddenFiles()) {
-			fFilters |= QDir::Hidden;
-		} // if
-
-		// get files
-		qfilFiles = qdDir.entryInfoList(fFilters);
-
-		// clear hash table
-		QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-		while (qhiFile.hasNext()) {
-			qhiFile.next();
-			delete qhiFile.key();
-		} // while
-		qhFiles.clear();
-
-		// add files to hash table
-		for (iI = 0; iI < qfilFiles.count(); iI++) {
-			QFileInfo *qfiFile;
-
-			qfiFile = &qfilFiles[iI];
-			if (qfiFile->fileName() != ".") {
-				qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
+			// set filter
+			fFilters = QDir::Dirs | QDir::Files;
+			if (csSettings->GetShowSystemFiles()) {
+				fFilters |= QDir::System;
 			} // if
-		} // for
+			if (csSettings->GetShowHiddenFiles()) {
+				fFilters |= QDir::Hidden;
+			} // if
 
-		return qhFiles.keys();
+			// get files
+			qfilFiles = qdDir.entryInfoList(fFilters);
+
+			// clear hash table
+			QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+			while (qhiFile.hasNext()) {
+				qhiFile.next();
+				delete qhiFile.key();
+			} // while
+			qhFiles.clear();
+
+			// add files to hash table
+			for (iI = 0; iI < qfilFiles.count(); iI++) {
+				QFileInfo *qfiFile;
+
+				qfiFile = &qfilFiles[iI];
+				if (qfiFile->fileName() != ".") {
+					qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
+				} // if
+			} // for
+
+			return qhFiles.keys();
+		} else {
+			// file system unacessible
+			return QList<QTreeWidgetItem *>();
+		} // if else
 	} else {
-		// file system unacessible
-		return QList<QTreeWidgetItem *>();
+		// no reload
+		return qhFiles.keys();
 	} // if else
 } // GetDirectoryContent
 
@@ -401,6 +407,12 @@ const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).isDir();
 } // IsDir
+
+// check if file is really file
+const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
+{
+	return qhFiles.value(qtwiFile).isFile();
+} // IsFile
 
 // got golumn value from plugin
 const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const

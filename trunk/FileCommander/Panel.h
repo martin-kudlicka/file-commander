@@ -56,6 +56,8 @@ class cPanel : public QObject
 																					/**< \return columns for current dir view */
 		const QString GetColumnSet() const;								///< column set for current directory view
 																					/**< \return column set for current directory view */
+		cFileSystem *GetFileSystem();										///< file system for active directory view
+																					/**< \return file system for active directory view */
 		const sHistoryDirectoryList GetHistoryDirectoryList();	///< retreive history directory list
 																					/**< \return history directory list */
 		const QString GetPath() const;									///< path in current directory view
@@ -65,12 +67,14 @@ class cPanel : public QObject
 																						  \return tab index */
 		const void HistoryGoBack();										///< go back in history directory list
 		const void HistoryGoFront();										///< go front in history directory list
+		const void InvertSelection() const;								///< invert selection of files
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
 		const void RefreshTabs() const;									///< refresh tabs
 		const void SaveSettings(const cSettings::ePosition &epPosition);
 																					///< save panel settings
 																					/**< \param epPosition panel's position */
+		const void SelectAll() const;										///< select all files
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */
 		const void SetFocus() const;										///< set focus to current directory view
@@ -81,6 +85,7 @@ class cPanel : public QObject
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
 		const void SortBy(const int &iColumn);							///< sort by specified column
 																					/**< \param iColumn column position to sort by */
+		const void UnselectAll() const;									///< unselect all files
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
@@ -154,8 +159,6 @@ class cPanel : public QObject
 																					///< "convert" size to string according to setting in options
 																					/**< \param qi64Size size
 																						  \return file size in string with suffix */
-		QList<QTreeWidgetItem *> GetTreeWidgetItems() const;		///< get available files in tree view
-																					/**< \return available files in tree view */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
 		const bool QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection);
 																					///< search if quick searched file exists in current dir view
