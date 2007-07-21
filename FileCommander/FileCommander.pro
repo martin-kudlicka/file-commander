@@ -19,6 +19,7 @@ FORMS = MainWindow.ui \
 
 HEADERS = MainWindow.h \
 			 FileControl.h \
+			 FileControl/Process.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
 			 FileSystem/Local/ShellMenu.h \
@@ -46,6 +47,7 @@ HEADERS = MainWindow.h \
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 FileControl.cpp \
+			 FileControl/Process.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
 			 FileSystem/Local/ShellMenu.cpp \

@@ -1,4 +1,4 @@
-#include "Panel/Process.h"
+#include "FileControl/Process.h"
 
 #ifdef Q_WS_WIN
 #include <windows.h>
@@ -7,45 +7,6 @@
 #else
 #include <QtCore/QProcess>
 #endif
-
-// execute file
-void cProcess::Execute(const QString &qsProcess, const QString &qsPath /* NULL */)
-{
-#ifdef Q_WS_WIN
-	QDir qdDir;
-
-	qdDir.setPath(qsPath);
-	if (qdDir.cd(qsProcess)) {
-		// open directory
-		ShellExecute(NULL, NULL, reinterpret_cast<LPCWSTR>(qdDir.path().unicode()), NULL, NULL, SW_SHOWNORMAL);
-	} else {
-		// open file
-		HINSTANCE hiErrorCode;
-		QString qsName, qsParameters;
-
-		if (qsProcess.at(0) != '"') {
-			qsName = qsProcess.left(qsProcess.indexOf(' '));
-			if (qsProcess.indexOf(' ') != -1) {
-				qsParameters = qsProcess.mid(qsProcess.indexOf(' ') + 1);
-			} // if
-		} else {
-			qsName = qsProcess.mid(1, qsProcess.indexOf('"', 2) - 1);
-			qsParameters = qsProcess.mid(qsProcess.indexOf('"', 2) + 2);
-		} // if else
-
-		hiErrorCode = ShellExecute(NULL, NULL, reinterpret_cast<LPCWSTR>(qsName.unicode()), reinterpret_cast<LPCWSTR>(qsParameters.unicode()), reinterpret_cast<LPCWSTR>(qsPath.unicode()), SW_SHOWNORMAL);
-
-		if (reinterpret_cast<int>(hiErrorCode) <= 32) {
-			QString qsError;
-			
-			qsError = GetErrorString(reinterpret_cast<int>(hiErrorCode));
-			QMessageBox::critical(NULL, tr("Execute"), tr("Can't execute %1:\n%2.").arg(qsName).arg(qsError));
-		} // if
-	} // if else
-#else
-	QProcess::startDetached(qsProcess);
-#endif
-} // Execute
 
 #ifdef Q_WS_WIN
 // error string for specified error code
@@ -87,3 +48,42 @@ QString cProcess::GetErrorString(const int &iErrorCode)
 	return QString();
 } // GetErrorString
 #endif
+
+// execute file
+void cProcess::StartDetached(const QString &qsProcess, const QString &qsPath /* NULL */)
+{
+#ifdef Q_WS_WIN
+	QDir qdDir;
+
+	qdDir.setPath(qsPath);
+	if (qdDir.cd(qsProcess)) {
+		// open directory
+		ShellExecute(NULL, NULL, reinterpret_cast<LPCWSTR>(qdDir.path().unicode()), NULL, NULL, SW_SHOWNORMAL);
+	} else {
+		// open file
+		HINSTANCE hiErrorCode;
+		QString qsName, qsParameters;
+
+		if (qsProcess.at(0) != '"') {
+			qsName = qsProcess.left(qsProcess.indexOf(' '));
+			if (qsProcess.indexOf(' ') != -1) {
+				qsParameters = qsProcess.mid(qsProcess.indexOf(' ') + 1);
+			} // if
+		} else {
+			qsName = qsProcess.mid(1, qsProcess.indexOf('"', 2) - 1);
+			qsParameters = qsProcess.mid(qsProcess.indexOf('"', 2) + 2);
+		} // if else
+
+		hiErrorCode = ShellExecute(NULL, NULL, reinterpret_cast<LPCWSTR>(qsName.unicode()), reinterpret_cast<LPCWSTR>(qsParameters.unicode()), reinterpret_cast<LPCWSTR>(qsPath.unicode()), SW_SHOWNORMAL);
+
+		if (reinterpret_cast<int>(hiErrorCode) <= 32) {
+			QString qsError;
+			
+			qsError = GetErrorString(reinterpret_cast<int>(hiErrorCode));
+			QMessageBox::critical(NULL, tr("Execute"), tr("Can't execute %1:\n%2.").arg(qsName).arg(qsError));
+		} // if
+	} // if else
+#else
+	QProcess::startDetached(qsProcess);
+#endif
+} // StartDetached

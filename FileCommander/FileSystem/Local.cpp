@@ -5,6 +5,7 @@
 #include <windows.h>
 #endif
 #include "FileSystem/Local/ShellMenu.h"
+#include "FileControl/Process.h"
 
 // destructor
 cLocal::~cLocal()
@@ -31,6 +32,9 @@ const void cLocal::ActivateCurrent()
 #endif
 	} else {
 		// file
+		cProcess cpProcess;
+
+		cpProcess.StartDetached(qfiFile->fileName(), qfiFile->path());
 	} // if else
 } // ActivateCurrent
 
