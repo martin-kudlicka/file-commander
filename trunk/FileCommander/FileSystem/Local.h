@@ -48,6 +48,8 @@ class cLocal : public cFileSystem
 																									  \return content plugin (nondelayed) value */
 		const QList<QTreeWidgetItem *> GetDirectoryContent();					///< get tree items for current directory
 																								/**< \return  tree items for current directory */
+		const qint64 GetDirectorySize() const;										///< get currently selected directory size
+																								/**< \return selected directory size */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
 																								/**< \param qsPath path to detect space information
 																									  \return disk space information */
@@ -72,6 +74,11 @@ class cLocal : public cFileSystem
 		const QString GetFilePath(QTreeWidgetItem *qtwiFile) const;			///< get file name with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
+		const QFileInfoList GetFiles(const QFileInfo &qfiFile, const QString &qsFilter = "*") const;
+																								///< return list of sources (within subdirectories too)
+																								/**< \param qfiFile file or directory
+																									  \param qsFilter filter for input files
+																									  \return file list */
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
 																									  \return file size */
@@ -108,6 +115,12 @@ class cLocal : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
+		const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false) const;
+																								///< check if filename suits filter
+																								/**< \param qsName filename to check
+																									  \param qsFilter filter to suit
+																									  \param bRegularExpression qsFilter is regular expression
+																									  \return true if filename suits filter */
 
 	signals:
 		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
