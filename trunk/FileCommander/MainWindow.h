@@ -115,6 +115,11 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qaReverseOrder_triggered(bool checked = false) const;
 																							///< reverse order is selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaSavePosition_triggered(bool checked = false);	///< save position is selected
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaSaveSettings_triggered(bool checked = false) const;
+																							///< save settings is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaSelectAll_triggered(bool checked = false) const;
 																							///< select all selected
 																							/**< \param checked true if menu item is checkable and checked */
