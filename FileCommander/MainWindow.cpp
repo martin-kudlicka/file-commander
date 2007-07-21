@@ -519,6 +519,12 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	} // if
 } // on_qaOptions_triggered
 
+// reverse order is selected
+const void cMainWindow::on_qaReverseOrder_triggered(bool checked /* false */) const
+{
+	cpSource->ReverseOrder();
+} // on_qaReverseOrder_triggered
+
 // select all selected
 const void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
 {
