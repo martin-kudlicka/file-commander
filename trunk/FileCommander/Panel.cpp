@@ -1188,6 +1188,12 @@ const void cPanel::SetColumnSet(const QString &qsColumnSet)
 	RefreshHeader(qswDirs->currentIndex(), true);
 } // SetColumnSet
 
+// set focus to current directory view
+const void cPanel::SetFocus() const
+{
+	qswDirs->currentWidget()->setFocus(Qt::OtherFocusReason);
+} // SetFocus
+
 // set path by directory from history list
 const void cPanel::SetHistoryDirectory(const int &iPosition)
 {

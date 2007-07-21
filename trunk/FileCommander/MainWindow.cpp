@@ -4,6 +4,8 @@
 #include <QtGui/QDirModel>
 #include "Common/About.h"
 #include "Panel/TreeWidget.h"
+#include "FileControl/Process.h"
+#include <QtGui/QKeyEvent>
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
@@ -206,6 +208,7 @@ cMainWindow::cMainWindow()
 	// variables initialization
 	iTabBarIndex = -1;
 	qagSortBy = new QActionGroup(this);
+	qcbCommand->installEventFilter(this);
 	qagColumnSets = new QActionGroup(this);
 	qcDirModel.setModel(new QDirModel(&qcDirModel));
 	qcbCommand->setCompleter(&qcDirModel);
@@ -245,6 +248,44 @@ cMainWindow::cMainWindow()
 	// set focus to left panel
 	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
+
+// event filter
+bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qcbCommand) {
+		if (event->type() == QEvent::KeyPress) {
+			cProcess cpProcess;
+			QString qsCommand;
+
+			switch (static_cast<QKeyEvent *>(event)->key()) {
+				int iCommandPos;
+
+				case Qt::Key_Enter:
+				case Qt::Key_Return:
+					cpProcess.StartDetached(qcbCommand->currentText(), qlGlobalPath->text());
+
+					qsCommand = qcbCommand->currentText();
+					iCommandPos = qcbCommand->findText(qsCommand);
+					if (iCommandPos > 0) {
+						qcbCommand->removeItem(iCommandPos);
+					} // if
+					if (iCommandPos != 0) {
+						qcbCommand->insertItem(0, qsCommand);
+					} // if
+					qcbCommand->setCurrentIndex(-1);
+					qcbCommand->clearEditText();
+					return true;
+				case Qt::Key_Escape:
+					qcbCommand->clearEditText();
+					cpSource->SetFocus();
+					return true;
+			} // switch
+		} // if
+		return false;
+	} else {
+		return QMainWindow::eventFilter(watched, event);
+	} // if else
+} // eventFilter
 
 // fill favourite directories context menu
 const void cMainWindow::FillFavouriteDirectories(QMenu *qmMenu, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)

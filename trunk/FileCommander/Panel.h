@@ -73,6 +73,7 @@ class cPanel : public QObject
 																					/**< \param epPosition panel's position */
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */
+		const void SetFocus() const;										///< set focus to current directory view
 		const void SetHistoryDirectory(const int &iPosition);		///< set path by directory from history list
 																					/**< \param iPosition directory position in history list */
 		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
