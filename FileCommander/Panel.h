@@ -189,6 +189,7 @@ class cPanel : public QObject
 																					///< show tree view context menu
 																					/**< \param pos position of context menu */
 		const void on_ctwTree_GotFocus();								///< dir view got focus
+		const void on_ctwTree_itemSelectionChanged();				///< changed selected items in current directory view
 		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
 																					///< click on header in tree (dir) view
 																					/**< \param logicalIndex column index clicked on */
