@@ -189,7 +189,8 @@ class cPanel : public QObject
 																						  \param qtwiItem2 2nd item */
 
 	signals:
-		void GotFocus();														///< panel got focus
+		void Delete() const;													///< delete marked files
+		void GotFocus() const;												///< panel got focus
 
 	private slots:
 		const void on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem);

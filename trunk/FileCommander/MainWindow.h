@@ -81,6 +81,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 	private slots:
 		const void on_cpLeft_GotFocus();											///< left panel got focus
+		const void on_cpPanel_Delete() const;									///< delete marked files
 		const void on_cpRight_GotFocus();										///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
 																							/**< \param checked true if menu item is checkable and checked */

@@ -215,11 +215,11 @@ cMainWindow::cMainWindow()
 
 	// connections
 	connect(cpLeft, SIGNAL(GotFocus()), SLOT(on_cpLeft_GotFocus()));
-	/*connect(cpLeft, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
-	connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
+	connect(cpLeft, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
+	//connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
 	connect(cpRight, SIGNAL(GotFocus()), SLOT(on_cpRight_GotFocus()));
-	/*connect(cpRight, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
-	connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));*/
+	connect(cpRight, SIGNAL(Delete()), SLOT(on_cpPanel_Delete()));
+	//connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
@@ -353,6 +353,12 @@ const void cMainWindow::on_cpLeft_GotFocus()
 	SetSortByActions();
 	ActualizeColumnSets();
 } // on_cpLeft_GotFocus
+
+// delete marked files
+const void cMainWindow::on_cpPanel_Delete() const
+{
+	qpbDelete->animateClick();
+} // on_cpPanel_Delete
 
 // right panel got focus
 const void cMainWindow::on_cpRight_GotFocus()
