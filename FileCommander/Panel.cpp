@@ -267,6 +267,7 @@ const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
 // constructor
 cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
 {
+	// TODO cPanel
 	this->qmwParent = qmwParent;
 	this->qswDirs = qswDirs;
 	this->qcbDrive = qcbDrive;
@@ -280,6 +281,17 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDr
 	this->qcbCommand = qcbCommand;
 	this->cfcFileControl = cfcFileControl;
 	this->qleQuickSearch = qleQuickSearch;
+
+	// signals for controls
+	connect(qtbTab, SIGNAL(currentChanged(int)), SLOT(on_qtbTab_currentChanged(int)));
+
+	// event filters
+	/*qcbCommand->installEventFilter(this);
+	qtbTab->installEventFilter(this);
+	qleQuickSearch->installEventFilter(this);
+#ifdef Q_WS_WIN
+	qcbDrive->view()->installEventFilter(this);
+#endif*/
 
 	ActualizeDrives();
 
@@ -498,7 +510,9 @@ const void cPanel::on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSys
 
 	// actualize widgets
 	stTab->swWidgets.qsPath = cfsFileSystem->GetPath();
-	ActualizeWidgets();
+	if (stTab->bValid) {
+		ActualizeWidgets();
+	} // if
 } // on_cfsFileSystem_ContentChanged
 
 // got column value from content plugin
@@ -600,6 +614,18 @@ const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 	Sort(qswDirs->currentIndex(), GetTreeWidgetItems());
 } // on_qhvTreeHeader_sectionClicked
 
+// tab bar's index changed
+const void cPanel::on_qtbTab_currentChanged(int index)
+{
+	qswDirs->setCurrentIndex(index);
+
+	if (!qlTabs.value(index).bValid) {
+		RefreshContent();
+	} // if
+
+	ActualizeWidgets();
+} // on_qtbTab_currentChanged
+
 // refresh all dir view contents
 const void cPanel::RefreshAllContents()
 {
@@ -627,6 +653,12 @@ const void cPanel::RefreshAllHeaders()
 		} // if else
 	} // for
 } // RefreshAllHeaders
+
+// refresh current dir content
+const void cPanel::RefreshContent()
+{
+	RefreshContent(qswDirs->currentIndex());
+} // RefreshContent
 
 // refresh dir content
 const void cPanel::RefreshContent(const int &iIndex)
