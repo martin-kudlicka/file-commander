@@ -819,7 +819,7 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 			qcbCommand->setEditText(qcbCommand->currentText() + qsName);
 			break;
 		case Qt::Key_Delete:
-			//emit Delete();
+			emit Delete();
 			break;
 		default:
 			if (csSettings->GetQuickSearchEnabled() &&
