@@ -14,11 +14,11 @@ cLocal::~cLocal()
 } // ~cLocal
 
 // activate current file
-const void cLocal::ActivateCurrent()
+const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
 	QFileInfo *qfiFile;
 
-	qfiFile = &qhFiles[qhFiles.constBegin().key()->treeWidget()->currentItem()];
+	qfiFile = &qhFiles[qtwiFile];
 
 	if (qfiFile->isDir()) {
 		// directory
@@ -247,6 +247,12 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 	return qsName;
 } // GetFileName
 
+// get file name with full path
+const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
+{
+	return qhFiles.value(qtwiFile).filePath();
+} // GetFilePath
+
 // get file size
 const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 {
@@ -315,6 +321,14 @@ const QString cLocal::GetVolumeName() const
 
 	return qsName;
 } // GetVolumeName
+
+// go one directory up if possible
+const void cLocal::GoToUpDir()
+{
+	if (qdDir.cdUp()) {
+		emit ContentChanged(this);
+	} // if
+} // GoToUpDir
 
 // check if file is directory
 const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const

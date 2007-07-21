@@ -38,7 +38,8 @@ class cLocal : public cFileSystem
 		QString qsDrive;																	///< drive handled by this file system class
 		QString qsRootPath;																///< path to root of this file system
 
-		const void ActivateCurrent();													///< activate current file
+		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
+																								/**< \param qtwiFile file to activate */
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
@@ -68,6 +69,9 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file to find name for
 																									  \param bBracketsAllowed brackets around file name allowed flag
 																									  \return file name without extension */
+		const QString GetFilePath(QTreeWidgetItem *qtwiFile) const;			///< get file name with full path
+																								/**< \param qtwiFile file to find file path for
+																									  \return file name with full path */
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
 																									  \return file size */
@@ -82,6 +86,7 @@ class cLocal : public cFileSystem
 																								/**< \return tab text */
 		const QString GetVolumeName() const;										///< find out name of the disk
 																								/**< \return name of the disk */
+		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file check
 																									  \return true if directory */
