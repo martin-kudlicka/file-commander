@@ -3,6 +3,7 @@
 #include <QtCore/QFileInfoList>
 #include <QtCore/QDir>
 #include "FileSystem/Local.h"
+#include "FileControl/Process.h"
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
@@ -96,3 +97,19 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 
 	return spiPathInfo;
 } // GetPathInfo
+
+// start shell command window
+const void cFileControl::StartTerminal(const QString &qsPath) const
+{
+	#ifdef Q_WS_WIN
+	cProcess cpProcess;
+
+	if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
+		cpProcess.StartDetached("command", qsPath);
+	} else {
+		cpProcess.StartDetached("cmd", qsPath);
+	} // if else
+#else
+	// TODO Linux terminal
+#endif
+} // StartTerminal
