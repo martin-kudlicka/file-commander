@@ -63,6 +63,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void ActualizeColumnSets();										///< actualize column sets submenu
 		const void ActualizeFavouriteDirectories();							///< actualize favourite directories context menu
 		const void AssignShortcuts();												///< assign shortcuts
+		bool eventFilter(QObject *watched, QEvent *event);					///< event filter
+																							/**< \param watched filtered object
+																								  \param event event description
+																								  \return true if event is handled */
 		const void FillFavouriteDirectories(QMenu *qmMenu, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
 																							///< fill favourite directories context menu
 																							/**< \param qmMenu menu to fill in
