@@ -71,6 +71,7 @@ class cPanel : public QObject
 		const void InvertSelection() const;								///< invert selection of files
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
+		const void RefreshContent();										///< refresh current dir content
 		const void RefreshTabs() const;									///< refresh tabs
 		const void ReverseOrder();											///< reverse sort order
 		const void SaveSettings(const cSettings::ePosition &epPosition);
@@ -167,7 +168,6 @@ class cPanel : public QObject
 																					/**< \param qsNextChar next filename character to search with
 																						  \param eqsdDirection direction of search
 																						  \return true if file found */
-		const void RefreshContent();										///< refresh current dir content
 		const void RefreshContent(const int &iIndex);				///< refresh dir content
 																					/**< \param iIndex index of dir view */
 		const void RefreshHeader(const int &iIndex, const bool &bContent = false);
