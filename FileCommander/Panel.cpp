@@ -216,6 +216,12 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	return iIndex;
 } // AddTab
 
+// branch view for current directory
+const void cPanel::BranchView() const
+{
+	// TODO BranchView
+} // BranchView
+
 // close all other tabs than selected
 const void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 {

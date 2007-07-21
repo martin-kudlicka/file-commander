@@ -89,11 +89,16 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_cpRight_GotFocus();										///< right panel got focus
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaBranchView_triggered(bool checked = false) const;
+																							///< branch view is selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaCompareDirectories_triggered(bool checked = false) const;
 																							///< compare directories is selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaFavouriteDirectories_triggered(bool checked = false) const;
 																							///< favourite directories are selected
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaFullScreen_triggered(bool checked = false);		///< full screen mode is selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qagSortBy_triggered(QAction *action) const;		///< sort by action called
 																							/**< \param action column to sort by */
