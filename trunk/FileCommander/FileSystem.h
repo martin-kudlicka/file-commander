@@ -24,7 +24,8 @@ class cFileSystem : public QObject
 
 		virtual ~cFileSystem();																	///< destructor
 
-		virtual const void ActivateCurrent() = 0;											///< activate current file
+		virtual const void ActivateCurrent(QTreeWidgetItem *qtwiFile) = 0;		///< activate current file
+																										/**< \param qtwiFile file to activate */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin
 																										/**< \param sContent request description
@@ -52,6 +53,9 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file to find name for
 																											  \param bBracketsAllowed brackets around file name allowed flag
 																											  \return file name without extension */
+		virtual const QString GetFilePath(QTreeWidgetItem *qtwiFile) const = 0;	///< get file name with full path
+																										/**< \param qtwiFile file to find file path for
+																											  \return file name with full path */
 		virtual const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const = 0;	///< get file size
 																										/**< \param qtwiFile file to find size for
 																											  \return file size */
@@ -65,6 +69,7 @@ class cFileSystem : public QObject
 																										/**< \return tab text */
 		virtual const QString GetVolumeName() const = 0;								///< find out name of the disk
 																										/**< \return name of the disk */
+		virtual const void GoToUpDir() = 0;													///< go one directory up if possible
 		virtual const bool IsDir(QTreeWidgetItem *qtwiFile) const = 0;				///< check if file is directory
 																										/**< \param qtwiFile file check
 																											  \return true if directory */

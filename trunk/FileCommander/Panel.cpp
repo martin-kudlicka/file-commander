@@ -4,6 +4,10 @@
 #include <QtGui/QHeaderView>
 #include <QtCore/QDateTime>
 #include <QtGui/QMessageBox>
+#include <QtGui/QLineEdit>
+#include <QtCore/QEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QApplication>
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
@@ -167,7 +171,7 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
 	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
 	connect(ctwTree, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
-	//connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *, QTreeWidgetItem *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *, QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
 	/*connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
@@ -256,6 +260,19 @@ const void cPanel::CloseTab(const int &iTabIndex)
 	} // if
 } // CloseTab
 
+// close tab
+const void cPanel::CloseTab(const QMouseEvent *qmeEvent)
+{
+	if (csSettings->GetCloseTabOnDoubleClick() && qlTabs.count() > 1) {
+		int iTabIndex;
+
+		iTabIndex = GetTabIndex(qmeEvent->pos());
+		if (iTabIndex != -1) {
+			CloseTab(iTabIndex);
+		} // if
+	} // if
+} // CloseTab
+
 // connect new file system's signals/slots
 const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
 {
@@ -267,7 +284,6 @@ const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
 // constructor
 cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
 {
-	// TODO cPanel
 	this->qmwParent = qmwParent;
 	this->qswDirs = qswDirs;
 	this->qcbDrive = qcbDrive;
@@ -286,12 +302,12 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDr
 	connect(qtbTab, SIGNAL(currentChanged(int)), SLOT(on_qtbTab_currentChanged(int)));
 
 	// event filters
-	/*qcbCommand->installEventFilter(this);
+	qcbCommand->installEventFilter(this);
 	qtbTab->installEventFilter(this);
 	qleQuickSearch->installEventFilter(this);
 #ifdef Q_WS_WIN
 	qcbDrive->view()->installEventFilter(this);
-#endif*/
+#endif
 
 	ActualizeDrives();
 
@@ -317,6 +333,125 @@ const int cPanel::DuplicateTab(const int &iTabIndex)
 
 	return AddTab(stiTabInfo);
 } // DuplicateTab
+
+// event filter
+bool cPanel::eventFilter(QObject *watched, QEvent *event)
+{
+	if (watched == qcbCommand) {
+		// command combo box
+		if (event->type() == QEvent::KeyPress) {
+			if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Down || static_cast<QKeyEvent *>(event)->key() == Qt::Key_Up) {
+				if (qswLastActive == qswDirs) {
+					qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+					QApplication::sendEvent(qswLastActive->currentWidget(), event);
+					return true;
+				} else {
+					return false;
+				} // if else
+			} // if
+		} // if
+		return false;
+	} else {
+		if (watched == qtbTab) {
+			// tab bar
+			if (event->type() == QEvent::MouseButtonDblClick) {
+				CloseTab(static_cast<QMouseEvent *>(event));
+				return true;
+			} else {
+				return false;
+			} // if else
+		} else {
+			if (watched == qleQuickSearch) {
+				// quick search
+				switch (event->type()) {
+					case QEvent::FocusOut:
+						qleQuickSearch->hide();
+						return true;
+					case QEvent::KeyPress:
+						switch (static_cast<QKeyEvent *>(event)->key()) {
+							case Qt::Key_Backspace:
+								return false;
+							case Qt::Key_Down:
+								return !QuickSearch(NULL, SearchDown);
+							case Qt::Key_Enter:
+							case Qt::Key_Return:
+								if (qswLastActive == qswDirs) {
+									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+									QApplication::sendEvent(qswLastActive->currentWidget(), event);
+									return true;
+								} else {
+									return false;
+								} // if else
+							case Qt::Key_Escape:
+								if (qswLastActive == qswDirs) {
+									qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+									return true;
+								} else {
+									return false;
+								} // if else
+							case Qt::Key_Up:
+								return !QuickSearch(NULL, SearchUp);
+							default:
+								if (static_cast<QKeyEvent *>(event)->text().isEmpty()) {
+									// white char obtained
+									return true;
+								} else {
+									bool bSearch;
+
+									bSearch = QuickSearch(static_cast<QKeyEvent *>(event)->text(), SearchDown);
+
+									if (qleQuickSearch->isVisible()) {
+										// search in window
+										return !bSearch;
+									} else {
+										// search without window -> set focus back to dir view
+										if (qswLastActive == qswDirs) {
+											qswLastActive->currentWidget()->setFocus(Qt::OtherFocusReason);
+											return true;
+										} else {
+											return false;
+										} // if else
+									} // if else
+								} // if else
+						} // switch
+					case QEvent::Show:
+						qleQuickSearch->clear();
+						if (csSettings->GetQuickSearchShowSearchWindow()) {
+							qleQuickSearch->setMaximumWidth(INT_MAX);
+						} else {
+							qleQuickSearch->setMaximumWidth(0);
+						} // if else
+						qleQuickSearch->setFocus(Qt::OtherFocusReason);
+						return false;
+					default:
+						return false;
+				} // switch
+			} else {
+#ifdef Q_WS_WIN
+				if (watched == qcbDrive->view()) {
+					// drives list
+					if (event->type() == QEvent::KeyPress) {
+						// if exists same drive as key pressed activate it
+						int iIndex;
+
+						iIndex = qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper());
+						if (iIndex != -1) {
+							qcbDrive->setCurrentIndex(iIndex);
+							qcbDrive->hidePopup();
+							static_cast<cTreeWidget *>(qswDirs->currentWidget())->setFocus(Qt::OtherFocusReason);
+							return true;
+						} // if
+					} // if
+					return false;
+				} else {
+#endif
+					// the rest
+					return QObject::eventFilter(watched, event);
+				} // if else
+			} // if else
+		} // if else
+	} // if else
+} // eventFilter
 
 // columns for current dir view
 const QList<cSettings::sColumn> cPanel::GetColumns() const
@@ -530,7 +665,7 @@ const void cPanel::on_cfsFileSystem_Unaccessible() const
 // double click in tree view
 const void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column) const
 {
-	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ActivateCurrent();
+	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ActivateCurrent(item);
 } // on_ctwTree_itemActivated
 
 // show tree view context menu
@@ -608,6 +743,97 @@ const void cPanel::on_ctwTree_itemSelectionChanged()
 	ActualizeWidgets();
 } // on_ctwTree_itemSelectionChanged
 
+// space pressed in dir view
+const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
+{
+	// TODO on_ctwTree_KeyPressed
+	cTreeWidget *ctwDir;
+	/*int iColumnExtension, iI;
+	QFileInfo qfiFile;
+	QFileInfoList qfilFiles;
+	qint64 qi64Size;*/
+	QString qsName;
+	sTab *stTab;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+	stTab = &qlTabs[qswDirs->currentIndex()];
+
+	switch (qkeEvent->key()) {
+		case Qt::Key_Backspace:
+			stTab->cfsFileSystem->GoToUpDir();
+			break;
+		case Qt::Key_Space:
+			/*qfiFile = qhTabs.value(qswDir->currentIndex()).sldLocalDirectory.qhFiles.value(qtwiItem);
+
+			// refresh content plugin values
+			for (iI = 0; iI < qhTabs.value(qswDir->currentIndex()).qlColumns->count(); iI++) {
+				if (qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin != qsNO) {
+					qtwiItem->setText(iI, ccpContentPlugin->GetPluginValue(qfiFile.filePath(), qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsPlugin, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsIdentifier, qhTabs.value(qswDir->currentIndex()).qlColumns->at(iI).qsUnit));
+				} // if
+			} // for
+
+			if (qfiFile.isFile()) {
+				// selected item is file
+				return;
+			} // if
+
+			iColumnExtension = GetNativeColumnIndex(qsSIZE, qswDir->currentIndex());
+			if (iColumnExtension == -1) {
+				// no place to show occupied space
+				return;
+			} // if
+
+			qi64Size = qtwiItem->data(iColumnExtension, Qt::UserRole).toLongLong();
+			if (qi64Size == 0) {
+				// count only if not counted yet
+				qfilFiles = cFileRoutine::GetSources(qfiFile);
+				qi64Size = 0;
+				for (iI = 0; iI < qfilFiles.count(); iI++) {
+					qi64Size += qfilFiles.at(iI).size();
+				} // for
+
+				// put size to data to count with it when selecting files
+				qtwiItem->setData(iColumnExtension, Qt::UserRole, qi64Size);
+				// show the size in size column
+				qtwiItem->setText(iColumnExtension, GetSizeString(qi64Size));
+
+				// refresh selected items size
+				on_ctwTree_itemSelectionChanged(static_cast<cTreeWidget *>(qswDir->currentWidget()));
+			} // if*/
+			break;
+		case Qt::Key_Enter:
+		case Qt::Key_Return:
+			if (static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) && static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
+				// ctrl+shift+enter -> copy filePath to command line
+				qsName = stTab->cfsFileSystem->GetFilePath(ctwDir->currentItem());
+			} else {
+				// ctrl+enter -> copy fileName to command line
+				qsName = stTab->cfsFileSystem->GetFileName(ctwDir->currentItem(), false);
+			} // if else
+			if (qsName.contains(' ')) {
+				qsName = '"' + qsName + '"';
+			} // if
+			qcbCommand->setEditText(qcbCommand->currentText() + qsName);
+			break;
+		case Qt::Key_Delete:
+			//emit Delete();
+			break;
+		default:
+			if (csSettings->GetQuickSearchEnabled() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
+				// quick search activated
+				qleQuickSearch->show();
+				QApplication::sendEvent(qleQuickSearch, qkeEvent);
+			} else {
+				// pass key to command line
+				QApplication::sendEvent(qcbCommand, qkeEvent);
+				qcbCommand->setFocus(Qt::OtherFocusReason);
+			} // if else
+	} // switch
+} // on_ctwTree_KeyPressed
+
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
@@ -625,6 +851,70 @@ const void cPanel::on_qtbTab_currentChanged(int index)
 
 	ActualizeWidgets();
 } // on_qtbTab_currentChanged
+
+// search if quick searched file exists in current dir view
+const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection)
+{
+	bool bOnStart;
+	cTreeWidget *ctwDir;
+	int iPos;
+	QString qsFilename;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+	if (qleQuickSearch->maximumWidth() == 0) {
+		// search for only one first character
+		qleQuickSearch->clear();
+	} // if
+	qsFilename = qleQuickSearch->text() + qsNextChar;
+
+	iPos = ctwDir->indexOfTopLevelItem(ctwDir->currentItem());
+	if (qsNextChar.isEmpty() || qleQuickSearch->maximumWidth() == 0) {
+		if (eqsdDirection == SearchDown) {
+			iPos++;
+		} else {
+			iPos--;
+		} // if else
+	} // if
+
+	bOnStart = false;
+	while (true) {
+		sTab *stTab;
+
+		stTab = &qlTabs[qswDirs->currentIndex()];
+
+		// correct position
+		if (iPos > ctwDir->topLevelItemCount()) {
+			iPos = 0;
+		} else {
+			if (iPos < 0) {
+				iPos = ctwDir->topLevelItemCount() - 1;
+			} // if
+		} // if else
+
+		if (stTab->cfsFileSystem->GetFileName(ctwDir->topLevelItem(iPos), false).startsWith(qsFilename)) {
+			// found
+			ctwDir->setCurrentItem(ctwDir->topLevelItem(iPos));
+			return true;
+		} // if
+
+		if (ctwDir->topLevelItem(iPos) == ctwDir->currentItem()) {
+			// on item started from
+			if (bOnStart) {
+				return false;
+			} else {
+				bOnStart = true;
+			} // if else
+		} // if
+
+		// move onto next item
+		if (eqsdDirection == SearchDown) {
+			iPos++;
+		} else {
+			iPos--;
+		} // if else
+	} // while
+} // QuickSearch
 
 // refresh all dir view contents
 const void cPanel::RefreshAllContents()

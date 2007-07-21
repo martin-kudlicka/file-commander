@@ -86,6 +86,12 @@ class cPanel : public QObject
 		static const qint64 qi64_KILOBYTE = 1024;						///< 1 kilobyte in bytes
 		static const qint64 qi64_MEGABYTE = 1048576;					///< 1 megabyte in bytes
 
+		/// quick search direction in directory view
+		enum eQuickSearchDirection {
+			SearchUp,															///< search up
+			SearchDown															///< search down
+		};
+
 		/// strings for widgets
 		struct sWidgets {
 			QString qsPath;													///< path on drive
@@ -123,9 +129,15 @@ class cPanel : public QObject
 		const void ActualizeWidgets();									///< actualize widgets with info about current directory view
 		const void AddHistory(const int &iIndex);						///< add current path to last paths history
 																					/**< \param iIndex tab index to add history */
+		const void CloseTab(const QMouseEvent *qmeEvent);			///< close tab
+																					/**< \param qeEvent description of tab to close */
 		const void ConnectFileSystem(const cFileSystem *cfsFileSystem) const;
 																					///< connect new file system's signals/slots
 																					/**< \param cfsFileSystem file system to connect */
+		bool eventFilter(QObject *watched, QEvent *event);			///< event filter
+																					/**< \param watched filtered object
+																						  \param event event description
+																						  \return true if event is handled */
 		const QString GetDateTimeString(const QDateTime &qdtDateTime) const;
 																					///< convert QDateTime to user defined format
 																					/**< \param qdtDateTime date/time to convert
@@ -142,6 +154,11 @@ class cPanel : public QObject
 		QList<QTreeWidgetItem *> GetTreeWidgetItems() const;		///< get available files in tree view
 																					/**< \return available files in tree view */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
+		const bool QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection);
+																					///< search if quick searched file exists in current dir view
+																					/**< \param qsNextChar next filename character to search with
+																						  \param eqsdDirection direction of search
+																						  \return true if file found */
 		const void RefreshContent();										///< refresh current dir content
 		const void RefreshContent(const int &iIndex);				///< refresh dir content
 																					/**< \param iIndex index of dir view */
@@ -191,6 +208,8 @@ class cPanel : public QObject
 																					/**< \param pos position of context menu */
 		const void on_ctwTree_GotFocus();								///< dir view got focus
 		const void on_ctwTree_itemSelectionChanged();				///< changed selected items in current directory view
+		const void on_ctwTree_KeyPressed(QKeyEvent *qkeEvent);	///< space pressed in dir view
+																					/**< \param qkeEvent key event description */
 		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
 																					///< click on header in tree (dir) view
 																					/**< \param logicalIndex column index clicked on */
