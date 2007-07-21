@@ -519,6 +519,12 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	} // if
 } // on_qaOptions_triggered
 
+///< refresh is selected
+const void cMainWindow::on_qaRefresh_triggered(bool checked /* false */) const
+{
+	cpSource->RefreshContent();
+} // on_qaRefresh_triggered
+
 // reverse order is selected
 const void cMainWindow::on_qaReverseOrder_triggered(bool checked /* false */) const
 {
