@@ -46,8 +46,10 @@ class cLocal : public cFileSystem
 																								///< get value from content plugin
 																								/**< \param sContent request description
 																									  \return content plugin (nondelayed) value */
-		const QList<QTreeWidgetItem *> GetDirectoryContent();					///< get tree items for current directory
-																								/**< \return  tree items for current directory */
+		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
+																								///< get tree items for current directory
+																								/**< \param bRefresh reload directory content if true
+																									  \return  tree items for current directory */
 		const qint64 GetDirectorySize() const;										///< get currently selected directory size
 																								/**< \return selected directory size */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
@@ -95,8 +97,11 @@ class cLocal : public cFileSystem
 																								/**< \return name of the disk */
 		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
-																								/**< \param qtwiFile file check
+																								/**< \param qtwiFile file to check
 																									  \return true if directory */
+		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
+																								/**< \param qtwiFile file to check
+																									  \return true if file */
 #ifdef Q_WS_WIN
 		const bool PathExists(const QString &qsPath) const;					///< check if path is valid
 																								/**< \param qsPath path to test

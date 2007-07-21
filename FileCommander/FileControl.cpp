@@ -4,6 +4,7 @@
 #include <QtCore/QDir>
 #include "FileSystem/Local.h"
 #include "FileControl/Process.h"
+#include <QtCore/QDateTime>
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
@@ -20,6 +21,77 @@ const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, cons
 	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one)
 	return false;
 } // ChangeFileSystem
+
+// compare directories in both panels
+const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *cfsRight) const
+{
+	int iI;
+	QList<QTreeWidgetItem *> qlLeft, qlRight;
+
+	qlLeft = cfsLeft->GetDirectoryContent(false);
+	qlRight = cfsRight->GetDirectoryContent(false);
+
+	// mark first all files in the right panel, unmark directories
+	for (iI = 0; iI < qlRight.count(); iI++) {
+		QTreeWidgetItem *qtwiRight;
+
+		qtwiRight = qlRight[iI];
+		if (cfsRight->IsFile(qtwiRight)) {
+			qtwiRight->setSelected(true);
+		} else {
+			qtwiRight->setSelected(false);
+		} // if else
+	} // for
+
+	// go through left panel files and compare with right
+	for (iI = 0; iI < qlLeft.count(); iI++) {
+		QTreeWidgetItem *qtwiLeft;
+
+		qtwiLeft = qlLeft[iI];
+		if (cfsLeft->IsFile(qtwiLeft)) {
+			bool bFound;
+			int iJ;
+
+			bFound = false;
+
+			for (iJ = 0; iJ < qlRight.count(); iJ++) {
+				QTreeWidgetItem *qtwiRight;
+
+				qtwiRight = qlRight[iJ];
+				if (cfsRight->IsFile(qtwiRight)) {
+					if (cfsLeft->GetFileName(qtwiLeft) == cfsRight->GetFileName(qtwiRight)) {
+						bFound = true;
+
+						if (cfsLeft->GetLastModified(qtwiLeft) == cfsRight->GetLastModified(qtwiRight)) {
+							// files are the same - clear mark of both files
+							qtwiLeft->setSelected(false);
+							qtwiRight->setSelected(false);
+						} else {
+							if (cfsLeft->GetLastModified(qtwiLeft) > cfsRight->GetLastModified(qtwiRight)) {
+								// newer file on the left panel
+								qtwiLeft->setSelected(true);
+								qtwiRight->setSelected(false);
+							} else {
+								// newer file on the right panel
+								qtwiLeft->setSelected(false);
+							} // if else
+						} // if else
+
+						break;
+					} // if
+				} // if
+			} // for
+
+			if (!bFound) {
+				// file on the left is not on the right panel
+				qtwiLeft->setSelected(true);
+			} // if
+		} else {
+			// unmark directories on the left
+			qtwiLeft->setSelected(false);
+		} // if else
+	} // for
+} // CompareDirectories
 
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const

@@ -418,6 +418,12 @@ const void cMainWindow::on_qaAbout_triggered(bool checked /* false */)
 	caAbout.exec();
 } // on_qaAbout_triggered
 
+// compare directories is selected
+const void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false */) const
+{
+	cfcFileControl->CompareDirectories(cpLeft->GetFileSystem(), cpRight->GetFileSystem());
+} // on_qaCompareDirectories_triggered
+
 // favourite directories are selected
 const void cMainWindow::on_qaFavouriteDirectories_triggered(bool checked /* false */) const
 {
@@ -454,6 +460,12 @@ const void cMainWindow::on_qaHistoryDirectoryList_triggered(bool checked /* fals
 		qpbRightHistory->showMenu();
 	} // if else
 } // on_qaHistoryDirectoryList_triggered
+
+// invert selection is selected
+const void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */) const
+{
+	cpSource->InvertSelection();
+} // on_qaInvertSelection_triggered
 
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
@@ -494,6 +506,12 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 		cpRight->ShowHideHeaders();
 	} // if
 } // on_qaOptions_triggered
+
+// select all selected
+const void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
+{
+	cpSource->SelectAll();
+} // on_qaSelectAll_triggered
 
 // close all other tabs called
 const void cMainWindow::on_qaTabBarCloseAllOtherTabs_triggered(bool checked /* false */)
@@ -567,6 +585,12 @@ const void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false 
 		} // if else
 	} // if
 } // on_qaTabBarDuplicateTab_triggered
+
+// unselect all selected
+const void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */) const
+{
+	cpSource->UnselectAll();
+} // on_qaUnselectAll_triggered
 
 // selected column set from column set submenu
 const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const

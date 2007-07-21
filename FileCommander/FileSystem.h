@@ -30,8 +30,10 @@ class cFileSystem : public QObject
 																										///< get value from content plugin
 																										/**< \param sContent request description
 																											  \return content plugin (nondelayed) value */
-		virtual const QList<QTreeWidgetItem *> GetDirectoryContent() = 0;			///< get tree items for current directory
-																										/**< \return  tree items for current directory */
+		virtual QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true) = 0;
+																										///< get tree items for current directory
+																										/**< \param bRefresh reload directory content if true
+																											  \return  tree items for current directory */
 		virtual const qint64 GetDirectorySize() const = 0;								///< get currently selected directory size
 																										/**< \return selected directory size */
 		virtual const sDiskSpace GetDiskSpace() const = 0;								///< find out disk space information
@@ -73,8 +75,11 @@ class cFileSystem : public QObject
 																										/**< \return name of the disk */
 		virtual const void GoToUpDir() = 0;													///< go one directory up if possible
 		virtual const bool IsDir(QTreeWidgetItem *qtwiFile) const = 0;				///< check if file is directory
-																										/**< \param qtwiFile file check
+																										/**< \param qtwiFile file to check
 																											  \return true if directory */
+		virtual const bool IsFile(QTreeWidgetItem *qtwiFile) const = 0;			///< check if file is really file
+																										/**< \param qtwiFile file to check
+																											  \return true if file */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
 		virtual const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath) = 0;
 																										///< change path for this file system
