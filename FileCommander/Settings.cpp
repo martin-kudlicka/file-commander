@@ -26,7 +26,6 @@ const QString qsHISTORY = "History";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
-const QString qsNORMAL = "Normal";
 const QString qsOPERATIONS = "Operations";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
@@ -1183,3 +1182,15 @@ const void cSettings::SetViewerType(const QString &qsType)
 {
 	qsSettings.setValue(qsOPERATIONS__ + qsVIEWER_TYPE, qsType);
 } // SetViewerType
+
+// set startup main window state
+const void cSettings::SetWindowState(const sMainWindowState &smwsState)
+{
+	qsSettings.beginGroup(qsMAIN_WINDOW);
+	if (smwsState.qsWindowState == qsNORMAL) {
+		qsSettings.setValue(qsHEIGHT, smwsState.iHeight);
+		qsSettings.setValue(qsWIDTH, smwsState.iWidth);
+	} // if
+	qsSettings.setValue(qsWINDOW_STATE, smwsState.qsWindowState);
+	qsSettings.endGroup();
+} // SetWindowState

@@ -25,6 +25,7 @@ const QString qsMEGABYTES = "Megabytes";
 const QString qsNAME = "Name";
 const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO = "no";
+const QString qsNORMAL = "Normal";
 const QString qsONLY_FILES = "OnlyFiles";
 const QString qsSIZE = "Size";
 
@@ -372,6 +373,8 @@ class cSettings : private QObject
 																								/**< \param bLikeDirectories browse through archives like by directories if true */
 		const void SetViewerType(const QString &qsType);						///< viewer type
 																								/**< \param qsType internal or external viewer */
+		const void SetWindowState(const sMainWindowState &smwsState);		///< set startup main window state
+																								/**< \param smwsState window state information */
 
 	private:
 		QSettings qsSettings;															///< application's settings

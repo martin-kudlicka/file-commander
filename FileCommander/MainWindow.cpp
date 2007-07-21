@@ -531,6 +531,33 @@ const void cMainWindow::on_qaReverseOrder_triggered(bool checked /* false */) co
 	cpSource->ReverseOrder();
 } // on_qaReverseOrder_triggered
 
+// save position is selected
+const void cMainWindow::on_qaSavePosition_triggered(bool checked /* false */)
+{
+	cSettings::sMainWindowState smwsState;
+
+	smwsState.iHeight = height();
+	smwsState.iWidth = width();
+
+	if (!windowState()) {
+		smwsState.qsWindowState = qsNORMAL;
+	} else {
+		if (windowState() & Qt::WindowMaximized) {
+			smwsState.qsWindowState = qsMAXIMIZED;
+		} else {
+			smwsState.qsWindowState = qsFULL_SCREEN;
+		} // if else
+	} // if else
+
+	csSettings.SetWindowState(smwsState);
+} // on_qaSavePosition_triggered
+
+// save settings is selected
+const void cMainWindow::on_qaSaveSettings_triggered(bool checked /* false */) const
+{
+	SaveSettings();
+} // on_qaSaveSettings_triggered
+
 // select all selected
 const void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
 {
