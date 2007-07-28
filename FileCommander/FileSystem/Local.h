@@ -89,7 +89,9 @@ class cLocal : public cFileSystem
 																									  \return file's last modified date/time stamp */
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
-		const QFileInfoList GetSelectedFiles() const;						///< selected files in tree view
+		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
+																								/**< \return selected directory list */
+		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view
 																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */

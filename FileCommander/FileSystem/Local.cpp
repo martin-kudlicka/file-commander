@@ -343,6 +343,23 @@ const QString cLocal::GetPath() const
 	return qdDir.path();
 } // GetPath
 
+// selected directory list for current directory
+const QStringList cLocal::GetSelectedDirectoryStringList() const
+{
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	QStringList qslSelectedDirectories;
+
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.key()->isSelected() && qhiFile.value().isDir()) {
+			qslSelectedDirectories.append(qhiFile.value().filePath());
+		} // if
+	} // while
+
+	return qslSelectedDirectories;
+} // GetSelectedDirectoryStringList
+
 // selected files in tree view
 const QFileInfoList cLocal::GetSelectedFiles() const
 {

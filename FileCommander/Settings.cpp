@@ -8,6 +8,7 @@ const QString qsASK_TO_DELETE_NON_EMPTY_DIRECTORY = "AskToDeleteNonEmptyDirector
 const QString qsBUFFER_SIZE = "BufferSize";
 const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
+const QString qsCOMMAND_LINE = "CommandLine";
 #ifdef Q_WS_WIN
 const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
 #endif
@@ -18,7 +19,11 @@ const QString qsEXTENSIONS = "Extensions";
 const QString qsEXTERNAL_EDITOR = "ExternalEditor";
 const QString qsEXTERNAL_VIEWER = "ExternalViewer";
 const QString qsFALSE = "false";
+const QString qsFILE_OPERATION_DESTINATION = "FileOperationDestination";
+const QString qsFILE_OPERATION_FILTER = "FileOperationFilter";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
+const QString qsFIND_FILES_SEARCH_FOR = "FindFilesSearchFor";
+const QString qsFIND_FILES_SEARCH_IN = "FindFilesSearchIn";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
 const QString qsHEIGHT = "Height";
@@ -32,6 +37,7 @@ const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsPOSITION = "Position";
 const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
+const QString qsSELECT_FILES_FILTER = "SelectFilesFilter";
 const QString qsSHOW = "Show";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
@@ -42,6 +48,8 @@ const QString qsTARGET_ENABLED = "TargetEnabled";
 const QString qsTREAT_ARCHIVES_LIKE_DIRECTORIES = "TreatArchivesLikeDirectories";
 const QString qsTRUE = "true";
 const QString qsUNIT = "Unit";
+const QString qsUNPACK_FILES_DESTINATION = "UnpackFilesDestination";
+const QString qsUNPACK_FILES_FILTER = "UnpackFilesFilter";
 const QString qsVIEWER_TYPE = "ViewerType";
 const QString qsWIDTH = "Width";
 const QString qsWINDOW_STATE = "WindowState";
@@ -60,6 +68,8 @@ const QString qsDISPLAY__SHOW_BRACKETS_AROUND_DIRECTORY_NAME = "Display/ShowBrac
 const QString qsDISPLAY__SHOW_DIRECTORY_VIEW_HEADER = "Display/ShowDirectoryViewHeader"; 
 const QString qsDISPLAY__SHOW_HIDDEN_FILES = "Display/ShowHiddenFiles";
 const QString qsDISPLAY__SHOW_SYSTEM_FILES = "Display/ShowSystemFiles";
+// FindFiles
+const QString qsFIND_FILES__ = "FindFiles/";
 // LeftPanel
 const QString qsLEFT_PANEL__TABS__ = "LeftPanel/Tabs/";
 // MainWindow
@@ -345,6 +355,55 @@ const QStringList cSettings::GetColumnsInSet(const QString &qsColumnSet)
 	return qslColumns;
 } // GetColumnsInSet
 
+// get history of specified type
+const QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
+{
+	int iI;
+	QStringList qslHistory;
+
+	qsSettings.beginGroup(qsHISTORY);
+	switch (ehtHistory) {
+		case CommandLineHistory:
+			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FileOperationDestination:
+			qsSettings.beginGroup(qsFILE_OPERATION_DESTINATION);
+			break;
+		case FileOperationFilter:
+			qsSettings.beginGroup(qsFILE_OPERATION_FILTER);
+			break;
+		case FindFilesSearchFor:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
+			break;
+		case FindFilesSearchIn:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
+			break;
+		case SelectFilesFilter:
+			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
+			break;
+		case UnpackFilesFilter:
+			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
+			break;
+		case UnpackFilesDestination:
+			qsSettings.beginGroup(qsUNPACK_FILES_DESTINATION);
+	} // switch
+
+	iI = 1;
+	while (true) {
+		if (qsSettings.contains(QVariant(iI).toString())) {
+			qslHistory.append(qsSettings.value(QVariant(iI).toString()).toString());
+			iI++;
+		} else {
+			break;
+		} // if else
+	} // while
+
+	qsSettings.endGroup();
+	qsSettings.endGroup();
+
+	return qslHistory;
+} // GetComboBoxHistory
+
 // confirm close of all tabs in tab bar
 const bool cSettings::GetConfirmCloseOfAllTabs() const
 {
@@ -544,6 +603,18 @@ const QString cSettings::GetReadonlyFileOverwrite() const
 {
 	return qsSettings.value(qsOPERATIONS__ + qsREADONLY_FILE_OVERWRITE, qsASK).toString();
 } // GetReadonlyFileOverwrite
+
+// list of saved find settings for find files dialog
+const QStringList cSettings::GetSavedFinds()
+{
+	QStringList qslSavedFinds;
+
+	qsSettings.beginGroup(qsFIND_FILES__);
+	qslSavedFinds = qsSettings.childGroups();
+	qsSettings.endGroup();
+
+	return qslSavedFinds;
+} // GetSavedFinds
 
 // save settings on quit option
 const bool cSettings::GetSaveSettingsOnQuit() const
@@ -858,6 +929,12 @@ const void cSettings::RemoveColumnSet(const QString &qsColumnSet)
 {
 	qsSettings.remove(qsCOLUMN_SET__ + qsColumnSet);
 } // RemoveColumnSet
+
+// remove find settings
+const void cSettings::RemoveFindSettings(const QString &qsFindSettings)
+{
+	qsSettings.remove(qsFIND_FILES__ + qsFindSettings);
+} // RemoveFindSettings
 
 // restore old application's settings
 const void cSettings::RestoreSettings(QMap <QString, QString> &qmSettings)

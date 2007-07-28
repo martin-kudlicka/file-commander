@@ -13,6 +13,7 @@ CONFIG(release, debug|release) {
 }
 
 FORMS = MainWindow.ui \
+		  FindFilesDialog.ui \
 		  OptionsDialog.ui \
 		  OptionsDialog/NewFavouriteDirectoryDialog.ui \
 		  Common/About.ui
@@ -23,9 +24,9 @@ HEADERS = MainWindow.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
 			 FileSystem/Local/ShellMenu.h \
-			 FileSystem/Local/Win32/ShellContextMenu.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
+			 FindFilesDialog.h \
 			 Settings.h \
 			 OptionsDialog.h \
 			 OptionsDialog/NewFavouriteDirectoryDialog.h \
@@ -40,9 +41,9 @@ HEADERS = MainWindow.h \
 			 Plugins/TotalCommanderInterface.h \
 			 Common/System.h \
 			 Common/About.h
-//win32 {
-//	 HEADERS += Panel/Win32/ShellContextMenu.h
-//}
+win32 {
+	 HEADERS += FileSystem/Local/Win32/ShellContextMenu.h
+}
 
 SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
@@ -51,9 +52,9 @@ SOURCES = FileCommander.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
-			 FileSystem/Local/Win32/ShellContextMenu.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
+			 FindFilesDialog.cpp \
 			 Settings.cpp \
 			 OptionsDialog.cpp \
 			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \
@@ -64,9 +65,9 @@ SOURCES = FileCommander.cpp \
 			 Plugins/PackerPlugin.cpp \
 			 Common/System.cpp \
 			 Common/About.cpp
-//win32 {
-//	 SOURCES += Panel/Win32/ShellContextMenu.cpp
-//}
+win32 {
+	 SOURCES += FileSystem/Local/Win32/ShellContextMenu.cpp
+}
 
 exists (File Commander.vcproj) {
 	win32 {
