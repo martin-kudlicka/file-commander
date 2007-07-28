@@ -89,6 +89,17 @@ const QString qsSHORTCUT__PANELS__TABS__CLOSE_ALL_OTHER_TABS = "Close all other 
 class cSettings : private QObject
 {
 	public:
+		/// combo box's history type
+		enum eHistoryType {
+			CommandLineHistory,															///< main window's command line
+			FileOperationDestination,													///< file opeartion's destination
+			FileOperationFilter,															///< file operation's filter
+			FindFilesSearchFor,															///< find files's search for
+			FindFilesSearchIn,															///< find files's search in
+			SelectFilesFilter,															///< select files's filter
+			UnpackFilesFilter,															///< unpack files's filter
+			UnpackFilesDestination														///< unpack files's destination
+		};
 		/// panel's position
 		enum ePosition {
 			PositionLeft,																	///< left panel
@@ -195,6 +206,10 @@ class cSettings : private QObject
 		const QStringList GetColumnsInSet(const QString &qsColumnSet);		///< get column names in column set
 																								/**< \param qsColumnSet name of column set
 																									  \return list of columns in column set */
+		const QStringList GetComboBoxHistory(const eHistoryType &ehtHistory);
+																								///< get history of specified type
+																								/**< \param ehtHistory type of history to retreive
+																									  \return history string list */
 		const bool GetConfirmCloseOfAllTabs() const;								///< confirm close of all tabs in tab bar
 																								/**< return confirm close of all tabs flag */
 		const int GetCopyMoveBufferSize() const;									///< copy/move buffer size
@@ -245,6 +260,8 @@ class cSettings : private QObject
 																								/**< \return quick search window visibility flag */
 		const QString GetReadonlyFileOverwrite() const;							///< find out readonly file overwrite mode
 																								/**< \return default readonly file overwrite mode */
+		const QStringList GetSavedFinds();											///< list of saved find settings for find files dialog
+																								/**< \return list of save find settings */
 		const bool GetSaveSettingsOnQuit() const;									///< save settings on quit option
 																								/**< \return saves settings on quit when true */
 		const QString GetSelectionMode() const;									///< selection mode of files and directories
@@ -282,6 +299,8 @@ class cSettings : private QObject
 																								/**< \return startup main window parameters */
 		const void RemoveColumnSet(const QString &qsColumnSet);				///< remove column set
 																								/**< \param qsColumnSet column set to remove */
+		const void RemoveFindSettings(const QString &qsFindSettings);		///< remove find settings
+																								/**< \param qsFindSettings find settings name */
 		const void RestoreSettings(QMap <QString, QString> &qmSettings);	///< restore old application's settings
 																								/**< \param qmSettings settings to restore */
 		const void SetAskToDeleteNonEmptyDirectory(const bool &bAsk);		///< delete non empty directory

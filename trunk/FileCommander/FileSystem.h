@@ -69,6 +69,8 @@ class cFileSystem : public QObject
 																											  \return file's last modified date/time stamp */
 		virtual const QString GetPath() const = 0;										///< current path on file system
 																										/**< \return path on file system */
+		virtual const QStringList GetSelectedDirectoryStringList() const = 0;	///< selected directory list for current directory
+																										/**< \return selected directory list */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
 																										/**< \return tab text */
 		virtual const QString GetVolumeName() const = 0;								///< find out name of the disk

@@ -6,6 +6,7 @@
 #include "Panel/TreeWidget.h"
 #include "FileControl/Process.h"
 #include <QtGui/QKeyEvent>
+#include "FindFilesDialog.h"
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
@@ -557,6 +558,14 @@ const void cMainWindow::on_qaSaveSettings_triggered(bool checked /* false */) co
 {
 	SaveSettings();
 } // on_qaSaveSettings_triggered
+
+// search selected
+const void cMainWindow::on_qaSearch_triggered(bool checked /* false */)
+{
+	cFindFilesDialog cffdFind(this, cpSource, cfcFileControl, &csSettings, cpPlugins->clpListerPlugin);
+
+	cffdFind.exec();
+} // on_qaSearch_triggered
 
 // select all selected
 const void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
