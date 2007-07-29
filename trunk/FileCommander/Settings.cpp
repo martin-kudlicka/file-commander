@@ -9,6 +9,9 @@ const QString qsBUFFER_SIZE = "BufferSize";
 const QString qsCHAR_SET = "CharSet";
 const QString qsCOLUMN_SET = "ColumnSet";
 const QString qsCOMMAND_LINE = "CommandLine";
+const QString qsDATE_TIME_BETWEEN = "DateTimeBetween";
+const QString qsDATE_TIME_FROM = "DateTimeFrom";
+const QString qsDATE_TIME_TO = "DateTimeTo";
 #ifdef Q_WS_WIN
 const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
 #endif
@@ -22,26 +25,44 @@ const QString qsFALSE = "false";
 const QString qsFILE_OPERATION_DESTINATION = "FileOperationDestination";
 const QString qsFILE_OPERATION_FILTER = "FileOperationFilter";
 const QString qsFILE_OVERWRITE = "FileOverwrite";
+const QString qsFILE_SIZE = "FileSize";
+const QString qsFILE_SIZE_COMPARATOR = "FileSizeComparator";
+const QString qsFILE_SIZE_TYPE = "FileSizeType";
+const QString qsFILE_SIZE_VALUE = "FileSizeValue";
 const QString qsFIND_FILES_SEARCH_FOR = "FindFilesSearchFor";
 const QString qsFIND_FILES_SEARCH_IN = "FindFilesSearchIn";
 const QString qsFIT_IMAGE_TO_WINDOW = "FitImageToWindow";
 const QString qsFONT = "Font";
+const QString qsFULL_TEXT = "FullText";
+const QString qsFULL_TEXT_CASE_SENSITIVE = "FullTextCaseSensitive";
+const QString qsFULL_TEXT_HEX = "FullTextHex";
+const QString qsFULL_TEXT_NOT_CONTAINING_TEXT = "FullTextNotContainingText";
+const QString qsFULL_TEXT_REGULAR_EXPRESSION = "FullTextRegularExpression";
+const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsHEIGHT = "Height";
 const QString qsHISTORY = "History";
 const QString qsIDENTIFIER = "Identifier";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
+const QString qsNOT_OLDER_THAN = "NotOlderThan";
+const QString qsNOT_OLDER_THAN_COUNT = "NotOlderThanCount";
+const QString qsNOT_OLDER_THAN_TYPE = "NotOlderThanType";
 const QString qsOPERATIONS = "Operations";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
 const QString qsPOSITION = "Position";
 const QString qsREADONLY_FILE_OVERWRITE = "ReadonlyFileOverwrite";
+const QString qsSEARCH_FOR = "SearchFor";
+const QString qsSEARCH_FOR_REGULAR_EXPRESSION = "SearchForRegularExpression";
+const QString qsSEARCH_FOR_TEXT = "SearchForText";
+const QString qsSEARCH_IN = "SearchIn";
 const QString qsSELECT_FILES_FILTER = "SelectFilesFilter";
 const QString qsSHOW = "Show";
 const QString qsSORT_ORDER = "SortOrder";
 const QString qsSORTED_COLUMN = "SortColumn";
 const QString qsSOURCE = "Source";
+const QString qsSUBDIRECTORY_DEPTH = "SubdirectoryDepth";
 const QString qsSUBMENU = "Submenu";
 const QString qsTARGET = "Target";
 const QString qsTARGET_ENABLED = "TargetEnabled";
@@ -469,6 +490,48 @@ const QString cSettings::GetFileSizeIn() const
 {
 	return qsSettings.value(qsDISPLAY__FILE_SIZE_IN, qsDYNAMIC).toString();
 } // GetFileSizeIn
+
+// get find settings
+const cSettings::sFindSettings cSettings::GetFindSettings(const QString &qsName)
+{
+	sFindSettings sfsFindSettings;
+
+	qsSettings.beginGroup(qsFIND_FILES__ + qsName);
+	// general
+	sfsFindSettings.qsSearchFor = qsSettings.value(qsSEARCH_FOR).toString();
+	sfsFindSettings.bSearchForRegularExpression = qsSettings.value(qsSEARCH_FOR_REGULAR_EXPRESSION).toBool();
+	sfsFindSettings.qsSearchIn = qsSettings.value(qsSEARCH_IN).toString();
+	sfsFindSettings.iSubdirectoryDepth = qsSettings.value(qsSUBDIRECTORY_DEPTH).toInt();
+	sfsFindSettings.bSearchForText = qsSettings.value(qsSEARCH_FOR_TEXT).toBool();
+	if (sfsFindSettings.bSearchForText) {
+		sfsFindSettings.qsFullText = qsSettings.value(qsFULL_TEXT).toString();
+		sfsFindSettings.bFulTextWholeWords = qsSettings.value(qsFULL_TEXT_WHOLE_WORDS).toBool();
+		sfsFindSettings.bFullTextCaseSensitive = qsSettings.value(qsFULL_TEXT_CASE_SENSITIVE).toBool();
+		sfsFindSettings.bFullTextNotContainingText = qsSettings.value(qsFULL_TEXT_NOT_CONTAINING_TEXT).toBool();
+		sfsFindSettings.bFullTextHex = qsSettings.value(qsFULL_TEXT_HEX).toBool();
+		sfsFindSettings.bFullTextRegularExpression = qsSettings.value(qsFULL_TEXT_REGULAR_EXPRESSION).toBool();
+	} // if
+	// advanced
+	sfsFindSettings.bDateTimeBetween = qsSettings.value(qsDATE_TIME_BETWEEN).toBool();
+	if (sfsFindSettings.bDateTimeBetween) {
+		sfsFindSettings.qdtFrom = qsSettings.value(qsDATE_TIME_FROM).toDateTime();
+		sfsFindSettings.qdtTo = qsSettings.value(qsDATE_TIME_TO).toDateTime();
+	} // if
+	sfsFindSettings.bNotOlderThan = qsSettings.value(qsNOT_OLDER_THAN).toBool();
+	if (sfsFindSettings.bNotOlderThan) {
+		sfsFindSettings.iNotOlderThanCount = qsSettings.value(qsNOT_OLDER_THAN_COUNT).toInt();
+	} // if
+	sfsFindSettings.qsNotOlderThanType = qsSettings.value(qsNOT_OLDER_THAN_TYPE, qsMINUTES).toString();
+	sfsFindSettings.bFileSize = qsSettings.value(qsFILE_SIZE).toBool();
+	if (sfsFindSettings.bFileSize) {
+		sfsFindSettings.iFileSizeValue = qsSettings.value(qsFILE_SIZE_VALUE).toInt();
+	} // if
+	sfsFindSettings.qsFileSizeComparator = qsSettings.value(qsFILE_SIZE_COMPARATOR, "=").toString();
+	sfsFindSettings.qsFileSizeType = qsSettings.value(qsFILE_SIZE_TYPE, qsBYTES2).toString();
+	qsSettings.endGroup();
+
+	return sfsFindSettings;
+} // GetFindSettings
 
 // font used in lister
 const QFont cSettings::GetListerFont() const
@@ -1029,6 +1092,44 @@ const void cSettings::SetFileSizeIn(const QString &qsSize)
 {
 	qsSettings.setValue(qsDISPLAY__FILE_SIZE_IN, qsSize);
 } // SetFileSizeIn
+
+// save find settings for find files dialog
+const void cSettings::SetFindSettings(const QString &qsName, const sFindSettings &sfsFindSettings)
+{
+	qsSettings.beginGroup(qsFIND_FILES__ + qsName);
+	// general
+	qsSettings.setValue(qsSEARCH_FOR, sfsFindSettings.qsSearchFor);
+	qsSettings.setValue(qsSEARCH_FOR_REGULAR_EXPRESSION, sfsFindSettings.bSearchForRegularExpression);
+	qsSettings.setValue(qsSEARCH_IN, sfsFindSettings.qsSearchIn);
+	qsSettings.setValue(qsSUBDIRECTORY_DEPTH, sfsFindSettings.iSubdirectoryDepth);
+	qsSettings.setValue(qsSEARCH_FOR_TEXT, sfsFindSettings.bSearchForText);
+	if (sfsFindSettings.bSearchForText) {
+		qsSettings.setValue(qsFULL_TEXT, sfsFindSettings.qsFullText);
+		qsSettings.setValue(qsFULL_TEXT_WHOLE_WORDS, sfsFindSettings.bFulTextWholeWords);
+		qsSettings.setValue(qsFULL_TEXT_CASE_SENSITIVE, sfsFindSettings.bFullTextCaseSensitive);
+		qsSettings.setValue(qsFULL_TEXT_NOT_CONTAINING_TEXT, sfsFindSettings.bFullTextNotContainingText);
+		qsSettings.setValue(qsFULL_TEXT_HEX, sfsFindSettings.bFullTextHex);
+		qsSettings.setValue(qsFULL_TEXT_REGULAR_EXPRESSION, sfsFindSettings.bFullTextRegularExpression);
+	} // if
+	// advanced
+	qsSettings.setValue(qsDATE_TIME_BETWEEN, sfsFindSettings.bDateTimeBetween);
+	if (sfsFindSettings.bDateTimeBetween) {
+		qsSettings.setValue(qsDATE_TIME_FROM, sfsFindSettings.qdtFrom);
+		qsSettings.setValue(qsDATE_TIME_TO, sfsFindSettings.qdtTo);
+	} // if
+	qsSettings.setValue(qsNOT_OLDER_THAN, sfsFindSettings.bNotOlderThan);
+	if (sfsFindSettings.bNotOlderThan) {
+		qsSettings.setValue(qsNOT_OLDER_THAN_COUNT, sfsFindSettings.iNotOlderThanCount);
+		qsSettings.setValue(qsNOT_OLDER_THAN_TYPE, sfsFindSettings.qsNotOlderThanType);
+	} // if
+	qsSettings.setValue(qsFILE_SIZE, sfsFindSettings.bFileSize);
+	if (sfsFindSettings.bFileSize) {
+		qsSettings.setValue(qsFILE_SIZE_COMPARATOR, sfsFindSettings.qsFileSizeComparator);
+		qsSettings.setValue(qsFILE_SIZE_VALUE, sfsFindSettings.iFileSizeValue);
+		qsSettings.setValue(qsFILE_SIZE_TYPE, sfsFindSettings.qsFileSizeType);
+	} // if
+	qsSettings.endGroup();
+} // SetFindSettings
 
 // font used in lister
 const void cSettings::SetListerFont(const QFont &qfFont)
