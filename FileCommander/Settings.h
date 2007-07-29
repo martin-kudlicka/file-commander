@@ -5,6 +5,7 @@
 
 #include <QtCore/QSettings>
 #include <QtCore/QPair>
+#include <QtCore/QDateTime>
 
 const QString qsANSI = "ANSI";
 const QString qsASK = "Ask";
@@ -12,6 +13,7 @@ const QString qsASK = "Ask";
 const QString qsATTRIBUTES = "Attributes";
 #endif
 const QString qsBYTES = "Bytes";
+const QString qsBYTES2 = "byte(s)";
 const QString qsDATE_TIME = "DateTime";
 const QString qsDYNAMIC = "Dynamic";
 const QString qsEXTENSION = "Extension";
@@ -22,6 +24,7 @@ const QString qsICON = "Icon";
 const QString qsINTERNAL = "Internal";
 const QString qsKILOBYTES = "Kilobytes";
 const QString qsMEGABYTES = "Megabytes";
+const QString qsMINUTES = "minute(s)";
 const QString qsNAME = "Name";
 const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO = "no";
@@ -134,6 +137,32 @@ class cSettings : private QObject
 			QString qsTarget;																///< path for destination panel
 			QList<QPair<QString, sFavouriteDirectory> > qlChildFavourites;	///< can contain children favourites if bSubmenu is true
 		};
+		/// find settings
+		struct sFindSettings {
+			// general
+			QString qsSearchFor;															///< search for this file(s)
+			bool bSearchForRegularExpression;										///< search for is regular expression flag
+			QString qsSearchIn;															///< search in this directory(s)
+			int iSubdirectoryDepth;														///< number of subdirectories to go through
+			bool bSearchForText;															///< search for text flag
+			QString qsFullText;															///< text to search
+			bool bFulTextWholeWords;													///< search whole words
+			bool bFullTextCaseSensitive;												///< case sensitive search
+			bool bFullTextNotContainingText;											///< search files not containing specified text
+			bool bFullTextHex;															///< specified text is hex code flag
+			bool bFullTextRegularExpression;											///< specified text is regular expression flag
+			// advanced
+			bool bDateTimeBetween;														///< search files between two dates/times flag
+			QDateTime qdtFrom;															///< minimum date/time of file
+			QDateTime qdtTo;																///< maximum date/time of file
+			bool bNotOlderThan;															///< search file not older than flag
+			int iNotOlderThanCount;														///< count of "something" to be not older than
+			QString qsNotOlderThanType;												///< that's the "something" :)
+			bool bFileSize;																///< file size to match in search flag
+			QString qsFileSizeComparator;												///< file size comparator
+			int iFileSizeValue;															///< file size value
+			QString qsFileSizeType;														///< type of file size value
+		};
 		/// last visited path
 		struct sLastPath {
 			QString qsPath;																///< path to set
@@ -231,6 +260,9 @@ class cSettings : private QObject
 																								/**< \return default file overwrite mode */
 		const QString GetFileSizeIn() const;										///< unit for files size
 																								/**< \return file size unit */
+		const sFindSettings GetFindSettings(const QString &qsName);			///< get find settings
+																								/**< \param qsName name of find settings set
+																									  \return find settings */
 		const QFont GetListerFont() const;											///< font used in lister
 																								/**< \return user defined font for lister */
 		const sLister GetListerSettings();											///< lister settings
@@ -330,6 +362,10 @@ class cSettings : private QObject
 																								/**< \param qsMode overwrite mode */
 		const void SetFileSizeIn(const QString &qsSize);						///< set file size mode
 																								/**< \param qsSize file size to show */
+		const void SetFindSettings(const QString &qsName, const sFindSettings &sfsFindSettings);
+																								///< save find settings for find files dialog
+																								/**< \param qsName name of find settings
+																									  \param sfsFindSettings settings for find files dialog */
 		const void SetListerFont(const QFont &qfFont);							///< font used in lister
 																								/**< \param qfFont user defined font for lister */
 		const void SetListerSettings(const sLister &slLister);				///< set default lister settings

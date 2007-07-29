@@ -30,6 +30,8 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cSettings *csSettings;																			///< application's settings file
 		QCompleter qcDirModel;																			///< completer based on dir model
 
+		const cSettings::sFindSettings GetSettings() const;									///< store settings in sFindSettings structure
+																												/**< \return find settings */
 		const void RefreshSavedSettings() const;													///< refreshes list of saved settings
 
 	private slots:
@@ -46,6 +48,10 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		const void on_qpbBrowse_clicked(bool checked = false);								///< browse button is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbDeleteFind_clicked(bool checked = false) const;					///< delete find is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbLoadFind_clicked(bool checked = false) const;						///< load find is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbSaveFind_clicked(bool checked = false);								///< save find is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qtwSavedFinds_itemSelectionChanged() const;							///< selected item changed in saved finds view
 }; // cFindFilesDialog
