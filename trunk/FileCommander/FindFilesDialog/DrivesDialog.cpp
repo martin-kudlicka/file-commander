@@ -1,7 +1,9 @@
 #include "FindFilesDialog/DrivesDialog.h"
 
-cDrivesDialog::cDrivesDialog(QDialog *qdParent, const QMap<QString, cFileRoutine::sDriveInfo> &qmDrives)
+cDrivesDialog::cDrivesDialog(QDialog *qdParent, const QStringList &qslDrives)
 {
+	int iI;
+
 	setParent(qdParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
@@ -9,18 +11,16 @@ cDrivesDialog::cDrivesDialog(QDialog *qdParent, const QMap<QString, cFileRoutine
 	qtwDrives->headerItem()->setHidden(true);
 
 	// fill drives info
-	QMapIterator<QString, cFileRoutine::sDriveInfo> qmiDrives(qmDrives);
-	while (qmiDrives.hasNext()) {
+	for (iI = 0; iI < qslDrives.count(); iI++) {
 		QTreeWidgetItem *qtwiDrive;
 
-		qmiDrives.next();
 		qtwiDrive = new QTreeWidgetItem(qtwDrives);
-		qtwiDrive->setText(0, qmiDrives.key());
-	} // while
+		qtwiDrive->setText(0, qslDrives.at(iI));
+	} // for
 } // cDrivesDialog
 
 // selected drives changed
-void cDrivesDialog::on_qtwDrives_itemSelectionChanged()
+const void cDrivesDialog::on_qtwDrives_itemSelectionChanged() const
 {
 	if (qtwDrives->selectedItems().count() > 0) {
 		qpbOK->setEnabled(true);

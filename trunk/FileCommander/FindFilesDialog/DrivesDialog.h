@@ -5,20 +5,18 @@
 
 #include "ui_DrivesDialog.h"
 
-#include "FileOperation/FileRoutine.h"
-
 class cDrivesDialog : public QDialog, public Ui::qdDrives
 {
 	Q_OBJECT
 
 	public:
-		cDrivesDialog(QDialog *qdParent, const QMap<QString, cFileRoutine::sDriveInfo> &qmDrives);
-																///< constructor
-																/**< \param qdParent parent window of this dialog
-																	  \param qmDrives detected drives in system */
+		cDrivesDialog(QDialog *qdParent, const QStringList &qslDrives);
+																				///< constructor
+																				/**< \param qdParent parent window of this dialog
+																					  \param qslDrives detected drives in system */
 
 	private slots:
-		void on_qtwDrives_itemSelectionChanged();	///< selected drives changed
+		const void on_qtwDrives_itemSelectionChanged() const;	///< selected drives changed
 }; // cDrivesDialog
 
 #endif
