@@ -49,6 +49,8 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbDeleteFind_clicked(bool checked = false) const;					///< delete find is clicked on
 																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbDrives_clicked(bool checked = false);								///< drives button is clicked on
+																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbLoadFind_clicked(bool checked = false) const;						///< load find is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbSaveFind_clicked(bool checked = false);								///< save find is clicked on

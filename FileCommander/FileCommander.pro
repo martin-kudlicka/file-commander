@@ -14,6 +14,7 @@ CONFIG(release, debug|release) {
 
 FORMS = MainWindow.ui \
 		  FindFilesDialog.ui \
+		  FindFilesDialog/DrivesDialog.ui \
 		  OptionsDialog.ui \
 		  OptionsDialog/NewFavouriteDirectoryDialog.ui \
 		  Common/About.ui
@@ -27,6 +28,7 @@ HEADERS = MainWindow.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 FindFilesDialog.h \
+			 FindFilesDialog/DrivesDialog.h \
 			 Settings.h \
 			 OptionsDialog.h \
 			 OptionsDialog/NewFavouriteDirectoryDialog.h \
@@ -55,6 +57,7 @@ SOURCES = FileCommander.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 FindFilesDialog.cpp \
+			 FindFilesDialog/DrivesDialog.cpp \
 			 Settings.cpp \
 			 OptionsDialog.cpp \
 			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \

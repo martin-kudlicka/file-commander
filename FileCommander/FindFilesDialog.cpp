@@ -3,6 +3,7 @@
 #include <QtGui/QDirModel>
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
+#include "FindFilesDialog/DrivesDialog.h"
 
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
@@ -202,6 +203,48 @@ const void cFindFilesDialog::on_qpbDeleteFind_clicked(bool checked /* false */) 
 	csSettings->RemoveFindSettings(qtwSavedFinds->selectedItems().at(0)->text(0));
 	RefreshSavedSettings();
 } // on_qpbDeleteFind_clicked
+
+// drives button is clicked on
+const void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
+{
+	cDrivesDialog *cddDrives;
+	int iI;
+	QList<QPair<QString, cFileControl::sDrive> > qlDrives;
+	QStringList qslDrives;
+
+	qlDrives = cfcFileControl->GetDrives();
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		qslDrives.append(qlDrives.at(iI).first);
+	} // for
+
+	cddDrives = new cDrivesDialog(this, qslDrives);
+
+	if (cddDrives->exec() == QDialog::Accepted) {
+		int iI;
+		QList<QTreeWidgetItem *> qlSelected;
+		QStringList qslPaths;
+
+		qlSelected = cddDrives->qtwDrives->selectedItems();
+
+		for (iI = 0; iI < qlDrives.count(); iI++) {
+			int iJ;
+			QPair<QString, cFileControl::sDrive> *qpDrive;
+
+			qpDrive = &qlDrives[iI];
+
+			for (iJ = 0; iJ < qlSelected.count(); iJ++) {
+				if (qpDrive->first == qlSelected.at(iJ)->text(0)) {
+					qslPaths.append(qpDrive->second.qsPath);
+					break;
+				} // if
+			} // for
+		} // for
+
+		qcbSearchIn->setEditText(qslPaths.join(";"));
+	} // if
+
+	cddDrives->deleteLater();
+} // on_qpbDrives_clicked
 
 // load find is clicked on
 const void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */) const
