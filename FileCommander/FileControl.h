@@ -29,6 +29,7 @@ class cFileControl : public QObject
 		struct sPathInfo {
 			QString qsDrive;														///< path's drive
 			QString qsRootPath;													///< drive's root path
+			eDriveType edtType;													///< drive type
 		};
 
 		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
@@ -43,6 +44,9 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qsDrive drive to get file system for
 																							  \param startup path */
+		const void CloseFileSystem(cFileSystem *cfsFileSystem) const;
+																						///< close used file system
+																						/**< \param cfsFileSystem file system to close */
 		const void CompareDirectories(cFileSystem *cfsLeft, cFileSystem *cfsRight) const;
 																						///< compare directories in both panels
 																						/**< \param cfsLeft left panel's file system

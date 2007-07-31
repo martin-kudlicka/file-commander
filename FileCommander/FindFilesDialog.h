@@ -51,11 +51,22 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbDrives_clicked(bool checked = false);								///< drives button is clicked on
 																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbFeedToPanel_clicked(bool checked = false) const;					///< feed to panel button is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbGoToFile_clicked(bool checked = false) const;						///< go to file button is clicked on
+																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbLoadFind_clicked(bool checked = false) const;						///< load find is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbSaveFind_clicked(bool checked = false);								///< save find is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qtwSavedFinds_itemSelectionChanged() const;							///< selected item changed in saved finds view
+		const void on_qpbStart_clicked(bool checked = false) const;							///< start button is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbStop_clicked(bool checked = false) const;							///< stop button is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qpbView_clicked(bool checked = false) const;							///< view button is clicked on
+																												/**< \param checked true if button is checkable and checked */
+		const void on_qtwSearch_itemSelectionChanged() const;									///< selected item changed in found files list
 }; // cFindFilesDialog
 
 #endif

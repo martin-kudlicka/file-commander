@@ -1029,6 +1029,48 @@ const void cSettings::SetCloseTabOnDoubleClick(const bool &bClose)
 	qsSettings.setValue(qsTABS__CLOSE_TAB_ON_DOUBLE_CLICK, bClose);
 } // SetCloseTabOnDoubleClick
 
+// save combo box's history
+const void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboBox *qcbComboBox)
+{
+	int iI;
+
+	qsSettings.beginGroup(qsHISTORY);
+	switch (ehtHistory) {
+		case CommandLineHistory:
+			qsSettings.beginGroup(qsCOMMAND_LINE);
+			break;
+		case FileOperationDestination:
+			qsSettings.beginGroup(qsFILE_OPERATION_DESTINATION);
+			break;
+		case FileOperationFilter:
+			qsSettings.beginGroup(qsFILE_OPERATION_FILTER);
+			break;
+		case FindFilesSearchFor:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_FOR);
+			break;
+		case FindFilesSearchIn:
+			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
+			break;
+		case SelectFilesFilter:
+			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
+			break;
+		case UnpackFilesFilter:
+			qsSettings.beginGroup(qsUNPACK_FILES_FILTER);
+			break;
+		case UnpackFilesDestination:
+			qsSettings.beginGroup(qsUNPACK_FILES_DESTINATION);
+	} // switch
+
+	qsSettings.remove("");
+
+	for (iI = 0; iI < qcbComboBox->count(); iI++) {
+		qsSettings.setValue(QVariant(iI + 1).toString(), qcbComboBox->itemText(iI));
+	} // for
+
+	qsSettings.endGroup();
+	qsSettings.endGroup();
+} // SetComboBoxHistory
+
 // confirm close of all tabs
 const void cSettings::SetConfirmCloseOfAllTabs(const bool &bClose)
 {
