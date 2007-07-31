@@ -5,6 +5,7 @@
 #include <QtGui/QInputDialog>
 #include "FindFilesDialog/DrivesDialog.h"
 
+const QChar qcPATH_SEPARATOR = ';';
 const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
 const QString qsHOURS = "hour(s)";
@@ -240,11 +241,23 @@ const void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 			} // for
 		} // for
 
-		qcbSearchIn->setEditText(qslPaths.join(";"));
+		qcbSearchIn->setEditText(qslPaths.join(qcPATH_SEPARATOR));
 	} // if
 
 	cddDrives->deleteLater();
 } // on_qpbDrives_clicked
+
+// feed to panel button is clicked on
+const void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */) const
+{
+	// TODO on_qpbFeedToPanel_clicked
+} // on_qpbFeedToPanel_clicked
+
+// go to file button is clicked on
+const void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */) const
+{
+	// TODO on_qpbGoToFile_clicked
+} // on_qpbGoToFile_clicked
 
 // load find is clicked on
 const void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */) const
@@ -306,6 +319,87 @@ const void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged() const
 	} // if else
 } // on_qtwSavedFinds_itemSelectionChanged
 
+// start button is clicked on
+const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */) const
+{
+	// TODO on_qpbStart_clicked
+	bool bLocalIncluded;
+	int iI, iIndex;
+	QList<cFileSystem *> qlFileSystems;
+	QString qsSearchFor, qsSearchIn;
+	QStringList qslPaths;
+
+	// save history
+	qsSearchFor = qcbSearchFor->currentText();
+	iIndex = qcbSearchFor->findText(qsSearchFor);
+	if (iIndex > 0) {
+		qcbSearchFor->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
+		qcbSearchFor->insertItem(0, qsSearchFor);
+		qcbSearchFor->setEditText(qsSearchFor);
+	} // if
+	qsSearchIn = qcbSearchIn->currentText();
+	iIndex = qcbSearchIn->findText(qsSearchIn);
+	if (iIndex > 0) {
+		qcbSearchIn->removeItem(iIndex);
+	} // if
+	if (iIndex != 0) {
+		qcbSearchIn->insertItem(0, qsSearchIn);
+		qcbSearchIn->setEditText(qsSearchIn);
+	} // if
+	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchFor, qcbSearchFor);
+	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchIn, qcbSearchIn);
+
+	// GUI settings
+	qpbStart->setEnabled(false);
+	qpbFeedToPanel->setEnabled(false);
+	qpbStop->setEnabled(true);
+
+	// get all needed filesystems
+	bLocalIncluded = false;
+	qslPaths = qcbSearchIn->currentText().split(qcPATH_SEPARATOR);
+	for (iI = 0; iI < qslPaths.count(); iI++) {
+		cFileControl::sPathInfo spiPathInfo;
+
+		spiPathInfo = cfcFileControl->GetPathInfo(qslPaths.at(iI));
+		if (spiPathInfo.edtType == cFileControl::Local) {
+			if (!bLocalIncluded) {
+				// create local file system to search, local is enough to create only once
+				qlFileSystems.append(cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath));
+				bLocalIncluded = true;
+			} // if
+		} else {
+			// TODO on_qpbStart_clicked - create nonlocal file system to search
+		} // if else
+	} // for
+
+	// TODO on_qpbStart_clicked - file system start search
+	// start searching through file systems
+	for (iI = 0; iI < qlFileSystems.count(); iI++) {
+		//Start(GetSettings(), qlFileSystems.at(iI), false);
+	} // for
+	// TODO on_qpbStart_clicked - file system stop search
+
+	qpbStop->setEnabled(false);
+	qpbStart->setEnabled(true);
+	if (qtwSearch->topLevelItemCount() > 0) {
+		qpbFeedToPanel->setEnabled(true);
+	} // if
+} // on_qpbStart_clicked
+
+// stop button is clicked on
+const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */) const
+{
+	// TODO on_qpbStop_clicked
+} // on_qpbStop_clicked
+
+// view button is clicked on
+const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */) const
+{
+	// TODO on_qpbView_clicked
+} // on_qpbView_clicked
+
 // refreshes list of saved settings
 const void cFindFilesDialog::RefreshSavedSettings() const
 {
@@ -323,3 +417,9 @@ const void cFindFilesDialog::RefreshSavedSettings() const
 		qtwiFind->setText(0, qslSavedFinds.at(iI));
 	} // for
 } // RefreshSavedSettings
+
+// selected item changed in found files list
+const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged() const
+{
+	// TODO on_qtwSearch_itemSelectionChanged
+} // on_qtwSearch_itemSelectionChanged

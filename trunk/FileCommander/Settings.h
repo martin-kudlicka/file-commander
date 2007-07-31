@@ -6,6 +6,7 @@
 #include <QtCore/QSettings>
 #include <QtCore/QPair>
 #include <QtCore/QDateTime>
+#include <QtGui/QComboBox>
 
 const QString qsANSI = "ANSI";
 const QString qsASK = "Ask";
@@ -341,6 +342,10 @@ class cSettings : private QObject
 																								/**< \param bCaseSensitive true if sorting is case sensitive */
 		const void SetCloseTabOnDoubleClick(const bool &bClose);				///< close tab on double click
 																								/**< \param bClose can close tab on double click if true */
+		const void SetComboBoxHistory(const eHistoryType &ehtHistory, const QComboBox *qcbComboBox);
+																								///< save combo box's history
+																								/**< \param ehtHistory history (combo box) type
+																									  \param qcbComboBox combo box of which history to save */
 		const void SetConfirmCloseOfAllTabs(const bool &bClose);				///< confirm close of all tabs
 																								/**< \param bClose confirm close of all tabs flag */
 		const void SetCopyMoveBufferSize(const int &iSize);					///< copy/move buffer size

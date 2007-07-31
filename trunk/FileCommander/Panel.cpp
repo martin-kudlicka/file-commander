@@ -18,7 +18,7 @@ cPanel::~cPanel()
 	int iI;
 
 	for (iI = 0; iI < qlTabs.count(); iI++) {
-		qlTabs.at(iI).cfsFileSystem->deleteLater();
+		cfcFileControl->CloseFileSystem(qlTabs.at(iI).cfsFileSystem);
 	} // for
 } // ~cPanel
 
@@ -254,7 +254,7 @@ const void cPanel::CloseAllOtherTabs(const int &iTabIndex)
 const void cPanel::CloseTab(const int &iTabIndex)
 {
 	if (qlTabs.count() > 1) {
-		qlTabs.at(iTabIndex).cfsFileSystem->deleteLater();
+		cfcFileControl->CloseFileSystem(qlTabs.at(iTabIndex).cfsFileSystem);
 		qlTabs.removeAt(iTabIndex);
 		qswDirs->removeWidget(qswDirs->widget(iTabIndex));
 		qtbTab->removeTab(iTabIndex);

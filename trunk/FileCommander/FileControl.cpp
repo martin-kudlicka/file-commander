@@ -18,9 +18,16 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 // change file system according to new drive
 const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
 {
-	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one)
+	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, wath FS list) (copy FTP, at least logon info if same drive as existing FTP)
 	return false;
 } // ChangeFileSystem
+
+// close used file system
+const void cFileControl::CloseFileSystem(cFileSystem *cfsFileSystem) const
+{
+	// TODO CloseFileSystem - later - delete local (and from FS list later) (watch for copied FTPs?)
+	cfsFileSystem->deleteLater();
+} // CloseFileSystem
 
 // compare directories in both panels
 const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *cfsRight) const
@@ -117,6 +124,7 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 
 cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
 {
+	// TODO GetFileSystem add FS to some FS list later
 	cFileSystem *cfsFileSystem;
 	int iI;
 	QList<QPair<QString, sDrive> > qlDrives;
@@ -150,6 +158,7 @@ const QPair<QString, cFileControl::sDrive> cFileControl::GetFirstDrive() const
 // information about path
 const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) const
 {
+	// TODO GetPathInfo with FTP later
 	int iI;
 	QList<QPair<QString, sDrive> > qlDrives;
 	sPathInfo spiPathInfo;
@@ -163,6 +172,7 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 		if (qsPath.startsWith(qpDrive->second.qsPath)) {
 			spiPathInfo.qsDrive = qpDrive->first;
 			spiPathInfo.qsRootPath = qpDrive->second.qsPath;
+			spiPathInfo.edtType = qpDrive->second.edtType;
 			break;
 		} // if
 	} // for
