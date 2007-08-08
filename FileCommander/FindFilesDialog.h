@@ -9,6 +9,7 @@
 #include "Plugins/ListerPlugin.h"
 #include "Panel.h"
 #include <QtGui/QCompleter>
+#include "FindFilesDialog/FindFilesThread.h"
 
 class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 {
@@ -24,17 +25,27 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																													  \param clpListerPlugin lister plugins */
 
 	private:
+		/// file system search description
+		struct sToSearch {
+			cFileSystem *cfsFileSystem;																///< file system to search in
+			QString qsPath;																				///< path to start on the file system
+		};
+
 		cFileControl *cfcFileControl;																	///< file operations control
+		cFindFilesThread cfftFindThread;																///< thread for searching files
 		cListerPlugin *clpListerPlugin;																///< lister plugin's class
 		cPanel *cpPanel;																					///< panel to work with
 		cSettings *csSettings;																			///< application's settings file
 		QCompleter qcDirModel;																			///< completer based on dir model
+		QQueue<sToSearch> qqToSearch;																	///< searches description
+		cSettings::sFindSettings sfsCurrentSearch;												///< current search settings
 
 		const cSettings::sFindSettings GetSettings() const;									///< store settings in sFindSettings structure
 																												/**< \return find settings */
 		const void RefreshSavedSettings() const;													///< refreshes list of saved settings
 
 	private slots:
+		const void on_cfftFindThread_finished();													///< search thread finished
 		const void on_qcbDateTimeBetween_stateChanged(int state) const;					///< search files in specified date/time range
 																												/**< \param state search between dates/time flag */
 		const void on_qcbDateTimeNotOlderThan_stateChanged(int state) const;				///< search files not older than specified
@@ -60,7 +71,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		const void on_qpbSaveFind_clicked(bool checked = false);								///< save find is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qtwSavedFinds_itemSelectionChanged() const;							///< selected item changed in saved finds view
-		const void on_qpbStart_clicked(bool checked = false) const;							///< start button is clicked on
+		const void on_qpbStart_clicked(bool checked = false);									///< start button is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbStop_clicked(bool checked = false) const;							///< stop button is clicked on
 																												/**< \param checked true if button is checkable and checked */

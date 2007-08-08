@@ -129,6 +129,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 	int iI;
 	QList<QPair<QString, sDrive> > qlDrives;
 
+	cfsFileSystem = NULL;
 	qlDrives = GetDrives();
 
 	for (iI = 0; iI < qlDrives.count(); iI++) {
@@ -139,6 +140,10 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 			switch (qpDrive->second.edtType) {
 				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, csSettings, ccpContentPlugin);
 			} // switch
+		} // if
+
+		if (cfsFileSystem) {
+			break;
 		} // if
 	} // for
 

@@ -71,6 +71,9 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFil
 	// completer
 	qcDirModel.setModel(new QDirModel(&qcDirModel));
 	qcbSearchIn->setCompleter(&qcDirModel);
+
+	// connections
+	connect(&cfftFindThread, SIGNAL(finished()), SLOT(on_cfftFindThread_finished()));
 } // cFindFilesDialog
 
 // store settings in sFindSettings structure
@@ -112,6 +115,26 @@ const cSettings::sFindSettings cFindFilesDialog::GetSettings() const
 
 	return sfsFindSettings;
 } // GetSettings
+
+// search thread finished
+const void cFindFilesDialog::on_cfftFindThread_finished()
+{
+	if (!qqToSearch.empty()) {
+		// search through next file system
+		sToSearch stsToSearch;
+
+		stsToSearch = qqToSearch.dequeue();
+		cfftFindThread.Start(sfsCurrentSearch, stsToSearch.cfsFileSystem, stsToSearch.qsPath, false);
+	} else {
+		// end of search
+		// TODO on_cfftFindThread_finished - file system stop search
+		qpbStop->setEnabled(false);
+		qpbStart->setEnabled(true);
+		if (qtwSearch->topLevelItemCount() > 0) {
+			qpbFeedToPanel->setEnabled(true);
+		} // if
+	} // if else
+} // on_cfftFindThread_finished
 
 // search files in specified date/time range
 const void cFindFilesDialog::on_qcbDateTimeBetween_stateChanged(int state) const
@@ -320,14 +343,14 @@ const void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged() const
 } // on_qtwSavedFinds_itemSelectionChanged
 
 // start button is clicked on
-const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
 	// TODO on_qpbStart_clicked
 	bool bLocalIncluded;
 	int iI, iIndex;
-	QList<cFileSystem *> qlFileSystems;
 	QString qsSearchFor, qsSearchIn;
 	QStringList qslPaths;
+	sToSearch stsLocal;
 
 	// save history
 	qsSearchFor = qcbSearchFor->currentText();
@@ -358,34 +381,39 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */) const
 
 	// get all needed filesystems
 	bLocalIncluded = false;
-	qslPaths = qcbSearchIn->currentText().split(qcPATH_SEPARATOR);
+	qqToSearch.clear();
+	if (qcbSearchInSelectedDirectories->isChecked()) {
+		qslPaths = cpPanel->GetFileSystem()->GetSelectedDirectoryStringList();
+	} else {
+		qslPaths = qcbSearchIn->currentText().split(qcPATH_SEPARATOR);
+	} // if else
 	for (iI = 0; iI < qslPaths.count(); iI++) {
+		QString *qsPath;
 		cFileControl::sPathInfo spiPathInfo;
 
-		spiPathInfo = cfcFileControl->GetPathInfo(qslPaths.at(iI));
+		qsPath = &qslPaths[iI];
+		spiPathInfo = cfcFileControl->GetPathInfo(*qsPath);
 		if (spiPathInfo.edtType == cFileControl::Local) {
 			if (!bLocalIncluded) {
 				// create local file system to search, local is enough to create only once
-				qlFileSystems.append(cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath));
+				stsLocal.cfsFileSystem = cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath);
+				stsLocal.qsPath = *qsPath;
+				qqToSearch.enqueue(stsLocal);
 				bLocalIncluded = true;
-			} // if
+			} else {
+				stsLocal.qsPath = *qsPath;
+				qqToSearch.enqueue(stsLocal);
+			} // if else
 		} else {
 			// TODO on_qpbStart_clicked - create nonlocal file system to search
 		} // if else
 	} // for
 
-	// TODO on_qpbStart_clicked - file system start search
-	// start searching through file systems
-	for (iI = 0; iI < qlFileSystems.count(); iI++) {
-		//Start(GetSettings(), qlFileSystems.at(iI), false);
-	} // for
-	// TODO on_qpbStart_clicked - file system stop search
+	// current search settings
+	sfsCurrentSearch = GetSettings();
 
-	qpbStop->setEnabled(false);
-	qpbStart->setEnabled(true);
-	if (qtwSearch->topLevelItemCount() > 0) {
-		qpbFeedToPanel->setEnabled(true);
-	} // if
+	// TODO on_qpbStart_clicked - file system start search
+	on_cfftFindThread_finished();
 } // on_qpbStart_clicked
 
 // stop button is clicked on
