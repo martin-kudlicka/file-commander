@@ -29,6 +29,7 @@ HEADERS = MainWindow.h \
 			 Panel/TreeWidget.h \
 			 FindFilesDialog.h \
 			 FindFilesDialog/DrivesDialog.h \
+			 FindFilesDialog/FindFilesThread.h \
 			 Settings.h \
 			 OptionsDialog.h \
 			 OptionsDialog/NewFavouriteDirectoryDialog.h \
@@ -58,6 +59,7 @@ SOURCES = FileCommander.cpp \
 			 Panel/TreeWidget.cpp \
 			 FindFilesDialog.cpp \
 			 FindFilesDialog/DrivesDialog.cpp \
+			 FindFilesDialog/FindFilesThread.cpp \
 			 Settings.cpp \
 			 OptionsDialog.cpp \
 			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \
