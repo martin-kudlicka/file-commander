@@ -17,6 +17,10 @@ class cPanel : public QObject
 	Q_OBJECT
 
 	public:
+		static const qint64 qi64_GIGABYTE = 1073741824;				///< 1 gigabyte in bytes
+		static const qint64 qi64_KILOBYTE = 1024;						///< 1 kilobyte in bytes
+		static const qint64 qi64_MEGABYTE = 1048576;					///< 1 megabyte in bytes
+
 		/// history directory list to show
 		struct sHistoryDirectoryList {
 			QStringList qslDirectories;									///< list of directories to choose from
@@ -92,10 +96,6 @@ class cPanel : public QObject
 
 	private:
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
-
-		static const qint64 qi64_GIGABYTE = 1073741824;				///< 1 gigabyte in bytes
-		static const qint64 qi64_KILOBYTE = 1024;						///< 1 kilobyte in bytes
-		static const qint64 qi64_MEGABYTE = 1048576;					///< 1 megabyte in bytes
 
 		/// quick search direction in directory view
 		enum eQuickSearchDirection {

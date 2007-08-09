@@ -6,13 +6,7 @@
 #include "FindFilesDialog/DrivesDialog.h"
 
 const QChar qcPATH_SEPARATOR = ';';
-const QString qsDAYS = "day(s)";
 const QString qsGIGABYTES2 = "gigabyte(s)";
-const QString qsHOURS = "hour(s)";
-const QString qsKILOBYTES2 = "kilobyte(s)";
-const QString qsMEGABYTES2 = "megabyte(s)";
-const QString qsMONTHS = "month(s)";
-const QString qsWEEKS = "week(s)";
 const QString qsYEARS = "year(s)";
 const QStringList qslFILE_SIZE_COMPARATOR = (QStringList() << "=" << "<" << ">");
 const QStringList qslFILE_SIZE_TYPE = (QStringList() << qsBYTES2 << qsKILOBYTES2 << qsMEGABYTES2 << qsGIGABYTES2);
