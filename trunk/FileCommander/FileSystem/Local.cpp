@@ -469,6 +469,13 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 {
 	this->qsDrive = qsDrive;
 	this->qsRootPath = qsRootPath;
+	
+	SetPath(qsPath);
+} // SetPath
+
+// change path for this file system without drive change
+const void cLocal::SetPath(const QString &qsPath)
+{
 	qdDir.setPath(qsPath);
 
 	emit ContentChanged(this);
@@ -510,42 +517,3 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
 } // ShowContextMenu
-
-const bool cLocal::SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression /* false */) const
-{
-	int iI;
-	QStringList qslFilter;
-
-	qslFilter = qsFilter.split(';');
-	if (qslFilter.count() == 1 && qslFilter.at(0).isEmpty() && !bRegularExpression) {
-		qslFilter.append("*.*");
-	} // if
-#ifdef Q_WS_WIN
-	// correct *.* to *
-	for (iI = 0; iI < qslFilter.count(); iI++) {
-		if (qslFilter.at(iI) == "*.*") {
-			qslFilter[iI] = "*";
-		} // if
-	} // for
-#endif
-
-	// search for
-	for (iI = 0; iI < qslFilter.count(); iI++) {
-		QRegExp qreExpression(qslFilter.at(iI), Qt::CaseInsensitive);
-
-		if (bRegularExpression) {
-			// regular expression
-			if (qreExpression.indexIn(qsName) != -1) {
-				return true;
-			} // if
-		} else {
-			// wildcard
-			qreExpression.setPatternSyntax(QRegExp::Wildcard);
-			if (qreExpression.exactMatch(qsName)) {
-				return true;
-			} // if
-		} // if else
-	} // for
-
-	return false;
-} // SuitsFilter

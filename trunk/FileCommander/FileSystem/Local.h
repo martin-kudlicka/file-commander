@@ -115,6 +115,8 @@ class cLocal : public cFileSystem
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
 																									  \param qsPath to initialize local file system */
+		const void SetPath(const QString &qsPath);								///< change path for this file system without drive change
+																								/**< \param qsPath to initialize local file system */
 		const void ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
@@ -122,12 +124,6 @@ class cLocal : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
-		const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false) const;
-																								///< check if filename suits filter
-																								/**< \param qsName filename to check
-																									  \param qsFilter filter to suit
-																									  \param bRegularExpression qsFilter is regular expression
-																									  \return true if filename suits filter */
 
 	signals:
 		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
