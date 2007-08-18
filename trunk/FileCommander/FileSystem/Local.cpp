@@ -26,9 +26,9 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 	if (qfiFile->isDir()) {
 		// directory
 #ifdef Q_WS_WIN
-		if (PathExists(qdDir.path() + '/' + qfiFile->fileName())) {
+		if (PathExists(qfiFile->filePath())) {
 #endif
-			qdDir.cd(qfiFile->fileName());
+			qdDir.cd(qfiFile->filePath());
 			emit ContentChanged(this);
 #ifdef Q_WS_WIN
 		} // if
