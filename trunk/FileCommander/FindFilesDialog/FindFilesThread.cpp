@@ -8,7 +8,7 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 	bool bOk;
 
 	// search for
-	bOk = cfsFileSystem->SuitsFilter(cfsFileSystem->GetFileName(qtwiFile), sfsSearch.qsSearchFor, sfsSearch.bSearchForRegularExpression);
+	bOk = cfsFileSystem->SuitsFilter(cfsFileSystem->GetFileNameWithExtension(qtwiFile, false), sfsSearch.qsSearchFor, sfsSearch.bSearchForRegularExpression);
 	if (!bOk) {
 		return false;
 	} // if
@@ -163,27 +163,45 @@ void cFindFilesThread::run()
 	int iDepth;
 
 	iDepth = 0;
-	while (true) {
+	while (!qqDirectories.isEmpty()) {
 		int iI;
-
 		QList<QTreeWidgetItem *> qlDirContent;
 
+		// get content of directory
+		cfsFileSystem->SetPath(qqDirectories.dequeue());
+		qlDirContent = cfsFileSystem->GetDirectoryContent();
+
+		// check conditions
 		for (iI = 0; iI < qlDirContent.count(); iI++) {
 			QTreeWidgetItem *qtwiFile;
 
 			qtwiFile = qlDirContent[iI];
 
-			if (ConditionSuit(qtwiFile)) {
-				// TODO run ConditionSuit
+			if (cfsFileSystem->GetFileName(qtwiFile, false) == "." || cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
+				// skip "." and ".."  directories
+				continue;
 			} // if
 
-			if (cfsFileSystem->IsDir(qtwiFile)) {
-				// TODO run IsDir
+			if (ConditionSuit(qtwiFile)) {
+				// TODO run ConditionSuit
+				QTreeWidgetItem *qtwiFound;
+
+				// add file to custom list
+				qtwiFound = cfsFileSystem->AddToCustomList(qtwiFile);
+
+				if (!bMarking) {
+					// add to list of found files in dialog
+					emit Found(qtwiFound, cfsFileSystem);
+				} // if
+			} // if
+
+			// add found directories
+			if (cfsFileSystem->IsDir(qtwiFile) && iDepth < sfsSearch.iSubdirectoryDepth) {
+				qqDirectories.enqueue(cfsFileSystem->GetFilePath(qtwiFile));
 			} // if
 		} // for
 
 		if (iDepth < sfsSearch.iSubdirectoryDepth) {
-			//qfilDirectories += qfilNextDirDepth;
 			iDepth++;
 		} else {
 			break;
@@ -198,7 +216,7 @@ void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSys
 	this->cfsFileSystem = cfsFileSystem;
 	this->bMarking = bMarking;
 
-	cfsFileSystem->SetPath(qsPath);
+	qqDirectories.enqueue(qsPath);
 
-	run();
+	start();
 } // Start

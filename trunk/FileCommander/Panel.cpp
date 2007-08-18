@@ -1010,14 +1010,7 @@ const void cPanel::RefreshContent(const int &iIndex)
 							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
 						} else {
 							if (scColumn->qsIdentifier == qsNAME_WITH_EXTENSION) {
-								QString qsNameWithExtension, qsExtension;
-
-								qsNameWithExtension = stTab->cfsFileSystem->GetFileName(qtwiFile);
-								qsExtension = stTab->cfsFileSystem->GetFileExtension(qtwiFile);
-								if (!qsExtension.isEmpty()) {
-									qsNameWithExtension += '.' + qsExtension;
-								} // if
-								qtwiFile->setText(iJ, qsNameWithExtension);
+								qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileNameWithExtension(qtwiFile));
 							} else {
 								if (scColumn->qsIdentifier == qsSIZE) {
 									if (stTab->cfsFileSystem->IsDir(qtwiFile)) {

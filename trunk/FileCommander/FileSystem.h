@@ -26,10 +26,17 @@ class cFileSystem : public QObject
 
 		virtual const void ActivateCurrent(QTreeWidgetItem *qtwiFile) = 0;		///< activate current file
 																										/**< \param qtwiFile file to activate */
+		virtual QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile) = 0;
+																										///< add file to custom file list
+																										/**< \param qtwiFile file to add to custom list
+																											  \return new item in custom list */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin
 																										/**< \param sContent request description
 																											  \return content plugin (nondelayed) value */
+		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) = 0;	///< get file name from custom list with full path
+																										/**< \param qtwiFile file to find file path for
+																											  \return file name with full path */
 		virtual QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true) = 0;
 																										///< get tree items for current directory
 																										/**< \param bRefresh reload directory content if true
@@ -57,6 +64,11 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file to find name for
 																											  \param bBracketsAllowed brackets around file name allowed flag
 																											  \return file name without extension */
+		virtual const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
+																										///< get file name with extension
+																										/**< \param \param qtwiFile file to find name with extension for
+																											  \param bBracketsAllowed brackets around file name allowed flag
+																											  \return file name with extension */
 		virtual const QString GetFilePath(QTreeWidgetItem *qtwiFile) const = 0;	///< get file name with full path
 																										/**< \param qtwiFile file to find file path for
 																											  \return file name with full path */
