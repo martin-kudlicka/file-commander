@@ -407,6 +407,12 @@ const QString cLocal::GetPath() const
 	return qdDir.path();
 } // GetPath
 
+// retreive path of a file
+const QString cLocal::GetPath(QTreeWidgetItem *qtwiFile) const
+{
+	return qhFiles.value(qtwiFile).path();
+} // GetPath
+
 // selected directory list for current directory
 const QStringList cLocal::GetSelectedDirectoryStringList() const
 {

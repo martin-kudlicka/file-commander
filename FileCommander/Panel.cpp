@@ -624,6 +624,22 @@ const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */)
 	return stiTab;
 } // GetTabSettings
 
+// set cursor onto specified file
+const void cPanel::GoToFile(const QString qsGoTo) const
+{
+	cTreeWidget *ctwDir;
+	int iI;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+		if (qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetFileNameWithExtension(ctwDir->topLevelItem(iI), false) == qsGoTo) {
+			ctwDir->setCurrentItem(ctwDir->topLevelItem(iI));
+			break;
+		} // if
+	} // for
+} // GoToFile
+
 // hide or show tab bar as set in options
 const void cPanel::HideOrShowTabBar() const
 {
@@ -1301,6 +1317,12 @@ const void cPanel::SetPath(const QString &qsPath)
 		stTab->cfsFileSystem->SetPath(spiPathInfo.qsDrive, spiPathInfo.qsRootPath, qsPath);
 	} // if
 } // SetPath
+
+// switch tabs
+const void cPanel::SetTabIndex(const int &iTabIndex) const
+{
+	qtbTab->setCurrentIndex(iTabIndex);
+} // SetTabIndex
 
 // set text in tab bar
 const void cPanel::SetTabText(const int &iTabIndex) const

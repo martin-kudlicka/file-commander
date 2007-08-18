@@ -74,6 +74,8 @@ class cPanel : public QObject
 		const cSettings::sTabInfo GetTabSettings(int iTabIndex = -1);
 																					///< tab settings for specified tab
 																					/**< \param iTabIndex tab settings for this tab (default is current tab) */
+		const void GoToFile(const QString qsGoTo) const;			///< set cursor onto specified file
+																					/**< \param qsGoTo file to set cursor on */
 		const void HistoryGoBack();										///< go back in history directory list
 		const void HistoryGoFront();										///< go front in history directory list
 		const void InvertSelection() const;								///< invert selection of files
@@ -93,6 +95,8 @@ class cPanel : public QObject
 																					/**< \param iPosition directory position in history list */
 		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
 																					/**< \param qsPath new path */
+		const void SetTabIndex(const int &iTabIndex) const;		///< switch tabs
+																					/**< \param iTabIndex new tab index */
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
 		const void SortBy(const int &iColumn);							///< sort by specified column
 																					/**< \param iColumn column position to sort by */
