@@ -625,7 +625,7 @@ const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */)
 } // GetTabSettings
 
 // set cursor onto specified file
-const void cPanel::GoToFile(const QString qsGoTo) const
+const bool cPanel::GoToFile(const QString qsGoTo) const
 {
 	cTreeWidget *ctwDir;
 	int iI;
@@ -635,9 +635,11 @@ const void cPanel::GoToFile(const QString qsGoTo) const
 	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
 		if (qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetFileNameWithExtension(ctwDir->topLevelItem(iI), false) == qsGoTo) {
 			ctwDir->setCurrentItem(ctwDir->topLevelItem(iI));
-			break;
+			return true;
 		} // if
 	} // for
+
+	return false;
 } // GoToFile
 
 // hide or show tab bar as set in options
@@ -1041,7 +1043,7 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
 	stTab = &qlTabs[iIndex];
 
-	qlFiles = qlTabs.at(iIndex).cfsFileSystem->GetDirectoryContent(bRefresh);
+	qlFiles = stTab->cfsFileSystem->GetDirectoryContent(bRefresh);
 
 	// fill tree widget items
 	for (iI = 0; iI < qlFiles.count(); iI++) {
@@ -1113,10 +1115,14 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	Sort(iIndex, qlFiles);
 	stTab->bValid = true;
 
-	if (ctwDir->topLevelItemCount() > 0) {
-		// focus to the first item
-		ctwDir->setCurrentItem(ctwDir->topLevelItem(0));
-	} // if
+	// set directory went from
+	if (!GoToFile(stTab->qsDirectoryIn)) {
+		if (ctwDir->topLevelItemCount() > 0) {
+			// focus to the first item
+			ctwDir->setCurrentItem(ctwDir->topLevelItem(0));
+		} // if
+	} // if else
+	stTab->qsDirectoryIn = stTab->cfsFileSystem->GetDirName();
 
 	stTab->cfsFileSystem->RetreiveContentDelayedValues();
 

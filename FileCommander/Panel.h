@@ -74,8 +74,9 @@ class cPanel : public QObject
 		const cSettings::sTabInfo GetTabSettings(int iTabIndex = -1);
 																					///< tab settings for specified tab
 																					/**< \param iTabIndex tab settings for this tab (default is current tab) */
-		const void GoToFile(const QString qsGoTo) const;			///< set cursor onto specified file
-																					/**< \param qsGoTo file to set cursor on */
+		const bool GoToFile(const QString qsGoTo) const;			///< set cursor onto specified file
+																					/**< \param qsGoTo file to set cursor on
+																						  \return true if file found */
 		const void HistoryGoBack();										///< go back in history directory list
 		const void HistoryGoFront();										///< go front in history directory list
 		const void InvertSelection() const;								///< invert selection of files
@@ -124,6 +125,7 @@ class cPanel : public QObject
 			sWidgets swWidgets;												///< to remember displayed strings
 			cFileSystem *cfsFileSystem;									///< attached file system handle
 			cSettings::sHistory shHistory;								///< directory history information
+			QString qsDirectoryIn;											///< name of last visited directory
 		};
 
 		cContentPlugin *ccpContentPlugin;								///< access to content plugins

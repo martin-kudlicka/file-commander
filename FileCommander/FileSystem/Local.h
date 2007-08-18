@@ -61,6 +61,8 @@ class cLocal : public cFileSystem
 																									  \return  tree items for current directory */
 		const qint64 GetDirectorySize() const;										///< get currently selected directory size
 																								/**< \return selected directory size */
+		const QString GetDirName() const;											///< get current directory name
+																								/**< \return current directory name */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
 																								/**< \param qsPath path to detect space information
 																									  \return disk space information */
