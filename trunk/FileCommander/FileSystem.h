@@ -82,6 +82,9 @@ class cFileSystem : public QObject
 																											  \return file's last modified date/time stamp */
 		virtual const QString GetPath() const = 0;										///< current path on file system
 																										/**< \return path on file system */
+		virtual const QString GetPath(QTreeWidgetItem *qtwiFile) const = 0;		///< retreive path of a file
+																										/**< \param qtwiFile file to get path for
+																											  \return path for specified file */
 		virtual const QStringList GetSelectedDirectoryStringList() const = 0;	///< selected directory list for current directory
 																										/**< \return selected directory list */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view

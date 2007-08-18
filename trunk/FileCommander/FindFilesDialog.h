@@ -83,7 +83,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbFeedToPanel_clicked(bool checked = false);							///< feed to panel button is clicked on
 																												/**< \param checked true if button is checkable and checked */
-		const void on_qpbGoToFile_clicked(bool checked = false) const;						///< go to file button is clicked on
+		const void on_qpbGoToFile_clicked(bool checked = false);								///< go to file button is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbLoadFind_clicked(bool checked = false) const;						///< load find is clicked on
 																												/**< \param checked true if button is checkable and checked */

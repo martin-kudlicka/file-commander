@@ -103,6 +103,9 @@ class cLocal : public cFileSystem
 																									  \return file's last modified date/time stamp */
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
+		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
+																								/**< \param qtwiFile file to get path for
+																									  \return path for specified file */
 		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
 																								/**< \return selected directory list */
 		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view

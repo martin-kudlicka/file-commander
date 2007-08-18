@@ -316,19 +316,50 @@ const void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 // feed to panel button is clicked on
 const void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
 {
-	int iI;
+	int iI, iNewIndex;
 
 	for (iI = 0; iI < qlFileSystems.count(); iI++) {
-		cpPanel->AddTab(cpPanel->GetTabSettings(), false, qlFileSystems.at(iI));
+		int iIndex;
+
+		iIndex = cpPanel->AddTab(cpPanel->GetTabSettings(), false, qlFileSystems.at(iI));
+		if (iI == 0) {
+			iNewIndex = iIndex;
+		} // if
 	} // for
 	// prevent freeing file systems
 	qlFileSystems.clear();
+
+	cpPanel->SetTabIndex(iNewIndex);
+
+	close();
 } // on_qpbFeedToPanel_clicked
 
 // go to file button is clicked on
-const void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
-	// TODO on_qpbGoToFile_clicked
+	int iI, iIndex;
+	QString qsGoTo;
+	sFound *sfFound;
+
+	sfFound = &qhFound[qtwSearch->currentItem()];
+
+	qsGoTo = sfFound->cfsFileSytem->GetFileNameWithExtension(sfFound->qtwiFile, false);
+
+	sfFound->cfsFileSytem->SetPath(sfFound->cfsFileSytem->GetPath(sfFound->qtwiFile));
+	iIndex = cpPanel->AddTab(cpPanel->GetTabSettings(), false, sfFound->cfsFileSytem);
+	cpPanel->SetTabIndex(iIndex);
+	cpPanel->RefreshContent();
+	cpPanel->GoToFile(qsGoTo);
+
+	// prevent from freeing used file system
+	for (iI = 0; iI < qlFileSystems.count(); iI++) {
+		if (qlFileSystems.at(iI) == sfFound->cfsFileSytem) {
+			qlFileSystems.removeAt(iI);
+			break;
+		} // if
+	} // for
+
+	close();
 } // on_qpbGoToFile_clicked
 
 // load find is clicked on
