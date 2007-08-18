@@ -12,7 +12,7 @@ cLocal::~cLocal()
 {
 	ccpdContentPluginDelayed->deleteLater();
 
-	ClearFileTable();
+	ClearFileTable(qhFiles);
 	qhCustom.clear();
 } // ~cLocal
 
@@ -80,14 +80,14 @@ const bool cLocal::CheckPath()
 } // CheckPath
 
 // clear file table before next fill of it
-const void cLocal::ClearFileTable()
+const void cLocal::ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const
 {
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhTable);
 	while (qhiFile.hasNext()) {
 		qhiFile.next();
 		delete qhiFile.key();
 	} // while
-	qhFiles.clear();
+	qhTable.clear();
 } // ClearFileTable
 
 // constructor
@@ -104,12 +104,16 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 } // cLocal
 
 // searching of files finished
-const void cLocal::EndSearch()
+const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 {
-	// clear file hash table first
-	ClearFileTable();
+	if (bClearCustomOnly) {
+		ClearFileTable(qhCustom);
+	} else {
+		// clear file hash table first
+		ClearFileTable(qhFiles);
 
-	qhFiles = qhCustom;
+		qhFiles = qhCustom;
+	} // if else
 } // EndSearch
 
 // get value from content plugin
@@ -141,6 +145,18 @@ const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sConten
 
 	return qsValue;
 } // GetContentPluginValue
+
+// custom file list
+const QList<QTreeWidgetItem *> cLocal::GetCustomFileList() const
+{
+	return qhCustom.keys();
+} // GetCustomFileList
+
+// get file name with extension from custom list
+const QString cLocal::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile)
+{
+	return qhCustom.value(qtwiFile).fileName();
+} // GetCustomFileName
 
 // get file name from custom list with full path
 const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
@@ -186,7 +202,7 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 			qfilFiles = qdDir.entryInfoList(fFilters);
 
 			// clear hash table
-			ClearFileTable();
+			ClearFileTable(qhFiles);
 
 			// add files to hash table
 			for (iI = 0; iI < qfilFiles.count(); iI++) {
@@ -332,15 +348,14 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 // get file name with extension
 const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	QString qsExtension, qsName;
+	QString qsName;
+	QFileInfo *qfiFile;
 
-	qsName = GetFileName(qtwiFile, false);
-	qsExtension = GetFileExtension(qtwiFile);
-	if (!qsExtension.isEmpty()) {
-		qsName += '.' + qsExtension;
-	} // if
+	qfiFile = &qhFiles[qtwiFile];
 
-	if (qhFiles.value(qtwiFile).isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+	qsName = qfiFile->fileName();
+
+	if (qfiFile->isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
 		qsName = '[' + qsName + ']';
 	} // if
 

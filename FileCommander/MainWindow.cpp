@@ -573,6 +573,12 @@ const void cMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
 	cpSource->SelectAll();
 } // on_qaSelectAll_triggered
 
+// select group selected
+const void cMainWindow::on_qaSelectGroup_triggered(bool checked /* false */) const
+{
+	cpSource->Select(cSelectFilesDialog::Select, cpPlugins->clpListerPlugin);
+} // on_qaSelectGroup_triggered
+
 // close all other tabs called
 const void cMainWindow::on_qaTabBarCloseAllOtherTabs_triggered(bool checked /* false */)
 {
@@ -651,6 +657,12 @@ const void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */) con
 {
 	cpSource->UnselectAll();
 } // on_qaUnselectAll_triggered
+
+// unselect group selected
+const void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */) const
+{
+	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clpListerPlugin);
+} // on_qaUnselectGroup_triggered
 
 // selected column set from column set submenu
 const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const

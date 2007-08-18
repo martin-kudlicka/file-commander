@@ -13,6 +13,7 @@ CONFIG(release, debug|release) {
 }
 
 FORMS = MainWindow.ui \
+		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
 		  OptionsDialog.ui \
@@ -27,6 +28,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Local/ShellMenu.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
+			 Panel/SelectFilesDialog.h \
 			 FindFilesDialog.h \
 			 FindFilesDialog/DrivesDialog.h \
 			 FindFilesDialog/FindFilesThread.h \
@@ -57,6 +59,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
+			 Panel/SelectFilesDialog.cpp \
 			 FindFilesDialog.cpp \
 			 FindFilesDialog/DrivesDialog.cpp \
 			 FindFilesDialog/FindFilesThread.cpp \

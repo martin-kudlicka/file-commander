@@ -11,6 +11,7 @@
 #include "FileSystem.h"
 #include "FileControl.h"
 #include "Plugins/ContentPluginDelayed.h"
+#include "Panel/SelectFilesDialog.h"
 
 class cPanel : public QObject
 {
@@ -89,6 +90,10 @@ class cPanel : public QObject
 		const void SaveSettings(const cSettings::ePosition &epPosition);
 																					///< save panel settings
 																					/**< \param epPosition panel's position */
+		const void Select(const cSelectFilesDialog::eSelectType &estType, cListerPlugin *clpListerPlugin) const;
+																					///< select or unselect some files
+																					/**< \param estType select/unselect mode
+																						  \param clpListerPlugin lister plugins */
 		const void SelectAll() const;										///< select all files
 		const void SetColumnSet(const QString &qsColumnSet);		///< selected another column set for actual directory view
 																					/**< \param qsColumnSet new column set */

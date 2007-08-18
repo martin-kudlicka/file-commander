@@ -42,16 +42,16 @@ bool cSelectFilesDialog::eventFilter(QObject *watched, QEvent *event)
 } // eventFilter
 
 // define button is clicked on
-void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
+const void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
 {
-	cFindFilesDialog cffdFind(this, NULL, csSettings, clpListerPlugin);
+	cFindFilesDialog cffdFind(this, NULL, NULL, csSettings, clpListerPlugin);
 
 	cffdFind.exec();
 	RefreshFindSets();
 } // on_qpbDefine_clicked
 
 // OK button is clicked on
-void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
+const void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
 	int iIndex;
 	QString qsFilter;
@@ -71,7 +71,7 @@ void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 } // on_qpbOK_clicked
 
 // refresh finds sets from settings file
-void cSelectFilesDialog::RefreshFindSets()
+const void cSelectFilesDialog::RefreshFindSets() const
 {
 	int iI;
 	QStringList qslFindSets;

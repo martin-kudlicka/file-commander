@@ -125,6 +125,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qaSelectAll_triggered(bool checked = false) const;
 																							///< select all selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaSelectGroup_triggered(bool checked = false) const;
+																							///< select group selected
+																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaTabBarCloseAllOtherTabs_triggered(bool checked = false);
 																							///< close all other tabs called
 																							/**< \param checked true if menu item is checkable and checked */
@@ -136,6 +139,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaUnselectAll_triggered(bool checked = false) const;
 																							///< unselect all selected
+																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qaUnselectGroup_triggered(bool checked = false) const;
+																							///< unselect group selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */

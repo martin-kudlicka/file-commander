@@ -31,11 +31,18 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file to add to custom list
 																											  \return new item in custom list */
 		virtual const void BeginSearch() = 0;												///< begin of searching files
-		virtual const void EndSearch() = 0;													///< searching of files finished
+		virtual const void EndSearch(const bool &bClearCustomOnly = false) = 0;	///< searching of files finished
+																										/**< \param bClearCustomOnly just clear custom file list if true */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin
 																										/**< \param sContent request description
 																											  \return content plugin (nondelayed) value */
+		virtual const QList<QTreeWidgetItem *> GetCustomFileList() const = 0;	///< custom file list
+																										/**< \return custom file list */
+		virtual const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) = 0;
+																										///< get file name with extension from custom list
+																										/**< \param qtwiFile file to find file name with extension for
+																											  \return file name with extension */
 		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) = 0;	///< get file name from custom list with full path
 																										/**< \param qtwiFile file to find file path for
 																											  \return file name with full path */

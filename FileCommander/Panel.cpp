@@ -250,7 +250,7 @@ const void cPanel::BranchView()
 	// search for files
 	cfsFileSystem->blockSignals(true);
 	cfsFileSystem->BeginSearch();
-	cfftBranch.Start(sfsBranch, cfsFileSystem, sfsBranch.qsSearchIn, false, true);
+	cfftBranch.Start(sfsBranch, cfsFileSystem, sfsBranch.qsSearchIn, cFindFilesThread::BranchView);
 	cfsFileSystem->EndSearch();
 	cfsFileSystem->blockSignals(false);
 
@@ -1262,6 +1262,66 @@ const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 
 	csSettings->SetTabs(epPosition, qlTabsToSave);
 } // SaveSettings
+
+// select or unselect some files
+const void cPanel::Select(const cSelectFilesDialog::eSelectType &estType, cListerPlugin *clpListerPlugin) const
+{
+	cSelectFilesDialog csfdSelect(qmwParent, estType, csSettings, clpListerPlugin);
+
+	if (csfdSelect.exec() == QDialog::Accepted) {
+		cFileSystem *cfsFileSystem;
+		cFindFilesThread cfftSelect;
+		cTreeWidget *ctwDir;
+		cSettings::sFindSettings sfsSelect;
+		int iI;
+		QList<QTreeWidgetItem *> qlSelect;
+
+		// get/set search settings
+		if (csfdSelect.qtwFindSets->selectedItems().count() > 0) {
+			sfsSelect = csSettings->GetFindSettings(csfdSelect.qtwFindSets->selectedItems().at(0)->text(0));
+		} else {
+			sfsSelect.qsSearchFor = csfdSelect.qcbFilter->currentText();
+			sfsSelect.bSearchForRegularExpression = false;
+			sfsSelect.bSearchForText = false;
+			sfsSelect.bDateTimeBetween = false;
+			sfsSelect.bNotOlderThan = false;
+			sfsSelect.bFileSize = false;
+		} // if else
+		sfsSelect.qsSearchIn = GetPath();
+		sfsSelect.iSubdirectoryDepth = 0;
+
+		cfsFileSystem = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem;
+
+		// search for files
+		cfsFileSystem->blockSignals(true);
+		cfsFileSystem->BeginSearch();
+		cfftSelect.Start(sfsSelect, cfsFileSystem, sfsSelect.qsSearchIn, cFindFilesThread::SelectFiles);
+		cfsFileSystem->blockSignals(false);
+
+		ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+		// select/unselect found files
+		qlSelect = cfsFileSystem->GetCustomFileList();
+		for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+			int iJ;
+
+			for (iJ = 0; iJ < qlSelect.count(); iJ++) {
+				QTreeWidgetItem *qtwiFile;
+
+				qtwiFile = ctwDir->topLevelItem(iI);
+				if (cfsFileSystem->GetFileNameWithExtension(qtwiFile, false) == cfsFileSystem->GetCustomFileNameWithExtension(qlSelect.at(iJ))) {
+					if (estType == cSelectFilesDialog::Select) {
+						qtwiFile->setSelected(true);
+					} else {
+						qtwiFile->setSelected(false);
+					} // if else
+				} // if
+			} // for
+		} // for
+
+		cfsFileSystem->EndSearch(true);
+	} // if
+} // Select
 
 // select all files
 const void cPanel::SelectAll() const

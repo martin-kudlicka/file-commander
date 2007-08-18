@@ -20,20 +20,26 @@ class cFindFilesThread : public QThread
 	Q_OBJECT
 
 	public:
-		void Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const bool &bRunAsThread = true, const bool &bBranchView = false);
+		/// thread called from
+		enum eCalledFrom {
+			FindFilesDialog,														///< Find files dialog
+			BranchView,																///< branch view
+			SelectFiles																///< select/unselect files
+		};
+
+		void Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const eCalledFrom &ecfCalledFrom = FindFilesDialog);
 																						///< start of searching for files
 																						/**< \param sfsSearch search settings
 																							  \param cfsFileSystem file system to search in
 																							  \param qsPath path to start search on file system
-																							  \param bRunAsThread true run in separate thread
-																							  \param bBranchView true if started for branch view */
+																							  \param ecfCalledFrom thread called from */
 	private:
 		static const qint64 qi64SEARCH_BUFFER = 1048576;				///< search for text in files in this buffer size
 
-		bool bBranchView;															///< true if started for branch view
 		bool bStop;																	///< stop searching
 		cFileSystem *cfsFileSystem;											///< file system to search in
 		cSettings::sFindSettings sfsSearch;									///< current search settings
+		eCalledFrom ecfCalledFrom;												///< thread called from
 		QQueue<QString> qqDirectories;										///< directories to go through
 		QString qsPath;															///< original path
 
