@@ -75,7 +75,17 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFil
 	// connections
 	connect(&cfftFindThread, SIGNAL(finished()), SLOT(on_cfftFindThread_finished()));
 	connect(&cfftFindThread, SIGNAL(Found(QTreeWidgetItem *, cFileSystem *)), SLOT(on_cfftFindThread_Found(QTreeWidgetItem *, cFileSystem *)));
+	connect(this, SIGNAL(StopSearching()), &cfftFindThread, SLOT(on_StopSearching()));
 } // cFindFilesDialog
+
+// catch dialog close
+void cFindFilesDialog::closeEvent(QCloseEvent *event)
+{
+	if (!bStop) {
+		bStop = true;
+		emit StopSearching();
+	} // if
+} // closeEvent
 
 // free file system before next search
 const void cFindFilesDialog::FreeFileSystems()
@@ -132,7 +142,7 @@ const cSettings::sFindSettings cFindFilesDialog::GetSettings() const
 // search thread finished
 const void cFindFilesDialog::on_cfftFindThread_finished()
 {
-	if (!qqToSearch.empty()) {
+	if (!qqToSearch.empty() && !bStop) {
 		// search through next file system
 		sToSearch stsToSearch;
 
@@ -447,15 +457,20 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 
 	// current search settings
 	sfsCurrentSearch = GetSettings();
+
+	// start new search
 	qhFound.clear();
+	bStop = false;
+	qtwSearch->clear();
 
 	on_cfftFindThread_finished();
 } // on_qpbStart_clicked
 
 // stop button is clicked on
-const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 {
-	// TODO on_qpbStop_clicked
+	bStop = true;
+	emit StopSearching();
 } // on_qpbStop_clicked
 
 // view button is clicked on

@@ -37,6 +37,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 			QString qsPath;																				///< path to start on the file system
 		};
 
+		bool bStop;																							///< interrupt finding files
 		cFileControl *cfcFileControl;																	///< file operations control
 		cFindFilesThread cfftFindThread;																///< thread for searching files
 		cListerPlugin *clpListerPlugin;																///< lister plugin's class
@@ -48,10 +49,15 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		QQueue<sToSearch> qqToSearch;																	///< searches description
 		cSettings::sFindSettings sfsCurrentSearch;												///< current search settings
 
+		void closeEvent(QCloseEvent *event);														///< catch dialog close
+																												/**< \param event close event description */
 		const void FreeFileSystems();																	///< free file system before next search
 		const cSettings::sFindSettings GetSettings() const;									///< store settings in sFindSettings structure
 																												/**< \return find settings */
 		const void RefreshSavedSettings() const;													///< refreshes list of saved settings
+
+	signals:
+		void StopSearching() const;																	///< interrupt thread searching
 
 	private slots:
 		const void on_cfftFindThread_finished();													///< search thread finished
@@ -86,7 +92,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		const void on_qtwSavedFinds_itemSelectionChanged() const;							///< selected item changed in saved finds view
 		const void on_qpbStart_clicked(bool checked = false);									///< start button is clicked on
 																												/**< \param checked true if button is checkable and checked */
-		const void on_qpbStop_clicked(bool checked = false) const;							///< stop button is clicked on
+		const void on_qpbStop_clicked(bool checked = false);									///< stop button is clicked on
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbView_clicked(bool checked = false) const;							///< view button is clicked on
 																												/**< \param checked true if button is checkable and checked */

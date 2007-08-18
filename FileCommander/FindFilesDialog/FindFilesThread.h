@@ -45,6 +45,9 @@ class cFindFilesThread : public QThread
 																						///< found file matches conditions
 																						/**< \param qtwiFile found file
 																							  \param cfsFileSystem file system found in */
+
+	private slots:
+		const void on_StopSearching();										///< interrupt thread searching
 }; // cFindFilesThread
 
 #endif
