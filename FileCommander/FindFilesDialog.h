@@ -37,6 +37,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cPanel *cpPanel;																					///< panel to work with
 		cSettings *csSettings;																			///< application's settings file
 		QCompleter qcDirModel;																			///< completer based on dir model
+		QHash<QTreeWidgetItem *, cFileSystem *> qhFound;										///< found files table
 		QQueue<sToSearch> qqToSearch;																	///< searches description
 		cSettings::sFindSettings sfsCurrentSearch;												///< current search settings
 
@@ -46,6 +47,10 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 
 	private slots:
 		const void on_cfftFindThread_finished();													///< search thread finished
+		const void on_cfftFindThread_Found(QTreeWidgetItem *qtwiFile, cFileSystem *cfsFileSystem);
+																												///< found file matches conditions
+																												/**< \param qtwiFile found file
+																													  \param cfsFileSystem file system found in */
 		const void on_qcbDateTimeBetween_stateChanged(int state) const;					///< search files in specified date/time range
 																												/**< \param state search between dates/time flag */
 		const void on_qcbDateTimeNotOlderThan_stateChanged(int state) const;				///< search files not older than specified

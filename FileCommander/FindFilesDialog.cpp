@@ -68,6 +68,7 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFil
 
 	// connections
 	connect(&cfftFindThread, SIGNAL(finished()), SLOT(on_cfftFindThread_finished()));
+	connect(&cfftFindThread, SIGNAL(Found(QTreeWidgetItem *, cFileSystem *)), SLOT(on_cfftFindThread_Found(QTreeWidgetItem *, cFileSystem *)));
 } // cFindFilesDialog
 
 // store settings in sFindSettings structure
@@ -129,6 +130,14 @@ const void cFindFilesDialog::on_cfftFindThread_finished()
 		} // if
 	} // if else
 } // on_cfftFindThread_finished
+
+// found file matches conditions
+const void cFindFilesDialog::on_cfftFindThread_Found(QTreeWidgetItem *qtwiFile, cFileSystem *cfsFileSystem)
+{
+	qhFound.insert(qtwiFile, cfsFileSystem);
+	qtwiFile->setText(0, cfsFileSystem->GetCustomFilePath(qtwiFile));
+	qtwSearch->addTopLevelItem(qtwiFile);
+} // on_cfftFindThread_Found
 
 // search files in specified date/time range
 const void cFindFilesDialog::on_qcbDateTimeBetween_stateChanged(int state) const
@@ -405,6 +414,7 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 
 	// current search settings
 	sfsCurrentSearch = GetSettings();
+	qhFound.clear();
 
 	// TODO on_qpbStart_clicked - file system start search
 	on_cfftFindThread_finished();

@@ -6,6 +6,7 @@
 #include <QtCore/QThread>
 #include "Settings.h"
 #include "FileSystem.h"
+#include <QtCore/QQueue>
 
 const QString qsDAYS = "day(s)";
 const QString qsHOURS = "hour(s)";
@@ -29,11 +30,18 @@ class cFindFilesThread : public QThread
 		bool bMarking;																///< true if called for marking files
 		cFileSystem *cfsFileSystem;											///< file system to search in
 		cSettings::sFindSettings sfsSearch;									///< current search settings
+		QQueue<QString> qqDirectories;										///< directories to go through
 
 		const bool ConditionSuit(QTreeWidgetItem *qtwiFile) const;	///< check search conditions on found file
 																						/**< \param qtwiFile file to check conditions on
 																							  \return true if conditions ok */
 		void run();																	///< thread's main code
+
+	signals:
+		void Found(QTreeWidgetItem *qtwiFile, cFileSystem *cfsFileSystem) const;
+																						///< found file matches conditions
+																						/**< \param qtwiFile found file
+																							  \param cfsFileSystem file system found in */
 }; // cFindFilesThread
 
 #endif

@@ -32,6 +32,7 @@ class cLocal : public cFileSystem
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
+		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
 																								///< parameters for content delayed values
@@ -40,12 +41,18 @@ class cLocal : public cFileSystem
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
+		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
+																								/**< \param qtwiFile file to add to custom list
+																									  \return new item in custom list */
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
 																									  \return content plugin (nondelayed) value */
+		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
+																								/**< \param qtwiFile file to find file path for
+																									  \return file name with full path */
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true
@@ -73,6 +80,11 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file to find name for
 																									  \param bBracketsAllowed brackets around file name allowed flag
 																									  \return file name without extension */
+		const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
+																										///< get file name with extension
+																										/**< \param \param qtwiFile file to find name with extension for
+																											  \param bBracketsAllowed brackets around file name allowed flag
+																											  \return file name with extension */
 		const QString GetFilePath(QTreeWidgetItem *qtwiFile) const;			///< get file name with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */

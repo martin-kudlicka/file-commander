@@ -38,6 +38,17 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 	} // if else
 } // ActivateCurrent
 
+// add file to custom file list
+QTreeWidgetItem *cLocal::AddToCustomList(QTreeWidgetItem *qtwiFile)
+{
+	QTreeWidgetItem *qtwiNew;
+
+	qtwiNew = qtwiFile->clone();
+	qhCustom.insert(qtwiNew, qhFiles.value(qtwiFile));
+
+	return qtwiNew;
+} // AddToCustomList
+
 // check if current path available
 const bool cLocal::CheckPath()
 {
@@ -100,6 +111,23 @@ const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sConten
 
 	return qsValue;
 } // GetContentPluginValue
+
+// get file name from custom list with full path
+const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
+{
+	QFileInfo *qfiFile;
+	QString qsName;
+
+	qfiFile = &qhCustom[qtwiFile];
+
+	qsName = qfiFile->filePath();
+
+	if (qfiFile->isDir() && csSettings->GetShowBracketsAroundDirectoryName()) {
+		qsName = '[' + qsName + ']';
+	} // if
+
+	return qsName;
+} // GetCustomFilePath
 
 // get tree items for current directory
 QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* true */)
@@ -251,8 +279,8 @@ const QIcon cLocal::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 // get file name without extension
 const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	QString qsName;
 	QFileInfo *qfiFile;
+	QString qsName;
 
 	qfiFile = &qhFiles[qtwiFile];
 
@@ -269,6 +297,24 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 
 	return qsName;
 } // GetFileName
+
+// get file name with extension
+const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
+{
+	QString qsExtension, qsName;
+
+	qsName = GetFileName(qtwiFile, false);
+	qsExtension = GetFileExtension(qtwiFile);
+	if (!qsExtension.isEmpty()) {
+		qsName += '.' + qsExtension;
+	} // if
+
+	if (qhFiles.value(qtwiFile).isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+		qsName = '[' + qsName + ']';
+	} // if
+
+	return qsName;
+} // GetFileNameWithExtension
 
 // get file name with full path
 const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
