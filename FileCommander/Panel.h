@@ -44,10 +44,11 @@ class cPanel : public QObject
 																						  \param qleQuickSearch quick search window */
 		~cPanel();																		///< destructor
 
-		const int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false);
+		const int AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp = false, cFileSystem *cfsFileSystem = NULL);
 																					///< add new tab with dir view
 																					/**< \param stiTabInfo new tab description
 																						  \param bStartUp true if tab is added on application startup
+																						  \param cfsFileSystem file system for panel
 																						  \return new tab index */
 		const void BranchView() const;									///< branch view for current directory
 		const void CloseAllOtherTabs(const int &iTabIndex);		///< close all other tabs than selected
@@ -70,6 +71,9 @@ class cPanel : public QObject
 		const int GetTabIndex(const QPoint &qpPos) const;			///< find out tab index in tab bar
 																					/**< \param qpPos cursor position in tab bar
 																						  \return tab index */
+		const cSettings::sTabInfo GetTabSettings(int iTabIndex = -1);
+																					///< tab settings for specified tab
+																					/**< \param iTabIndex tab settings for this tab (default is current tab) */
 		const void HistoryGoBack();										///< go back in history directory list
 		const void HistoryGoFront();										///< go front in history directory list
 		const void InvertSelection() const;								///< invert selection of files
@@ -168,8 +172,10 @@ class cPanel : public QObject
 																					/**< \param qsNextChar next filename character to search with
 																						  \param eqsdDirection direction of search
 																						  \return true if file found */
-		const void RefreshContent(const int &iIndex);				///< refresh dir content
-																					/**< \param iIndex index of dir view */
+		const void RefreshContent(const int &iIndex, const bool &bRefresh = true);
+																					///< refresh dir content
+																					/**< \param iIndex index of dir view
+																						  \param bRefresh reload files from file system when true */
 		const void RefreshHeader(const int &iIndex, const bool &bContent = false);
 																					///< refresh column's header
 																					/**< \param iIndex index of dir view

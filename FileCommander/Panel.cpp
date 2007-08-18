@@ -147,7 +147,7 @@ const void cPanel::AddHistory(const int &iIndex)
 } // AddHistory
 
 // add new tab with dir view
-const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */)
+const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */, cFileSystem *cfsFileSystem /* NULL */)
 {
 	// TODO AddTab
 	cTreeWidget *ctwTree;
@@ -185,7 +185,11 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	// set tab properties
 	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
 	stTab.qsColumnSet = stiTabInfo.qsColumnSet;
-	stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
+	if (cfsFileSystem) {
+		stTab.cfsFileSystem = cfsFileSystem;
+	} else {
+		stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
+	} // if else
 
 	// history
 	stTab.shHistory = stiTabInfo.shHistory;
@@ -203,13 +207,20 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 
 	// set header, refresh content only in first added tab
 	RefreshHeader(iIndex);
+	if (cfsFileSystem) {
+		// feed panel with found files
+		RefreshContent(iIndex, false);
+	} // if
 
 	// connect other signals to slots
 	connect(ctwTree->header(), SIGNAL(sectionClicked(int)), SLOT(on_qhvTreeHeader_sectionClicked(int)));
 	ConnectFileSystem(stTab.cfsFileSystem);
 
 	// connection for file system created later -> need to call for the first time explicitly
-	on_cfsFileSystem_ContentChanged(stTab.cfsFileSystem);
+	if (!cfsFileSystem) {
+		// do not refresh when filled by found files
+		on_cfsFileSystem_ContentChanged(stTab.cfsFileSystem);
+	} // if
 
 	HideOrShowTabBar();
 
@@ -585,6 +596,33 @@ const int cPanel::GetTabIndex(const QPoint &qpPos) const
 
 	return -1;
 } // GetTabIndex
+
+// tab settings for specified tab
+const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */)
+{
+	cTreeWidget *ctwDir;
+	sTab *stTab;
+	cSettings::sTabInfo stiTab;
+
+	if (iTabIndex == -1) {
+		iTabIndex = qswDirs->currentIndex();
+	} // if
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iTabIndex));
+	stTab = &qlTabs[iTabIndex];
+
+	// visible parameters
+	stiTab.qsColumnSet = stTab->qsColumnSet;
+	stiTab.qsDrive = stTab->cfsFileSystem->GetDrive();
+	stiTab.qsPath = stTab->cfsFileSystem->GetPath();
+	stiTab.ssSort.iSortedColumn = ctwDir->sortColumn();
+	stiTab.ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
+
+	// history
+	stiTab.shHistory = stTab->shHistory;
+
+	return stiTab;
+} // GetTabSettings
 
 // hide or show tab bar as set in options
 const void cPanel::HideOrShowTabBar() const
@@ -977,7 +1015,7 @@ const void cPanel::RefreshContent()
 } // RefreshContent
 
 // refresh dir content
-const void cPanel::RefreshContent(const int &iIndex)
+const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* true */)
 {
 	cTreeWidget *ctwDir;
 	int iI;
@@ -987,7 +1025,7 @@ const void cPanel::RefreshContent(const int &iIndex)
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
 	stTab = &qlTabs[iIndex];
 
-	qlFiles = qlTabs.at(iIndex).cfsFileSystem->GetDirectoryContent();
+	qlFiles = qlTabs.at(iIndex).cfsFileSystem->GetDirectoryContent(bRefresh);
 
 	// fill tree widget items
 	for (iI = 0; iI < qlFiles.count(); iI++) {
@@ -1170,25 +1208,9 @@ const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
 	int iI;
 	QList<cSettings::sTabInfo> qlTabsToSave;
 
+	// tabs
 	for (iI = 0; iI < qlTabs.count(); iI++) {
-		cTreeWidget *ctwDir;
-		sTab *stTab;
-		cSettings::sTabInfo stiTab;
-
-		ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iI));
-		stTab = &qlTabs[iI];
-
-		// visible parameters
-		stiTab.qsColumnSet = stTab->qsColumnSet;
-		stiTab.qsDrive = stTab->cfsFileSystem->GetDrive();
-		stiTab.qsPath = stTab->cfsFileSystem->GetPath();
-		stiTab.ssSort.iSortedColumn = ctwDir->sortColumn();
-		stiTab.ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
-
-		// history
-		stiTab.shHistory = stTab->shHistory;
-
-		qlTabsToSave.append(stiTab);
+		qlTabsToSave.append(GetTabSettings(iI));
 	} // for
 
 	csSettings->SetTabs(epPosition, qlTabsToSave);

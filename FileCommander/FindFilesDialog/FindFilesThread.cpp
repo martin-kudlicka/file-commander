@@ -216,6 +216,8 @@ void cFindFilesThread::run()
 			break;
 		} // if else
 	} // while
+
+	cfsFileSystem->SetPath(qsPath);
 } // run
 
 // start of searching for files
@@ -223,6 +225,7 @@ void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSys
 {
 	this->sfsSearch = sfsSearch;
 	this->cfsFileSystem = cfsFileSystem;
+	this->qsPath = cfsFileSystem->GetPath();
 	this->bMarking = bMarking;
 	bStop = false;
 

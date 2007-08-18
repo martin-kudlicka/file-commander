@@ -314,9 +314,15 @@ const void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 } // on_qpbDrives_clicked
 
 // feed to panel button is clicked on
-const void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbFeedToPanel_clicked(bool checked /* false */)
 {
-	// TODO on_qpbFeedToPanel_clicked
+	int iI;
+
+	for (iI = 0; iI < qlFileSystems.count(); iI++) {
+		cpPanel->AddTab(cpPanel->GetTabSettings(), false, qlFileSystems.at(iI));
+	} // for
+	// prevent freeing file systems
+	qlFileSystems.clear();
 } // on_qpbFeedToPanel_clicked
 
 // go to file button is clicked on
@@ -440,7 +446,7 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 		if (spiPathInfo.edtType == cFileControl::Local) {
 			if (!bLocalIncluded) {
 				// create local file system to search, local is enough to create only once
-				stsLocal.cfsFileSystem = cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath);
+				stsLocal.cfsFileSystem = cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, *qsPath);
 				stsLocal.qsPath = *qsPath;
 				qqToSearch.enqueue(stsLocal);
 

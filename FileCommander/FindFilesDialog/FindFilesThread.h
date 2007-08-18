@@ -34,6 +34,7 @@ class cFindFilesThread : public QThread
 		cFileSystem *cfsFileSystem;											///< file system to search in
 		cSettings::sFindSettings sfsSearch;									///< current search settings
 		QQueue<QString> qqDirectories;										///< directories to go through
+		QString qsPath;															///< original path
 
 		const bool ConditionSuit(QTreeWidgetItem *qtwiFile) const;	///< check search conditions on found file
 																						/**< \param qtwiFile file to check conditions on
