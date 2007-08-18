@@ -147,7 +147,7 @@ const void cFindFilesDialog::on_cfftFindThread_finished()
 		sToSearch stsToSearch;
 
 		stsToSearch = qqToSearch.dequeue();
-		cfftFindThread.Start(sfsCurrentSearch, stsToSearch.cfsFileSystem, stsToSearch.qsPath, false);
+		cfftFindThread.Start(sfsCurrentSearch, stsToSearch.cfsFileSystem, stsToSearch.qsPath);
 	} else {
 		// end of search
 		int iI;
