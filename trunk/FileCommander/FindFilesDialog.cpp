@@ -19,11 +19,11 @@ cFindFilesDialog::~cFindFilesDialog()
 } // ~cFindFilesDialog
 
 // constructor
-cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFileControl *cfcFileControl, cSettings *csSettings, cListerPlugin *clpListerPlugin)
+cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileControl *cfcFileControl, cSettings *csSettings, cListerPlugin *clpListerPlugin)
 {
 	int iSelected;
 
-	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
+	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
 
 	this->cpPanel = cpPanel;

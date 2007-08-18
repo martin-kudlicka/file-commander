@@ -16,32 +16,32 @@ class cSelectFilesDialog : public QDialog, public Ui::qdSelectFiles
 	public:
 		/// selection type
 		enum eSelectType {
-			Select,
-			Unselect
+			Select,																///< select files
+			Unselect																///< unselect files
 		};
 
 		cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cListerPlugin *clpListerPlugin);
-																			///< constructor
-																			/**< \param qmwParent parent window of this dialog
-																				  \param estType type of dialog
-																				  \param csSettings application's settings
-																				  \param clpListerPlugin lister plugins */
+																					///< constructor
+																					/**< \param qmwParent parent window of this dialog
+																						  \param estType type of dialog
+																						  \param csSettings application's settings
+																						  \param clpListerPlugin lister plugins */
 
 	private:
-		cListerPlugin *clpListerPlugin;							///< lister plugins
-		cSettings *csSettings;										///< application's settings
+		cListerPlugin *clpListerPlugin;									///< lister plugins
+		cSettings *csSettings;												///< application's settings
 
-		bool eventFilter(QObject *watched, QEvent *event);	///< event filter
-																			/**< \param watcher object to filter
-																				  \param event event description
-																				  \return true if event is handled */
-		void RefreshFindSets();										///< refresh finds sets from settings file
+		bool eventFilter(QObject *watched, QEvent *event);			///< event filter
+																					/**< \param watcher object to filter
+																						  \param event event description
+																						  \return true if event is handled */
+		const void RefreshFindSets() const;								///< refresh finds sets from settings file
 
 	private slots:
-		void on_qpbDefine_clicked(bool checked = false);	///< define button is clicked on
-																			/**< \param checked true if button is checkable and checked */
-		void on_qpbOK_clicked(bool checked = false);			///< OK button is clicked on
-																			/**< \param checked true if button is checkable and checked */
+		const void on_qpbDefine_clicked(bool checked = false);	///< define button is clicked on
+																					/**< \param checked true if button is checkable and checked */
+		const void on_qpbOK_clicked(bool checked = false);			///< OK button is clicked on
+																					/**< \param checked true if button is checkable and checked */
 }; // cSelectFilesDialog
 
 #endif

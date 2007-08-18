@@ -16,9 +16,9 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 	Q_OBJECT
 
 	public:
-		cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFileControl *cfcFileControl, cSettings *csSettings, cListerPlugin *clpListerPlugin);
+		cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileControl *cfcFileControl, cSettings *csSettings, cListerPlugin *clpListerPlugin);
 																												///< constructor
-																												/**< \param qmwParent parent window of this dialog
+																												/**< \param qwParent parent window of this dialog
 																													  \param cpPanel panel to work with
 																													  \param cfcFileControl file operations control
 																													  \param csSettings application's settings file

@@ -181,7 +181,11 @@ void cFindFilesThread::run()
 
 		// get content of directory
 		cfsFileSystem->SetPath(qqDirectories.dequeue());
-		qlDirContent = cfsFileSystem->GetDirectoryContent();
+		if (ecfCalledFrom == SelectFiles) {
+			qlDirContent = cfsFileSystem->GetDirectoryContent(false);
+		} else {
+			qlDirContent = cfsFileSystem->GetDirectoryContent();
+		} // if else
 
 		// check conditions
 		for (iI = 0; iI < qlDirContent.count() && !bStop; iI++) {
@@ -191,7 +195,7 @@ void cFindFilesThread::run()
 			qtwiFile = qlDirContent[iI];
 
 			if (cfsFileSystem->GetFileName(qtwiFile, false) == "." || cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
-				if (bBranchView && bFirstStep && cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
+				if (ecfCalledFrom == BranchView && bFirstStep && cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
 					// allow ".." directory in branch view in starting directory
 					bAllowDotDot = true;
 				} else {
@@ -234,18 +238,18 @@ void cFindFilesThread::run()
 } // run
 
 // start of searching for files
-void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const bool &bRunAsThread /* true */, const bool &bBranchView /* false */)
+void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const eCalledFrom &ecfCalledFrom /* FindFilesDialog */)
 {
 	this->sfsSearch = sfsSearch;
 	this->cfsFileSystem = cfsFileSystem;
 	this->qsPath = cfsFileSystem->GetPath();
-	this->bBranchView = bBranchView;
+	this->ecfCalledFrom = ecfCalledFrom;
 	bStop = false;
 
 	qqDirectories.clear();
 	qqDirectories.enqueue(qsPath);
 
-	if (bRunAsThread) {
+	if (ecfCalledFrom == FindFilesDialog) {
 		start();
 	} else {
 		run();

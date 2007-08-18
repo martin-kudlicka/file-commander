@@ -47,12 +47,21 @@ class cLocal : public cFileSystem
 		const void BeginSearch();														///< begin of searching files
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
-		const void ClearFileTable();													///< clear file table before next fill of it
-		const void EndSearch();															///< searching of files finished
+		const void ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const;
+																								///< clear file table before next fill of it
+																								/**< \param qhTable file table to clear */
+		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
+																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
 																									  \return content plugin (nondelayed) value */
+		const QList<QTreeWidgetItem *> GetCustomFileList() const;			///< custom file list
+																								/**< \return custom file list */
+		const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile);
+																								///< get file name with extension from custom list
+																								/**< \param qtwiFile file to find file name with extension for
+																									  \return file name with extension */
 		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
