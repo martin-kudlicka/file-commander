@@ -169,9 +169,12 @@ const void cFindFilesThread::on_StopSearching()
 // thread's main code
 void cFindFilesThread::run()
 {
+	bool bFirstStep;
 	int iDepth;
 
+	bFirstStep = true;
 	iDepth = 0;
+
 	while (!qqDirectories.isEmpty() && !bStop) {
 		int iI;
 		QList<QTreeWidgetItem *> qlDirContent;
@@ -182,30 +185,36 @@ void cFindFilesThread::run()
 
 		// check conditions
 		for (iI = 0; iI < qlDirContent.count() && !bStop; iI++) {
+			bool bAllowDotDot;
 			QTreeWidgetItem *qtwiFile;
 
 			qtwiFile = qlDirContent[iI];
 
 			if (cfsFileSystem->GetFileName(qtwiFile, false) == "." || cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
-				// skip "." and ".."  directories
-				continue;
-			} // if
+				if (bBranchView && bFirstStep && cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
+					// allow ".." directory in branch view in starting directory
+					bAllowDotDot = true;
+				} else {
+					// skip "." and ".."  directories
+					continue;
+				} // if
+			} else {
+				bAllowDotDot = false;
+			} // if else
 
-			if (ConditionSuit(qtwiFile)) {
+			if (bAllowDotDot || ConditionSuit(qtwiFile)) {
 				// TODO run ConditionSuit
 				QTreeWidgetItem *qtwiFound;
 
 				// add file to custom list
 				qtwiFound = cfsFileSystem->AddToCustomList(qtwiFile);
 
-				if (!bMarking) {
-					// add to list of found files in dialog
-					emit Found(qtwiFound, cfsFileSystem);
-				} // if
+				// add to list of found files in dialog
+				emit Found(qtwiFound, cfsFileSystem);
 			} // if
 
-			// add found directories
-			if (cfsFileSystem->IsDir(qtwiFile) && iDepth < sfsSearch.iSubdirectoryDepth) {
+			// add found directories (excluding first "..")
+			if (!bAllowDotDot && cfsFileSystem->IsDir(qtwiFile) && iDepth < sfsSearch.iSubdirectoryDepth) {
 				qqDirectories.enqueue(cfsFileSystem->GetFilePath(qtwiFile));
 			} // if
 		} // for
@@ -215,22 +224,30 @@ void cFindFilesThread::run()
 		} else {
 			break;
 		} // if else
+
+		if (bFirstStep) {
+			bFirstStep = false;
+		} // if
 	} // while
 
 	cfsFileSystem->SetPath(qsPath);
 } // run
 
 // start of searching for files
-void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const bool &bMarking)
+void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSystem *cfsFileSystem, const QString qsPath, const bool &bRunAsThread /* true */, const bool &bBranchView /* false */)
 {
 	this->sfsSearch = sfsSearch;
 	this->cfsFileSystem = cfsFileSystem;
 	this->qsPath = cfsFileSystem->GetPath();
-	this->bMarking = bMarking;
+	this->bBranchView = bBranchView;
 	bStop = false;
 
 	qqDirectories.clear();
 	qqDirectories.enqueue(qsPath);
 
-	start();
+	if (bRunAsThread) {
+		start();
+	} else {
+		run();
+	} // if else
 } // Start

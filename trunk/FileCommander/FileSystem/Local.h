@@ -44,6 +44,7 @@ class cLocal : public cFileSystem
 		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
+		const void BeginSearch();														///< begin of searching files
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
 		const void ClearFileTable();													///< clear file table before next fill of it

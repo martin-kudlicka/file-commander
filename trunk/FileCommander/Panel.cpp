@@ -8,6 +8,7 @@
 #include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QApplication>
+#include "FindFilesDialog/FindFilesThread.h"
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
@@ -228,9 +229,33 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 } // AddTab
 
 // branch view for current directory
-const void cPanel::BranchView() const
+const void cPanel::BranchView()
 {
-	// TODO BranchView
+	cFileSystem *cfsFileSystem;
+	cFindFilesThread cfftBranch;
+	cSettings::sFindSettings sfsBranch;
+
+	cfsFileSystem = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem;
+
+	// default settings for branch view
+	sfsBranch.qsSearchIn = cfsFileSystem->GetPath();
+	//sfsFind.qsSearchFor = csfdSelect.qcbFilter->currentText();
+	sfsBranch.iSubdirectoryDepth = 99;
+	sfsBranch.bSearchForRegularExpression = false;
+	sfsBranch.bSearchForText = false;
+	sfsBranch.bDateTimeBetween = false;
+	sfsBranch.bNotOlderThan = false;
+	sfsBranch.bFileSize = false;
+
+	// search for files
+	cfsFileSystem->blockSignals(true);
+	cfsFileSystem->BeginSearch();
+	cfftBranch.Start(sfsBranch, cfsFileSystem, sfsBranch.qsSearchIn, false, true);
+	cfsFileSystem->EndSearch();
+	cfsFileSystem->blockSignals(false);
+
+	// show found files
+	RefreshContent(false);
 } // BranchView
 
 // close all other tabs than selected
@@ -1027,9 +1052,9 @@ const void cPanel::RefreshAllHeaders()
 } // RefreshAllHeaders
 
 // refresh current dir content
-const void cPanel::RefreshContent()
+const void cPanel::RefreshContent(const bool &bRefresh /* true */)
 {
-	RefreshContent(qswDirs->currentIndex());
+	RefreshContent(qswDirs->currentIndex(), bRefresh);
 } // RefreshContent
 
 // refresh dir content

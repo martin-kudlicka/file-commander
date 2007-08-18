@@ -50,7 +50,7 @@ class cPanel : public QObject
 																						  \param bStartUp true if tab is added on application startup
 																						  \param cfsFileSystem file system for panel
 																						  \return new tab index */
-		const void BranchView() const;									///< branch view for current directory
+		const void BranchView();											///< branch view for current directory
 		const void CloseAllOtherTabs(const int &iTabIndex);		///< close all other tabs than selected
 																					/**< \param iTabIndex selected tab */
 		const void CloseTab(const int &iTabIndex);					///< close tab
@@ -82,7 +82,8 @@ class cPanel : public QObject
 		const void InvertSelection() const;								///< invert selection of files
 		const void RefreshAllContents();									///< refresh all dir view contents
 		const void RefreshAllHeaders();									///< refresh all dir view headers
-		const void RefreshContent();										///< refresh current dir content
+		const void RefreshContent(const bool &bRefresh = true);	///< refresh current dir content
+																					/**< \param bRefresh reload files from file system when true */
 		const void RefreshTabs() const;									///< refresh tabs
 		const void ReverseOrder();											///< reverse sort order
 		const void SaveSettings(const cSettings::ePosition &epPosition);

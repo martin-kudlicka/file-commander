@@ -52,6 +52,13 @@ QTreeWidgetItem *cLocal::AddToCustomList(QTreeWidgetItem *qtwiFile)
 	return qtwiNew;
 } // AddToCustomList
 
+// begin of searching files
+const void cLocal::BeginSearch()
+{
+	// clear before next search (especially for branch view)
+	qhCustom.clear();
+} // BeginSearch
+
 // check if current path available
 const bool cLocal::CheckPath()
 {
