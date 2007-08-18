@@ -160,13 +160,19 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 	return true;
 } // ConditionSuit
 
+// interrupt thread searching
+const void cFindFilesThread::on_StopSearching()
+{
+	bStop = true;
+} // on_StopSearching
+
 // thread's main code
 void cFindFilesThread::run()
 {
 	int iDepth;
 
 	iDepth = 0;
-	while (!qqDirectories.isEmpty()) {
+	while (!qqDirectories.isEmpty() && !bStop) {
 		int iI;
 		QList<QTreeWidgetItem *> qlDirContent;
 
@@ -175,7 +181,7 @@ void cFindFilesThread::run()
 		qlDirContent = cfsFileSystem->GetDirectoryContent();
 
 		// check conditions
-		for (iI = 0; iI < qlDirContent.count(); iI++) {
+		for (iI = 0; iI < qlDirContent.count() && !bStop; iI++) {
 			QTreeWidgetItem *qtwiFile;
 
 			qtwiFile = qlDirContent[iI];
@@ -220,6 +226,7 @@ void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSys
 	this->bMarking = bMarking;
 	bStop = false;
 
+	qqDirectories.clear();
 	qqDirectories.enqueue(qsPath);
 
 	start();
