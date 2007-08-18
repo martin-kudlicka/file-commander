@@ -12,6 +12,12 @@ const QStringList qslFILE_SIZE_COMPARATOR = (QStringList() << "=" << "<" << ">")
 const QStringList qslFILE_SIZE_TYPE = (QStringList() << qsBYTES2 << qsKILOBYTES2 << qsMEGABYTES2 << qsGIGABYTES2);
 const QStringList qslOLDER_THAN = (QStringList() << qsMINUTES << qsHOURS << qsDAYS << qsWEEKS << qsMONTHS << qsYEARS);
 
+// destructor
+cFindFilesDialog::~cFindFilesDialog()
+{
+	FreeFileSystems();
+} // ~cFindFilesDialog
+
 // constructor
 cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFileControl *cfcFileControl, cSettings *csSettings, cListerPlugin *clpListerPlugin)
 {
@@ -71,6 +77,18 @@ cFindFilesDialog::cFindFilesDialog(QMainWindow *qmwParent, cPanel *cpPanel, cFil
 	connect(&cfftFindThread, SIGNAL(Found(QTreeWidgetItem *, cFileSystem *)), SLOT(on_cfftFindThread_Found(QTreeWidgetItem *, cFileSystem *)));
 } // cFindFilesDialog
 
+// free file system before next search
+const void cFindFilesDialog::FreeFileSystems()
+{
+	int iI;
+
+	for (iI = 0; iI < qlFileSystems.count(); iI++) {
+		cfcFileControl->CloseFileSystem(qlFileSystems.at(iI));
+	} // for
+
+	qlFileSystems.clear();
+} // FreeFileSystems
+
 // store settings in sFindSettings structure
 const cSettings::sFindSettings cFindFilesDialog::GetSettings() const
 {
@@ -122,7 +140,12 @@ const void cFindFilesDialog::on_cfftFindThread_finished()
 		cfftFindThread.Start(sfsCurrentSearch, stsToSearch.cfsFileSystem, stsToSearch.qsPath, false);
 	} else {
 		// end of search
-		// TODO on_cfftFindThread_finished - file system stop search
+		int iI;
+
+		for (iI = 0; iI < qlFileSystems.count(); iI++) {
+			qlFileSystems.at(iI)->EndSearch();
+		} // for
+
 		qpbStop->setEnabled(false);
 		qpbStart->setEnabled(true);
 		if (qtwSearch->topLevelItemCount() > 0) {
@@ -385,6 +408,7 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	// get all needed filesystems
 	bLocalIncluded = false;
 	qqToSearch.clear();
+	FreeFileSystems();
 	if (qcbSearchInSelectedDirectories->isChecked()) {
 		qslPaths = cpPanel->GetFileSystem()->GetSelectedDirectoryStringList();
 	} else {
@@ -402,6 +426,8 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 				stsLocal.cfsFileSystem = cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath);
 				stsLocal.qsPath = *qsPath;
 				qqToSearch.enqueue(stsLocal);
+
+				qlFileSystems.append(stsLocal.cfsFileSystem);
 				bLocalIncluded = true;
 			} else {
 				stsLocal.qsPath = *qsPath;
@@ -416,7 +442,6 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	sfsCurrentSearch = GetSettings();
 	qhFound.clear();
 
-	// TODO on_qpbStart_clicked - file system start search
 	on_cfftFindThread_finished();
 } // on_qpbStart_clicked
 

@@ -30,6 +30,7 @@ class cFileSystem : public QObject
 																										///< add file to custom file list
 																										/**< \param qtwiFile file to add to custom list
 																											  \return new item in custom list */
+		virtual const void EndSearch() = 0;													///< searching of files finished
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin
 																										/**< \param sContent request description

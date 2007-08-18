@@ -46,6 +46,7 @@ class cLocal : public cFileSystem
 																									  \return new item in custom list */
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
+		const void EndSearch();															///< searching of files finished
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
