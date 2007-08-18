@@ -498,7 +498,20 @@ const void cFindFilesDialog::RefreshSavedSettings() const
 } // RefreshSavedSettings
 
 // selected item changed in found files list
-const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged() const
+const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged()
 {
-	// TODO on_qtwSearch_itemSelectionChanged
+	if (qtwSearch->selectedItems().count() > 0) {
+		sFound *sfFound;
+
+		sfFound = &qhFound[qtwSearch->selectedItems().at(0)];
+		if (sfFound->cfsFileSytem->IsFile(sfFound->qtwiFile)) {
+			qpbView->setEnabled(true);
+		} else {
+			qpbView->setEnabled(false);
+		} // if else
+		qpbGoToFile->setEnabled(true);
+	} else {
+		qpbView->setEnabled(false);
+		qpbGoToFile->setEnabled(false);
+	} // if else
 } // on_qtwSearch_itemSelectionChanged

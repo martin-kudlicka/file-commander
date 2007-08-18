@@ -96,7 +96,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																												/**< \param checked true if button is checkable and checked */
 		const void on_qpbView_clicked(bool checked = false) const;							///< view button is clicked on
 																												/**< \param checked true if button is checkable and checked */
-		const void on_qtwSearch_itemSelectionChanged() const;									///< selected item changed in found files list
+		const void on_qtwSearch_itemSelectionChanged();											///< selected item changed in found files list
 }; // cFindFilesDialog
 
 #endif
