@@ -157,9 +157,16 @@ const void cFindFilesDialog::on_cfftFindThread_finished()
 // found file matches conditions
 const void cFindFilesDialog::on_cfftFindThread_Found(QTreeWidgetItem *qtwiFile, cFileSystem *cfsFileSystem)
 {
-	qhFound.insert(qtwiFile, cfsFileSystem);
-	qtwiFile->setText(0, cfsFileSystem->GetCustomFilePath(qtwiFile));
-	qtwSearch->addTopLevelItem(qtwiFile);
+	QTreeWidgetItem *qtwiNew;
+	sFound sfFound;
+
+	sfFound.qtwiFile = qtwiFile;
+	sfFound.cfsFileSytem = cfsFileSystem;
+
+	qtwiNew = qtwiFile->clone();
+	qhFound.insert(qtwiNew, sfFound);
+	qtwiNew->setText(0, cfsFileSystem->GetCustomFilePath(qtwiFile));
+	qtwSearch->addTopLevelItem(qtwiNew);
 } // on_cfftFindThread_Found
 
 // search files in specified date/time range

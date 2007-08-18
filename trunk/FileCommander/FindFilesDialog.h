@@ -26,6 +26,11 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		~cFindFilesDialog();																				///< destructor
 
 	private:
+		/// found file information
+		struct sFound {
+			QTreeWidgetItem *qtwiFile;																	///< found file
+			cFileSystem *cfsFileSytem;																	///< file system found file found in
+		};
 		/// file system search description
 		struct sToSearch {
 			cFileSystem *cfsFileSystem;																///< file system to search in
@@ -38,7 +43,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cPanel *cpPanel;																					///< panel to work with
 		cSettings *csSettings;																			///< application's settings file
 		QCompleter qcDirModel;																			///< completer based on dir model
-		QHash<QTreeWidgetItem *, cFileSystem *> qhFound;										///< found files table
+		QHash<QTreeWidgetItem *, sFound> qhFound;													///< found files table
 		QList<cFileSystem *> qlFileSystems;															///< file systems to search
 		QQueue<sToSearch> qqToSearch;																	///< searches description
 		cSettings::sFindSettings sfsCurrentSearch;												///< current search settings

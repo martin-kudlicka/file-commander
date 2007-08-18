@@ -27,7 +27,10 @@ class cFindFilesThread : public QThread
 																							  \param qsPath path to start search on file system
 																							  \param bMarking true if called for marking files */
 	private:
+		static const qint64 qi64SEARCH_BUFFER = 1048576;				///< search for text in files in this buffer size
+
 		bool bMarking;																///< true if called for marking files
+		bool bStop;																	///< stop searching
 		cFileSystem *cfsFileSystem;											///< file system to search in
 		cSettings::sFindSettings sfsSearch;									///< current search settings
 		QQueue<QString> qqDirectories;										///< directories to go through
