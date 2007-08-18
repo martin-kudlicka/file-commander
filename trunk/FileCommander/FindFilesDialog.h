@@ -23,6 +23,7 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 																													  \param cfcFileControl file operations control
 																													  \param csSettings application's settings file
 																													  \param clpListerPlugin lister plugins */
+		~cFindFilesDialog();																				///< destructor
 
 	private:
 		/// file system search description
@@ -38,9 +39,11 @@ class cFindFilesDialog : public QDialog, private Ui::qdFindFiles
 		cSettings *csSettings;																			///< application's settings file
 		QCompleter qcDirModel;																			///< completer based on dir model
 		QHash<QTreeWidgetItem *, cFileSystem *> qhFound;										///< found files table
+		QList<cFileSystem *> qlFileSystems;															///< file systems to search
 		QQueue<sToSearch> qqToSearch;																	///< searches description
 		cSettings::sFindSettings sfsCurrentSearch;												///< current search settings
 
+		const void FreeFileSystems();																	///< free file system before next search
 		const cSettings::sFindSettings GetSettings() const;									///< store settings in sFindSettings structure
 																												/**< \return find settings */
 		const void RefreshSavedSettings() const;													///< refreshes list of saved settings

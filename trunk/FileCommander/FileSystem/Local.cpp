@@ -11,6 +11,12 @@
 cLocal::~cLocal()
 {
 	ccpdContentPluginDelayed->deleteLater();
+
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhCustom);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		delete qhiFile.key();
+	} // while
 } // ~cLocal
 
 // activate current file
@@ -81,6 +87,20 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 
 	SetPath(qsDrive, qsRootPath, qsPath);
 } // cLocal
+
+// searching of files finished
+const void cLocal::EndSearch()
+{
+	// clear file hash table first
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		delete qhiFile.key();
+	} // while
+	qhFiles.clear();
+
+	qhFiles = qhCustom;
+} // EndSearch
 
 // get value from content plugin
 const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)
