@@ -1,6 +1,10 @@
 #include "FindFilesDialog/FindFilesThread.h"
 
 #include "Panel.h"
+#include <QtCore/QFile>
+#include <QtGui/QTextCursor>
+#include <QtGui/QTextDocument>
+#include <QtCore/QTextCodec>
 
 // check search conditions on found file
 const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
@@ -86,22 +90,22 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 		} // if else
 	} // if
 
-	// TODO ConditionSuit full text
-	/*// full text
-	if (sfsCurrentSearch.bSearchForText) {
-		if (qfiFile.isFile()) {
+	// full text
+	if (sfsSearch.bSearchForText) {
+		// TODO ConditionsSuit non local files
+		if (cfsFileSystem->IsFile(qtwiFile)) {
 			bool bFound;
 			QByteArray qbaFile;
 			QFile qfFile;
 			QString qsPattern;
 
-			if (sfsCurrentSearch.bFullTextHex) {
+			if (sfsSearch.bFullTextHex) {
 				// TODO ConditionsSuit Hex
 			} else {
-				qsPattern = sfsCurrentSearch.qsFullText;
+				qsPattern = sfsSearch.qsFullText;
 			} // if else
 
-			qfFile.setFileName(qfiFile.filePath());
+			qfFile.setFileName(cfsFileSystem->GetFilePath(qtwiFile));
 			if (qfFile.size() < qsPattern.length()) {
 				return false;
 			} // if
@@ -114,16 +118,16 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 				QTextDocument qtdText;
 				QTextDocument::FindFlags ffFlags;
 
-				if (sfsCurrentSearch.bFulTextWholeWords) {
+				if (sfsSearch.bFulTextWholeWords) {
 					ffFlags = QTextDocument::FindWholeWords;
 				} // if
-				if (sfsCurrentSearch.bFullTextCaseSensitive) {
+				if (sfsSearch.bFullTextCaseSensitive) {
 					ffFlags |= QTextDocument::FindCaseSensitively;
 				} // if
 
 				qtdText.setPlainText(Qt::codecForHtml(qbaFile)->toUnicode(qbaFile));
 
-				if (sfsCurrentSearch.bFullTextRegularExpression) {
+				if (sfsSearch.bFullTextRegularExpression) {
 					qtcCursor = qtdText.find(QRegExp(qsPattern), 0, ffFlags);
 				} else {
 					qtcCursor = qtdText.find(qsPattern, 0, ffFlags);
@@ -138,21 +142,20 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 				if (qfFile.atEnd()) {
 					break;
 				} else {
-					QApplication::processEvents();
 					qfFile.seek(qfFile.pos() - qsPattern.length() + 1);
 					qbaFile = qfFile.read(qi64SEARCH_BUFFER);
 				} // if else
 			} // while
 			qfFile.close();
 
-			if (!bFound ^ sfsCurrentSearch.bFullTextNotContainingText) {
+			if (!bFound ^ sfsSearch.bFullTextNotContainingText) {
 				return false;
 			} // if
 		} else {
 			// for directories
 			return false;
 		} // if else
-	} // if*/
+	} // if
 
 	return true;
 } // ConditionSuit
@@ -215,6 +218,7 @@ void cFindFilesThread::Start(const cSettings::sFindSettings &sfsSearch, cFileSys
 	this->sfsSearch = sfsSearch;
 	this->cfsFileSystem = cfsFileSystem;
 	this->bMarking = bMarking;
+	bStop = false;
 
 	qqDirectories.enqueue(qsPath);
 

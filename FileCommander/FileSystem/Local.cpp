@@ -12,11 +12,8 @@ cLocal::~cLocal()
 {
 	ccpdContentPluginDelayed->deleteLater();
 
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhCustom);
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-		delete qhiFile.key();
-	} // while
+	ClearFileTable();
+	qhCustom.clear();
 } // ~cLocal
 
 // activate current file
@@ -75,6 +72,17 @@ const bool cLocal::CheckPath()
 	return true;
 } // CheckPath
 
+// clear file table before next fill of it
+const void cLocal::ClearFileTable()
+{
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		delete qhiFile.key();
+	} // while
+	qhFiles.clear();
+} // ClearFileTable
+
 // constructor
 cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
@@ -92,12 +100,7 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 const void cLocal::EndSearch()
 {
 	// clear file hash table first
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-		delete qhiFile.key();
-	} // while
-	qhFiles.clear();
+	ClearFileTable();
 
 	qhFiles = qhCustom;
 } // EndSearch
@@ -176,12 +179,7 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 			qfilFiles = qdDir.entryInfoList(fFilters);
 
 			// clear hash table
-			QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-			while (qhiFile.hasNext()) {
-				qhiFile.next();
-				delete qhiFile.key();
-			} // while
-			qhFiles.clear();
+			ClearFileTable();
 
 			// add files to hash table
 			for (iI = 0; iI < qfilFiles.count(); iI++) {
