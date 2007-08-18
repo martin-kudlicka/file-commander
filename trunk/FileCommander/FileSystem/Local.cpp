@@ -219,6 +219,12 @@ const qint64 cLocal::GetDirectorySize() const
 	return qi64Size;
 } // GetDirectorySize
 
+// get current directory name
+const QString cLocal::GetDirName() const
+{
+	return qdDir.dirName();
+} // GetDirName
+
 // find out disk space information
 const cFileSystem::sDiskSpace cLocal::GetDiskSpace() const
 {
