@@ -9,6 +9,7 @@
 #include "FileSystem.h"
 #include "Plugins/ContentPlugin.h"
 #include "Plugins/ListerPlugin.h"
+#include "FileControl/FileOperationDialog.h"
 
 class cFileControl : public QObject
 {
@@ -72,6 +73,12 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination) const;
+																						///< file operation selected
+																						/**< \param eoOperation type of operation
+																							  \param cfsSource source file system
+																							  \param qlSource selected source files
+																							  \param cfsDestination destination file system */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
 		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
@@ -84,11 +91,23 @@ class cFileControl : public QObject
 																							  \param qtwiFile file to show */
 
 	private:
+		/// count of file types
+		struct sTypeCount {
+			uint FileType;															///< file
+			uint DirectoryType;													///< directory
+		};
+
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
 		cListerPlugin *clpListerPlugin;										///< lister plugin interface
 		cSettings *csSettings;													///< application's configuration
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
 		QMainWindow *qmwParent;													///< parent window for dialogs
+
+		const sTypeCount GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const;
+																						///< count files type
+																						/**< \param cfsFileSystem file system
+																							  \param qlFiles files to count
+																							  \return files type count */
 }; // cFileControl
 
 #endif

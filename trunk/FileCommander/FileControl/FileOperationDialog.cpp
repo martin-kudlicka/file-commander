@@ -1,4 +1,4 @@
-#include "FileOperation/FileOperationDialog.h"
+#include "FileControl/FileOperationDialog.h"
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QDirModel>
@@ -26,7 +26,7 @@ cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *cs
 } // cCopyMoveDialog
 
 // Browse button clicked on
-void cFileOperationDialog::on_qpbBrowse_clicked(bool checked /* false */)
+const void cFileOperationDialog::on_qpbBrowse_clicked(bool checked /* false */)
 {
 	QString qsDirectory;
 
@@ -37,51 +37,44 @@ void cFileOperationDialog::on_qpbBrowse_clicked(bool checked /* false */)
 } // on_qpbBrowse_clicked
 
 // Cancel button clicked on
-void cFileOperationDialog::on_qpbCancel_clicked(bool checked /* false */)
+const void cFileOperationDialog::on_qpbCancel_clicked(bool checked /* false */)
 {
 	done(CancelAction);
 } // on_qpbCancel_clicked
 
 // Enqueue button clicked on
-void cFileOperationDialog::on_qpbEnqueue_clicked(bool checked /* false */)
+const void cFileOperationDialog::on_qpbEnqueue_clicked(bool checked /* false */)
 {
 	done(EnqueueAction);
 } // on_qpbEnqueue_clicked
 
 // OK button clicked on
-void cFileOperationDialog::on_qpbOK_clicked(bool checked /* false */)
+const void cFileOperationDialog::on_qpbOK_clicked(bool checked /* false */)
 {
 	done(OkAction);
 } // on_qpbOK_clicked
 
 // shows copy or move dialog
-cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter, const bool &bArchive /* false */)
+const cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter)
 {
 	eUserAction euaAction;
 
 	// prepare dialog
 	switch (eoOperation) {
-		case cFileRoutine::DeleteOperation:
+		case DeleteOperation:
 			setWindowTitle(tr("Delete"));
 			break;
-		case cFileRoutine::CopyOperation:
+		case CopyOperation:
 			setWindowTitle(tr("Copy"));
 			break;
-		case cFileRoutine::MoveOperation:
+		case MoveOperation:
 			setWindowTitle(tr("Move"));
 	} // switch
 	qlCount->setText(qsCount);
 	qcbDestination->setEditText(*qsDestination);
-	if (bArchive) {
-		qpbEnqueue->setEnabled(false);
-	} // if
 
-	if (eoOperation == cFileRoutine::DeleteOperation) {
-		qlCount->parentWidget()->setGeometry(qlCount->parentWidget()->geometry().x(),
-																						qlCount->parentWidget()->geometry().y(),
-																						qlCount->parentWidget()->geometry().width(),
-																						qlCount->parentWidget()->geometry().height() - qcbDestination->height());
-		setMaximumHeight(geometry().height() - qcbDestination->height());
+	if (eoOperation == DeleteOperation) {
+		qlCount->parentWidget()->setGeometry(qlCount->parentWidget()->geometry().x(), qlCount->parentWidget()->geometry().y(), qlCount->parentWidget()->geometry().width(), qlCount->parentWidget()->geometry().height() - qcbDestination->height()); setMaximumHeight(geometry().height() - qcbDestination->height());
 		qcbFilter->setFocus(Qt::OtherFocusReason);
 		delete qcbDestination;
 		delete qpbBrowse;
@@ -96,13 +89,13 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 		int iIndex;
 		QString qsDestinationHistory, qsFilterHistory;
 
-		if (eoOperation != cFileRoutine::DeleteOperation) {
+		if (eoOperation != DeleteOperation) {
 			*qsDestination = qcbDestination->currentText();
 		} // if
 		*qsFilter = qcbFilter->currentText();
 
 		// save history
-		if (eoOperation != cFileRoutine::DeleteOperation) {
+		if (eoOperation != DeleteOperation) {
 			qsDestinationHistory = qcbDestination->currentText();
 			iIndex = qcbDestination->findText(qsDestinationHistory);
 			if (iIndex > 0) {
@@ -122,7 +115,7 @@ cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const cFileRo
 			qcbFilter->insertItem(0, qsFilterHistory);
 			qcbFilter->setEditText(qsFilterHistory);
 		} // if
-		if (eoOperation != cFileRoutine::DeleteOperation) {
+		if (eoOperation != DeleteOperation) {
 			csSettings->SetComboBoxHistory(cSettings::FileOperationDestination, qcbDestination);
 		} // if
 		csSettings->SetComboBoxHistory(cSettings::FileOperationFilter, qcbFilter);

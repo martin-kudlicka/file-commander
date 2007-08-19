@@ -164,6 +164,26 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 	return qlDrives;
 } // GetDrives
 
+// count files type
+const cFileControl::sTypeCount cFileControl::GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const
+{
+	int iI;
+	sTypeCount stcTypeCount;
+
+	stcTypeCount.DirectoryType = 0;
+	stcTypeCount.FileType = 0;
+
+	for (iI = 0; iI < qlFiles.count(); iI++) {
+		if (cfsFileSystem->IsDir(qlFiles.at(iI))) {
+			stcTypeCount.DirectoryType++;
+		} else {
+			stcTypeCount.FileType++;
+		} // if else
+	} // for
+
+	return stcTypeCount;
+} // GetFilesTypeCount
+
 cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
 {
 	// TODO GetFileSystem add FS to some FS list later
@@ -226,6 +246,60 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 
 	return spiPathInfo;
 } // GetPathInfo
+
+// file operation selected
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination) const
+{
+	cFileOperationDialog cfodDialog(qmwParent, csSettings);
+	cFileOperationDialog::eUserAction euaAction;
+	int iI;
+	QString qsDestination, qsFilter;
+	sTypeCount stcTypeCount;
+
+	// ignore ".." directory
+	for (iI = 0; iI < qlSource.count(); iI++) {
+		if (cfsSource->GetFileName(qlSource.at(iI), false) == "..") {
+			qlSource.removeAt(iI);
+			break;
+		} // if
+	} // for
+
+	if (qlSource.isEmpty()) {
+		return;
+	} // if
+
+	// prepare destination path for dialog
+	if (eoOperation != cFileOperationDialog::DeleteOperation) {
+		qsDestination = cfsDestination->GetPath();
+
+		if (qlSource.count() == 1) {
+			// one file selected
+			QTreeWidgetItem *qtwiFile;
+
+			qtwiFile = qlSource.at(0);
+			if (cfsSource->IsFile(qtwiFile)) {
+				qsDestination += '/' + cfsSource->GetFileName(qtwiFile);
+			} // if
+		} else {
+			// many files selected
+			qsDestination += "/*.*";
+		} // if else
+	} // if
+
+	stcTypeCount = GetFilesTypeCount(cfsSource, qlSource);
+
+	euaAction = cFileOperationDialog::CancelAction;
+	switch (eoOperation) {
+		case cFileOperationDialog::DeleteOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation, tr("&Delete %1 files and %2 directories.").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+			break;
+		case cFileOperationDialog::CopyOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation, tr("Co&py %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+			break;
+		case cFileOperationDialog::MoveOperation:
+			euaAction = cfodDialog.ShowDialog(eoOperation, tr("&Move %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+	} // switch
+} // Operation
 
 // start shell command window
 const void cFileControl::StartTerminal(const QString &qsPath) const

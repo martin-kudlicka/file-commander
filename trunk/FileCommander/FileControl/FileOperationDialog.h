@@ -5,7 +5,6 @@
 
 #include "ui_FileOperationDialog.h"
 
-#include "FileOperation/FileRoutine.h"
 #include <QtGui/QMainWindow>
 #include "Settings.h"
 #include <QtGui/QCompleter>
@@ -15,7 +14,14 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 	Q_OBJECT
 
 	public:
-		enum eUserAction {								///< action done by user
+		/// file operation type
+		enum eOperation {
+			CopyOperation,									///< copy
+			MoveOperation,									///< move
+			DeleteOperation								///< delete
+		};
+		/// action done by user
+		enum eUserAction {
 			CancelAction,									///< cancel button selected
 			OkAction,										///< OK button selected
 			EnqueueAction									///< enqueue button selected
@@ -26,7 +32,7 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 																/**< \param qmwParent parent window of this dialog
 																	  \param csSettings application's settings file */
 
-		eUserAction ShowDialog(const cFileRoutine::eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter, const bool &bArchive = false);
+		const eUserAction ShowDialog(const eOperation &eoOperation, const QString &qsCount, QString *qsDestination, QString *qsFilter);
 																///< shows copy or move dialog
 																/**< \param eoOperation type of operation
 																	  \param qsCount string with count of files and directories
@@ -41,16 +47,16 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 			QCompleter qcDestination;					///< completer for destination combo box
 
 		private slots:
-			void on_qpbBrowse_clicked(bool checked = false);
+			const void on_qpbBrowse_clicked(bool checked = false);
 																///< Browse button clicked on
 																/**< \param checked true if button is checkable and checked */
-			void on_qpbCancel_clicked(bool checked = false);
+			const void on_qpbCancel_clicked(bool checked = false);
 																///< Cancel button clicked on
 																/**< \param checked true if button is checkable and checked */
-			void on_qpbEnqueue_clicked(bool checked = false);
+			const void on_qpbEnqueue_clicked(bool checked = false);
 																///< Enqueue button clicked on
 																/**< \param checked true if button is checkable and checked */
-			void on_qpbOK_clicked(bool checked = false);
+			const void on_qpbOK_clicked(bool checked = false);
 																///< OK button clicked on
 																/**< \param checked true if button is checkable and checked */
 }; // cFileOperationDialog
