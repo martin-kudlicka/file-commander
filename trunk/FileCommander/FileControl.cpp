@@ -6,6 +6,7 @@
 #include "FileControl/Process.h"
 #include <QtCore/QDateTime>
 #include "ListerMainWindow.h"
+#include <QtGui/QInputDialog>
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin)
@@ -101,6 +102,24 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 		} // if else
 	} // for
 } // CompareDirectories
+
+// create new directory
+const void cFileControl::CreateDirectory(const cFileSystem *cfsFileSystem) const
+{
+	// TODO CreateDirectory CanCreateDirectory test
+	QString qsName;
+
+	qsName = QInputDialog::getText(qmwParent, tr("New directory"), tr("Enter name of a new directory:"));
+	if (!qsName.isEmpty()) {
+		QDir qdDir;
+		QString qsNewDirectory;
+
+		cfsFileSystem->CreateDir(qsName);
+
+		// set focus to new directory
+		//cpActive->RefreshContent(QFileInfo(qsNewDirectory).fileName());
+	} // if
+} // CreateDirectory
 
 // edit selected files
 const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const
