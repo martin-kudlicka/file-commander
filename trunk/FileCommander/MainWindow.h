@@ -158,8 +158,20 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param action directory information */
 		const void on_qpbEdit_clicked(bool checked = false) const;		///< edit button is clicked on
 																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbLeftRootDir_clicked(bool checked = false) const;
+																							///< left root dir button is clicked on
+																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbLeftUpDir_clicked(bool checked = false) const;
+																							///< left up dir button is clicked on
+																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbNewDirectory_clicked(bool checked = false) const;
 																							///< new directory button is clicked on
+																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbRightRootDir_clicked(bool checked = false) const;
+																							///< right root dir button is clicked on
+																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbRightUpDir_clicked(bool checked = false) const;
+																							///< right up dir button is clicked on
 																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbTerminal_clicked(bool checked = false) const;	///< terminal button is clicked on
 																							/**< \param checked true if button is checkable and checked */

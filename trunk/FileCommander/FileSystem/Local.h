@@ -130,6 +130,7 @@ class cLocal : public cFileSystem
 																								/**< \return tab text */
 		const QString GetVolumeName() const;										///< find out name of the disk
 																								/**< \return name of the disk */
+		const void GoToRootDir();														///< set path to root directory
 		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file to check
@@ -149,10 +150,11 @@ class cLocal : public cFileSystem
 																									  \param qsRootPath path to root of this file system
 																									  \param qsPath to initialize local file system
 																									  \param bStartup true if initializing file system class */
-		const void SetPath(const QString &qsPath, const bool &bStartup = false);
+		const bool SetPath(const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system without drive change
 																								/**< \param qsPath to initialize local file system
-																									  \param bStartup true if initializing file system class */
+																									  \param bStartup true if initializing file system class
+																									  \return true if succesfull */
 		const void ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent

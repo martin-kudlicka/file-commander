@@ -713,6 +713,18 @@ const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
 	cfcFileControl->Edit(cpSource->GetFileSystem(), cpSource->GetSelectedFiles());
 } // on_qpbEdit_clicked
 
+// left root dir button is clicked on
+const void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */) const
+{
+	cpLeft->GetFileSystem()->GoToRootDir();
+} // on_qpbLeftRootDir_clicked
+
+// left up dir button is clicked on
+const void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */) const
+{
+	cpLeft->GetFileSystem()->GoToUpDir();
+} // on_qpbLeftUpDir_clicked
+
 // new directory button is clicked on
 const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) const
 {
@@ -726,6 +738,18 @@ const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) con
 		cpSource->GoToFile(qsName.left(qsName.indexOf(QDir::separator())));
 	} // if
 } // on_qpbNewDirectory_clicked
+
+// right root dir button is clicked on
+const void cMainWindow::on_qpbRightRootDir_clicked(bool checked /* false */) const
+{
+	cpRight->GetFileSystem()->GoToRootDir();
+} // on_qpbRightRootDir_clicked
+
+// right up dir button is clicked on
+const void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */) const
+{
+	cpRight->GetFileSystem()->GoToUpDir();
+} // on_qpbRightUpDir_clicked
 
 // terminal button is clicked on
 const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
