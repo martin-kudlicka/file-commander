@@ -254,7 +254,9 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	cFileOperationDialog::eUserAction euaAction;
 	int iI;
 	QString qsDestination, qsFilter;
+	sOperation soOperation;
 	sTypeCount stcTypeCount;
+	void *vFileList;
 
 	// ignore ".." directory
 	for (iI = 0; iI < qlSource.count(); iI++) {
@@ -278,7 +280,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 			qtwiFile = qlSource.at(0);
 			if (cfsSource->IsFile(qtwiFile)) {
-				qsDestination += '/' + cfsSource->GetFileName(qtwiFile);
+				qsDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
 			} // if
 		} else {
 			// many files selected
@@ -299,6 +301,62 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		case cFileOperationDialog::MoveOperation:
 			euaAction = cfodDialog.ShowDialog(eoOperation, tr("&Move %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
 	} // switch
+
+	if (euaAction == cFileOperationDialog::CancelAction) {
+		return;
+	} // if
+
+	// create file systems for file operation
+	soOperation.cfsSource = GetFileSystem(cfsSource->GetDrive(), cfsSource->GetPath());
+	if (eoOperation != cFileOperationDialog::DeleteOperation) {
+		if (qsDestination.length() > 2 && qsDestination.at(1) == ':') {
+			// absolute path -> can be different file system than source
+			sPathInfo spiPathInfo;
+
+			spiPathInfo = GetPathInfo(qsDestination);
+			soOperation.cfsDestination = GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath);
+		} else {
+			// relative path -> same file system as source
+			soOperation.cfsDestination = GetFileSystem(cfsSource->GetDrive(), cfsSource->GetPath());
+		} // if else
+	} else {
+		soOperation.cfsDestination = NULL;
+	} // if else
+	// operation type
+	soOperation.eoType = eoOperation;
+
+	// copy selected file list to the new source file system
+	vFileList = cfsSource->GetFileList(qlSource);
+	soOperation.cfsSource->SetOperationFileList(vFileList);
+	delete vFileList;
+
+	// correct destination path
+	if (eoOperation != cFileOperationDialog::DeleteOperation) {
+		if (cfsSource->DirExists(qsDestination)) {
+			QDir::cleanPath(qsDestination) += "/*.*";
+		} // if
+	} // if
+
+	// process
+	switch (euaAction) {
+		case cFileOperationDialog::OkAction:
+			if (eoOperation == cFileOperationDialog::DeleteOperation) {
+				// delete
+				/*cdDelete = new cDelete(qmwParent, qhblOperations, csSettings);
+				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
+				qlDelete.append(cdDelete);
+				cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);*/
+			} else {
+				// copy or move
+				/*ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
+				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+				qlCopyMove.append(ccmCopyMove);
+				ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);*/
+			} // if else
+			break;
+		case cFileOperationDialog::EnqueueAction:
+			;//Enque(eoOperation, qfilSource, qsDestination, qsFilter);
+	} // if
 } // Operation
 
 // start shell command window
