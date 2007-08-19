@@ -123,7 +123,6 @@ const void cLocal::Delete(const QString &qsFilter, const cFileOperation::eOperat
 {
 	cldDelete = new cLocalDelete(qmwParent, qhblOperations, csSettings);
 	connect(cldDelete, SIGNAL(finished()), SLOT(on_cLocalDelete_OperationFinished()));
-	// TODO Delete append to queue
 	cldDelete->Delete(qfilOperation, qsFilter, eopPosition);
 } // Delete
 

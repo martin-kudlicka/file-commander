@@ -1,4 +1,4 @@
-#include "FileOperation/QueueWidget.h"
+#include "FileControl/QueueWidget.h"
 
 // constructor
 cQueueWidget::cQueueWidget()
@@ -7,13 +7,13 @@ cQueueWidget::cQueueWidget()
 } // cQueueWidget
 
 // add new item into list
-void cQueueWidget::on_cFileOperation_AddIntoQueueList(QListWidgetItem *qlwiItem)
+const void cQueueWidget::on_cFileOperation_AddIntoQueueList(QListWidgetItem *qlwiItem) const
 {
 	qlwOperations->addItem(qlwiItem);
 } // on_cFileOperation_addItem
 
 // different queued operations selected
-void cQueueWidget::on_qlwOperations_itemSelectionChanged()
+const void cQueueWidget::on_qlwOperations_itemSelectionChanged() const
 {
 	if (qlwOperations->selectedItems().count() > 0) {
 		qpbRemove->setEnabled(true);
@@ -23,7 +23,7 @@ void cQueueWidget::on_qlwOperations_itemSelectionChanged()
 } // on_qlwOperations_itemSelectionChanged
 
 // - button is clicked on
-void cQueueWidget::on_qpbRemove_clicked(bool checked /* false */)
+const void cQueueWidget::on_qpbRemove_clicked(bool checked /* false */) const
 {
 	emit RemoveQueuedItems(qlwOperations->selectedItems());
 } // on_qpbRemove_clicked

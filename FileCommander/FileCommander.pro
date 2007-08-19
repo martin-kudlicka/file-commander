@@ -14,6 +14,7 @@ CONFIG(release, debug|release) {
 
 FORMS = MainWindow.ui \
 		  FileControl/FileOperationDialog.ui \
+		  FileControl/QueueWidget.ui \
 		  FileSystem/DeleteDialog.ui \
 		  FileSystem/DeleteWidget.ui \
 		  Panel/SelectFilesDialog.ui \
@@ -29,6 +30,7 @@ HEADERS = MainWindow.h \
 			 FileControl.h \
 			 FileControl/Process.h \
 			 FileControl/FileOperationDialog.h \
+			 FileControl/QueueWidget.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
 			 FileSystem/FileOperation.h \
@@ -71,6 +73,7 @@ SOURCES = FileCommander.cpp \
 			 FileControl.cpp \
 			 FileControl/Process.cpp \
 			 FileControl/FileOperationDialog.cpp \
+			 FileControl/QueueWidget.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
 			 FileSystem/FileOperation.cpp \

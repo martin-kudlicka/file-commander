@@ -16,6 +16,15 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
 	this->clpListerPlugin = clpListerPlugin;
+	cfsInQueue = NULL;
+
+	// queue widget
+	cqwQueue.hide();
+	qhblOperations->insertWidget(iQUEUE_WIDGET_POS, &cqwQueue);
+
+	// connections
+	connect(this, SIGNAL(AddIntoQueueList(QListWidgetItem *)), &cqwQueue, SLOT(on_cFileOperation_AddIntoQueueList(QListWidgetItem *)));
+	connect(&cqwQueue, SIGNAL(RemoveQueuedItems(QList<QListWidgetItem *>)), SLOT(on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *>)));
 } // cFileControl
 
 // change file system according to new drive
@@ -142,6 +151,36 @@ const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTre
 	} // for
 } // Edit
 
+// place operation into queue
+const void cFileControl::Enqueue(const sOperation &soOperation)
+{
+	QListWidgetItem *qlwiOperation;
+	QString qsItem;
+
+	// queue text
+	switch (soOperation.eoType) {
+		case cFileOperationDialog::CopyOperation:
+			qsItem = tr("copy");
+			break;
+		case cFileOperationDialog::DeleteOperation:
+			qsItem = tr("del");
+			break;
+		case cFileOperationDialog::MoveOperation:
+			qsItem = tr("move");
+	} // switch
+	qsItem += ": " + soOperation.cfsSource->GetPath();
+	if (soOperation.eoType != cFileOperationDialog::DeleteOperation) {
+		qsItem += " -> " + soOperation.cfsDestination->GetPath();
+	} // if
+
+	// add new item into queue
+	qlwiOperation = new QListWidgetItem(qsItem);
+	qqOperations.enqueue(QPair<QListWidgetItem *, sOperation>(qlwiOperation, soOperation));
+	emit AddIntoQueueList(qlwiOperation);
+
+	ProcessQueue();
+} // Enqueue
+
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const
 {
@@ -248,14 +287,37 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 } // GetPathInfo
 
 // file operation finished
-const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem) const
+const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem)
 {
-	// TODO on_cFileSystem_OperationFinished
-	CloseFileSystem(cfsFileSystem);
+	int iI;
+
+	for (iI = 0; iI < qlOperations.count(); iI++) {
+		const sOperation *soOperation;
+
+		soOperation = &qlOperations.at(iI);
+		if (soOperation->cfsSource == cfsFileSystem || soOperation->cfsDestination == cfsFileSystem) {
+			// found finished operation
+			if (soOperation->cfsSource == cfsInQueue) {
+				// it's queued operation
+				cfsInQueue = NULL;
+				ProcessQueue();
+			} // if
+			CloseFileSystem(soOperation->cfsSource);
+			CloseFileSystem(soOperation->cfsDestination);
+			qlOperations.removeAt(iI);
+			break;
+		} // if
+	} // for
 } // on_cFileSystem_OperationFinished
 
+// remove queued items (operations)
+const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems) const
+{
+	// TODO on_cqwQueue_RemoveQueuedItems
+} // on_cqwQueue_RemoveQueuedItems
+
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination) const
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
@@ -350,6 +412,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 			if (eoOperation == cFileOperationDialog::DeleteOperation) {
 				// delete
 				connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+				qlOperations.append(soOperation);
 				soOperation.cfsSource->Delete(qsFilter, cFileOperation::ForegroundOperation);
 			} else {
 				// copy or move
@@ -358,9 +421,43 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 			} // if else
 			break;
 		case cFileOperationDialog::EnqueueAction:
-			;//Enque(eoOperation, qfilSource, qsDestination, qsFilter);
+			soOperation.qsFilter = qsFilter;
+			Enqueue(soOperation);
 	} // if
 } // Operation
+
+// process first queued operation
+const void cFileControl::ProcessQueue()
+{
+	if (cfsInQueue == NULL && !qqOperations.isEmpty()) {
+		QPair<QListWidgetItem *, sOperation> qpOperation;
+
+		qpOperation = qqOperations.dequeue();
+		delete qpOperation.first;
+		cfsInQueue = qpOperation.second.cfsSource;
+
+		switch (qpOperation.second.eoType) {
+			case cFileOperationDialog::CopyOperation:
+			case cFileOperationDialog::MoveOperation:
+				/*ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
+				ccmInQueue = ccmCopyMove;
+				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
+				qlCopyMove.append(ccmCopyMove);
+				ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);*/
+				break;
+			case cFileOperationDialog::DeleteOperation:
+				connect(qpOperation.second.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+				qlOperations.append(qpOperation.second);
+				qpOperation.second.cfsSource->Delete(qpOperation.second.qsFilter, cFileOperation::BackgroundOperation);
+		} // switch
+	} // if
+
+	if (!qqOperations.isEmpty()) {
+		cqwQueue.show();
+	} else {
+		cqwQueue.hide();
+	} // if else
+} // ProcessQueue
 
 // start shell command window
 const void cFileControl::StartTerminal(const QString &qsPath) const
