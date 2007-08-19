@@ -13,6 +13,7 @@ CONFIG(release, debug|release) {
 }
 
 FORMS = MainWindow.ui \
+		  FileControl/FileOperationDialog.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
@@ -25,6 +26,7 @@ FORMS = MainWindow.ui \
 HEADERS = MainWindow.h \
 			 FileControl.h \
 			 FileControl/Process.h \
+			 FileControl/FileOperationDialog.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
 			 FileSystem/Local/ShellMenu.h \
@@ -58,6 +60,7 @@ SOURCES = FileCommander.cpp \
 			 MainWindow.cpp \
 			 FileControl.cpp \
 			 FileControl/Process.cpp \
+			 FileControl/FileOperationDialog.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
 			 FileSystem/Local/ShellMenu.cpp \

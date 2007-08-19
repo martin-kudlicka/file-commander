@@ -707,6 +707,18 @@ const void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action
 	} // if
 } // on_qmRightHistoryDirectoryList_triggered
 
+// copy button is clicked on
+const void cMainWindow::on_qpbCopy_clicked(bool checked /* false */) const
+{
+	cfcFileControl->Operation(cFileOperationDialog::CopyOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem());
+} // on_qpbCopy_clicked
+
+// delete button is clicked on
+const void cMainWindow::on_qpbDelete_clicked(bool checked /* false */) const
+{
+	cfcFileControl->Operation(cFileOperationDialog::DeleteOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), NULL);
+} // on_qpbDelete_clicked
+
 // edit button is clicked on
 const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
 {
@@ -724,6 +736,12 @@ const void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */) const
 {
 	cpLeft->GetFileSystem()->GoToUpDir();
 } // on_qpbLeftUpDir_clicked
+
+// copy button is clicked on
+const void cMainWindow::on_qpbMove_clicked(bool checked /* false */) const
+{
+	cfcFileControl->Operation(cFileOperationDialog::MoveOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem());
+} // on_qpbMove_clicked
 
 // new directory button is clicked on
 const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) const
