@@ -25,6 +25,7 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileCont
 
 	setParent(qwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
+	setWindowModality(Qt::WindowModal);
 
 	this->cpPanel = cpPanel;
 	this->cfcFileControl = cfcFileControl;
@@ -511,9 +512,13 @@ const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 } // on_qpbStop_clicked
 
 // view button is clicked on
-const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
 {
-	// TODO on_qpbView_clicked
+	sFound *sfFound;
+
+	sfFound = &qhFound[qtwSearch->currentItem()];
+
+	cfcFileControl->View(sfFound->cfsFileSytem, sfFound->qtwiFile);
 } // on_qpbView_clicked
 
 // refreshes list of saved settings

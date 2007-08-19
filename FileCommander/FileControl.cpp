@@ -231,3 +231,12 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTre
 		} // if
 	} // for
 } // View
+
+// view selected file
+const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const
+{
+	QList<QTreeWidgetItem *> qlFile;
+
+	qlFile.append(qtwiFile);
+	View(cfsFileSystem, qlFile);
+} // View
