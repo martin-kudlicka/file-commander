@@ -28,8 +28,7 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 #ifdef Q_WS_WIN
 		if (PathExists(qfiFile->filePath())) {
 #endif
-			qdDir.cd(qfiFile->filePath());
-			emit ContentChanged(this);
+			SetPath(qfiFile->filePath());
 #ifdef Q_WS_WIN
 		} // if
 #endif
@@ -68,7 +67,7 @@ const bool cLocal::CheckPath()
 	while (!qdDir.exists()) {
 #endif
 		// invalid path
-		if (!qdDir.cdUp()) {
+		if (!SetPath("..")) {
 			// even root doesn't exists
 			emit Unaccessible();
 			return false;
@@ -522,12 +521,16 @@ const QString cLocal::GetVolumeName() const
 	return qsName;
 } // GetVolumeName
 
+// set path to root directory
+const void cLocal::GoToRootDir()
+{
+	SetPath(qsRootPath);
+} // GoToRootDir
+
 // go one directory up if possible
 const void cLocal::GoToUpDir()
 {
-	if (qdDir.cdUp()) {
-		emit ContentChanged(this);
-	} // if
+	SetPath("..");
 } // GoToUpDir
 
 // check if file is directory
@@ -591,15 +594,21 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 } // SetPath
 
 // change path for this file system without drive change
-const void cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
+const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
 {
+	bool bResult;
+
 	if (!bStartup) {
 		qfswWatcher.removePath(qdDir.path());
 	} // if
-	qdDir.setPath(qsPath);
+	bResult = qdDir.cd(qsPath);
 	qfswWatcher.addPath(qdDir.path());
 
-	emit ContentChanged(this);
+	if (bResult) {
+		emit ContentChanged(this);
+	} // if
+
+	return bResult;
 } // SetPath
 
 // custom context menu on right click
