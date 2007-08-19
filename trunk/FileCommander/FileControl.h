@@ -70,6 +70,10 @@ class cFileControl : public QObject
 																						///< view selected files
 																						/**< \param cfsFileSystem file system
 																							  \param qlSelectedFiles files to show */
+		const void View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const;
+																						///< view selected file
+																						/**< \param cfsFileSystem file system
+																							  \param qtwiFile file to show */
 
 	private:
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
