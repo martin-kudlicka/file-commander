@@ -106,12 +106,14 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 } // cLocal
 
 // create new directory
-const void cLocal::CreateDir(const QString &qsName) const
+const void cLocal::CreateDir(const QString &qsName)
 {
 	QString qsNewDirectory;
 
-	qsNewDirectory = GetPath() + '/' + qsName;
+	qsNewDirectory = qdDir.path() + '/' + qsName;
+	qfswWatcher.removePath(qdDir.path());
 	qdDir.mkpath(qsNewDirectory);
+	qfswWatcher.addPath(qdDir.path());
 } // CreateDir
 
 // searching of files finished

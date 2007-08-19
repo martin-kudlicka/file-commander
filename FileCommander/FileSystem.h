@@ -31,7 +31,7 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file to add to custom list
 																											  \return new item in custom list */
 		virtual const void BeginSearch() = 0;												///< begin of searching files
-		virtual const void CreateDir(const QString &qsName) const = 0;				///< create new directory
+		virtual const void CreateDir(const QString &qsName) = 0;						///< create new directory
 																										/**< \param qsName new directory name */
 		virtual const void EndSearch(const bool &bClearCustomOnly = false) = 0;	///< searching of files finished
 																										/**< \param bClearCustomOnly just clear custom file list if true */

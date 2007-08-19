@@ -104,7 +104,7 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 } // CompareDirectories
 
 // create new directory
-const void cFileControl::CreateDirectory(const cFileSystem *cfsFileSystem) const
+const QString cFileControl::CreateDirectory(cFileSystem *cfsFileSystem) const
 {
 	// TODO CreateDirectory CanCreateDirectory test
 	QString qsName;
@@ -115,10 +115,9 @@ const void cFileControl::CreateDirectory(const cFileSystem *cfsFileSystem) const
 		QString qsNewDirectory;
 
 		cfsFileSystem->CreateDir(qsName);
-
-		// set focus to new directory
-		//cpActive->RefreshContent(QFileInfo(qsNewDirectory).fileName());
 	} // if
+
+	return qsName;
 } // CreateDirectory
 
 // edit selected files
