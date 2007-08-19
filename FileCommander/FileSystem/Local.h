@@ -50,6 +50,8 @@ class cLocal : public cFileSystem
 		const void ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const;
 																								///< clear file table before next fill of it
 																								/**< \param qhTable file table to clear */
+		const void CreateDir(const QString &qsName) const;						///< create new directory
+																								/**< \param qsName new directory name */
 		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
 																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);

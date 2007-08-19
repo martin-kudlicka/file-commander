@@ -713,6 +713,12 @@ const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
 	cfcFileControl->Edit(cpSource->GetFileSystem(), cpSource->GetSelectedFiles());
 } // on_qpbEdit_clicked
 
+// new directory button is clicked on
+const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) const
+{
+	cfcFileControl->CreateDirectory(cpSource->GetFileSystem());
+} // on_qpbNewDirectory_clicked
+
 // terminal button is clicked on
 const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
 {

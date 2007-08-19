@@ -103,6 +103,15 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 	SetPath(qsDrive, qsRootPath, qsPath);
 } // cLocal
 
+// create new directory
+const void cLocal::CreateDir(const QString &qsName) const
+{
+	QString qsNewDirectory;
+
+	qsNewDirectory = GetPath() + '/' + qsName;
+	qdDir.mkpath(qsNewDirectory);
+} // CreateDir
+
 // searching of files finished
 const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 {
