@@ -5,7 +5,6 @@
 #include "FileSystem/Local.h"
 #include "FileControl/Process.h"
 #include <QtCore/QDateTime>
-#include "ListerMainWindow.h"
 #include <QtGui/QInputDialog>
 
 // constructor
@@ -310,6 +309,12 @@ const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSy
 	} // for
 } // on_cFileSystem_OperationFinished
 
+// closing lister window
+const void cFileControl::on_cListerMainWindow_Close(cListerMainWindow *clmwLister) const
+{
+	clmwLister->deleteLater();
+} // on_cListerMainWindow_Close
+
 // remove queued items (operations)
 const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems)
 {
@@ -515,6 +520,7 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem 
 			cListerMainWindow *clmwLister;
 
 			clmwLister = new cListerMainWindow(csSettings, clpListerPlugin, cfsFileSystem->GetFilePath(qtwiFile));
+			connect(clmwLister, SIGNAL(Close(cListerMainWindow *)), SLOT(on_cListerMainWindow_Close(cListerMainWindow *)));
 			clmwLister->show();
 		} else {
 			cProcess cpProcess;

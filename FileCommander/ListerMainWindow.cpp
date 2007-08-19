@@ -85,6 +85,7 @@ void cListerMainWindow::closeEvent(QCloseEvent *event)
 	if (hwPlugin) {
 		ClosePlugin();
 	} // if
+	emit Close(this);
 } // closeEvent
 
 // destroy of plugin's window

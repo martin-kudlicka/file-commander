@@ -85,12 +85,12 @@ class cFileSystem : public QObject
 																										///< file list of specified file system's type
 																										/**< \param qlSelected selected files to get file list for
 																											  \return file list of specified file system's type */
-		virtual const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const = 0;
+		virtual const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
 																										///< get file name without extension
 																										/**< \param qtwiFile file to find name for
 																											  \param bBracketsAllowed brackets around file name allowed flag
 																											  \return file name without extension */
-		virtual const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const = 0;
+		virtual const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
 																										///< get file name with extension
 																										/**< \param \param qtwiFile file to find name with extension for
 																											  \param bBracketsAllowed brackets around file name allowed flag

@@ -113,12 +113,12 @@ class cLocal : public cFileSystem
 																								///< file list of specified file system's type
 																								/**< \param qlSelected selected files to get file list for
 																									  \return file list of specified file system's type */
-		const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const;
+		const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
 																								///< get file name without extension
 																								/**< \param qtwiFile file to find name for
 																									  \param bBracketsAllowed brackets around file name allowed flag
 																									  \return file name without extension */
-		const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const;
+		const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
 																										///< get file name with extension
 																										/**< \param \param qtwiFile file to find name with extension for
 																											  \param bBracketsAllowed brackets around file name allowed flag
