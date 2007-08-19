@@ -16,7 +16,6 @@ const QString qsOVERWRITE_ALL = "OverwriteAll";
 const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
-const QString qsYES_TO_ALL = "YesToAll";
 
 const QString qsNATIVE = QT_TR_NOOP("native");
 const QString qsNATIVE2 = QT_TR_NOOP("Native");

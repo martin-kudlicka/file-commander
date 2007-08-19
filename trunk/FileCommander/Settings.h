@@ -33,6 +33,7 @@ const QString qsNO = "no";
 const QString qsNORMAL = "Normal";
 const QString qsONLY_FILES = "OnlyFiles";
 const QString qsSIZE = "Size";
+const QString qsYES_TO_ALL = "YesToAll";
 
 // shortcuts
 const QString qsSHORTCUT__LISTER__FILE__OPEN = "Open...";

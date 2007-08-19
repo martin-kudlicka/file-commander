@@ -1,25 +1,9 @@
-#include "FileOperation/Permission.h"
+#include "FileSystem/Permission.h"
 
 #include <QtGui/QMessageBox>
 
-// show permission dialog (single thread)
-cPermission::eChoice cPermission::Exec(const QString &qsFilename, const QString &qsInformation)
-{
-	return ShowDialog(qsFilename, qsInformation);
-} // Exec
-
-// show conflict dialog (multithread)
-void cPermission::Show(const QString &qsFilename, const QString &qsInformation)
-{
-	eChoice ecResponse;
-
-	ecResponse = ShowDialog(qsFilename, qsInformation);
-
-	emit Finished(ecResponse);
-} // Show
-
 // show permission dialog
-cPermission::eChoice cPermission::ShowDialog(const QString &qsFilename, const QString &qsInformation)
+const void cPermission::Show(const QString &qsFilename, const QString &qsInformation) const
 {
 	eChoice ecResponse;
 
@@ -44,5 +28,5 @@ cPermission::eChoice cPermission::ShowDialog(const QString &qsFilename, const QS
 			ecResponse = Cancel;
 	} // switch
 
-	return ecResponse;
-} // ShowDialog
+	emit Finished(ecResponse);
+} // Show

@@ -12,20 +12,20 @@ class cDeleteNonEmptyDirectory : public QObject
 	public:
 		/// user response
 		enum eChoice {
-			Ask,																					///< no permanent answer yet
-			Yes,																					///< yes
-			No,																					///< no
-			YesToAll,																			///< yes to all
-			NoToAll,																				///< no to all
-			Cancel																				///< cancel
+			Ask,																							///< no permanent answer yet
+			Yes,																							///< yes
+			No,																							///< no
+			YesToAll,																					///< yes to all
+			NoToAll,																						///< no to all
+			Cancel																						///< cancel
 		};
 
 	signals:
-		void Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse);	///< dialog closed with user response
-																									/**< \param ecResponse dialog result */
+		void Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse) const;	///< dialog closed with user response
+																											/**< \param ecResponse dialog result */
 	private slots:
-		void Show(const QString &qsDirectory);											///< show question dialog
-																									/**< \param qsDirectory directory to delete */
+		const void Show(const QString &qsDirectory) const;									///< show question dialog
+																											/**< \param qsDirectory directory to delete */
 }; // cDeleteNonEmptyDirectory
 
 #endif
