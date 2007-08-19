@@ -136,7 +136,7 @@ class cFileControl : public QObject
 		const void on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem);
 																						///< file operation finished
 																						/**< \param cfsFileSystem filesystem identifier */
-		const void on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems) const;
+		const void on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems);
 																						///< remove queued items (operations)
 																						/**< \param qlItems operations to remove */
 }; // cFileControl
