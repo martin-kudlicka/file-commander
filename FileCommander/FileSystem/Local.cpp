@@ -115,6 +115,15 @@ const void cLocal::CreateDir(const QString &qsName)
 	qfswWatcher.addPath(qdDir.path());
 } // CreateDir
 
+// check if specified directory exists
+const bool cLocal::DirExists(const QString &qsDirectory) const
+{
+	QDir qdDir;
+
+	qdDir.setPath(qsDirectory);
+	return qdDir.exists();
+} // DirExists
+
 // searching of files finished
 const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 {
@@ -334,6 +343,21 @@ const QIcon cLocal::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 {
 	return qfipIconProvider.icon(qhFiles.value(qtwiFile));
 } // GetFileIcon
+
+// file list of specified file system's type
+void *cLocal::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
+{
+	int iI;
+	QFileInfoList *qfilFiles;
+
+	qfilFiles = new QFileInfoList();
+
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		qfilFiles->append(qhFiles.value(qlSelected.at(iI)));
+	} // for
+
+	return qfilFiles;
+} // GetFileList
 
 // get file name without extension
 const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
@@ -583,6 +607,12 @@ const void cLocal::RetreiveContentDelayedValues()
 	ccpdContentPluginDelayed->Start(qqContentDelayedParameters);
 	qqContentDelayedParameters.clear();
 } // RetreiveContentDelayedValues
+
+// set file list for file operation
+const void cLocal::SetOperationFileList(void *vFileList)
+{
+	qlOperation = *static_cast<QFileInfoList *>(vFileList);
+} // SetOperationFileList
 
 // change path for this file system
 const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup /* false */)

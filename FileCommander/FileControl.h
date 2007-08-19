@@ -91,6 +91,12 @@ class cFileControl : public QObject
 																							  \param qtwiFile file to show */
 
 	private:
+		/// operation description
+		struct sOperation {
+			cFileOperationDialog::eOperation eoType;						///< type of operation
+			cFileSystem *cfsSource;												///< source file system
+			cFileSystem *cfsDestination;										///< destination file system
+		};
 		/// count of file types
 		struct sTypeCount {
 			uint FileType;															///< file

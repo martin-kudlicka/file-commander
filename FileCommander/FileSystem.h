@@ -33,6 +33,9 @@ class cFileSystem : public QObject
 		virtual const void BeginSearch() = 0;												///< begin of searching files
 		virtual const void CreateDir(const QString &qsName) = 0;						///< create new directory
 																										/**< \param qsName new directory name */
+		virtual const bool DirExists(const QString &qsDirectory) const = 0;		///< check if specified directory exists
+																										/**< \param qsDirectory directory to check
+																											  \return true if directory exists */
 		virtual const void EndSearch(const bool &bClearCustomOnly = false) = 0;	///< searching of files finished
 																										/**< \param bClearCustomOnly just clear custom file list if true */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
@@ -72,6 +75,10 @@ class cFileSystem : public QObject
 		virtual const QIcon GetFileIcon(QTreeWidgetItem *qtwiFile) const = 0;	///< get icon for specified file
 																										/**< \param qtwiFile file to find icon for
 																											  \return file icon */
+		virtual void *GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const = 0;
+																										///< file list of specified file system's type
+																										/**< \param qlSelected selected files to get file list for
+																											  \return file list of specified file system's type */
 		virtual const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
 																										///< get file name without extension
 																										/**< \param qtwiFile file to find name for
@@ -112,6 +119,8 @@ class cFileSystem : public QObject
 																										/**< \param qtwiFile file to check
 																											  \return true if file */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
+		virtual const void SetOperationFileList(void *vFileList) = 0;				///< set file list for file operation
+																										/**< \param vFileList file list to store */
 		virtual const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false) = 0;
 																										///< change path for this file system
 																										/**< \param qsDrive drive handled by this file system class

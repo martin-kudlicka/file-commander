@@ -36,6 +36,7 @@ class cLocal : public cFileSystem
 		QFileSystemWatcher qfswWatcher;												///< file system watcher for changes in current directory
 		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
+		QList<QFileInfo> qlOperation;													///< operation file list
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
 																								///< parameters for content delayed values
 		QString qsDrive;																	///< drive handled by this file system class
@@ -54,6 +55,9 @@ class cLocal : public cFileSystem
 																								/**< \param qhTable file table to clear */
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
+		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
+																								/**< \param qsDirectory directory to check
+																									  \return true if directory exists */
 		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
 																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
@@ -93,6 +97,10 @@ class cLocal : public cFileSystem
 		const QIcon GetFileIcon(QTreeWidgetItem *qtwiFile) const;			///< get icon for specified file
 																								/**< \param qtwiFile file to find icon for
 																									  \return file icon */
+		void *GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const;
+																								///< file list of specified file system's type
+																								/**< \param qlSelected selected files to get file list for
+																									  \return file list of specified file system's type */
 		const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
 																								///< get file name without extension
 																								/**< \param qtwiFile file to find name for
@@ -144,6 +152,8 @@ class cLocal : public cFileSystem
 																									  \return true if path exists and is accessible */
 #endif
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
+		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
+																								/**< \param vFileList file list to store */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
 																								/**< \param qsDrive drive handled by this file system class
