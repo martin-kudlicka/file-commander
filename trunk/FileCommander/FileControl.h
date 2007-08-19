@@ -8,6 +8,7 @@
 #include <QtGui/QMainWindow>
 #include "FileSystem.h"
 #include "Plugins/ContentPlugin.h"
+#include "Plugins/ListerPlugin.h"
 
 class cFileControl : public QObject
 {
@@ -32,12 +33,13 @@ class cFileControl : public QObject
 			eDriveType edtType;													///< drive type
 		};
 
-		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
+		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin);
 																						///< constructor
 																						/**< \param qmwParent parent window for dialogs
 																							  \param qbnlOperations layout for background and queued operations
 																							  \param csSettings application's configuration
-																							  \param ccpContentPlugin content plugin interface */
+																							  \param ccpContentPlugin content plugin interface
+																							  \param clpListerPlugin lister plugin interface */
 
 		const bool ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const;
 																						///< change file system according to new drive
@@ -64,9 +66,14 @@ class cFileControl : public QObject
 																							  \return path's information */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
+		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
+																						///< view selected files
+																						/**< \param cfsFileSystem file system
+																							  \param qlSelectedFiles files to show */
 
 	private:
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
+		cListerPlugin *clpListerPlugin;										///< lister plugin interface
 		cSettings *csSettings;													///< application's configuration
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
 		QMainWindow *qmwParent;													///< parent window for dialogs

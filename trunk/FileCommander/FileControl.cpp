@@ -5,14 +5,16 @@
 #include "FileSystem/Local.h"
 #include "FileControl/Process.h"
 #include <QtCore/QDateTime>
+#include "ListerMainWindow.h"
 
 // constructor
-cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
+cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
+	this->clpListerPlugin = clpListerPlugin;
 } // cFileControl
 
 // change file system according to new drive
@@ -200,3 +202,32 @@ const void cFileControl::StartTerminal(const QString &qsPath) const
 	// TODO Linux terminal
 #endif
 } // StartTerminal
+
+// view selected files
+const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const
+{
+	int iI;
+
+	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
+		QTreeWidgetItem *qtwiFile;
+
+		qtwiFile = qlSelectedFiles.at(iI);
+		if (cfsFileSystem->IsFile(qtwiFile)) {
+			// TODO View test for local file
+			if (csSettings->GetViewerType() == qsINTERNAL) {
+				cListerMainWindow *clmwLister;
+
+				clmwLister = new cListerMainWindow(csSettings, clpListerPlugin, cfsFileSystem->GetFilePath(qtwiFile));
+				clmwLister->show();
+			} else {
+				cProcess cpProcess;
+				QString qsCommand;
+
+				qsCommand = csSettings->GetExternalViewer();
+				qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
+
+				cpProcess.StartDetached(qsCommand);
+			} // if else
+		} // if
+	} // for
+} // View

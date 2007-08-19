@@ -88,7 +88,7 @@ void cListerMainWindow::closeEvent(QCloseEvent *event)
 } // closeEvent
 
 // destroy of plugin's window
-void cListerMainWindow::ClosePlugin()
+const void cListerMainWindow::ClosePlugin()
 {
 	if (qhiPlugins->value().tlcwListCloseWindow) {
 		qhiPlugins->value().tlcwListCloseWindow(hwPlugin);
@@ -124,7 +124,7 @@ bool cListerMainWindow::eventFilter(QObject *watched, QEvent *event)
 #endif
 
 // find next usable plugin for file
-bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow)
+const bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bForceShow)
 {
 	int iFlags, iI;
 
@@ -179,7 +179,7 @@ bool cListerMainWindow::FindNextPlugin(const bool &bNextPlugin, const bool &bFor
 } // FindNextPlugin
 
 // parameters for plugin
-int cListerMainWindow::GetSendCommandParameters()
+const int cListerMainWindow::GetSendCommandParameters() const
 {
 	int iParameters;
 
@@ -232,7 +232,7 @@ void cListerMainWindow::keyPressEvent(QKeyEvent *event)
 #endif
 
 // ANSI char set selected
-void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */) const
 {
 	if (checked) {
 		qaASCII->setChecked(false);
@@ -249,7 +249,7 @@ void cListerMainWindow::on_qaANSI_triggered(bool checked /* false */)
 } // on_qaANSI_triggered
 
 // ASCII char set selected
-void cListerMainWindow::on_qaASCII_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaASCII_triggered(bool checked /* false */) const
 {
 	if (checked) {
 		qaANSI->setChecked(false);
@@ -266,7 +266,7 @@ void cListerMainWindow::on_qaASCII_triggered(bool checked /* false */)
 } // on_qaASCII_triggered
 
 // binary mode selected
-void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 {
 	qaBinary->setChecked(true);
 	qaText->setChecked(false);
@@ -277,7 +277,7 @@ void cListerMainWindow::on_qaBinary_triggered(bool checked /* false */)
 } // on_qaBinary_triggered
 
 // copy as text selected
-void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */) const
 {
 	if (hwPlugin) {
 		// plugin
@@ -291,7 +291,7 @@ void cListerMainWindow::on_qaCopyAsText_triggered(bool checked /* false */)
 } // on_qaCopyAsText_triggered
 
 // find selected
-void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 {
 	bool bPlugin;
 	cFindDialog *cfdFind;
@@ -343,7 +343,7 @@ void cListerMainWindow::on_qaFind_triggered(bool checked /* false */)
 } // on_qaFind_triggered
 
 // find next selected
-void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
 {
 	if (hwPlugin) {
 		// plugin
@@ -358,7 +358,7 @@ void cListerMainWindow::on_qaFindNext_triggered(bool checked /* false */)
 } // on_qaFindNext_triggered
 
 // fit image to window selected
-void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */) const
 {
 	if (hwPlugin) {
 		if (qhiPlugins->value().tlscListSendCommand) {
@@ -368,7 +368,7 @@ void cListerMainWindow::on_qaFitImageToWindow_triggered(bool checked /* false */
 } // on_qaFitImageToWindow_triggered
 
 // hex mode selected
-void cListerMainWindow::on_qaHex_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaHex_triggered(bool checked /* false */)
 {
 	if (checked) {
 		qaText->setChecked(false);
@@ -382,7 +382,7 @@ void cListerMainWindow::on_qaHex_triggered(bool checked /* false */)
 } // on_qaHex_triggered
 
 // multimedia mode selected
-void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 {
 	if (checked) {
 		qaText->setChecked(false);
@@ -396,7 +396,7 @@ void cListerMainWindow::on_qaMultimedia_triggered(bool checked /* false */)
 } // on_qaMultimedia_triggered
 
 // open selected
-void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
 {
 	QString qsFile;
 
@@ -408,7 +408,7 @@ void cListerMainWindow::on_qaOpen_triggered(bool checked /* false */)
 } // on_qaOpen_triggered
 
 // print selected
-void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
 {
 	if (hwPlugin) {
 		// plugin
@@ -427,7 +427,7 @@ void cListerMainWindow::on_qaPrint_triggered(bool checked /* false */)
 } // on_qaPrint_triggered
 
 // print setup selected
-void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
 {
 	QPageSetupDialog qpsdPrint(&qpPrinter, this);
 
@@ -435,7 +435,7 @@ void cListerMainWindow::on_qaPrintSetup_triggered(bool checked /* false */)
 } // on_qaPrintSetup_triggered
 
 // save as selected
-void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
 {
 	QString qsFile;
 
@@ -447,7 +447,7 @@ void cListerMainWindow::on_qaSaveAs_triggered(bool checked /* false */)
 } // on_qaSaveAs_triggered
 
 // select all selected
-void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */) const
 {
 	if (hwPlugin) {
 		// plugin
@@ -461,7 +461,7 @@ void cListerMainWindow::on_qaSelectAll_triggered(bool checked /* false */)
 } // on_qaSelectAll_triggered
 
 // text mode selected
-void cListerMainWindow::on_qaText_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaText_triggered(bool checked /* false */)
 {
 	qaText->setChecked(true);
 	qaBinary->setChecked(false);
@@ -472,7 +472,7 @@ void cListerMainWindow::on_qaText_triggered(bool checked /* false */)
 } // on_qaText_triggered
 
 // variable char width selected
-void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false */) const
 {
 	if (checked) {
 		qaANSI->setChecked(false);
@@ -489,7 +489,7 @@ void cListerMainWindow::on_qaVariableCharWidth_triggered(bool checked /* false *
 } // on_qaVariableCharWidth_triggered
 
 // variable char width selected
-void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
+const void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */) const
 {
 	if (hwPlugin) {
 		// plugin
@@ -517,7 +517,7 @@ void cListerMainWindow::on_qaWrapText_triggered(bool checked /* false */)
 } // on_qaWrapText_triggered
 
 // enable/disable menu actions
-void cListerMainWindow::PermitMenuActions()
+const void cListerMainWindow::PermitMenuActions() const
 {
 	if (hwPlugin && !qhiPlugins->value().tlstListSearchText) {
 		qaFind->setEnabled(false);
@@ -547,7 +547,7 @@ void cListerMainWindow::resizeEvent(QResizeEvent *event)
 #endif
 
 // show file content
-void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
+const void cListerMainWindow::ShowContent(const bool &bNextPlugin /* false */, const bool &bForceShow /* false */)
 {
 	if (hwPlugin) {
 		ClosePlugin();

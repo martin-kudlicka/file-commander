@@ -175,7 +175,7 @@ cMainWindow::cMainWindow()
 	qcbRightDrive->setView(qtwRightDrives);
 
 	// file control class initizalization
-	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin);
+	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->clpListerPlugin);
 
 	// create panels
 	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
@@ -712,6 +712,12 @@ const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
 {
 	cfcFileControl->StartTerminal(cpSource->GetPath());
 } // on_qpbTerminal_clicked
+
+// view button is clicked on
+const void cMainWindow::on_qpbView_clicked(bool checked /* false */) const
+{
+	cfcFileControl->View(cpSource->GetFileSystem(), cpSource->GetSelectedFiles());
+} // on_qpbView_clicked
 
 // history back shortcut activated
 const void cMainWindow::on_qsHistoryBack_activated() const

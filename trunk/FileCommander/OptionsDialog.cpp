@@ -10,7 +10,6 @@
 #include <QtGui/QFontDialog>
 #include <QtGui/QDirModel>
 
-const QString qsASCII = "ASCII";
 const QString qsEXTERNAL = "External";
 const QString qsNO_TO_ALL = "NoToAll";
 const QString qsOVERWRITE_ALL = "OverwriteAll";

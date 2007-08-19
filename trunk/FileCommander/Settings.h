@@ -9,6 +9,7 @@
 #include <QtGui/QComboBox>
 
 const QString qsANSI = "ANSI";
+const QString qsASCII = "ASCII";
 const QString qsASK = "Ask";
 #ifdef Q_WS_WIN
 const QString qsATTRIBUTES = "Attributes";
