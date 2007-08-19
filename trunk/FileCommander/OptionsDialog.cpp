@@ -587,9 +587,9 @@ const void cOptionsDialog::FillShortcutItems(const cSettings::eShortcutCategory 
 
 	for (iI = 0; iI < qslItems.count(); iI++) {
 		QTreeWidgetItem *qtwShortcut;
-		QString *qsItem;
+		const QString *qsItem;
 
-		qsItem = &const_cast<QString &>(qslItems[iI]);
+		qsItem = &qslItems.at(iI);
 
 		qtwShortcut = new QTreeWidgetItem(qtwShortcutItem);
 		qtwShortcut->setText(0, *qsItem);
@@ -623,7 +623,7 @@ const cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem
 } // GetColumnInfo
 
 // collect favourite directories
-QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavouriteDirectories(QTreeWidgetItem *qtwiParent)
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavouriteDirectories(QTreeWidgetItem *qtwiParent) const
 {
 	int iI;
 	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
@@ -635,12 +635,12 @@ QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavour
 		cSettings::sFavouriteDirectory sfdFavouriteDirectory;
 		QTreeWidgetItem *qtwiChild;
 
-		qtwiChild = qlChildren[iI];
+		qtwiChild = qlChildren.at(iI);
 
 		if (qtwiChild->type() == cNewFavouriteDirectoryDialog::Directory) {
-			sFavouriteDirectory *sfdCurrent;
+			const sFavouriteDirectory *sfdCurrent;
 
-			sfdCurrent = &qhFavouriteDirectories[qtwiChild];
+			sfdCurrent = &qhFavouriteDirectories.value(qtwiChild);
 
 			sfdFavouriteDirectory.qsSource = sfdCurrent->qsSource;
 			sfdFavouriteDirectory.bTarget = sfdCurrent->bTarget;
@@ -1229,19 +1229,19 @@ const void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged() const
 } // on_qtwContentPlugins_itemSelectionChanged
 
 // another favourite directory is selected
-const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const
 {
 	qpbFavouriteRemove->setEnabled(current);
 
 	if (current && current->type() == cNewFavouriteDirectoryDialog::Directory) {
-		sFavouriteDirectory *sfdCurrent;
+		const sFavouriteDirectory *sfdCurrent;
 
 		qleFavouriteSource->setEnabled(true);
 		qpbFavouriteSourceBrowse->setEnabled(true);
 		qcbFavouriteTargetDirectory->setEnabled(true);
 
 		// set values for currently selected favourite directory
-		sfdCurrent = &qhFavouriteDirectories[current];
+		sfdCurrent = &qhFavouriteDirectories.value(current);
 		qleFavouriteSource->setText(sfdCurrent->qsSource);
 		qcbFavouriteTargetDirectory->setChecked(sfdCurrent->bTarget);
 		qleFavouriteTarget->setText(sfdCurrent->qsTarget);
@@ -1415,9 +1415,9 @@ const void cOptionsDialog::PrepareColumnsMenu()
 
 			qmFields = new QMenu(qmPlugins);
 			for (iI = 0; iI < qhiPlugins.value().qlFields.count(); iI++) {
-				cContentPlugin::sField *sfField;
+				const cContentPlugin::sField *sfField;
 				
-				sfField = &const_cast<cContentPlugin::sPluginInfo &>(qhiPlugins.value()).qlFields[iI];
+				sfField = &qhiPlugins.value().qlFields.at(iI);
 				if (sfField->iType != ft_fulltext) {
 					// plugin's fields (columns)
 					QAction *qaField;
@@ -1435,9 +1435,9 @@ const void cOptionsDialog::PrepareColumnsMenu()
 						qmUnits = new QMenu(qmFields);
 						for (iJ = 0; iJ < qslUnits.count(); iJ++) {
 							QAction *qaUnit;
-							QString *qsUnit;
+							const QString *qsUnit;
 
-							qsUnit = &qslUnits[iJ];
+							qsUnit = &qslUnits.at(iJ);
 
 							qaUnit = qmUnits->addAction(*qsUnit);
 							qaUnit->setData(QString("%1|%2|%3|%4").arg(qsPLUGINS).arg(qhiPlugins.key()).arg(sfField->qsName).arg(*qsUnit));
@@ -1475,7 +1475,7 @@ const void cOptionsDialog::SaveOption(const eOption &eoType) const
 } // SaveOption
 
 // save changes into application's settings file
-const void cOptionsDialog::SaveOptions()
+const void cOptionsDialog::SaveOptions() const
 {
 	cSettings::sLister slLister;
 	QString qsValue;
@@ -1602,17 +1602,17 @@ const void cOptionsDialog::SaveOptions()
 } // SaveOptions
 
 // fill favourite directories into tree widget
-const void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories)
+const void cOptionsDialog::SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories)
 {
 	int iI;
 
 	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
 		cNewFavouriteDirectoryDialog::eType etType;
-		QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
+		const QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
 		QTreeWidgetItem *qtwiFavouriteDirectory;
 		sFavouriteDirectory sfdFavouriteDirectory;
 
-		qpFavourite = &qlFavouriteDirectories[iI];
+		qpFavourite = &qlFavouriteDirectories.at(iI);
 
 		if (qpFavourite->second.bSubmenu) {
 			etType = cNewFavouriteDirectoryDialog::Submenu;

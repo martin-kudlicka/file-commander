@@ -192,7 +192,7 @@ void cFindFilesThread::run()
 			bool bAllowDotDot;
 			QTreeWidgetItem *qtwiFile;
 
-			qtwiFile = qlDirContent[iI];
+			qtwiFile = qlDirContent.at(iI);
 
 			if (cfsFileSystem->GetFileName(qtwiFile, false) == "." || cfsFileSystem->GetFileName(qtwiFile, false) == "..") {
 				if (ecfCalledFrom == BranchView && bFirstStep && cfsFileSystem->GetFileName(qtwiFile, false) == "..") {

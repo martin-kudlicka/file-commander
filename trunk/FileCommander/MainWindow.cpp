@@ -38,9 +38,9 @@ const void cMainWindow::ActualizeColumnSets()
 
 	for (iI = 0; iI < qslColumnSets.count(); iI++) {
 		QAction *qaColumnSet;
-		QString *qsColumnSet;
+		const QString *qsColumnSet;
 
-		qsColumnSet = &qslColumnSets[iI];
+		qsColumnSet = &qslColumnSets.at(iI);
 
 		qaColumnSet = qmColumnSets.addAction(*qsColumnSet);
 		// put action to action group to prevent checking more than one action in a time
@@ -289,14 +289,14 @@ bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 } // eventFilter
 
 // fill favourite directories context menu
-const void cMainWindow::FillFavouriteDirectories(QMenu *qmMenu, QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+const void cMainWindow::FillFavouriteDirectories(QMenu *qmMenu, const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
 {
 	int iI;
 
 	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
-		QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
+		const QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
 
-		qpFavourite = &qlFavouriteDirectories[iI];
+		qpFavourite = &qlFavouriteDirectories.at(iI);
 		if (qpFavourite->second.bSubmenu) {
 			QMenu *qmSubmenu;
 

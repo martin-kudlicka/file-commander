@@ -168,7 +168,7 @@ const void cSettings::CreateColumnSet(const QString &qsColumnSet)
 } // CreateColumnSet
 
 // create new column set
-const void cSettings::CreateColumnSet(const QString &qsColumnSet, QList<sColumn> &qlColumns)
+const void cSettings::CreateColumnSet(const QString &qsColumnSet, const QList<sColumn> &qlColumns)
 {
 	int iI;
 
@@ -176,11 +176,11 @@ const void cSettings::CreateColumnSet(const QString &qsColumnSet, QList<sColumn>
 	qsSettings.remove("");
 
 	for (iI = 0; iI < qlColumns.count(); iI++) {
-		sColumn *scColumn;
+		const sColumn *scColumn;
 
 		qsSettings.setArrayIndex(iI);
 
-		scColumn = &qlColumns[iI];
+		scColumn = &qlColumns.at(iI);
 		qsSettings.setValue(qsIDENTIFIER, scColumn->qsIdentifier);
 		qsSettings.setValue(qsNAME, scColumn->qsName);
 		qsSettings.setValue(qsPLUGIN, scColumn->qsPlugin);
@@ -240,14 +240,14 @@ const void cSettings::CreateDefaultColumnSet()
 } // CreateDefaultColumnSet
 
 // create favourite directories
-const void cSettings::CreateFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
+const void cSettings::CreateFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories)
 {
 	int iI;
 
 	for (iI = 0; iI < qlFavouriteDirectories.count(); iI++) {
-		QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
+		const QPair<QString, cSettings::sFavouriteDirectory> *qpFavourite;
 
-		qpFavourite = &qlFavouriteDirectories[iI];
+		qpFavourite = &qlFavouriteDirectories.at(iI);
 		qsSettings.beginGroup(QVariant(iI).toString());
 
 		qsSettings.setValue(qsNAME, qpFavourite->first);
@@ -266,7 +266,7 @@ const void cSettings::CreateFavouriteDirectories(QList<QPair<QString, cSettings:
 } // CreateFavouriteDirectories
 
 // create new tab in settings file
-const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab)
+const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab)
 {
 	int iI;
 
@@ -286,11 +286,11 @@ const void cSettings::CreateTab(const ePosition &epPosition, const uint &uiIndex
 	qsSettings.setValue(qsHISTORY + '/' + qsPOSITION, stiTab.shHistory.iPosition);
 	qsSettings.beginWriteArray(qsHISTORY);
 	for (iI = 0; iI < stiTab.shHistory.qlLastPaths.count(); iI++) {
-		sLastPath *slpLastPath;
+		const sLastPath *slpLastPath;
 
 		qsSettings.setArrayIndex(iI);
 
-		slpLastPath = &stiTab.shHistory.qlLastPaths[iI];
+		slpLastPath = &stiTab.shHistory.qlLastPaths.at(iI);
 
 		qsSettings.setValue(qsSHOW, slpLastPath->qsShow);
 		qsSettings.setValue(qsPATH, slpLastPath->qsPath);
@@ -309,9 +309,9 @@ const QMap <QString, QString> cSettings::GetAllSettings() const
 
 	qslKeys = qsSettings.allKeys();
 	for (iI = 0; iI < qslKeys.count(); iI++) {
-		QString *qsKey;
+		const QString *qsKey;
 
-		qsKey = &qslKeys[iI];
+		qsKey = &qslKeys.at(iI);
 		qlSettings.insert(*qsKey, qsSettings.value(*qsKey).toString());
 	} // for
 
@@ -1214,7 +1214,7 @@ const void cSettings::SetPluginDateTimeDisplay(const QString &qsDateTime)
 } // SetPluginDateTimeDisplay
 
 // write plugins into settings file
-const void cSettings::SetPlugins(const ePlugin &epPlugin, QList<sPlugin> qlPlugins)
+const void cSettings::SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> qlPlugins)
 {
 	int iI;
 
@@ -1234,10 +1234,10 @@ const void cSettings::SetPlugins(const ePlugin &epPlugin, QList<sPlugin> qlPlugi
 
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
 		QString qsKey, qsValue;
-		sPlugin *spPlugin;
+		const sPlugin *spPlugin;
 
 		qsSettings.setArrayIndex(iI);
-		spPlugin = &qlPlugins[iI];
+		spPlugin = &qlPlugins.at(iI);
 
 		qsKey = qsNAME;
 		qsValue = spPlugin->qsName;
@@ -1372,7 +1372,7 @@ const void cSettings::SetShowTabBarWithOnlyOneTab(const bool &bShow)
 } // SetShowTabBarWithOnlyOneTab
 
 // save tab settings
-const void cSettings::SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs)
+const void cSettings::SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs)
 {
 	int iI;
 
@@ -1387,7 +1387,7 @@ const void cSettings::SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTa
 
 	// create new tabs
 	for (iI = 0; iI < qlTabs.count(); iI++) {
-		CreateTab(epPosition, iI, qlTabs[iI]);
+		CreateTab(epPosition, iI, qlTabs.at(iI));
 	} // for
 } // SetTabs
 

@@ -210,12 +210,12 @@ class cSettings : private QObject
 
 		const void CreateColumnSet(const QString &qsColumnSet);				///< create new empty column set
 																								/**< \param qsColumnSet column set to create */
-		const void CreateColumnSet(const QString &qsColumnSet, QList<sColumn> &qlColumns);
+		const void CreateColumnSet(const QString &qsColumnSet, const QList<sColumn> &qlColumns);
 																								///< create new column set
 																								/**< \param qsColumnSet column set to create
 																									  \param qlColumns columns in column set */
 		const void CreateDefaultColumnSet();										///< create default (Full) column set
-		const void CreateTab(const ePosition &epPosition, const uint &uiIndex, sTabInfo &stiTab);
+		const void CreateTab(const ePosition &epPosition, const uint &uiIndex, const sTabInfo &stiTab);
 																								///< create new tab in settings file
 																								/**< \param epPosition left or right panel
 																									  \param uiIndex index of tab in tab bar
@@ -386,7 +386,7 @@ class cSettings : private QObject
 																								/**< \param bNextTo open new tab next to current tab flag */
 		const void SetPluginDateTimeDisplay(const QString &qsDateTime);	///< plugin date/time display format
 																								/**< \param qsDateTime user defined date/time display format */
-		const void SetPlugins(const ePlugin &epPlugin, QList<sPlugin> qlPlugins);
+		const void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> qlPlugins);
 																								///< write plugins into settings file
 																								/**< \param epPlugin plugins type
 																									  \param qlPlugins plugin list */
@@ -426,7 +426,7 @@ class cSettings : private QObject
 																								/**< \param bShowHidden show system files in dir view flag */
 		const void SetShowTabBarWithOnlyOneTab(const bool &bShow);			///< show tab bar with only one tab
 																								/**< \param bShow show tab bar with only one tab flag */
-		const void SetTabs(const ePosition &epPosition, QList<sTabInfo> &qlTabs);
+		const void SetTabs(const ePosition &epPosition, const QList<sTabInfo> &qlTabs);
 																								///< save tab settings
 																								/**< \param epPosition panel position
 																									  \param qlTabs tab settings */
@@ -444,7 +444,7 @@ class cSettings : private QObject
 		const QList<QPair<QString, cSettings::sFavouriteDirectory> > CollectFavouriteDirectories();
 																								///< collect favourite directories from settings file
 																								/**< \return list of favourite directories */
-		const void CreateFavouriteDirectories(QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
+		const void CreateFavouriteDirectories(const QList<QPair<QString, cSettings::sFavouriteDirectory> > &qlFavouriteDirectories);
 																								///< create favourite directories
 																								/**< \param qlFavouriteDirectories list of favourite directories */
 }; // cSettings

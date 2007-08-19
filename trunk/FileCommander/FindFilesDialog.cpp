@@ -296,9 +296,9 @@ const void cFindFilesDialog::on_qpbDrives_clicked(bool checked /* false */)
 
 		for (iI = 0; iI < qlDrives.count(); iI++) {
 			int iJ;
-			QPair<QString, cFileControl::sDrive> *qpDrive;
+			const QPair<QString, cFileControl::sDrive> *qpDrive;
 
-			qpDrive = &qlDrives[iI];
+			qpDrive = &qlDrives.at(iI);
 
 			for (iJ = 0; iJ < qlSelected.count(); iJ++) {
 				if (qpDrive->first == qlSelected.at(iJ)->text(0)) {
@@ -340,9 +340,9 @@ const void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
 	int iI, iIndex;
 	QString qsGoTo;
-	sFound *sfFound;
+	const sFound *sfFound;
 
-	sfFound = &qhFound[qtwSearch->currentItem()];
+	sfFound = &qhFound.value(qtwSearch->currentItem());
 
 	qsGoTo = sfFound->cfsFileSytem->GetFileNameWithExtension(sfFound->qtwiFile, false);
 
@@ -470,10 +470,10 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 		qslPaths = qcbSearchIn->currentText().split(qcPATH_SEPARATOR);
 	} // if else
 	for (iI = 0; iI < qslPaths.count(); iI++) {
-		QString *qsPath;
+		const QString *qsPath;
 		cFileControl::sPathInfo spiPathInfo;
 
-		qsPath = &qslPaths[iI];
+		qsPath = &qslPaths.at(iI);
 		spiPathInfo = cfcFileControl->GetPathInfo(*qsPath);
 		if (spiPathInfo.edtType == cFileControl::Local) {
 			if (!bLocalIncluded) {
@@ -512,11 +512,11 @@ const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 } // on_qpbStop_clicked
 
 // view button is clicked on
-const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
+const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */) const
 {
-	sFound *sfFound;
+	const sFound *sfFound;
 
-	sfFound = &qhFound[qtwSearch->currentItem()];
+	sfFound = &qhFound.value(qtwSearch->currentItem());
 
 	cfcFileControl->View(sfFound->cfsFileSytem, sfFound->qtwiFile);
 } // on_qpbView_clicked
@@ -540,12 +540,12 @@ const void cFindFilesDialog::RefreshSavedSettings() const
 } // RefreshSavedSettings
 
 // selected item changed in found files list
-const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged()
+const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged() const
 {
 	if (qtwSearch->selectedItems().count() > 0) {
-		sFound *sfFound;
+		const sFound *sfFound;
 
-		sfFound = &qhFound[qtwSearch->selectedItems().at(0)];
+		sfFound = &qhFound.value(qtwSearch->selectedItems().at(0));
 		if (sfFound->cfsFileSytem->IsFile(sfFound->qtwiFile)) {
 			qpbView->setEnabled(true);
 		} else {

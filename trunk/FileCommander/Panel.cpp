@@ -56,14 +56,14 @@ const void cPanel::ActualizeDrives() const
 } // ActualizeDrives
 
 // actualize volume information - disk name and space
-const void cPanel::ActualizeVolumeInfo()
+const void cPanel::ActualizeVolumeInfo() const
 {
 	if (!qlTabs.isEmpty() && qlTabs.value(qswDirs->currentIndex()).bValid) {
 		cFileSystem::sDiskSpace sdsInfo;
 		QString qsName;
-		sTab *stTab;
+		const sTab *stTab;
 
-		stTab = &qlTabs[qswDirs->currentIndex()];
+		stTab = &qlTabs.at(qswDirs->currentIndex());
 
 		qsName = stTab->cfsFileSystem->GetVolumeName();
 		sdsInfo = stTab->cfsFileSystem->GetDiskSpace();
@@ -72,11 +72,11 @@ const void cPanel::ActualizeVolumeInfo()
 } // ActualizeVolumeInfo
 
 // actualize widgets with info about current directory view
-const void cPanel::ActualizeWidgets()
+const void cPanel::ActualizeWidgets() const
 {
-	sTab *stTab;
+	const sTab *stTab;
 
-	stTab = &qlTabs[qswDirs->currentIndex()];
+	stTab = &qlTabs.at(qswDirs->currentIndex());
 
 	SetTabText(qswDirs->currentIndex());
 
@@ -97,7 +97,7 @@ const void cPanel::AddHistory(const int &iIndex)
 		// list is clear -> new tab
 		bAdd = true;
 	} else {
-		if (stTab->cfsFileSystem->GetPath() == stTab->shHistory.qlLastPaths[stTab->shHistory.iPosition].qsPath) {
+		if (stTab->cfsFileSystem->GetPath() == stTab->shHistory.qlLastPaths.at(stTab->shHistory.iPosition).qsPath) {
 			// same path as the last
 			bAdd = false;
 		} else {
@@ -361,11 +361,11 @@ cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDr
 const int cPanel::DuplicateTab(const int &iTabIndex)
 {
 	cTreeWidget *ctwDir;
-	sTab *stTab;
+	const sTab *stTab;
 	cSettings::sTabInfo stiTabInfo;
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iTabIndex));
-	stTab = &qlTabs[iTabIndex];
+	stTab = &qlTabs.at(iTabIndex);
 
 	stiTabInfo.qsColumnSet = stTab->qsColumnSet;
 	stiTabInfo.qsDrive = qcbDrive->currentText();
@@ -531,13 +531,13 @@ cFileSystem *cPanel::GetFileSystem()
 } // GetFileSystem
 
 // retreive history directory list
-const cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList()
+const cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList() const
 {
 	int iI;
-	cSettings::sHistory *shHistory;
+	const cSettings::sHistory *shHistory;
 	sHistoryDirectoryList shdlList;
 
-	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+	shHistory = &qlTabs.at(qswDirs->currentIndex()).shHistory;
 
 	shdlList.iPosition = shHistory->iPosition;
 	for (iI = 0; iI < shHistory->qlLastPaths.count(); iI++) {
@@ -548,12 +548,12 @@ const cPanel::sHistoryDirectoryList cPanel::GetHistoryDirectoryList()
 } // GetHistoryDirectoryList
 
 // find index of native column
-const int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex)
+const int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex) const
 {
 	int iI;
-	sTab *stTab;
+	const sTab *stTab;
 
-	stTab = &qlTabs[iTabIndex];
+	stTab = &qlTabs.at(iTabIndex);
 
 	for (iI = 0; iI < stTab->qlColumns.count(); iI++) {
 		if (stTab->qlColumns.at(iI).qsIdentifier == qsColumn) {
@@ -629,10 +629,10 @@ const int cPanel::GetTabIndex(const QPoint &qpPos) const
 } // GetTabIndex
 
 // tab settings for specified tab
-const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */)
+const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */) const
 {
 	cTreeWidget *ctwDir;
-	sTab *stTab;
+	const sTab *stTab;
 	cSettings::sTabInfo stiTab;
 
 	if (iTabIndex == -1) {
@@ -640,7 +640,7 @@ const cSettings::sTabInfo cPanel::GetTabSettings(int iTabIndex /* -1 */)
 	} // if
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iTabIndex));
-	stTab = &qlTabs[iTabIndex];
+	stTab = &qlTabs.at(iTabIndex);
 
 	// visible parameters
 	stiTab.qsColumnSet = stTab->qsColumnSet;
@@ -690,9 +690,9 @@ const void cPanel::HideOrShowTabBar() const
 // go back in history directory list
 const void cPanel::HistoryGoBack()
 {
-	cSettings::sHistory *shHistory;
+	const cSettings::sHistory *shHistory;
 
-	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+	shHistory = &qlTabs.at(qswDirs->currentIndex()).shHistory;
 
 	if (shHistory->iPosition > 0) {
 		SetHistoryDirectory(shHistory->iPosition - 1);
@@ -702,9 +702,9 @@ const void cPanel::HistoryGoBack()
 // go front in history directory list
 const void cPanel::HistoryGoFront()
 {
-	cSettings::sHistory *shHistory;
+	const cSettings::sHistory *shHistory;
 
-	shHistory = &qlTabs[qswDirs->currentIndex()].shHistory;
+	shHistory = &qlTabs.at(qswDirs->currentIndex()).shHistory;
 
 	if (shHistory->iPosition < shHistory->qlLastPaths.count() - 1) {
 		SetHistoryDirectory(shHistory->iPosition + 1);
@@ -859,10 +859,10 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 	cTreeWidget *ctwDir;
 	int iI;
 	QString qsName;
-	sTab *stTab;
+	const sTab *stTab;
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
-	stTab = &qlTabs[qswDirs->currentIndex()];
+	stTab = &qlTabs.at(qswDirs->currentIndex());
 
 	switch (qkeEvent->key()) {
 		case Qt::Key_Backspace:
@@ -872,10 +872,10 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 			// refresh content plugin values
 			for (iI = 0; iI < stTab->qlColumns.count(); iI++) {
 				if (stTab->qlColumns.at(iI).qsPlugin != qsNO) {
-					cSettings::sColumn *scColumn;
+					const cSettings::sColumn *scColumn;
 					cFileSystem::sContentPluginRequest scprContent;
 
-					scColumn = &stTab->qlColumns[iI];
+					scColumn = &stTab->qlColumns.at(iI);
 
 					scprContent.qtwiFile = ctwDir->currentItem();
 					scprContent.qsPlugin = scColumn->qsPlugin;
@@ -966,7 +966,7 @@ const void cPanel::on_qtbTab_currentChanged(int index)
 } // on_qtbTab_currentChanged
 
 // search if quick searched file exists in current dir view
-const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection)
+const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection) const
 {
 	bool bOnStart;
 	cTreeWidget *ctwDir;
@@ -992,9 +992,9 @@ const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDire
 
 	bOnStart = false;
 	while (true) {
-		sTab *stTab;
+		const sTab *stTab;
 
-		stTab = &qlTabs[qswDirs->currentIndex()];
+		stTab = &qlTabs.at(qswDirs->currentIndex());
 
 		// correct position
 		if (iPos > ctwDir->topLevelItemCount()) {
@@ -1083,9 +1083,9 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 
 		qtwiFile = qlFiles.at(iI);
 		for (iJ = 0; iJ < stTab->qlColumns.count(); iJ++) {
-			cSettings::sColumn *scColumn;
+			const cSettings::sColumn *scColumn;
 
-			scColumn = &stTab->qlColumns[iJ];
+			scColumn = &stTab->qlColumns.at(iJ);
 			if (scColumn->qsPlugin == qsNO) {
 				if (scColumn->qsIdentifier == qsICON) {
 					qtwiFile->setIcon(iJ, stTab->cfsFileSystem->GetFileIcon(qtwiFile));
@@ -1250,13 +1250,13 @@ const void cPanel::RefreshTabs() const
 } // RefreshTabs
 
 // reverse sort order
-const void cPanel::ReverseOrder()
+const void cPanel::ReverseOrder() const
 {
 	SortBy(static_cast<cTreeWidget *>(qswDirs->currentWidget())->header()->sortIndicatorSection());
 } // ReverseOrder
 
 // save panel settings
-const void cPanel::SaveSettings(const cSettings::ePosition &epPosition)
+const void cPanel::SaveSettings(const cSettings::ePosition &epPosition) const
 {
 	int iI;
 	QList<cSettings::sTabInfo> qlTabsToSave;
@@ -1386,7 +1386,7 @@ const void cPanel::SetHistoryDirectory(const int &iPosition)
 	SetPath(stTab->shHistory.qlLastPaths.at(iPosition).qsPath);
 } // SetHistoryDirectory
 
-const void cPanel::SetPath(const QString &qsPath)
+const void cPanel::SetPath(const QString &qsPath) const
 {
 	cFileControl::sPathInfo spiPathInfo;
 	int iIndex;
@@ -1396,9 +1396,9 @@ const void cPanel::SetPath(const QString &qsPath)
 	iIndex = qcbDrive->findText(spiPathInfo.qsDrive);
 	if (iIndex != -1) {
 		// drive exists -> proceed with set path
-		sTab *stTab;
+		const sTab *stTab;
 
-		stTab = &qlTabs[qswDirs->currentIndex()];
+		stTab = &qlTabs.at(qswDirs->currentIndex());
 
 		// change drive
 		qcbDrive->blockSignals(true);
@@ -1444,16 +1444,16 @@ const void cPanel::ShowHideHeaders() const
 } // ShowHideHeaders
 
 // sort dir content and show
-const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort)
+const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort) const
 {
-	cSettings::sColumn *scSortedColumn;
+	const cSettings::sColumn *scSortedColumn;
 	cTreeWidget *ctwDir;
 	int iColumnName, iI;
 	QList<QTreeWidgetItem *> qlDirectories, qlFiles, qlMarked;
-	sTab *stTab;
+	const sTab *stTab;
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
-	stTab = &qlTabs[iIndex];
+	stTab = &qlTabs.at(iIndex);
 
 	// remember marked items and clear tree
 	while (ctwDir->topLevelItemCount() > 0) {
@@ -1468,7 +1468,7 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort)
 	for (iI = 0; iI < qlToSort.count(); iI++) {
 		QTreeWidgetItem *qtwiFile;
 
-		qtwiFile = qlToSort[iI];
+		qtwiFile = qlToSort.at(iI);
 		if (stTab->cfsFileSystem->IsDir(qtwiFile)) {
 			qlDirectories.append(qtwiFile);
 		} else {
@@ -1494,7 +1494,7 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort)
 	ssSort.iSortedColumn = ctwDir->sortColumn();
 	ssSort.soSortOrder = ctwDir->header()->sortIndicatorOrder();
 	ssSort.bCaseSensitive = csSettings->GetCaseSensitiveSorting();
-	scSortedColumn = &stTab->qlColumns[ssSort.iSortedColumn];
+	scSortedColumn = &stTab->qlColumns.at(ssSort.iSortedColumn);
 	if ((scSortedColumn->qsIdentifier == qsNAME && ssSort.soSortOrder == Qt::DescendingOrder)
 		 || scSortedColumn->qsIdentifier == qsEXTENSION
 		 || (scSortedColumn->qsIdentifier == qsNAME_WITH_EXTENSION && ssSort.soSortOrder == Qt::DescendingOrder)
@@ -1543,7 +1543,7 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort)
 } // Sort
 
 // sort by specified column
-const void cPanel::SortBy(const int &iColumn)
+const void cPanel::SortBy(const int &iColumn) const
 {
 	cTreeWidget *ctwDir;
 	Qt::SortOrder soSortOrder;

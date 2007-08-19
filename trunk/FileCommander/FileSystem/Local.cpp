@@ -20,9 +20,9 @@ cLocal::~cLocal()
 // activate current file
 const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
-	QFileInfo *qfiFile;
+	const QFileInfo *qfiFile;
 
-	qfiFile = &qhFiles[qtwiFile];
+	qfiFile = &qhFiles.value(qtwiFile);
 
 	if (qfiFile->isDir()) {
 		// directory
@@ -152,10 +152,10 @@ const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)
 {
 	int iFlag;
-	QFileInfo *qfiFile;
+	const QFileInfo *qfiFile;
 	QString qsValue;
 
-	qfiFile = &qhFiles[sContent.qtwiFile];
+	qfiFile = &qhFiles.value(sContent.qtwiFile);
 
 	qsValue = ccpContentPlugin->GetPluginValue(qfiFile->filePath(), sContent.qsPlugin, sContent.qsColumn, sContent.qsUnit, &iFlag);
 
@@ -185,18 +185,18 @@ const QList<QTreeWidgetItem *> cLocal::GetCustomFileList() const
 } // GetCustomFileList
 
 // get file name with extension from custom list
-const QString cLocal::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile)
+const QString cLocal::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const
 {
 	return qhCustom.value(qtwiFile).fileName();
 } // GetCustomFileName
 
 // get file name from custom list with full path
-const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
+const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile) const
 {
-	QFileInfo *qfiFile;
+	const QFileInfo *qfiFile;
 	QString qsName;
 
-	qfiFile = &qhCustom[qtwiFile];
+	qfiFile = &qhCustom.value(qtwiFile);
 
 	qsName = qfiFile->filePath();
 
@@ -238,9 +238,9 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 
 			// add files to hash table
 			for (iI = 0; iI < qfilFiles.count(); iI++) {
-				QFileInfo *qfiFile;
+				const QFileInfo *qfiFile;
 
-				qfiFile = &qfilFiles[iI];
+				qfiFile = &qfilFiles.at(iI);
 				if (qfiFile->fileName() != ".") {
 					qhFiles.insert(new QTreeWidgetItem(), *qfiFile);
 				} // if
@@ -371,12 +371,12 @@ void *cLocal::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 } // GetFileList
 
 // get file name without extension
-const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
+const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */) const
 {
-	QFileInfo *qfiFile;
+	const QFileInfo *qfiFile;
 	QString qsName;
 
-	qfiFile = &qhFiles[qtwiFile];
+	qfiFile = &qhFiles.value(qtwiFile);
 
 	if (qfiFile->fileName() == "..") {
 		// special handle for ".." directory to show just both points
@@ -393,12 +393,12 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 } // GetFileName
 
 // get file name with extension
-const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
+const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */) const
 {
 	QString qsName;
-	QFileInfo *qfiFile;
+	const QFileInfo *qfiFile;
 
-	qfiFile = &qhFiles[qtwiFile];
+	qfiFile = &qhFiles.value(qtwiFile);
 
 	qsName = qfiFile->fileName();
 
@@ -631,9 +631,9 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 
 #ifdef Q_WS_WIN
 	for (iI = 0; iI < qfilSelected.count(); iI++) {
-		QFileInfo *qfiFile;
+		const QFileInfo *qfiFile;
 
-		qfiFile = &qfilSelected[iI];
+		qfiFile = &qfilSelected.at(iI);
 
 		if (qfiFile->fileName() == "..") {
 			// replace ".." with current path

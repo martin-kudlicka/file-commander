@@ -54,7 +54,7 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 	for (iI = 0; iI < qlRight.count(); iI++) {
 		QTreeWidgetItem *qtwiRight;
 
-		qtwiRight = qlRight[iI];
+		qtwiRight = qlRight.at(iI);
 		if (cfsRight->IsFile(qtwiRight)) {
 			qtwiRight->setSelected(true);
 		} else {
@@ -66,7 +66,7 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 	for (iI = 0; iI < qlLeft.count(); iI++) {
 		QTreeWidgetItem *qtwiLeft;
 
-		qtwiLeft = qlLeft[iI];
+		qtwiLeft = qlLeft.at(iI);
 		if (cfsLeft->IsFile(qtwiLeft)) {
 			bool bFound;
 			int iJ;
@@ -76,7 +76,7 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 			for (iJ = 0; iJ < qlRight.count(); iJ++) {
 				QTreeWidgetItem *qtwiRight;
 
-				qtwiRight = qlRight[iJ];
+				qtwiRight = qlRight.at(iJ);
 				if (cfsRight->IsFile(qtwiRight)) {
 					if (cfsLeft->GetFileName(qtwiLeft) == cfsRight->GetFileName(qtwiRight)) {
 						bFound = true;
@@ -191,10 +191,10 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 	// local drives
 	qfilDrives = QDir::drives();
 	for (iI = 0; iI < qfilDrives.count(); iI++) {
-		QFileInfo *qfiDrive;
+		const QFileInfo *qfiDrive;
 		sDrive sdDrive;
 
-		qfiDrive = &qfilDrives[iI];
+		qfiDrive = &qfilDrives.at(iI);
 		sdDrive.qsPath = qfiDrive->path();
 		sdDrive.edtType = Local;
 		qlDrives.append(QPair<QString, sDrive>(qfiDrive->path().at(0), sdDrive));
@@ -234,9 +234,9 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 	qlDrives = GetDrives();
 
 	for (iI = 0; iI < qlDrives.count(); iI++) {
-		QPair<QString, sDrive> *qpDrive;
+		const QPair<QString, sDrive> *qpDrive;
 
-		qpDrive = &qlDrives[iI];
+		qpDrive = &qlDrives.at(iI);
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
 				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin);
@@ -272,9 +272,9 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 	qlDrives = GetDrives();
 
 	for (iI = 0; iI < qlDrives.count(); iI++) {
-		QPair<QString, sDrive> *qpDrive;
+		const QPair<QString, sDrive> *qpDrive;
 
-		qpDrive = &qlDrives[iI];
+		qpDrive = &qlDrives.at(iI);
 		if (qsPath.startsWith(qpDrive->second.qsPath)) {
 			spiPathInfo.qsDrive = qpDrive->first;
 			spiPathInfo.qsRootPath = qpDrive->second.qsPath;
