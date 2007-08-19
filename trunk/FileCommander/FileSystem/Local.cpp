@@ -100,7 +100,9 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
 
-	SetPath(qsDrive, qsRootPath, qsPath);
+	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
+
+	SetPath(qsDrive, qsRootPath, qsPath, true);
 } // cLocal
 
 // create new directory
@@ -544,6 +546,12 @@ const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPlug
 	emit GotColumnValue(soOutput);
 } // on_ccpdContentPluginDelayed_GotColumnValue
 
+// current directory content changed
+const void cLocal::on_qfswWatcher_directoryChanged(const QString &path) const
+{
+	emit ContentChanged(this);
+} // on_qfswWatcher_directoryChanged
+
 #ifdef Q_WS_WIN
 // check if path is valid
 const bool cLocal::PathExists(const QString &qsPath) const
@@ -572,18 +580,22 @@ const void cLocal::RetreiveContentDelayedValues()
 } // RetreiveContentDelayedValues
 
 // change path for this file system
-const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath)
+const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup /* false */)
 {
 	this->qsDrive = qsDrive;
 	this->qsRootPath = qsRootPath;
 	
-	SetPath(qsPath);
+	SetPath(qsPath, bStartup);
 } // SetPath
 
 // change path for this file system without drive change
-const void cLocal::SetPath(const QString &qsPath)
+const void cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
 {
+	if (!bStartup) {
+		qfswWatcher.removePath(qdDir.path());
+	} // if
 	qdDir.setPath(qsPath);
+	qfswWatcher.addPath(qdDir.path());
 
 	emit ContentChanged(this);
 } // SetPath
