@@ -707,6 +707,12 @@ const void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action
 	} // if
 } // on_qmRightHistoryDirectoryList_triggered
 
+// edit button is clicked on
+const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
+{
+	cfcFileControl->Edit(cpSource->GetFileSystem(), cpSource->GetSelectedFiles());
+} // on_qpbEdit_clicked
+
 // terminal button is clicked on
 const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
 {
