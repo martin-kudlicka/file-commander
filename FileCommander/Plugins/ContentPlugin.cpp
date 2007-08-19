@@ -21,12 +21,12 @@ cContentPlugin::cContentPlugin(cSettings *csSettings)
 } // cContentPlugin
 
 // get index of column in plugin
-const int cContentPlugin::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn) const
+const int cContentPlugin::GetFieldIndex(const QString &qsPlugin, const QString &qsColumn)
 {
 	int iI;
-	const sPluginInfo *spiPluginInfo;
+	sPluginInfo *spiPluginInfo;
 
-	spiPluginInfo = &qhPlugins.value(qsPlugin);
+	spiPluginInfo = &qhPlugins[qsPlugin];
 	for (iI = 0; iI < spiPluginInfo->qlFields.count(); iI++) {
 		if (spiPluginInfo->qlFields.at(iI).qsName == qsColumn) {
 			return iI;
@@ -44,14 +44,14 @@ const QHash<QString, cContentPlugin::sPluginInfo> &cContentPlugin::GetPluginsInf
 } // GetPluginsInfo
 
 // returns plugin's value for specified column
-const QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */) const
+const QString cContentPlugin::GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag /* NULL */)
 {
 	char cFieldValue[uiMAX_CHAR];
 	int iFieldIndex, iType, iUnitIndex;
 	QString qsFieldValue;
-	const sPluginInfo *spiPluginInfo;
+	sPluginInfo *spiPluginInfo;
 
-	spiPluginInfo = &qhPlugins.value(qsPlugin);
+	spiPluginInfo = &qhPlugins[qsPlugin];
 
 	iFieldIndex = GetFieldIndex(qsPlugin, qsColumn);
 	iUnitIndex = GetUnitIndex(qsUnit, spiPluginInfo->qlFields.at(iFieldIndex).qsUnits);

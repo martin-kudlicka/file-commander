@@ -125,7 +125,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< get information about column from column set
 																						/**< \param qtwiItem column set column
 																							  \return column information */
-		QList<QPair<QString, cSettings::sFavouriteDirectory> > GetFavouriteDirectories(QTreeWidgetItem *qtwiParent) const;
+		QList<QPair<QString, cSettings::sFavouriteDirectory> > GetFavouriteDirectories(QTreeWidgetItem *qtwiParent);
 																						///< collect favourite directories
 																						/**< \param qtwiParent favourite to start with
 																							  \return list of favourites description */
@@ -136,7 +136,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		const void PrepareColumnsMenu();										///< prepare context columns menu
 		const void SaveOption(const eOption &eoType) const;			///< save specific changes into settings file
 																						/**< \param eoType type of changes */
-		const void SaveOptions() const;										///< save changes into application's settings file
+		const void SaveOptions();												///< save changes into application's settings file
 		const void SetFavouriteDirectories(QTreeWidgetItem *qtwiParent, const QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories);
 																						///< fill favourite directories into tree widget
 																						/**< \param qtwiParent favourite to start with
@@ -273,7 +273,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																							  \param column changed column of plugin list */
 		const void on_qtwContentPlugins_itemSelectionChanged() const;
 																						///< selected content plugin changed
-		const void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const;
+		const void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< another favourite directory is selected
 																						/**< \param current new favourite directory
 																							  \param previous old favourite directory */

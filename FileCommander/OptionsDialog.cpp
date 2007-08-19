@@ -623,7 +623,7 @@ const cSettings::sColumn cOptionsDialog::GetColumnInfo(QTreeWidgetItem *qtwiItem
 } // GetColumnInfo
 
 // collect favourite directories
-QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavouriteDirectories(QTreeWidgetItem *qtwiParent) const
+QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavouriteDirectories(QTreeWidgetItem *qtwiParent)
 {
 	int iI;
 	QList<QPair<QString, cSettings::sFavouriteDirectory> > qlFavouriteDirectories;
@@ -638,9 +638,9 @@ QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavour
 		qtwiChild = qlChildren.at(iI);
 
 		if (qtwiChild->type() == cNewFavouriteDirectoryDialog::Directory) {
-			const sFavouriteDirectory *sfdCurrent;
+			sFavouriteDirectory *sfdCurrent;
 
-			sfdCurrent = &qhFavouriteDirectories.value(qtwiChild);
+			sfdCurrent = &qhFavouriteDirectories[qtwiChild];
 
 			sfdFavouriteDirectory.qsSource = sfdCurrent->qsSource;
 			sfdFavouriteDirectory.bTarget = sfdCurrent->bTarget;
@@ -1229,19 +1229,19 @@ const void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged() const
 } // on_qtwContentPlugins_itemSelectionChanged
 
 // another favourite directory is selected
-const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) const
+const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
 	qpbFavouriteRemove->setEnabled(current);
 
 	if (current && current->type() == cNewFavouriteDirectoryDialog::Directory) {
-		const sFavouriteDirectory *sfdCurrent;
+		sFavouriteDirectory *sfdCurrent;
 
 		qleFavouriteSource->setEnabled(true);
 		qpbFavouriteSourceBrowse->setEnabled(true);
 		qcbFavouriteTargetDirectory->setEnabled(true);
 
 		// set values for currently selected favourite directory
-		sfdCurrent = &qhFavouriteDirectories.value(current);
+		sfdCurrent = &qhFavouriteDirectories[current];
 		qleFavouriteSource->setText(sfdCurrent->qsSource);
 		qcbFavouriteTargetDirectory->setChecked(sfdCurrent->bTarget);
 		qleFavouriteTarget->setText(sfdCurrent->qsTarget);
@@ -1475,7 +1475,7 @@ const void cOptionsDialog::SaveOption(const eOption &eoType) const
 } // SaveOption
 
 // save changes into application's settings file
-const void cOptionsDialog::SaveOptions() const
+const void cOptionsDialog::SaveOptions()
 {
 	cSettings::sLister slLister;
 	QString qsValue;

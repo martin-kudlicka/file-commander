@@ -58,7 +58,7 @@ const void cPanel::ActualizeDrives() const
 // actualize volume information - disk name and space
 const void cPanel::ActualizeVolumeInfo() const
 {
-	if (!qlTabs.isEmpty() && qlTabs.value(qswDirs->currentIndex()).bValid) {
+	if (!qlTabs.isEmpty() && qlTabs.at(qswDirs->currentIndex()).bValid) {
 		cFileSystem::sDiskSpace sdsInfo;
 		QString qsName;
 		const sTab *stTab;
@@ -498,13 +498,13 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 // columns for current dir view
 const QList<cSettings::sColumn> cPanel::GetColumns() const
 {
-	return qlTabs.value(qswDirs->currentIndex()).qlColumns;
+	return qlTabs.at(qswDirs->currentIndex()).qlColumns;
 } // GetColumns
 
 //< column set for current directory view
 const QString cPanel::GetColumnSet() const
 {
-	return qlTabs.value(qswDirs->currentIndex()).qsColumnSet;
+	return qlTabs.at(qswDirs->currentIndex()).qsColumnSet;
 } // GetColumnSet
 
 // convert QDateTime to user defined format
@@ -527,7 +527,7 @@ const QString cPanel::GetDateTimeString(const QDateTime &qdtDateTime) const
 // file system for active directory view
 cFileSystem *cPanel::GetFileSystem()
 {
-	return qlTabs.value(qswDirs->currentIndex()).cfsFileSystem;
+	return qlTabs.at(qswDirs->currentIndex()).cfsFileSystem;
 } // GetFileSystem
 
 // retreive history directory list
@@ -722,7 +722,7 @@ const void cPanel::InvertSelection() const
 	qsMode = csSettings->GetSelectionMode();
 
 	for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
-		if (qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->IsDir(ctwDir->topLevelItem(iI))) {
+		if (qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->IsDir(ctwDir->topLevelItem(iI))) {
 			if (qsMode == qsFILES_AND_DIRECTORIES) {
 				ctwDir->topLevelItem(iI)->setSelected(!ctwDir->topLevelItem(iI)->isSelected());
 			} // if
@@ -950,7 +950,7 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
-	Sort(qswDirs->currentIndex(), qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
+	Sort(qswDirs->currentIndex(), qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
 } // on_qhvTreeHeader_sectionClicked
 
 // tab bar's index changed
@@ -958,7 +958,7 @@ const void cPanel::on_qtbTab_currentChanged(int index)
 {
 	qswDirs->setCurrentIndex(index);
 
-	if (!qlTabs.value(index).bValid) {
+	if (!qlTabs.at(index).bValid) {
 		RefreshContent();
 	} // if
 
@@ -1341,7 +1341,7 @@ const void cPanel::SelectAll() const
 
 	if (qsMode == qsONLY_FILES) {
 		for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
-			if (qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->IsFile(ctwDir->topLevelItem(iI))) {
+			if (qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->IsFile(ctwDir->topLevelItem(iI))) {
 				ctwDir->topLevelItem(iI)->setSelected(true);
 			} // if
 		} // for
@@ -1564,7 +1564,7 @@ const void cPanel::SortBy(const int &iColumn) const
 	ctwDir->header()->setSortIndicator(iColumn, soSortOrder);
 
 	// sort again
-	Sort(qswDirs->currentIndex(), qlTabs.value(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
+	Sort(qswDirs->currentIndex(), qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
 } // SortBy
 
 // automatic actualizations

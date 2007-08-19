@@ -53,8 +53,7 @@ class cFileSystem : public QObject
 																										///< get file name with extension from custom list
 																										/**< \param qtwiFile file to find file name with extension for
 																											  \return file name with extension */
-		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) const = 0;
-																										///< get file name from custom list with full path
+		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) = 0;	///< get file name from custom list with full path
 																										/**< \param qtwiFile file to find file path for
 																											  \return file name with full path */
 		virtual QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true) = 0;

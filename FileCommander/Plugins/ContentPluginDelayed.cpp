@@ -15,9 +15,9 @@ const void cContentPluginDelayed::on_InterruptContentDelayed()
 	bStop = true;
 	qhPlugins = ccpContentPlugin->GetPluginsInfo();
 	if (isRunning()) {
-		const cContentPlugin::sPluginInfo *spiPluginInfo;
+		cContentPlugin::sPluginInfo *spiPluginInfo;
 
-		spiPluginInfo = &qhPlugins.value(qsCurrentPlugin);
+		spiPluginInfo = &qhPlugins[qsCurrentPlugin];
 		if (spiPluginInfo->tcsgvContentStopGetValue) {
 			spiPluginInfo->tcsgvContentStopGetValue(qsCurrentFile.toLocal8Bit().data());
 		} // if
