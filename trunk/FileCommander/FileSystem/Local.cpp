@@ -20,9 +20,9 @@ cLocal::~cLocal()
 // activate current file
 const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
-	const QFileInfo *qfiFile;
+	QFileInfo *qfiFile;
 
-	qfiFile = &qhFiles.value(qtwiFile);
+	qfiFile = &qhFiles[qtwiFile];
 
 	if (qfiFile->isDir()) {
 		// directory
@@ -371,12 +371,12 @@ void *cLocal::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 } // GetFileList
 
 // get file name without extension
-const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */) const
+const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	const QFileInfo *qfiFile;
+	QFileInfo *qfiFile;
 	QString qsName;
 
-	qfiFile = &qhFiles.value(qtwiFile);
+	qfiFile = &qhFiles[qtwiFile];
 
 	if (qfiFile->fileName() == "..") {
 		// special handle for ".." directory to show just both points
@@ -393,12 +393,12 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 } // GetFileName
 
 // get file name with extension
-const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */) const
+const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
 	QString qsName;
-	const QFileInfo *qfiFile;
+	QFileInfo *qfiFile;
 
-	qfiFile = &qhFiles.value(qtwiFile);
+	qfiFile = &qhFiles[qtwiFile];
 
 	qsName = qfiFile->fileName();
 

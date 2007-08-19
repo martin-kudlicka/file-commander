@@ -65,6 +65,10 @@ class cListerMainWindow : public QMainWindow, private Ui::qmwLister
 																											/**< \param bNextPlugin move onto next plugin
 																												  \param bForceShow force usage of plugin */
 
+	signals:
+		void Close(cListerMainWindow *clmwLister) const;									///< closing lister window
+																											/**< \param clmwLister this window */
+
 	private slots:
 		const void on_qaANSI_triggered(bool checked = false) const;						///< ANSI char set selected
 																											/**< \param checked true if menu item is checkable and checked */

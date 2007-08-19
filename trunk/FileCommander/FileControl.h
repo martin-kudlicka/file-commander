@@ -12,6 +12,7 @@
 #include "FileControl/FileOperationDialog.h"
 #include <QtCore/QQueue>
 #include "FileControl/QueueWidget.h"
+#include "ListerMainWindow.h"
 
 class cFileControl : public QObject
 {
@@ -128,7 +129,6 @@ class cFileControl : public QObject
 		const void ProcessQueue();												///< process first queued operation
 
 	signals:
-		signals:
 		void AddIntoQueueList(QListWidgetItem *qlwiItem) const;		///< add new item into queue list
 																						/**< \param qlwiItem operation to queue */
 
@@ -136,6 +136,9 @@ class cFileControl : public QObject
 		const void on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem);
 																						///< file operation finished
 																						/**< \param cfsFileSystem filesystem identifier */
+		const void on_cListerMainWindow_Close(cListerMainWindow *clmwLister) const;
+																						///< closing lister window
+																						/**< \param clmwLister lister window to close */
 		const void on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems);
 																						///< remove queued items (operations)
 																						/**< \param qlItems operations to remove */
