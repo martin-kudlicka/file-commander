@@ -9,6 +9,7 @@
 #include <QtGui/QFileIconProvider>
 #include "Plugins/ContentPlugin.h"
 #include "Plugins/ContentPluginDelayed.h"
+#include <QtCore/QFileSystemWatcher>
 
 class cLocal : public cFileSystem
 {
@@ -32,6 +33,7 @@ class cLocal : public cFileSystem
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
+		QFileSystemWatcher qfswWatcher;												///< file system watcher for changes in current directory
 		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
@@ -141,13 +143,16 @@ class cLocal : public cFileSystem
 																									  \return true if path exists and is accessible */
 #endif
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
-		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath);
+		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
-																									  \param qsPath to initialize local file system */
-		const void SetPath(const QString &qsPath);								///< change path for this file system without drive change
-																								/**< \param qsPath to initialize local file system */
+																									  \param qsPath to initialize local file system
+																									  \param bStartup true if initializing file system class */
+		const void SetPath(const QString &qsPath, const bool &bStartup = false);
+																								///< change path for this file system without drive change
+																								/**< \param qsPath to initialize local file system
+																									  \param bStartup true if initializing file system class */
 		const void ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
@@ -169,6 +174,9 @@ class cLocal : public cFileSystem
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
+		const void on_qfswWatcher_directoryChanged(const QString &path) const;
+																								///< current directory content changed
+																								/**< \param path path to changed directory */
 }; // cLocal
 
 #endif
