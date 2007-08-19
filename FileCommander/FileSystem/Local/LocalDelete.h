@@ -17,17 +17,15 @@
 #endif
 #include "FileSystem/Retry.h"
 #include <QtCore/QSemaphore>
-#include "FileSystem/Local.h"
 
 class cLocalDelete : public QThread
 {
 	Q_OBJECT
 
 	public:
-		cLocalDelete(cLocal *clFileSystem, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
+		cLocalDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings);
 																		///< constructor
-																		/**< \param clFileSystem file system to delete files in
-																			  \param qmwParent parent window for foreground dialog
+																		/**< \param qmwParent parent window for foreground dialog
 																			  \param qhblOperations layout for background widget
 																			  \param csSettings application's configuration (Windows only)*/
 		void Delete(const QFileInfoList &qfilSource, const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
@@ -44,7 +42,6 @@ class cLocalDelete : public QThread
 		cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectoryCurrent;
 																		///< delete non empty directory dialog user's response
 		cDeleteWidget *cdwWidget;								///< delete widget
-		cLocal *clFileSystem;									///< clFileSystem file system to delete files in
 #ifdef Q_WS_WIN
 		cPermission cpPermission;								///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;			///< current permission dialog user's response

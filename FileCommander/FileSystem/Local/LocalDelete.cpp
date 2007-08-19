@@ -4,11 +4,11 @@
 #include <Windows.h>
 #endif
 #include <QtCore/QDir>
+#include "FileSystem/Local/LocalCommon.h"
 
 // constructor
-cLocalDelete::cLocalDelete(cLocal *clFileSystem, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
+cLocalDelete::cLocalDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
-	this->clFileSystem = clFileSystem;
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
@@ -222,7 +222,7 @@ void cLocalDelete::run()
 	qi64TotalMaximum = 0;
 	// gather source files
 	for (iI = 0; iI < qfilSource.count(); iI++) {
-		qlSources.append(clFileSystem->GetFiles(qfilSource.at(iI), qsFilter));
+		qlSources.append(cLocalCommon::GetFiles(qfilSource.at(iI), qsFilter));
 		qi64TotalMaximum += qlSources.at(iI).count();
 	} // for
 
