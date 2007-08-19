@@ -65,7 +65,8 @@ class cPanel : public QObject
 																					/**< \return column set for current directory view */
 		cFileSystem *GetFileSystem();										///< file system for active directory view
 																					/**< \return file system for active directory view */
-		const sHistoryDirectoryList GetHistoryDirectoryList();	///< retreive history directory list
+		const sHistoryDirectoryList GetHistoryDirectoryList() const;
+																					///< retreive history directory list
 																					/**< \return history directory list */
 		const QString GetPath() const;									///< path in current directory view
 																					/**< \return path for current directory view */
@@ -74,7 +75,7 @@ class cPanel : public QObject
 		const int GetTabIndex(const QPoint &qpPos) const;			///< find out tab index in tab bar
 																					/**< \param qpPos cursor position in tab bar
 																						  \return tab index */
-		const cSettings::sTabInfo GetTabSettings(int iTabIndex = -1);
+		const cSettings::sTabInfo GetTabSettings(int iTabIndex = -1) const;
 																					///< tab settings for specified tab
 																					/**< \param iTabIndex tab settings for this tab (default is current tab) */
 		const bool GoToFile(const QString qsGoTo) const;			///< set cursor onto specified file
@@ -88,8 +89,8 @@ class cPanel : public QObject
 		const void RefreshContent(const bool &bRefresh = true);	///< refresh current dir content
 																					/**< \param bRefresh reload files from file system when true */
 		const void RefreshTabs() const;									///< refresh tabs
-		const void ReverseOrder();											///< reverse sort order
-		const void SaveSettings(const cSettings::ePosition &epPosition);
+		const void ReverseOrder() const;									///< reverse sort order
+		const void SaveSettings(const cSettings::ePosition &epPosition) const;
 																					///< save panel settings
 																					/**< \param epPosition panel's position */
 		const void Select(const cSelectFilesDialog::eSelectType &estType, cListerPlugin *clpListerPlugin) const;
@@ -102,12 +103,12 @@ class cPanel : public QObject
 		const void SetFocus() const;										///< set focus to current directory view
 		const void SetHistoryDirectory(const int &iPosition);		///< set path by directory from history list
 																					/**< \param iPosition directory position in history list */
-		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
+		const void SetPath(const QString &qsPath) const;			///< set new path for current dir view on selected drive
 																					/**< \param qsPath new path */
 		const void SetTabIndex(const int &iTabIndex) const;		///< switch tabs
 																					/**< \param iTabIndex new tab index */
 		const void ShowHideHeaders() const;								///< show or hide headers in all tabs
-		const void SortBy(const int &iColumn);							///< sort by specified column
+		const void SortBy(const int &iColumn) const;					///< sort by specified column
 																					/**< \param iColumn column position to sort by */
 		const void UnselectAll() const;									///< unselect all files
 
@@ -154,8 +155,8 @@ class cPanel : public QObject
 		static cSettings::sSort ssSort;									///< sort information
 
 		const void ActualizeDrives() const;								///< drive list actualization
-		const void ActualizeVolumeInfo();								///< actualize volume information - disk name and space
-		const void ActualizeWidgets();									///< actualize widgets with info about current directory view
+		const void ActualizeVolumeInfo() const;						///< actualize volume information - disk name and space
+		const void ActualizeWidgets() const;							///< actualize widgets with info about current directory view
 		const void AddHistory(const int &iIndex);						///< add current path to last paths history
 																					/**< \param iIndex tab index to add history */
 		const void CloseTab(const QMouseEvent *qmeEvent);			///< close tab
@@ -171,7 +172,7 @@ class cPanel : public QObject
 																					///< convert QDateTime to user defined format
 																					/**< \param qdtDateTime date/time to convert
 																						  \return user defined date/time format */
-		const int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex);
+		const int GetNativeColumnIndex(const QString &qsColumn, const int &iTabIndex) const;
 																					///< find index of native column
 																					/**< \param qsColumn native column name
 																						  \param iTabIndex tab index
@@ -181,7 +182,7 @@ class cPanel : public QObject
 																					/**< \param qi64Size size
 																						  \return file size in string with suffix */
 		const void HideOrShowTabBar() const;							///< hide or show tab bar as set in options
-		const bool QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection);
+		const bool QuickSearch(const QString &qsNextChar, const eQuickSearchDirection &eqsdDirection) const;
 																					///< search if quick searched file exists in current dir view
 																					/**< \param qsNextChar next filename character to search with
 																						  \param eqsdDirection direction of search
@@ -198,7 +199,7 @@ class cPanel : public QObject
 																					/**< \param iTabIndex tab bar index to set text in */
 		const void ShowHideHeader(const int &iTabIndex) const;	///< show or hide header for specified tab
 																					/**< \param iTabIndex tab index to show/hide header */
-		const void Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort);
+		const void Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort) const;
 																					///< sort dir content
 																					/**< \param iIndex index of dir view
 																						  \param qlToSort files to sort */

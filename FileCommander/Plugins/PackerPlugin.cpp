@@ -33,9 +33,9 @@ const void cPackerPlugin::Load()
 
 	// enumerate plugins
 	for (iI = 0; iI < qlPlugins.count(); iI++) {
-		cSettings::sPlugin *spPlugin;
+		const cSettings::sPlugin *spPlugin;
 
-		spPlugin = &qlPlugins[iI];
+		spPlugin = &qlPlugins.at(iI);
 		if (spPlugin->bEnabled) {
 			sPluginInfo spiPluginInfo;
 			QLibrary qlLibrary;

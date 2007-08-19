@@ -48,7 +48,7 @@ class cContentPlugin
 
 		const QHash<QString, sPluginInfo> &GetPluginsInfo() const;	///< retrieve content plugin info
 																						/**< \return table of plugin info */
-		const QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag = NULL);
+		const QString GetPluginValue(const QString &qsFilename, const QString &qsPlugin, const QString &qsColumn, const QString &qsUnit, int *iFlag = NULL) const;
 																						///< returns plugin's value for specified column
 																						/**< \param qsFilename file name to probe
 																							  \param qsPlugin name of column's plugin
@@ -78,7 +78,7 @@ class cContentPlugin
 		QHash<QString, sPluginInfo> qhPlugins;								///< table of plugins
 																						/**< key is plugin name, value contains plugin's info */
 
-		const int GetFieldIndex(const QString &qsPlugin, const QString &qsColumn);
+		const int GetFieldIndex(const QString &qsPlugin, const QString &qsColumn) const;
 																						///< get index of column in plugin
 																						/**< \param qsPlugin plugin filename
 																							  \param qsColumn plugin's column name

@@ -49,11 +49,12 @@ class cFileSystem : public QObject
 																											  \return content plugin (nondelayed) value */
 		virtual const QList<QTreeWidgetItem *> GetCustomFileList() const = 0;	///< custom file list
 																										/**< \return custom file list */
-		virtual const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) = 0;
+		virtual const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const = 0;
 																										///< get file name with extension from custom list
 																										/**< \param qtwiFile file to find file name with extension for
 																											  \return file name with extension */
-		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) = 0;	///< get file name from custom list with full path
+		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) const = 0;
+																										///< get file name from custom list with full path
 																										/**< \param qtwiFile file to find file path for
 																											  \return file name with full path */
 		virtual QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true) = 0;
@@ -84,12 +85,12 @@ class cFileSystem : public QObject
 																										///< file list of specified file system's type
 																										/**< \param qlSelected selected files to get file list for
 																											  \return file list of specified file system's type */
-		virtual const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
+		virtual const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const = 0;
 																										///< get file name without extension
 																										/**< \param qtwiFile file to find name for
 																											  \param bBracketsAllowed brackets around file name allowed flag
 																											  \return file name without extension */
-		virtual const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) = 0;
+		virtual const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true) const = 0;
 																										///< get file name with extension
 																										/**< \param \param qtwiFile file to find name with extension for
 																											  \param bBracketsAllowed brackets around file name allowed flag

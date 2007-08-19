@@ -29,9 +29,9 @@ const QFileInfoList cLocalCommon::GetFiles(const QFileInfo &qfiFile, const QStri
 
 			// filter sources and add next directories
 			for (iI = 0; iI < qfilDirContent.count(); iI++) {
-				QFileInfo *qfilFile;
+				const QFileInfo *qfilFile;
 
-				qfilFile = &qfilDirContent[iI];
+				qfilFile = &qfilDirContent.at(iI);
 
 				if (qfilFile->isDir()) {
 					qfilDirectories.append(*qfilFile);
