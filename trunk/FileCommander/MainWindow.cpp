@@ -716,7 +716,15 @@ const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
 // new directory button is clicked on
 const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) const
 {
-	cfcFileControl->CreateDirectory(cpSource->GetFileSystem());
+	QString qsName;
+
+	qsName = cfcFileControl->CreateDirectory(cpSource->GetFileSystem());
+
+	if (!qsName.isEmpty()) {
+		cpSource->RefreshContent();
+		qsName = QDir::toNativeSeparators(qsName);
+		cpSource->GoToFile(qsName.left(qsName.indexOf(QDir::separator())));
+	} // if
 } // on_qpbNewDirectory_clicked
 
 // terminal button is clicked on

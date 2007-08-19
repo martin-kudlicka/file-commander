@@ -53,9 +53,10 @@ class cFileControl : public QObject
 																						///< compare directories in both panels
 																						/**< \param cfsLeft left panel's file system
 																							  \param cfsRight right panel's file system */
-		const void CreateDirectory(const cFileSystem *cfsFileSystem) const;
+		const QString CreateDirectory(cFileSystem *cfsFileSystem) const;
 																						///< create new directory
-																						/**< \param cfsFileSystem file system to create new directory in */
+																						/**< \param cfsFileSystem file system to create new directory in
+																							  \return new directory name */
 		const void Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
 																						///< edit selected files
 																						/**< \param cfsFileSystem file system
