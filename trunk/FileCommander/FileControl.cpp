@@ -311,9 +311,28 @@ const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSy
 } // on_cFileSystem_OperationFinished
 
 // remove queued items (operations)
-const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems) const
+const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems)
 {
-	// TODO on_cqwQueue_RemoveQueuedItems
+	int iI;
+
+	for (iI = 0; iI < qlItems.count(); iI++) {
+		int iJ;
+
+		// remove from queued operations
+		for (iJ = 0; iJ < qqOperations.count(); iJ++) {
+			const QPair<QListWidgetItem *, sOperation> *qpOperation;
+
+			qpOperation = &qqOperations.at(iJ);
+			if (qpOperation->first == qlItems.at(iI)) {
+				delete qpOperation->first;
+				qqOperations.removeAt(iJ);
+				break;
+			} // if
+		} // for
+	} // for
+
+	// actualize visibility
+	ProcessQueue();
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
@@ -416,6 +435,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 				soOperation.cfsSource->Delete(qsFilter, cFileOperation::ForegroundOperation);
 			} else {
 				// copy or move
+				// TODO Operation copy/move
 				// !connect source and destination file systems!
 				//ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
 			} // if else
@@ -439,6 +459,7 @@ const void cFileControl::ProcessQueue()
 		switch (qpOperation.second.eoType) {
 			case cFileOperationDialog::CopyOperation:
 			case cFileOperationDialog::MoveOperation:
+				// TODO ProcessQueue copy/move
 				/*ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
 				ccmInQueue = ccmCopyMove;
 				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
@@ -481,34 +502,28 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTre
 	int iI;
 
 	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
-		QTreeWidgetItem *qtwiFile;
-
-		qtwiFile = qlSelectedFiles.at(iI);
-		if (cfsFileSystem->IsFile(qtwiFile)) {
-			// TODO View test for local file
-			if (csSettings->GetViewerType() == qsINTERNAL) {
-				cListerMainWindow *clmwLister;
-
-				clmwLister = new cListerMainWindow(csSettings, clpListerPlugin, cfsFileSystem->GetFilePath(qtwiFile));
-				clmwLister->show();
-			} else {
-				cProcess cpProcess;
-				QString qsCommand;
-
-				qsCommand = csSettings->GetExternalViewer();
-				qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
-
-				cpProcess.StartDetached(qsCommand);
-			} // if else
-		} // if
+		View(cfsFileSystem, qlSelectedFiles.at(iI));
 	} // for
 } // View
 
 // view selected file
 const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const
 {
-	QList<QTreeWidgetItem *> qlFile;
+	if (cfsFileSystem->IsFile(qtwiFile)) {
+		// TODO View test for local file
+		if (csSettings->GetViewerType() == qsINTERNAL) {
+			cListerMainWindow *clmwLister;
 
-	qlFile.append(qtwiFile);
-	View(cfsFileSystem, qlFile);
+			clmwLister = new cListerMainWindow(csSettings, clpListerPlugin, cfsFileSystem->GetFilePath(qtwiFile));
+			clmwLister->show();
+		} else {
+			cProcess cpProcess;
+			QString qsCommand;
+
+			qsCommand = csSettings->GetExternalViewer();
+			qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
+
+			cpProcess.StartDetached(qsCommand);
+		} // if else
+	} // if
 } // View
