@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	cmwMainWindow->show();
 
 	iResult = qaApplication.exec();
-	delete cmwMainWindow;
+	cmwMainWindow->deleteLater();
 
 	return iResult;
 } // main

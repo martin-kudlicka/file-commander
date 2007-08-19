@@ -10,6 +10,8 @@
 #include "Plugins/ContentPlugin.h"
 #include "Plugins/ListerPlugin.h"
 #include "FileControl/FileOperationDialog.h"
+#include <QtCore/QQueue>
+#include "FileControl/QueueWidget.h"
 
 class cFileControl : public QObject
 {
@@ -73,7 +75,7 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination) const;
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination);
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
@@ -91,11 +93,14 @@ class cFileControl : public QObject
 																							  \param qtwiFile file to show */
 
 	private:
+		static const int iQUEUE_WIDGET_POS = 0;							///< position of queue widget on top layout
+
 		/// operation description
 		struct sOperation {
 			cFileOperationDialog::eOperation eoType;						///< type of operation
 			cFileSystem *cfsSource;												///< source file system
 			cFileSystem *cfsDestination;										///< destination file system
+			QString qsFilter;														///< filter for source files
 		};
 		/// count of file types
 		struct sTypeCount {
@@ -104,21 +109,36 @@ class cFileControl : public QObject
 		};
 
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
+		cFileSystem *cfsInQueue;												///< source file system processed in queue
 		cListerPlugin *clpListerPlugin;										///< lister plugin interface
+		cQueueWidget cqwQueue;													///< list of queued operations
 		cSettings *csSettings;													///< application's configuration
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
+		QList<sOperation> qlOperations;										///< operations in processing
+		QQueue<QPair<QListWidgetItem *, sOperation> > qqOperations;	///< queued operations
 		QMainWindow *qmwParent;													///< parent window for dialogs
 
+		const void Enqueue(const sOperation &soOperation);				///< place operation into queue
+																						/**< \param soOperation operation description */
 		const sTypeCount GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const;
 																						///< count files type
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
+		const void ProcessQueue();												///< process first queued operation
+
+	signals:
+		signals:
+		void AddIntoQueueList(QListWidgetItem *qlwiItem) const;		///< add new item into queue list
+																						/**< \param qlwiItem operation to queue */
 
 	private slots:
-		const void on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem) const;
+		const void on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem);
 																						///< file operation finished
 																						/**< \param cfsFileSystem filesystem identifier */
+		const void on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems) const;
+																						///< remove queued items (operations)
+																						/**< \param qlItems operations to remove */
 }; // cFileControl
 
 #endif

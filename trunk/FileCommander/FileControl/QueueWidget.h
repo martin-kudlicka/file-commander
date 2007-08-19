@@ -10,19 +10,19 @@ class cQueueWidget : public QWidget, private Ui::qwQueueWidget
 	Q_OBJECT
 
 	public:
-		cQueueWidget();															///< constructor
+		cQueueWidget();																	///< constructor
 
 	signals:
-		void RemoveQueuedItems(QList<QListWidgetItem *> qlItems);	///< remove queued items (operations)
-																						/**< \param qlItems operations to remove */
+		void RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems) const;	///< remove queued items (operations)
+																								/**< \param qlItems operations to remove */
 
 	private slots:
-		void on_cFileOperation_AddIntoQueueList(QListWidgetItem *qlwiItem);
-																						///< add new item into list
-																						/**< \param qlwiItem new item (operation) */
-		void on_qlwOperations_itemSelectionChanged();					///< different queued operations selected
-		void on_qpbRemove_clicked(bool checked = false);				///< - button is clicked on
-																						/**< \param checked true if button is checkable and checked */
+		const void on_cFileOperation_AddIntoQueueList(QListWidgetItem *qlwiItem) const;
+																								///< add new item into list
+																								/**< \param qlwiItem new item (operation) */
+		const void on_qlwOperations_itemSelectionChanged() const;			///< different queued operations selected
+		const void on_qpbRemove_clicked(bool checked = false) const;		///< - button is clicked on
+																								/**< \param checked true if button is checkable and checked */
 }; // cQueueWidget
 
 #endif
