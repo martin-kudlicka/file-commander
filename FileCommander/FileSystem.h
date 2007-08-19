@@ -4,6 +4,7 @@
 #define FILE_SYSTEM_H
 
 #include <QtGui/QTreeWidgetItem>
+#include "FileSystem/FileOperation.h"
 
 class cFileSystem : public QObject
 {
@@ -33,6 +34,10 @@ class cFileSystem : public QObject
 		virtual const void BeginSearch() = 0;												///< begin of searching files
 		virtual const void CreateDir(const QString &qsName) = 0;						///< create new directory
 																										/**< \param qsName new directory name */
+		virtual const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition) = 0;
+																										///< delete files in operation file list
+																										/**< \param qsFilter filter to chose files by
+																											  \param eopPosition operation position type */
 		virtual const bool DirExists(const QString &qsDirectory) const = 0;		///< check if specified directory exists
 																										/**< \param qsDirectory directory to check
 																											  \return true if directory exists */

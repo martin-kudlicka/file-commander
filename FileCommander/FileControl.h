@@ -114,6 +114,11 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
+
+	private slots:
+		const void on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem) const;
+																						///< file operation finished
+																						/**< \param cfsFileSystem filesystem identifier */
 }; // cFileControl
 
 #endif

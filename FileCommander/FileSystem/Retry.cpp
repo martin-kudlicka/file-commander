@@ -1,10 +1,10 @@
-#include "FileOperation/Retry.h"
+#include "FileSystem/Retry.h"
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 
 // show retry dialog
-void cRetry::Show(const QString &qsInformation, const QString &qsFilename)
+const void cRetry::Show(const QString &qsInformation, const QString &qsFilename) const
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;

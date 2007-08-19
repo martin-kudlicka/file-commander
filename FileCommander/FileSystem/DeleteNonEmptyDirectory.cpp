@@ -1,9 +1,9 @@
-#include "FileOperation/DeleteNonEmptyDirectory.h"
+#include "FileSystem/DeleteNonEmptyDirectory.h"
 
 #include <QtGui/QMessageBox>
 
 // show conflict dialog
-void cDeleteNonEmptyDirectory::Show(const QString &qsDirectory)
+const void cDeleteNonEmptyDirectory::Show(const QString &qsDirectory) const
 {
 	eChoice ecResponse;
 

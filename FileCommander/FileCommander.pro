@@ -14,6 +14,8 @@ CONFIG(release, debug|release) {
 
 FORMS = MainWindow.ui \
 		  FileControl/FileOperationDialog.ui \
+		  FileSystem/DeleteDialog.ui \
+		  FileSystem/DeleteWidget.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
@@ -29,7 +31,14 @@ HEADERS = MainWindow.h \
 			 FileControl/FileOperationDialog.h \
 			 FileSystem.h \
 			 FileSystem/Local.h \
+			 FileSystem/FileOperation.h \
+			 FileSystem/DeleteDialog.h \
+			 FileSystem/DeleteNonEmptyDirectory.h \
+			 FileSystem/DeleteWidget.h \
+			 FileSystem/Permission.h \
+			 FileSystem/Retry.h \
 			 FileSystem/Local/ShellMenu.h \
+			 FileSystem/Local/LocalDelete.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -63,7 +72,14 @@ SOURCES = FileCommander.cpp \
 			 FileControl/FileOperationDialog.cpp \
 			 FileSystem.cpp \
 			 FileSystem/Local.cpp \
+			 FileSystem/FileOperation.cpp \
+			 FileSystem/DeleteDialog.cpp \
+			 FileSystem/DeleteNonEmptyDirectory.cpp \
+			 FileSystem/DeleteWidget.cpp \
+			 FileSystem/Permission.cpp \
+			 FileSystem/Retry.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
+			 FileSystem/Local/LocalDelete.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \

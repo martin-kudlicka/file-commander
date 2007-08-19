@@ -10,20 +10,30 @@
 #include "Plugins/ContentPlugin.h"
 #include "Plugins/ContentPluginDelayed.h"
 #include <QtCore/QFileSystemWatcher>
+#include <QtGui/QMainWindow>
+#include <QtGui/QHBoxLayout>
 
 class cLocal : public cFileSystem
 {
 	Q_OBJECT
 
 	public:
-		cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
+		cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
 																								///< constructor
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
 																									  \param qsPath to initialize local file system
+																									  \param qmwParent parent window for dialogs
+																									  \param qhblOperations layout for background widget
 																				 					  \param csSettings main settings
 																				 					  \param ccpContentPlugin content plugin interface */
 		~cLocal();																			///< destructor
+
+		const QFileInfoList GetFiles(const QFileInfo &qfiFile, const QString &qsFilter = "*") const;
+																								///< return list of sources (within subdirectories too)
+																								/**< \param qfiFile file or directory
+																									  \param qsFilter filter for input files
+																									  \return file list */
 
 	private:
 		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
@@ -33,10 +43,12 @@ class cLocal : public cFileSystem
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
+		QFileInfoList qfilOperation;													///< operation file list
 		QFileSystemWatcher qfswWatcher;												///< file system watcher for changes in current directory
 		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
-		QList<QFileInfo> qlOperation;													///< operation file list
+		QHBoxLayout *qhblOperations;													///< layout for background widget
+		QMainWindow *qmwParent;															///< qmwParent parent window for dialogs
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
 																								///< parameters for content delayed values
 		QString qsDrive;																	///< drive handled by this file system class
@@ -55,6 +67,10 @@ class cLocal : public cFileSystem
 																								/**< \param qhTable file table to clear */
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
+		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
+																								///< delete files in operation file list
+																								/**< \param qsFilter filter to chose files by
+																									  \param eopPosition operation position type */
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
 																									  \return true if directory exists */
@@ -114,11 +130,6 @@ class cLocal : public cFileSystem
 		const QString GetFilePath(QTreeWidgetItem *qtwiFile) const;			///< get file name with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
-		const QFileInfoList GetFiles(const QFileInfo &qfiFile, const QString &qsFilter = "*") const;
-																								///< return list of sources (within subdirectories too)
-																								/**< \param qfiFile file or directory
-																									  \param qsFilter filter for input files
-																									  \return file list */
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
 																									  \return file size */
@@ -180,12 +191,15 @@ class cLocal : public cFileSystem
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
 		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
+		void OperationFinished(cFileSystem *cfsFileSystem) const;			///< file operation finished
+																								/**< \param cfsFileSystem filesystem identifier */
 		void Unaccessible() const;														///< file system unaccessible
 
 	private slots:
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
+		const void on_OperationFinished();											///< file operation finished
 		const void on_qfswWatcher_directoryChanged(const QString &path) const;
 																								///< current directory content changed
 																								/**< \param path path to changed directory */

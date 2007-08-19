@@ -6,6 +6,7 @@
 #endif
 #include "FileSystem/Local/ShellMenu.h"
 #include "FileControl/Process.h"
+#include "FileSystem/Local/LocalDelete.h"
 
 // destructor
 cLocal::~cLocal()
@@ -90,8 +91,10 @@ const void cLocal::ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) 
 } // ClearFileTable
 
 // constructor
-cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
+cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
 {
+	this->qmwParent = qmwParent;
+	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
 
@@ -114,6 +117,17 @@ const void cLocal::CreateDir(const QString &qsName)
 	qdDir.mkpath(qsNewDirectory);
 	qfswWatcher.addPath(qdDir.path());
 } // CreateDir
+
+// delete files in operation file list
+const void cLocal::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
+{
+	cLocalDelete *cldDelete;
+
+	cldDelete = new cLocalDelete(this, qmwParent, qhblOperations, csSettings);
+	connect(cldDelete, SIGNAL(finished()), SLOT(on_OperationFinished()));
+	// TODO Delete append to queue
+	cldDelete->Delete(qfilOperation, qsFilter, eopPosition);
+} // Delete
 
 // check if specified directory exists
 const bool cLocal::DirExists(const QString &qsDirectory) const
@@ -575,6 +589,13 @@ const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPlug
 	emit GotColumnValue(soOutput);
 } // on_ccpdContentPluginDelayed_GotColumnValue
 
+// file operation finished
+const void cLocal::on_OperationFinished()
+{
+	// TODO on_OperationFinished
+	emit OperationFinished(this);
+} // on_OperationFinished
+
 // current directory content changed
 const void cLocal::on_qfswWatcher_directoryChanged(const QString &path) const
 {
@@ -611,7 +632,7 @@ const void cLocal::RetreiveContentDelayedValues()
 // set file list for file operation
 const void cLocal::SetOperationFileList(void *vFileList)
 {
-	qlOperation = *static_cast<QFileInfoList *>(vFileList);
+	qfilOperation = *static_cast<QFileInfoList *>(vFileList);
 } // SetOperationFileList
 
 // change path for this file system

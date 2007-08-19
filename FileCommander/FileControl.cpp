@@ -200,7 +200,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 		qpDrive = &qlDrives[iI];
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, csSettings, ccpContentPlugin);
+				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin);
 			} // switch
 		} // if
 
@@ -246,6 +246,13 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 
 	return spiPathInfo;
 } // GetPathInfo
+
+// file operation finished
+const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSystem) const
+{
+	// TODO on_cFileSystem_OperationFinished
+	CloseFileSystem(cfsFileSystem);
+} // on_cFileSystem_OperationFinished
 
 // file operation selected
 const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination) const
@@ -342,16 +349,12 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		case cFileOperationDialog::OkAction:
 			if (eoOperation == cFileOperationDialog::DeleteOperation) {
 				// delete
-				/*cdDelete = new cDelete(qmwParent, qhblOperations, csSettings);
-				connect(cdDelete, SIGNAL(finished()), SLOT(on_cDelete_finished()));
-				qlDelete.append(cdDelete);
-				cdDelete->Delete(qfilSource, qsFilter, cFileRoutine::ForegroundWindow);*/
+				connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+				soOperation.cfsSource->Delete(qsFilter, cFileOperation::ForegroundOperation);
 			} else {
 				// copy or move
-				/*ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
-				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
-				qlCopyMove.append(ccmCopyMove);
-				ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);*/
+				// !connect source and destination file systems!
+				//ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
 			} // if else
 			break;
 		case cFileOperationDialog::EnqueueAction:
