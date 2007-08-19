@@ -340,9 +340,9 @@ const void cFindFilesDialog::on_qpbGoToFile_clicked(bool checked /* false */)
 {
 	int iI, iIndex;
 	QString qsGoTo;
-	const sFound *sfFound;
+	sFound *sfFound;
 
-	sfFound = &qhFound.value(qtwSearch->currentItem());
+	sfFound = &qhFound[qtwSearch->currentItem()];
 
 	qsGoTo = sfFound->cfsFileSytem->GetFileNameWithExtension(sfFound->qtwiFile, false);
 
@@ -512,11 +512,11 @@ const void cFindFilesDialog::on_qpbStop_clicked(bool checked /* false */)
 } // on_qpbStop_clicked
 
 // view button is clicked on
-const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */) const
+const void cFindFilesDialog::on_qpbView_clicked(bool checked /* false */)
 {
-	const sFound *sfFound;
+	sFound *sfFound;
 
-	sfFound = &qhFound.value(qtwSearch->currentItem());
+	sfFound = &qhFound[qtwSearch->currentItem()];
 
 	cfcFileControl->View(sfFound->cfsFileSytem, sfFound->qtwiFile);
 } // on_qpbView_clicked
@@ -540,12 +540,12 @@ const void cFindFilesDialog::RefreshSavedSettings() const
 } // RefreshSavedSettings
 
 // selected item changed in found files list
-const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged() const
+const void cFindFilesDialog::on_qtwSearch_itemSelectionChanged()
 {
 	if (qtwSearch->selectedItems().count() > 0) {
-		const sFound *sfFound;
+		sFound *sfFound;
 
-		sfFound = &qhFound.value(qtwSearch->selectedItems().at(0));
+		sfFound = &qhFound[qtwSearch->selectedItems().at(0)];
 		if (sfFound->cfsFileSytem->IsFile(sfFound->qtwiFile)) {
 			qpbView->setEnabled(true);
 		} else {

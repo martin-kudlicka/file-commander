@@ -82,7 +82,7 @@ class cLocal : public cFileSystem
 																								///< get file name with extension from custom list
 																								/**< \param qtwiFile file to find file name with extension for
 																									  \return file name with extension */
-		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) const;	///< get file name from custom list with full path
+		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);

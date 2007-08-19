@@ -152,10 +152,10 @@ const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)
 {
 	int iFlag;
-	const QFileInfo *qfiFile;
+	QFileInfo *qfiFile;
 	QString qsValue;
 
-	qfiFile = &qhFiles.value(sContent.qtwiFile);
+	qfiFile = &qhFiles[sContent.qtwiFile];
 
 	qsValue = ccpContentPlugin->GetPluginValue(qfiFile->filePath(), sContent.qsPlugin, sContent.qsColumn, sContent.qsUnit, &iFlag);
 
@@ -191,12 +191,12 @@ const QString cLocal::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) 
 } // GetCustomFileName
 
 // get file name from custom list with full path
-const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile) const
+const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 {
-	const QFileInfo *qfiFile;
+	QFileInfo *qfiFile;
 	QString qsName;
 
-	qfiFile = &qhCustom.value(qtwiFile);
+	qfiFile = &qhCustom[qtwiFile];
 
 	qsName = qfiFile->filePath();
 
