@@ -6,7 +6,7 @@
 #endif
 #include "FileSystem/Local/ShellMenu.h"
 #include "FileControl/Process.h"
-#include "FileSystem/Local/LocalDelete.h"
+#include "FileSystem/Local/LocalCommon.h"
 
 // destructor
 cLocal::~cLocal()
@@ -121,10 +121,8 @@ const void cLocal::CreateDir(const QString &qsName)
 // delete files in operation file list
 const void cLocal::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
 {
-	cLocalDelete *cldDelete;
-
-	cldDelete = new cLocalDelete(this, qmwParent, qhblOperations, csSettings);
-	connect(cldDelete, SIGNAL(finished()), SLOT(on_OperationFinished()));
+	cldDelete = new cLocalDelete(qmwParent, qhblOperations, csSettings);
+	connect(cldDelete, SIGNAL(finished()), SLOT(on_cLocalDelete_OperationFinished()));
 	// TODO Delete append to queue
 	cldDelete->Delete(qfilOperation, qsFilter, eopPosition);
 } // Delete
@@ -267,7 +265,7 @@ const qint64 cLocal::GetDirectorySize() const
 	QFileInfoList qfilFiles;
 	qint64 qi64Size;
 
-	qfilFiles = GetFiles(qhFiles.value(qhFiles.constBegin().key()->treeWidget()->currentItem()));
+	qfilFiles = cLocalCommon::GetFiles(qhFiles.value(qhFiles.constBegin().key()->treeWidget()->currentItem()));
 
 	qi64Size = 0;
 	for (iI = 0; iI < qfilFiles.count(); iI++) {
@@ -418,55 +416,6 @@ const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).filePath();
 } // GetFilePath
 
-// return list of sources (within subdirectories too)
-const QFileInfoList cLocal::GetFiles(const QFileInfo &qfiFile, const QString &qsFilter /* "*" */) const
-{
-	QFileInfoList qfilSources;
-
-	if (qfiFile.isDir()) {
-		QFileInfoList qfilDirectories;
-
-		qfilSources.append(qfiFile);
-		qfilDirectories.append(qfiFile);
-
-		// process subdirectories
-		while (!qfilDirectories.isEmpty()) {
-			int iI;
-			QDir qdDirContent;
-			QFileInfo qfiDir;
-			QFileInfoList qfilDirContent;
-
-			// get directory content
-			qfiDir = qfilDirectories.takeFirst();
-			qdDirContent.setPath(qfiDir.filePath());
-			qdDirContent.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-			qfilDirContent = qdDirContent.entryInfoList();
-
-			// filter sources and add next directories
-			for (iI = 0; iI < qfilDirContent.count(); iI++) {
-				QFileInfo *qfilFile;
-
-				qfilFile = &qfilDirContent[iI];
-
-				if (qfilFile->isDir()) {
-					qfilDirectories.append(*qfilFile);
-					qfilSources.append(*qfilFile);
-				} else {
-					if (SuitsFilter(qfilFile->fileName(), qsFilter)) {
-						qfilSources.append(*qfilFile);
-					} // if
-				} // if else
-			} // for
-		} // while
-	} else {
-		if (SuitsFilter(qfiFile.fileName(), qsFilter)) {
-			qfilSources.append(qfiFile);
-		} // if
-	} // if else
-
-	return qfilSources;
-} // GetFiles
-
 // get file size
 const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 {
@@ -590,11 +539,11 @@ const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPlug
 } // on_ccpdContentPluginDelayed_GotColumnValue
 
 // file operation finished
-const void cLocal::on_OperationFinished()
+const void cLocal::on_cLocalDelete_OperationFinished()
 {
-	// TODO on_OperationFinished
+	cldDelete->deleteLater();
 	emit OperationFinished(this);
-} // on_OperationFinished
+} // on_cLocalDelete_OperationFinished
 
 // current directory content changed
 const void cLocal::on_qfswWatcher_directoryChanged(const QString &path) const

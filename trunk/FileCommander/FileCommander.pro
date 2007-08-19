@@ -39,6 +39,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Retry.h \
 			 FileSystem/Local/ShellMenu.h \
 			 FileSystem/Local/LocalDelete.h \
+			 FileSystem/Local/LocalCommon.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -80,6 +81,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Retry.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
 			 FileSystem/Local/LocalDelete.cpp \
+			 FileSystem/Local/LocalCommon.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \

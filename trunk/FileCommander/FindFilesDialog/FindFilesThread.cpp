@@ -12,7 +12,7 @@ const bool cFindFilesThread::ConditionSuit(QTreeWidgetItem *qtwiFile) const
 	bool bOk;
 
 	// search for
-	bOk = cfsFileSystem->SuitsFilter(cfsFileSystem->GetFileNameWithExtension(qtwiFile, false), sfsSearch.qsSearchFor, sfsSearch.bSearchForRegularExpression);
+	bOk = cFileOperation::SuitsFilter(cfsFileSystem->GetFileNameWithExtension(qtwiFile, false), sfsSearch.qsSearchFor, sfsSearch.bSearchForRegularExpression);
 	if (!bOk) {
 		return false;
 	} // if

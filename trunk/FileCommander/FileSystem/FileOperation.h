@@ -28,6 +28,12 @@ class cFileOperation
 																			///< default readonly overwrite permission
 																			/**< \param csSettings settings file
 																				  \return default readonly overwrite permission */
+		static const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false);
+																			///< check if filename suits filter
+																			/**< \param qsName filename to check
+																				  \param qsFilter filter to suit
+																				  \param bRegularExpression qsFilter is regular expression
+																				  \return true if filename suits filter */
 #endif
 }; // cFileOperation
 

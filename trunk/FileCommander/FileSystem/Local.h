@@ -12,6 +12,7 @@
 #include <QtCore/QFileSystemWatcher>
 #include <QtGui/QMainWindow>
 #include <QtGui/QHBoxLayout>
+#include "FileSystem/Local/LocalDelete.h"
 
 class cLocal : public cFileSystem
 {
@@ -29,17 +30,12 @@ class cLocal : public cFileSystem
 																				 					  \param ccpContentPlugin content plugin interface */
 		~cLocal();																			///< destructor
 
-		const QFileInfoList GetFiles(const QFileInfo &qfiFile, const QString &qsFilter = "*") const;
-																								///< return list of sources (within subdirectories too)
-																								/**< \param qfiFile file or directory
-																									  \param qsFilter filter for input files
-																									  \return file list */
-
 	private:
 		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
 
 		cContentPlugin *ccpContentPlugin;											///< content plugin interface
 		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
+		cLocalDelete *cldDelete;														///< delete local files
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
@@ -199,7 +195,7 @@ class cLocal : public cFileSystem
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
-		const void on_OperationFinished();											///< file operation finished
+		const void on_cLocalDelete_OperationFinished();							///< delete file operation finished
 		const void on_qfswWatcher_directoryChanged(const QString &path) const;
 																								///< current directory content changed
 																								/**< \param path path to changed directory */

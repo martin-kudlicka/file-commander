@@ -144,12 +144,6 @@ class cFileSystem : public QObject
 		) const = 0;																				///< custom context menu on right click
 																										/**< \param qcPosition cursor position on the screen
 																											  \param hwParent parent window to show menu in */
-		const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false) const;
-																										///< check if filename suits filter
-																										/**< \param qsName filename to check
-																											  \param qsFilter filter to suit
-																											  \param bRegularExpression qsFilter is regular expression
-																											  \return true if filename suits filter */
 }; // cFileSystem
 
 #endif
