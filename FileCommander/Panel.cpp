@@ -570,6 +570,12 @@ const QString cPanel::GetPath() const
 	return qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetPath();
 } // GetPath
 
+// selected files from current directory view
+const QList<QTreeWidgetItem *> cPanel::GetSelectedFiles() const
+{
+	return static_cast<cTreeWidget *>(qswDirs->currentWidget())->selectedItems();
+} // GetSelectedFiles
+
 // "convert" size to string according to setting in options
 const QString cPanel::GetSizeString(const qint64 &qi64Size) const
 {

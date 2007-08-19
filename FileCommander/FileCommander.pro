@@ -18,6 +18,8 @@ FORMS = MainWindow.ui \
 		  FindFilesDialog/DrivesDialog.ui \
 		  OptionsDialog.ui \
 		  OptionsDialog/NewFavouriteDirectoryDialog.ui \
+		  ListerMainWindow.ui \
+		  ListerMainWindow/FindDialog.ui \
 		  Common/About.ui
 
 HEADERS = MainWindow.h \
@@ -35,6 +37,8 @@ HEADERS = MainWindow.h \
 			 Settings.h \
 			 OptionsDialog.h \
 			 OptionsDialog/NewFavouriteDirectoryDialog.h \
+			 ListerMainWindow.h \
+			 ListerMainWindow/FindDialog.h \
 			 Plugins.h \
 			 Plugins/ContentPlugin.h \
 			 Plugins/ContentPluginDelayed.h \
@@ -66,6 +70,8 @@ SOURCES = FileCommander.cpp \
 			 Settings.cpp \
 			 OptionsDialog.cpp \
 			 OptionsDialog/NewFavouriteDirectoryDialog.cpp \
+			 ListerMainWindow.cpp \
+			 ListerMainWindow/FindDialog.cpp \
 			 Plugins.cpp \
 			 Plugins/ContentPlugin.cpp \
 			 Plugins/ContentPluginDelayed.cpp \

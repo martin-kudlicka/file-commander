@@ -158,6 +158,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param action directory information */
 		const void on_qpbTerminal_clicked(bool checked = false) const;	///< terminal button is clicked on
 																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbView_clicked(bool checked = false) const;		///< view button is clicked on
+																							/**< \param checked true if button is checkable and checked */
 		const void on_qsHistoryBack_activated() const;						///< history back shortcut activated
 		const void on_qsHistoryFront_activated() const;						///< history front shortcut activated
 		const void on_qsLeftDrive_activated() const;							///< left drive shortcut activated

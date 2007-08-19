@@ -69,6 +69,8 @@ class cPanel : public QObject
 																					/**< \return history directory list */
 		const QString GetPath() const;									///< path in current directory view
 																					/**< \return path for current directory view */
+		const QList<QTreeWidgetItem *> GetSelectedFiles() const;	///< selected files from current directory view
+																					/**< \return selected files from current directory view */
 		const int GetTabIndex(const QPoint &qpPos) const;			///< find out tab index in tab bar
 																					/**< \param qpPos cursor position in tab bar
 																						  \return tab index */
