@@ -53,6 +53,10 @@ class cFileControl : public QObject
 																						///< compare directories in both panels
 																						/**< \param cfsLeft left panel's file system
 																							  \param cfsRight right panel's file system */
+		const void Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
+																						///< edit selected files
+																						/**< \param cfsFileSystem file system
+																							  \param qlSelectedFiles files to edit */
 		const QList<QPair<QString, sDrive> > GetDrives() const;		///< get accessible drives
 		cFileSystem *GetFileSystem(const QString &qsDrive, const QString &qsPath) const;
 																						///< get file system for specified drive

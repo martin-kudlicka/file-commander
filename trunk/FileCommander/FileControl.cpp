@@ -102,6 +102,28 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 	} // for
 } // CompareDirectories
 
+// edit selected files
+const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const
+{
+	int iI;
+
+	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
+		QTreeWidgetItem *qtwiFile;
+
+		qtwiFile = qlSelectedFiles.at(iI);
+		if (cfsFileSystem->IsFile(qtwiFile)) {
+			// TODO Edit test for local file
+			cProcess cpProcess;
+			QString qsCommand;
+
+			qsCommand = csSettings->GetExternalEditor();
+			qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
+
+			cpProcess.StartDetached(qsCommand);
+		} // if
+	} // for
+} // Edit
+
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const
 {

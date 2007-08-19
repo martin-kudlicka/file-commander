@@ -156,6 +156,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qmRightHistoryDirectoryList_triggered(QAction *action) const;
 																							///< selected directory from right panel's history list
 																							/**< \param action directory information */
+		const void on_qpbEdit_clicked(bool checked = false) const;		///< edit button is clicked on
+																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbTerminal_clicked(bool checked = false) const;	///< terminal button is clicked on
 																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbView_clicked(bool checked = false) const;		///< view button is clicked on
