@@ -421,6 +421,27 @@ const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).size();
 } // GetFileSize
 
+// string list of file paths
+const QStringList cLocal::GetFileStringList(const bool &bSelected, const cFileSystem::eFileType &eftFileType) const
+{
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	QStringList qslFiles;
+
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (bSelected && !qhiFile.key()->isSelected()
+			 || eftFileType == cFileSystem::File && !qhiFile.value().isFile()
+			 || eftFileType == cFileSystem::Directory && !qhiFile.value().isDir()) {
+			continue;
+		} // if
+
+		qslFiles.append(qhiFile.value().filePath());
+	} // while
+
+	return qslFiles;
+} // GetFileStringList
+
 // get file's last modified date/time stamp
 const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
@@ -438,23 +459,6 @@ const QString cLocal::GetPath(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).path();
 } // GetPath
-
-// selected directory list for current directory
-const QStringList cLocal::GetSelectedDirectoryStringList() const
-{
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-	QStringList qslSelectedDirectories;
-
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-
-		if (qhiFile.key()->isSelected() && qhiFile.value().isDir()) {
-			qslSelectedDirectories.append(qhiFile.value().filePath());
-		} // if
-	} // while
-
-	return qslSelectedDirectories;
-} // GetSelectedDirectoryStringList
 
 // selected files in tree view
 const QFileInfoList cLocal::GetSelectedFiles() const

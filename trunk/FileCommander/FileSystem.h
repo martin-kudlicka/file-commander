@@ -9,6 +9,13 @@
 class cFileSystem : public QObject
 {
 	public:
+		/// file type
+		enum eFileType {
+			All,																						///< all file types
+			File,																						///< file
+			Directory																				///< directory
+		};
+
 		/// parameters for content plugin value
 		struct sContentPluginRequest {
 			QTreeWidgetItem *qtwiFile;															///< file to get value from
@@ -100,6 +107,11 @@ class cFileSystem : public QObject
 		virtual const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const = 0;	///< get file size
 																										/**< \param qtwiFile file to find size for
 																											  \return file size */
+		virtual const QStringList GetFileStringList(const bool &bSelected, const eFileType &eftFileType) const = 0;
+																										///< string list of file paths
+																										/**< \param bSelected return only selected files if true
+																											  \param eftFileType type of file to search for
+																											  \return string list of file paths */
 		virtual const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const = 0;
 																										///< get file's last modified date/time stamp
 																										/**< \param qtwiFile file to check
@@ -109,8 +121,6 @@ class cFileSystem : public QObject
 		virtual const QString GetPath(QTreeWidgetItem *qtwiFile) const = 0;		///< retreive path of a file
 																										/**< \param qtwiFile file to get path for
 																											  \return path for specified file */
-		virtual const QStringList GetSelectedDirectoryStringList() const = 0;	///< selected directory list for current directory
-																										/**< \return selected directory list */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
 																										/**< \return tab text */
 		virtual const QString GetVolumeName() const = 0;								///< find out name of the disk

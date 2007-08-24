@@ -38,7 +38,7 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileCont
 
 	if (cpPanel) {
 		// called from application's main menu
-		iSelected = cpPanel->GetFileSystem()->GetSelectedDirectoryStringList().count();
+		iSelected = cpPanel->GetFileSystem()->GetFileStringList(true, cFileSystem::Directory).count();
 		qcbSearchIn->setEditText(cpPanel->GetPath());
 	} else {
 		// called from file marking
@@ -465,7 +465,7 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 	qqToSearch.clear();
 	FreeFileSystems();
 	if (qcbSearchInSelectedDirectories->isChecked()) {
-		qslPaths = cpPanel->GetFileSystem()->GetSelectedDirectoryStringList();
+		qslPaths = cpPanel->GetFileSystem()->GetFileStringList(true, cFileSystem::Directory);
 	} else {
 		qslPaths = qcbSearchIn->currentText().split(qcPATH_SEPARATOR);
 	} // if else
