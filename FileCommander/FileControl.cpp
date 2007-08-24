@@ -416,7 +416,6 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		soOperation.cfsDestination = NULL;
 	} // if else
 	// operation type
-	soOperation.eoType = eoOperation;
 
 	// copy selected file list to the new source file system
 	vFileList = cfsSource->GetFileList(qlSource);
@@ -426,30 +425,40 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	// correct destination path
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
 		if (cfsSource->DirExists(qsDestination)) {
-			QDir::cleanPath(qsDestination) += "/*.*";
+			qsDestination = QDir::cleanPath(qsDestination) += "/*.*";
 		} // if
 	} // if
+
+	soOperation.eoType = eoOperation;
+	soOperation.qsFilter = qsFilter;
+	soOperation.qsDestination = qsDestination;
 
 	// process
 	switch (euaAction) {
 		case cFileOperationDialog::OkAction:
-			if (eoOperation == cFileOperationDialog::DeleteOperation) {
-				// delete
-				connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-				qlOperations.append(soOperation);
-				soOperation.cfsSource->Delete(qsFilter, cFileOperation::ForegroundOperation);
-			} else {
-				// copy or move
-				// TODO Operation copy/move
-				// !connect source and destination file systems!
-				//ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
-			} // if else
+			ProcessOperation(soOperation, cFileOperation::ForegroundOperation);
 			break;
 		case cFileOperationDialog::EnqueueAction:
-			soOperation.qsFilter = qsFilter;
 			Enqueue(soOperation);
 	} // if
 } // Operation
+
+// process file operation
+const void cFileControl::ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition)
+{
+	if (soOperation.eoType == cFileOperationDialog::DeleteOperation) {
+		// delete
+		connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+		qlOperations.append(soOperation);
+		soOperation.cfsSource->Delete(soOperation.qsFilter, eopPosition);
+	} else {
+		// copy or move
+		// TODO connect other file system later if source not local
+		connect(soOperation.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+		//soOperations.cfsDestination->Write(soOperation.cfsSource->GetFileStringList(true, cFileSystem::All), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+		//ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
+	} // if else
+} // ProcessOperation
 
 // process first queued operation
 const void cFileControl::ProcessQueue()
@@ -461,21 +470,7 @@ const void cFileControl::ProcessQueue()
 		delete qpOperation.first;
 		cfsInQueue = qpOperation.second.cfsSource;
 
-		switch (qpOperation.second.eoType) {
-			case cFileOperationDialog::CopyOperation:
-			case cFileOperationDialog::MoveOperation:
-				// TODO ProcessQueue copy/move
-				/*ccmCopyMove = new cCopyMove(qmwParent, qhblOperations, csSettings);
-				ccmInQueue = ccmCopyMove;
-				connect(ccmCopyMove, SIGNAL(finished()), SLOT(on_cCopyMove_finished()));
-				qlCopyMove.append(ccmCopyMove);
-				ccmCopyMove->CopyMove(soOperation.eoOperation, soOperation.qfilSource, soOperation.qsDestination, soOperation.qsFilter, cFileRoutine::BackgroundWindow);*/
-				break;
-			case cFileOperationDialog::DeleteOperation:
-				connect(qpOperation.second.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-				qlOperations.append(qpOperation.second);
-				qpOperation.second.cfsSource->Delete(qpOperation.second.qsFilter, cFileOperation::BackgroundOperation);
-		} // switch
+		ProcessOperation(qpOperation.second, cFileOperation::BackgroundOperation);
 	} // if
 
 	if (!qqOperations.isEmpty()) {
@@ -488,7 +483,7 @@ const void cFileControl::ProcessQueue()
 // start shell command window
 const void cFileControl::StartTerminal(const QString &qsPath) const
 {
-	#ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
 	cProcess cpProcess;
 
 	if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {

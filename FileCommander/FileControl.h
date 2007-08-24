@@ -102,6 +102,7 @@ class cFileControl : public QObject
 			cFileSystem *cfsSource;												///< source file system
 			cFileSystem *cfsDestination;										///< destination file system
 			QString qsFilter;														///< filter for source files
+			QString qsDestination;												///< destination for copy/move operation
 		};
 		/// count of file types
 		struct sTypeCount {
@@ -126,6 +127,10 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
+		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
+																						///< process file operation
+																						/**< \param soOperation operation description
+																							  \param eopPosition position of operation */
 		const void ProcessQueue();												///< process first queued operation
 
 	signals:

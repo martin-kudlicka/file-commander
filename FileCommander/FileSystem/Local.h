@@ -129,6 +129,11 @@ class cLocal : public cFileSystem
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
 																									  \return file size */
+		const QStringList GetFileStringList(const bool &bSelected, const cFileSystem::eFileType &eftFileType) const;
+																								///< string list of file paths
+																								/**< \param bSelected return only selected files if true
+																									  \param eftFileType type of file to search for
+																									  \return string list of file paths */
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
@@ -137,8 +142,6 @@ class cLocal : public cFileSystem
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
 																								/**< \param qtwiFile file to get path for
 																									  \return path for specified file */
-		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
-																								/**< \return selected directory list */
 		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view
 																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
