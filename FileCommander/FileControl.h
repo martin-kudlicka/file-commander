@@ -13,6 +13,7 @@
 #include <QtCore/QQueue>
 #include "FileControl/QueueWidget.h"
 #include "ListerMainWindow.h"
+#include "Plugins/PackerPlugin.h"
 
 class cFileControl : public QObject
 {
@@ -37,13 +38,14 @@ class cFileControl : public QObject
 			eDriveType edtType;													///< drive type
 		};
 
-		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin);
+		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin);
 																						///< constructor
 																						/**< \param qmwParent parent window for dialogs
 																							  \param qbnlOperations layout for background and queued operations
 																							  \param csSettings application's configuration
 																							  \param ccpContentPlugin content plugin interface
-																							  \param clpListerPlugin lister plugin interface */
+																							  \param clpListerPlugin lister plugin interface
+																							  \param cppPackerPlugin packer plugin interace */
 
 		const bool ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const;
 																						///< change file system according to new drive
@@ -113,6 +115,7 @@ class cFileControl : public QObject
 		cContentPlugin *ccpContentPlugin;									///< content plugin interface
 		cFileSystem *cfsInQueue;												///< source file system processed in queue
 		cListerPlugin *clpListerPlugin;										///< lister plugin interface
+		cPackerPlugin *cppPackerPlugin;										///< packer plugin interface
 		cQueueWidget cqwQueue;													///< list of queued operations
 		cSettings *csSettings;													///< application's configuration
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows

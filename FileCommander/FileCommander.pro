@@ -46,6 +46,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/CopyMoveWidget.h \
 			 FileSystem/DiskSpace.h \
 			 FileSystem/Rename.h \
+			 FileSystem/Archive.h \
 			 FileSystem/Local/ShellMenu.h \
 			 FileSystem/Local/LocalDelete.h \
 			 FileSystem/Local/LocalCommon.h \
@@ -95,6 +96,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/CopyMoveWidget.cpp \
 			 FileSystem/DiskSpace.cpp \
 			 FileSystem/Rename.cpp \
+			 FileSystem/Archive.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
 			 FileSystem/Local/LocalDelete.cpp \
 			 FileSystem/Local/LocalCommon.cpp \

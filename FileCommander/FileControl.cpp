@@ -8,13 +8,14 @@
 #include <QtGui/QInputDialog>
 
 // constructor
-cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin)
+cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
 	this->clpListerPlugin = clpListerPlugin;
+	this->cppPackerPlugin = cppPackerPlugin;
 	cfsInQueue = NULL;
 
 	// queue widget
@@ -238,7 +239,7 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 		qpDrive = &qlDrives.at(iI);
 		if (qpDrive->first == qsDrive) {
 			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin);
+				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
 			} // switch
 		} // if
 

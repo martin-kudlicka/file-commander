@@ -1,55 +1,43 @@
-/// local file system
+/// archive file system
 
-#ifndef LOCAL_H
-#define LOCAL_H
+#ifndef ARCHIVE_H
+#define ARCHIVE_H
 
 #include "FileSystem.h"
-#include <QtCore/QDir>
-#include "Settings.h"
-#include <QtGui/QFileIconProvider>
-#include "Plugins/ContentPlugin.h"
-#include "Plugins/ContentPluginDelayed.h"
-#include <QtCore/QFileSystemWatcher>
-#include <QtGui/QMainWindow>
-#include <QtGui/QHBoxLayout>
-#include "FileSystem/Local/LocalDelete.h"
-#include "FileSystem/Local/LocalCopyMove.h"
-#include "FileSystem/Archive.h"
+#include "Plugins/PackerPlugin.h"
+//#include <QtGui/QTreeWidgetItem>
+//#include "FileSystem/FileOperation.h"
+//#include "FileControl/FileOperationDialog.h"
 
-class cLocal : public cFileSystem
+class cArchive : public cFileSystem
 {
-	Q_OBJECT
-
 	public:
-		cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin);
+		cArchive(const QString &qsDrive, const QString &qsRootPath, const QString &qsArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin);
 																								///< constructor
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
+																									  \param qsArchive file path to archive
 																									  \param qsPath to initialize local file system
 																									  \param qmwParent parent window for dialogs
 																									  \param qhblOperations layout for background widget
 																				 					  \param csSettings main settings
-																				 					  \param ccpContentPlugin content plugin interface
-																									  \param cppPackerPlugin packer plugin interace */
-		~cLocal();																			///< destructor
+																				 					  \param cppPackerPlugin packer plugin interface */
+
+		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
+																								///< change path for this file system
+																								/**< \param qsDrive drive handled by this file system class
+																									  \param qsRootPath path to root of this file system
+																									  \param qsPath to initialize archive file system
+																									  \param bStartup true if initializing file system class */
+		const bool SetPath(const QString &qsPath, const bool &bStartup = false);
+																								///< change path for this file system without drive change
+																								/**< \param qsPath to initialize archive file system
+																									  \param bStartup true if initializing file system class
+																									  \return true if succesfull */
 
 	private:
-		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
-
-		cArchive *caArchive;																///< archive file system
-		cContentPlugin *ccpContentPlugin;											///< content plugin interface
-		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
-		cLocalCopyMove *clcmCopyMove;													///< copy/move local files thread
-		cLocalDelete *cldDelete;														///< delete local files thread
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
-		QDir qdDir;																			///< current directory
-		QFileIconProvider qfipIconProvider;											///< file icon provider
-		QFileInfoList qfilOperation;													///< operation file list
-		QFileSystemWatcher qfswWatcher;												///< file system watcher for changes in current directory
-		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
-		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
-		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
-																								///< parameters for content delayed values
+		QString qsArchive;																///< archive file path represented by this file system
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
@@ -57,11 +45,6 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
 		const void BeginSearch();														///< begin of searching files
-		const bool CheckPath();															///< check if current path available
-																								/**< \return true if avalable (at least some upper directory) */
-		const void ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const;
-																								///< clear file table before next fill of it
-																								/**< \param qhTable file table to clear */
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
 		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
@@ -95,8 +78,7 @@ class cLocal : public cFileSystem
 		const QString GetDirName() const;											///< get current directory name
 																								/**< \return current directory name */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
-																								/**< \param qsPath path to detect space information
-																									  \return disk space information */
+																								/**< \return disk space information */
 		const QString &GetDrive() const;												///< drive represented by file system
 																								/**< \return drive represented by file system */
 #ifdef Q_WS_WIN
@@ -120,10 +102,10 @@ class cLocal : public cFileSystem
 																									  \param bBracketsAllowed brackets around file name allowed flag
 																									  \return file name without extension */
 		const QString GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
-																										///< get file name with extension
-																										/**< \param \param qtwiFile file to find name with extension for
-																											  \param bBracketsAllowed brackets around file name allowed flag
-																											  \return file name with extension */
+																								///< get file name with extension
+																								/**< \param \param qtwiFile file to find name with extension for
+																									  \param bBracketsAllowed brackets around file name allowed flag
+																									  \return file name with extension */
 		const QString GetFilePath(QTreeWidgetItem *qtwiFile) const;			///< get file name with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
@@ -142,8 +124,6 @@ class cLocal : public cFileSystem
 																									  \return path for specified file */
 		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
 																								/**< \return selected directory list */
-		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view
-																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */
 		const QString GetVolumeName() const;										///< find out name of the disk
@@ -156,25 +136,9 @@ class cLocal : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
-#ifdef Q_WS_WIN
-		const bool PathExists(const QString &qsPath) const;					///< check if path is valid
-																								/**< \param qsPath path to test
-																									  \return true if path exists and is accessible */
-#endif
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */
-		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
-																								///< change path for this file system
-																								/**< \param qsDrive drive handled by this file system class
-																									  \param qsRootPath path to root of this file system
-																									  \param qsPath to initialize local file system
-																									  \param bStartup true if initializing file system class */
-		const bool SetPath(const QString &qsPath, const bool &bStartup = false);
-																								///< change path for this file system without drive change
-																								/**< \param qsPath to initialize local file system
-																									  \param bStartup true if initializing file system class
-																									  \return true if succesfull */
 		const void ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
@@ -189,27 +153,6 @@ class cLocal : public cFileSystem
 																									  \param qsFilter filter to chose files by
 																									  \param qsDestination destination path on this file system
 																									  \param eopPosition operation position type */
-
-	signals:
-		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
-																								/**< \param cfsFileSystem filesystem identifier */
-		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
-																								///< got golumn value from plugin
-																								/**< \param soOutput information to update dir view */
-		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
-		void OperationFinished(cFileSystem *cfsFileSystem) const;			///< file operation finished
-																								/**< \param cfsFileSystem filesystem identifier */
-		void Unaccessible() const;														///< file system unaccessible
-
-	private slots:
-		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
-																								///< got golumn value from plugin
-																								/**< \param soOutput information to update dir view */
-		const void on_cLocalCopyMove_OperationFinished();						///< copy/move operation finished
-		const void on_cLocalDelete_OperationFinished();							///< delete file operation finished
-		const void on_qfswWatcher_directoryChanged(const QString &path) const;
-																								///< current directory content changed
-																								/**< \param path path to changed directory */
-}; // cLocal
+}; // cArchive
 
 #endif
