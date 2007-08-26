@@ -35,9 +35,26 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 #endif
 	} else {
 		// file
-		cProcess cpProcess;
+		bool bArchive;
 
-		cpProcess.StartDetached(qfiFile->fileName(), qfiFile->path());
+		// check if it's supported archive with browsing archive enabled
+		bArchive = false;
+		if (csSettings->GetTreatArchivesLikeDirectories()) {
+			caArchive = new cArchive(qsDrive, qsRootPath, GetFilePath(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+			if (caArchive->SetPath("", true)) {
+				// TODO ActivateCurrent caArchive connections
+				bArchive = true;
+			} else {
+				caArchive->deleteLater();
+				caArchive = NULL;
+			} // if else
+		} // if
+		if (!bArchive) {
+			// not an (supported) archive or browsing archive disabled
+			cProcess cpProcess;
+
+			cpProcess.StartDetached(qfiFile->fileName(), qfiFile->path());
+		} // if else
 	} // if else
 } // ActivateCurrent
 
@@ -91,12 +108,15 @@ const void cLocal::ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) 
 } // ClearFileTable
 
 // constructor
-cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
+cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin)
 {
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
+	this->cppPackerPlugin = cppPackerPlugin;
+
+	this->caArchive = NULL;
 
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
@@ -606,6 +626,11 @@ const void cLocal::SetOperationFileList(void *vFileList)
 // change path for this file system
 const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup /* false */)
 {
+	if (caArchive) {
+		caArchive->SetPath(qsDrive, qsRootPath, qsPath, bStartup);
+		return;
+	} // if
+
 	this->qsDrive = qsDrive;
 	this->qsRootPath = qsRootPath;
 	

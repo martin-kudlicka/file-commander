@@ -175,7 +175,7 @@ cMainWindow::cMainWindow()
 	qcbRightDrive->setView(qtwRightDrives);
 
 	// file control class initizalization
-	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->clpListerPlugin);
+	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->clpListerPlugin, cpPlugins->cppPackerPlugin);
 
 	// create panels
 	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);

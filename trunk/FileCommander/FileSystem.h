@@ -154,6 +154,13 @@ class cFileSystem : public QObject
 																											  \param qsFilter filter to chose files by
 																											  \param qsDestination destination path on this file system
 																											  \param eopPosition operation position type */
+
+	protected:
+		cSettings *csSettings;																	///< main settings
+		QHBoxLayout *qhblOperations;															///< layout for background widget
+		QMainWindow *qmwParent;																	///< qmwParent parent window for dialogs
+		QString qsDrive;																			///< drive handled by this file system class
+		QString qsRootPath;																		///< path to root of this file system
 }; // cFileSystem
 
 #endif
