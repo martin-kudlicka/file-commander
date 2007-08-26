@@ -17,6 +17,8 @@ FORMS = MainWindow.ui \
 		  FileControl/QueueWidget.ui \
 		  FileSystem/DeleteDialog.ui \
 		  FileSystem/DeleteWidget.ui \
+		  FileSystem/CopyMoveDialog.ui \
+		  FileSystem/CopyMoveWidget.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
@@ -39,9 +41,15 @@ HEADERS = MainWindow.h \
 			 FileSystem/DeleteWidget.h \
 			 FileSystem/Permission.h \
 			 FileSystem/Retry.h \
+			 FileSystem/CopyMoveConflict.h \
+			 FileSystem/CopyMoveDialog.h \
+			 FileSystem/CopyMoveWidget.h \
+			 FileSystem/DiskSpace.h \
+			 FileSystem/Rename.h \
 			 FileSystem/Local/ShellMenu.h \
 			 FileSystem/Local/LocalDelete.h \
 			 FileSystem/Local/LocalCommon.h \
+			 FileSystem/Local/LocalCopyMove.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -82,9 +90,15 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/DeleteWidget.cpp \
 			 FileSystem/Permission.cpp \
 			 FileSystem/Retry.cpp \
+			 FileSystem/CopyMoveConflict.cpp \
+			 FileSystem/CopyMoveDialog.cpp \
+			 FileSystem/CopyMoveWidget.cpp \
+			 FileSystem/DiskSpace.cpp \
+			 FileSystem/Rename.cpp \
 			 FileSystem/Local/ShellMenu.cpp \
 			 FileSystem/Local/LocalDelete.cpp \
 			 FileSystem/Local/LocalCommon.cpp \
+			 FileSystem/Local/LocalCopyMove.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \

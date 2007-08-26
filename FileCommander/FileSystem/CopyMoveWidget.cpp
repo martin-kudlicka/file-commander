@@ -1,4 +1,4 @@
-#include "FileOperation/CopyMoveWidget.h"
+#include "FileSystem/CopyMoveWidget.h"
 
 // constructor
 cCopyMoveWidget::cCopyMoveWidget()
@@ -7,43 +7,43 @@ cCopyMoveWidget::cCopyMoveWidget()
 } // cCopyMoveWidget
 
 // set maximum for current file
-void cCopyMoveWidget::on_cCopyMove_SetCurrentMaximum(const qint64 &qi64Value)
+const void cCopyMoveWidget::on_cCopyMove_SetCurrentMaximum(const qint64 &qi64Value) const
 {
 	qpbCurrent->setMaximum(qi64Value);
 } // on_cCopyMove_SetCurrentMaximum
 
 // set progress for current file
-void cCopyMoveWidget::on_cCopyMove_SetCurrentValue(const qint64 &qi64Value)
+const void cCopyMoveWidget::on_cCopyMove_SetCurrentValue(const qint64 &qi64Value) const
 {
 	qpbCurrent->setValue(qi64Value);
 } // on_cCopyMove_SetCurrentValue
 
 // set destination file
-void cCopyMoveWidget::on_cCopyMove_SetDestination(const QString &qsDestination)
+const void cCopyMoveWidget::on_cCopyMove_SetDestination(const QString &qsDestination) const
 {
 	qlDestination->setText(qsDestination);
 } // on_cCopyMove_SetDestination
 
 // set source file
-void cCopyMoveWidget::on_cCopyMove_SetSource(const QString &qsSource)
+const void cCopyMoveWidget::on_cCopyMove_SetSource(const QString &qsSource) const
 {
 	qlSource->setText(qsSource);
 } // on_cCopyMove_SetSource
 
 // set overall maximum
-void cCopyMoveWidget::on_cCopyMove_SetTotalMaximum(const qint64 &qi64Value)
+const void cCopyMoveWidget::on_cCopyMove_SetTotalMaximum(const qint64 &qi64Value) const
 {
 	qpbTotal->setMaximum(qi64Value);
 } // on_cCopyMove_SetTotalMaximum
 
 // set overall progress
-void cCopyMoveWidget::on_cCopyMove_SetTotalValue(const qint64 &qi64Value)
+const void cCopyMoveWidget::on_cCopyMove_SetTotalValue(const qint64 &qi64Value) const
 {
 	qpbTotal->setValue(qi64Value);
 } // on_cCopyMove_SetTotalValue
 
 // copy button is clicked on
-void cCopyMoveWidget::on_qpbCancel_clicked(bool checked /* false */)
+const void cCopyMoveWidget::on_qpbCancel_clicked(bool checked /* false */) const
 {
 	emit Cancel();
 } // on_qpbCancel_clicked
