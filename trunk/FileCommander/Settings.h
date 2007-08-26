@@ -32,6 +32,8 @@ const QString qsNAME_WITH_EXTENSION = "NameWithExtension";
 const QString qsNO = "no";
 const QString qsNORMAL = "Normal";
 const QString qsONLY_FILES = "OnlyFiles";
+const QString qsOVERWRITE_ALL = "OverwriteAll";
+const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSIZE = "Size";
 const QString qsYES_TO_ALL = "YesToAll";
 

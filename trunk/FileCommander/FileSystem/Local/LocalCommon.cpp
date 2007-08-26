@@ -51,3 +51,29 @@ const QFileInfoList cLocalCommon::GetFiles(const QFileInfo &qfiFile, const QStri
 
 	return qfilSources;
 } // GetFiles
+
+// return list of sources (within subdirectories too)
+const QFileInfoList cLocalCommon::GetFiles(const QFileInfoList &qfilFiles, const QString &qsFilter /* "*" */)
+{
+	int iI;
+	QFileInfoList qfilResult;
+
+	for (iI = 0; iI < qfilFiles.count(); iI++) {
+		qfilResult += GetFiles(qfilFiles.at(iI), qsFilter);
+	} // for
+
+	return qfilResult;
+} // GetFiles
+
+// return list of sources (within subdirectories too)
+const QFileInfoList cLocalCommon::GetFiles(const QStringList &qslFiles, const QString &qsFilter /* "*" */)
+{
+	int iI;
+	QFileInfoList qfilResult;
+
+	for (iI = 0; iI < qslFiles.count(); iI++) {
+		qfilResult += GetFiles(qslFiles.at(iI), qsFilter);
+	} // for
+
+	return qfilResult;
+} // GetFiles

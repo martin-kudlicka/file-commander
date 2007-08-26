@@ -12,8 +12,6 @@
 
 const QString qsEXTERNAL = "External";
 const QString qsNO_TO_ALL = "NoToAll";
-const QString qsOVERWRITE_ALL = "OverwriteAll";
-const QString qsOVERWRITE_ALL_OLDER = "OverwriteAllOlder";
 const QString qsSKIP_ALL = "SkipAll";
 const QString qsVARIABLE_CHAR_WIDTH = "VariableCharWidth";
 

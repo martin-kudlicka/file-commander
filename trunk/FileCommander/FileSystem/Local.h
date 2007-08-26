@@ -13,6 +13,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QHBoxLayout>
 #include "FileSystem/Local/LocalDelete.h"
+#include "FileSystem/Local/LocalCopyMove.h"
 
 class cLocal : public cFileSystem
 {
@@ -35,7 +36,8 @@ class cLocal : public cFileSystem
 
 		cContentPlugin *ccpContentPlugin;											///< content plugin interface
 		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
-		cLocalDelete *cldDelete;														///< delete local files
+		cLocalCopyMove *clcmCopyMove;													///< copy/move local files thread
+		cLocalDelete *cldDelete;														///< delete local files thread
 		cSettings *csSettings;															///< main settings
 		QDir qdDir;																			///< current directory
 		QFileIconProvider qfipIconProvider;											///< file icon provider
@@ -129,19 +131,18 @@ class cLocal : public cFileSystem
 		const qint64 GetFileSize(QTreeWidgetItem *qtwiFile) const;			///< get file size
 																								/**< \param qtwiFile file to find size for
 																									  \return file size */
-		const QStringList GetFileStringList(const bool &bSelected, const cFileSystem::eFileType &eftFileType) const;
-																								///< string list of file paths
-																								/**< \param bSelected return only selected files if true
-																									  \param eftFileType type of file to search for
-																									  \return string list of file paths */
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
+		const QStringList GetOperationStringList() const;						///< file paths from operation file list
+																								/**< \return file paths from operation file list */
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
 																								/**< \param qtwiFile file to get path for
 																									  \return path for specified file */
+		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
+																								/**< \return selected directory list */
 		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view
 																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
@@ -182,6 +183,13 @@ class cLocal : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
+		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
+																								///< write local files to this file system
+																								/**< \param eoOperation operation type
+																									  \param qslSources file path list of local source files to write
+																									  \param qsFilter filter to chose files by
+																									  \param qsDestination destination path on this file system
+																									  \param eopPosition operation position type */
 
 	signals:
 		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
@@ -198,6 +206,7 @@ class cLocal : public cFileSystem
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
+		const void on_cLocalCopyMove_OperationFinished();						///< copy/move operation finished
 		const void on_cLocalDelete_OperationFinished();							///< delete file operation finished
 		const void on_qfswWatcher_directoryChanged(const QString &path) const;
 																								///< current directory content changed

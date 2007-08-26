@@ -13,6 +13,16 @@ class cLocalCommon
 			/**< \param qfiFile file or directory
 				  \param qsFilter filter for input files
 				  \return file list */
+		static const QFileInfoList GetFiles(const QFileInfoList &qfilFiles, const QString &qsFilter = "*");
+			///< return list of sources (within subdirectories too)
+			/**< \param qfilFiles files or directories
+				  \param qsFilter filter for input files
+				  \return file list */
+		static const QFileInfoList GetFiles(const QStringList &qslFiles, const QString &qsFilter = "*");
+			///< return list of sources (within subdirectories too)
+			/**< \param qfilFiles files or directories
+				  \param qsFilter filter for input files
+				  \return file list */
 }; // cLocalCommon
 
 #endif

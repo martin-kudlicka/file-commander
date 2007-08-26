@@ -101,7 +101,7 @@ class cLocalDelete : public QThread
 																			  \param qsFilename concerned file */
 
 	private slots:
-		void on_cd_OperationCanceled();						///< delete operation was canceled
+		void on_cLocalDelete_OperationCanceled();			///< delete operation was canceled
 		void on_cdDeleteDialog_Background();				///< delete operation to background
 		void on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse);
 																		///< delete non empty directory dialog closed with user response

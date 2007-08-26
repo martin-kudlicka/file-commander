@@ -455,8 +455,8 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 		// copy or move
 		// TODO connect other file system later if source not local
 		connect(soOperation.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-		//soOperations.cfsDestination->Write(soOperation.cfsSource->GetFileStringList(true, cFileSystem::All), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
-		//ccmCopyMove->CopyMove(eoOperation, qfilSource, qsDestination, qsFilter, cFileRoutine::ForegroundWindow);
+		qlOperations.append(soOperation);
+		soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 	} // if else
 } // ProcessOperation
 

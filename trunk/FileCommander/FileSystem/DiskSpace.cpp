@@ -1,26 +1,10 @@
-#include "FileOperation/DiskSpace.h"
+#include "FileSystem/DiskSpace.h"
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 
-// show disk space dialog (singlethread)
-cDiskSpace::eChoice cDiskSpace::Exec(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
-{
-	return ShowDialog(qsFilename, qi64FileSize, qi64FreeSpace);
-} // Exec
-
-// show retry dialog (multithread)
-void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
-{
-	eChoice ecResponse;
-
-	ecResponse = ShowDialog(qsFilename, qi64FileSize, qi64FreeSpace);
-
-	emit Finished(ecResponse);
-} // Show
-
-// show disk space dialog
-cDiskSpace::eChoice cDiskSpace::ShowDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace)
+// show retry dialog
+const void cDiskSpace::Show(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace) const
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -56,5 +40,5 @@ cDiskSpace::eChoice cDiskSpace::ShowDialog(const QString &qsFilename, const qint
 		} // if else
 	} // if else
 
-	return ecResponse;
-} // ShowDialog
+	emit Finished(ecResponse);
+} // Show

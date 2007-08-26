@@ -421,32 +421,24 @@ const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).size();
 } // GetFileSize
 
-// string list of file paths
-const QStringList cLocal::GetFileStringList(const bool &bSelected, const cFileSystem::eFileType &eftFileType) const
-{
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
-	QStringList qslFiles;
-
-	while (qhiFile.hasNext()) {
-		qhiFile.next();
-
-		if (bSelected && !qhiFile.key()->isSelected()
-			 || eftFileType == cFileSystem::File && !qhiFile.value().isFile()
-			 || eftFileType == cFileSystem::Directory && !qhiFile.value().isDir()) {
-			continue;
-		} // if
-
-		qslFiles.append(qhiFile.value().filePath());
-	} // while
-
-	return qslFiles;
-} // GetFileStringList
-
 // get file's last modified date/time stamp
 const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).lastModified();
 } // GetLastModified
+
+// file paths from operation file list
+const QStringList cLocal::GetOperationStringList() const
+{
+	int iI;
+	QStringList qslFiles;
+
+	for (iI = 0; iI < qfilOperation.count(); iI++) {
+		qslFiles.append(qfilOperation.at(iI).filePath());
+	} // for
+
+	return qslFiles;
+} // GetOperationStringList
 
 // current path on file system
 const QString cLocal::GetPath() const
@@ -459,6 +451,23 @@ const QString cLocal::GetPath(QTreeWidgetItem *qtwiFile) const
 {
 	return qhFiles.value(qtwiFile).path();
 } // GetPath
+
+// selected directory list for current directory
+const QStringList cLocal::GetSelectedDirectoryStringList() const
+{
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	QStringList qslSelectedDirectories;
+
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.key()->isSelected() && qhiFile.value().isDir()) {
+			qslSelectedDirectories.append(qhiFile.value().filePath());
+		} // if
+	} // while
+
+	return qslSelectedDirectories;
+} // GetSelectedDirectoryStringList
 
 // selected files in tree view
 const QFileInfoList cLocal::GetSelectedFiles() const
@@ -540,6 +549,13 @@ const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPlug
 {
 	emit GotColumnValue(soOutput);
 } // on_ccpdContentPluginDelayed_GotColumnValue
+
+// copy/move operation finished
+const void cLocal::on_cLocalCopyMove_OperationFinished()
+{
+	clcmCopyMove->deleteLater();
+	emit OperationFinished(this);
+} // on_cLocalCopyMove_OperationFinished
 
 // file operation finished
 const void cLocal::on_cLocalDelete_OperationFinished()
@@ -650,3 +666,11 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
 } // ShowContextMenu
+
+// write local files to this file system
+const void cLocal::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+{
+	clcmCopyMove = new cLocalCopyMove(qmwParent, qhblOperations, csSettings);
+	connect(clcmCopyMove, SIGNAL(finished()), SLOT(on_cLocalCopyMove_OperationFinished()));
+	clcmCopyMove->CopyMove(eoOperation, qslSources, qsDestination, qsFilter, eopPosition);
+} // Write

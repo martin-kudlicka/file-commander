@@ -126,7 +126,7 @@ void cLocalDelete::CreateWidget()
 	connect(this, SIGNAL(SetSource(const QString &)), cdwWidget, SLOT(on_cDeleteWidget_SetSource(const QString &)));
 	connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalMaximum(const qint64 &)));
 	connect(this, SIGNAL(SetTotalValue(const qint64 &)), cdwWidget, SLOT(on_cDeleteWidget_SetTotalValue(const qint64 &)));
-	connect(cdwWidget, SIGNAL(Cancel()), SLOT(on_cd_OperationCanceled()));
+	connect(cdwWidget, SIGNAL(Cancel()), SLOT(on_cLocalDelete_OperationCanceled()));
 } // CreateWidget
 
 // start of delete operation
@@ -142,7 +142,7 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 		connect(this, SIGNAL(SetSource(const QString &)), cddDialog, SLOT(on_cDeleteDialog_SetSource(const QString &)));
 		connect(this, SIGNAL(SetTotalMaximum(const qint64 &)), cddDialog, SLOT(on_cDeleteDialog_SetTotalMaximum(const qint64 &)));
 		connect(this, SIGNAL(SetTotalValue(const qint64 &)), cddDialog, SLOT(on_cDeleteDialog_SetTotalValue(const qint64 &)));
-		connect(cddDialog, SIGNAL(Cancel()), SLOT(on_cd_OperationCanceled()));
+		connect(cddDialog, SIGNAL(Cancel()), SLOT(on_cLocalDelete_OperationCanceled()));
 		connect(cddDialog, SIGNAL(Background()), SLOT(on_cdDeleteDialog_Background()));
 		cdwWidget = NULL;
 	} else {
@@ -167,12 +167,6 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 	start();
 } // Delete
 
-// delete operation was canceled
-void cLocalDelete::on_cd_OperationCanceled()
-{
-	bCanceled = true;
-} // on_cd_OperationCanceled
-
 // delete operation to background
 void cLocalDelete::on_cdDeleteDialog_Background()
 {
@@ -188,6 +182,12 @@ void cLocalDelete::on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmpt
 	ecDeleteNonEmptyDirectoryCurrent = ecResponse;
 	qsPause.release();
 } // on_cdnedDeleteNonEmptyDirectory_Finished
+
+// delete operation was canceled
+void cLocalDelete::on_cLocalDelete_OperationCanceled()
+{
+	bCanceled = true;
+} // on_cLocalDelete_OperationCanceled
 
 #ifdef Q_WS_WIN
 // permission dialog closed with user response
