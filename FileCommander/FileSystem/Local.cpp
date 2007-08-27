@@ -41,8 +41,8 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 		bArchive = false;
 		if (csSettings->GetTreatArchivesLikeDirectories()) {
 			caArchive = new cArchive(qsDrive, qsRootPath, qhFiles.value(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+			connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
 			if (caArchive->SetPath(".", true)) {
-				connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
 				bArchive = true;
 			} else {
 				caArchive->deleteLater();
@@ -230,6 +230,10 @@ const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 // get tree items for current directory
 QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* true */)
 {
+	if (caArchive) {
+		return caArchive->GetDirectoryContent(bRefresh);
+	} // if
+
 	if (bRefresh) {
 		// reload
 		if (CheckPath()) {
@@ -338,6 +342,10 @@ const QString cLocal::GetFileAttr(QTreeWidgetItem *qtwiFile) const
 	DWORD dwAttributes;
 	QString qsAttributes;
 
+	if (caArchive) {
+		return caArchive->GetFileAttr(qtwiFile);
+	} // if
+
 	dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qhFiles.value(qtwiFile).filePath().unicode()));
 
 	if (dwAttributes & FILE_ATTRIBUTE_READONLY) {
@@ -366,12 +374,20 @@ const QString cLocal::GetFileAttr(QTreeWidgetItem *qtwiFile) const
 // get file extension
 const QString cLocal::GetFileExtension(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->GetFileExtension(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).suffix();
 } // GetFileExtension
 
 // get icon for specified file
 const QIcon cLocal::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->GetFileIcon(qtwiFile);
+	} // if
+
 	return qfipIconProvider.icon(qhFiles.value(qtwiFile));
 } // GetFileIcon
 
@@ -396,6 +412,10 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 	QFileInfo *qfiFile;
 	QString qsName;
 
+	if (caArchive) {
+		return caArchive->GetFileName(qtwiFile, bBracketsAllowed);
+	} // if
+
 	qfiFile = &qhFiles[qtwiFile];
 
 	if (qfiFile->fileName() == "..") {
@@ -418,6 +438,10 @@ const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const 
 	QString qsName;
 	QFileInfo *qfiFile;
 
+	if (caArchive) {
+		return caArchive->GetFileNameWithExtension(qtwiFile, bBracketsAllowed);
+	} // if
+
 	qfiFile = &qhFiles[qtwiFile];
 
 	qsName = qfiFile->fileName();
@@ -432,18 +456,30 @@ const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const 
 // get file name with full path
 const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->GetFilePath(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).filePath();
 } // GetFilePath
 
 // get file size
 const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->GetFileSize(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).size();
 } // GetFileSize
 
 // get file's last modified date/time stamp
 const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->GetLastModified(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).lastModified();
 } // GetLastModified
 
@@ -567,7 +603,7 @@ const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 // content changed in archive
 const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const
 {
-	emit ContentChanged(cfsFileSystem);
+	emit ContentChanged(this);
 } // on_caArchive_ContentChanged
 
 // got golumn value from plugin
