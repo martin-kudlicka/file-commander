@@ -40,8 +40,8 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 		// check if it's supported archive with browsing archive enabled
 		bArchive = false;
 		if (csSettings->GetTreatArchivesLikeDirectories()) {
-			caArchive = new cArchive(qsDrive, qsRootPath, GetFilePath(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
-			if (caArchive->SetPath("", true)) {
+			caArchive = new cArchive(qsDrive, qsRootPath, qhFiles.value(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+			if (caArchive->SetPath(".", true)) {
 				// TODO ActivateCurrent caArchive connections
 				bArchive = true;
 			} else {
@@ -53,7 +53,7 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 			// not an (supported) archive or browsing archive disabled
 			cProcess cpProcess;
 
-			cpProcess.StartDetached(qfiFile->fileName(), qfiFile->path());
+			cpProcess.StartDetached('"' + qfiFile->fileName() + '"', qfiFile->path());
 		} // if else
 	} // if else
 } // ActivateCurrent
