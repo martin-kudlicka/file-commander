@@ -83,6 +83,7 @@ const void cPanel::ActualizeWidgets() const
 	ActualizeVolumeInfo();
 	qlPath->setText(stTab->swWidgets.qsPath);
 	qlSelected->setText(stTab->swWidgets.qsSelected);
+	qlGlobalPath->setText(stTab->swWidgets.qsPath);
 } // ActualizeWidgets
 
 // add current path to last paths history

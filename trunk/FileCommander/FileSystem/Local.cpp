@@ -306,6 +306,10 @@ const qint64 cLocal::GetDirectorySize() const
 // get current directory name
 const QString cLocal::GetDirName() const
 {
+	if (caArchive) {
+		return caArchive->GetDirName();
+	} // if
+
 	return qdDir.dirName();
 } // GetDirName
 
@@ -504,7 +508,13 @@ const QStringList cLocal::GetOperationStringList() const
 // current path on file system
 const QString cLocal::GetPath() const
 {
-	return qdDir.path();
+	QString qsPath;
+
+	if (caArchive) {
+		qsPath = '/' + caArchive->GetPath();
+	} // if
+
+	return qdDir.path() + qsPath;
 } // GetPath
 
 // retreive path of a file
@@ -584,12 +594,21 @@ const QString cLocal::GetVolumeName() const
 // set path to root directory
 const void cLocal::GoToRootDir()
 {
+	if (caArchive) {
+		caArchive->deleteLater();
+		caArchive = NULL;
+	} // if
+
 	SetPath(qsRootPath);
 } // GoToRootDir
 
 // go one directory up if possible
 const void cLocal::GoToUpDir()
 {
+	if (caArchive) {
+		return caArchive->GoToUpDir();
+	} // if
+
 	SetPath("..");
 } // GoToUpDir
 

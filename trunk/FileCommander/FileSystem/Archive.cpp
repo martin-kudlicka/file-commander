@@ -200,8 +200,14 @@ const qint64 cArchive::GetDirectorySize() const
 // get current directory name
 const QString cArchive::GetDirName() const
 {
-	// TODO GetDirName
-	return QString();
+	QString qsPath;
+
+	qsPath = qhDirectories.key(qhPath);
+	if (qsPath == ".") {
+		return qfiArchive.fileName();
+	} else {
+		return QFileInfo(qsPath).fileName();
+	} // if else
 } // GetDirName
 
 // find out disk space information
@@ -349,8 +355,16 @@ const QStringList cArchive::GetOperationStringList() const
 // current path on file system
 const QString cArchive::GetPath() const
 {
-	// TODO GetPath
-	return QString();
+	QString qsPath;
+
+	qsPath = qhDirectories.key(qhPath);
+	if (qsPath == ".") {
+		qsPath = qfiArchive.fileName();
+	} else {
+		qsPath = qfiArchive.fileName() + '/' + qsPath;
+	} // if else
+
+	return qsPath;
 } // GetPath
 
 // retreive path of a file
@@ -390,7 +404,10 @@ const void cArchive::GoToRootDir()
 // go one directory up if possible
 const void cArchive::GoToUpDir()
 {
-	// TODO GoToUpDir
+	QString qsPath;
+
+	qsPath = qhDirectories.key(qhPath);
+	SetPath(qsPath + "/..");
 } // GoToUpDir
 
 // check if file is directory

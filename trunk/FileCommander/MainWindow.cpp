@@ -20,7 +20,7 @@ cMainWindow::~cMainWindow()
 
 	cpRight->deleteLater();
 	cpLeft->deleteLater();
-	cfcFileControl->deleteLater();
+	delete cfcFileControl;
 	delete cpPlugins;
 } // ~cMainWindow
 
