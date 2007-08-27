@@ -1,17 +1,31 @@
 #include "FileSystem/Archive.h"
 
 #include <QtCore/QDir>
+#include "FileSystem/Archive/ArchiveCommon.h"
+#include "FileSystem/Archive/ArchiveFilePropertiesDialog.h"
 
 // destructor
 cArchive::~cArchive()
 {
-	// TODO delete files in qpRoot
+	// TODO delete qpRoot
 } // ~cArchive
 
 // activate current file
 const void cArchive::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
-	// TODO ActivateCurrent
+	tHeaderData *thdFile;
+
+	thdFile = &qhPath->operator [](qtwiFile);
+
+	if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
+		// directory activated
+		SetPath(qhPath->value(qtwiFile).FileName);
+	} else {
+		// file activated
+		cArchiveFilePropertiesDialog cafpdFileProperties(qmwParent, *thdFile);
+
+		cafpdFileProperties.exec();
+	} // if else
 } // ActivateCurrent
 
 // add directory into directory table if it's not there already
@@ -25,21 +39,42 @@ QHash<QTreeWidgetItem *, tHeaderData> *cArchive::AddDirectory(const tHeaderData 
 	} else {
 		qsDirectory = QFileInfo(thdHeaderData.FileName).path();
 	} // if else
+	qsDirectory = QDir::toNativeSeparators(qsDirectory);
 
 	if (!qhDirectories.contains(qsDirectory)) {
 		// add new directory
+		QString qsDotDot;
 		tHeaderData thdDotDot;
 
-		qhDirectory = new QHash<QTreeWidgetItem *, tHeaderData>;
 		// add ".." directory
-		strcpy(thdDotDot.FileName, "..");
+		qsDotDot = qsDirectory + "/..";
+		strcpy(thdDotDot.FileName, qsDotDot.toLatin1().constData());
 		thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
 		thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
+		qhDirectory = new QHash<QTreeWidgetItem *, tHeaderData>;
 		qhDirectory->insert(new QTreeWidgetItem(), thdDotDot);
 
 		// add new directory to directory list
 		qhDirectories.insert(qsDirectory, qhDirectory);
+
+		if (qsDirectory != ".") {
+			QHash<QTreeWidgetItem *, tHeaderData> *qhUpper;
+			tHeaderData thdDirectory, thdUpper;
+
+			// set upper directory
+			strcpy(thdUpper.FileName, QFileInfo(qsDirectory).path().toLatin1().constData());
+			thdUpper.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+			thdUpper.FileAttr = cPackerPlugin::iDIRECTORY;
+			qhUpper = AddDirectory(thdUpper);
+
+			// add new directory
+			strcpy(thdDirectory.FileName, qsDirectory.toLatin1().constData());
+			thdDirectory.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+			thdDirectory.FileAttr = cPackerPlugin::iDIRECTORY;
+			qhUpper->insert(new QTreeWidgetItem, thdDirectory);
+		} // if
 	} else {
+		// directory already exists
 		qhDirectory = qhDirectories.value(qsDirectory);
 	} // if else
 
@@ -255,7 +290,7 @@ const QString cArchive::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBrac
 
 	thdFile = &qhPath->operator [](qtwiFile);
 
-	if (thdFile->FileName == "..") {
+	if (QFileInfo(thdFile->FileName).fileName() == "..") {
 		// special handle for ".." directory to show just both points
 		qsName = "..";
 	} else {
@@ -289,7 +324,7 @@ const QString cArchive::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, cons
 // get file name with full path
 const QString cArchive::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
-	return QFileInfo(qhPath->value(qtwiFile).FileName).filePath();
+	return qhPath->value(qtwiFile).FileName;
 } // GetFilePath
 
 // get file size
@@ -301,7 +336,7 @@ const qint64 cArchive::GetFileSize(QTreeWidgetItem *qtwiFile) const
 // get file's last modified date/time stamp
 const QDateTime cArchive::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
-	return ToQDateTime(qhPath->value(qtwiFile).FileTime);
+	return cArchiveCommon::ToQDateTime(qhPath->value(qtwiFile).FileTime);
 } // GetLastModified
 
 // file paths from operation file list
@@ -361,15 +396,13 @@ const void cArchive::GoToUpDir()
 // check if file is directory
 const bool cArchive::IsDir(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO IsDir
-	return false;
+	return qhPath->value(qtwiFile).FileAttr & cPackerPlugin::iDIRECTORY;
 } // IsDir
 
 // check if file is really file
 const bool cArchive::IsFile(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO IsFile
-	return false;
+	return !(qhPath->value(qtwiFile).FileAttr & cPackerPlugin::iDIRECTORY);
 } // IsFile
 
 // open archive
@@ -478,8 +511,23 @@ const bool cArchive::SetPath(const QString &qsPath, const bool &bStartup /* fals
 
 	// find path in archive
 	if (bResult) {
-		if (qhDirectories.contains(qsPath)) {
-			qhPath = qhDirectories.value(qsPath);
+		QString qsNewPath;
+
+		if (QFileInfo(qsPath).fileName() == "..") {
+			if (qsPath == "./..") {
+				// going from archive
+				bResult = false;
+				emit LeaveFileSystem();
+			} else {
+				// correct new path
+				qsNewPath = QFileInfo(QFileInfo(qsPath).path()).path();
+			} // if else
+		} else {
+			qsNewPath = qsPath;
+		} // if else
+
+		if (qhDirectories.contains(qsNewPath)) {
+			qhPath = qhDirectories.value(qsNewPath);
 		} else {
 			bResult = false;
 		} // if else
@@ -517,22 +565,6 @@ const int cArchive::ToPackerDateTime(const QDateTime &qdtDateTime) const
 
 	return iDateTime;
 } // ToPackerDateTime
-
-// converts packer plugin's date time format to QDateTime
-const QDateTime cArchive::ToQDateTime(const int &iDateTime) const
-{
-	QDate qdDate;
-	QDateTime qdtDateTime;
-	QTime qtTime;
-
-	qdDate.setDate((iDateTime >> 25) + 1980, (iDateTime >> 21) & 0xF, (iDateTime >> 16) & 0x1F);
-	qtTime.setHMS((iDateTime >> 11) & 0x1F, (iDateTime >> 5) & 0x3F, (iDateTime & 0x1F) * 2);
-
-	qdtDateTime.setDate(qdDate);
-	qdtDateTime.setTime(qtTime);
-
-	return qdtDateTime;
-} // ToQDateTime
 
 // write local files to this file system
 const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)

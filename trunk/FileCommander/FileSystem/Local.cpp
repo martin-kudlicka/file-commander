@@ -22,6 +22,10 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
 	QFileInfo *qfiFile;
 
+	if (caArchive) {
+		return caArchive->ActivateCurrent(qtwiFile);
+	} // if
+
 	qfiFile = &qhFiles[qtwiFile];
 
 	if (qfiFile->isDir()) {
@@ -44,6 +48,7 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 			connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
 			if (caArchive->SetPath(".", true)) {
 				bArchive = true;
+				connect(caArchive, SIGNAL(LeaveFileSystem()), SLOT(on_caArchive_LeaveFileSystem()));
 			} else {
 				caArchive->deleteLater();
 				caArchive = NULL;
@@ -116,7 +121,7 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 	this->ccpContentPlugin = ccpContentPlugin;
 	this->cppPackerPlugin = cppPackerPlugin;
 
-	this->caArchive = NULL;
+	caArchive = NULL;
 
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
@@ -591,12 +596,20 @@ const void cLocal::GoToUpDir()
 // check if file is directory
 const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->IsDir(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).isDir();
 } // IsDir
 
 // check if file is really file
 const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 {
+	if (caArchive) {
+		return caArchive->IsFile(qtwiFile);
+	} // if
+
 	return qhFiles.value(qtwiFile).isFile();
 } // IsFile
 
@@ -605,6 +618,14 @@ const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem)
 {
 	emit ContentChanged(this);
 } // on_caArchive_ContentChanged
+
+// leave archive file system
+const void cLocal::on_caArchive_LeaveFileSystem()
+{
+	caArchive->deleteLater();
+	caArchive = NULL;
+	emit ContentChanged(this);
+} // on_caArchive_LeaveFileSystem
 
 // got golumn value from plugin
 const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const

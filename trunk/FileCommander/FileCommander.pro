@@ -19,6 +19,7 @@ FORMS = MainWindow.ui \
 		  FileSystem/DeleteWidget.ui \
 		  FileSystem/CopyMoveDialog.ui \
 		  FileSystem/CopyMoveWidget.ui \
+		  FileSystem/Archive/ArchiveFilePropertiesDialog.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
@@ -51,6 +52,8 @@ HEADERS = MainWindow.h \
 			 FileSystem/Local/LocalDelete.h \
 			 FileSystem/Local/LocalCommon.h \
 			 FileSystem/Local/LocalCopyMove.h \
+			 FileSystem/Archive/ArchiveFilePropertiesDialog.h \
+			 FileSystem/Archive/ArchiveCommon.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -101,6 +104,8 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Local/LocalDelete.cpp \
 			 FileSystem/Local/LocalCommon.cpp \
 			 FileSystem/Local/LocalCopyMove.cpp \
+			 FileSystem/Archive/ArchiveFilePropertiesDialog.cpp \
+			 FileSystem/Archive/ArchiveCommon.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \
