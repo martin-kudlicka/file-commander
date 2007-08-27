@@ -127,8 +127,32 @@ const QString cArchive::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 // get tree items for current directory
 QList<QTreeWidgetItem *> cArchive::GetDirectoryContent(const bool &bRefresh /* true */)
 {
-	// TODO GetDirectoryContent
-	return QList<QTreeWidgetItem *>();
+	if (bRefresh) {
+		// reload
+		int iDontShow;
+		QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhPath);
+
+		qhFiles.clear();
+
+		if (!csSettings->GetShowSystemFiles()) {
+			iDontShow = cPackerPlugin::iSYSTEM;
+		} else {
+			iDontShow = 0;
+		} // if else
+		if (!csSettings->GetShowHiddenFiles()) {
+			iDontShow |= cPackerPlugin::iHIDDEN;
+		} // if
+
+		while (qhiFile.hasNext()) {
+			qhiFile.next();
+
+			if (!(qhiFile.value().FileAttr & iDontShow)) {
+				qhFiles.insert(qhiFile.key(), qhiFile.value());
+			} // if
+		} // while
+	} // if
+
+	return qhFiles.keys();
 } // GetDirectoryContent
 
 // get currently selected directory size
@@ -162,23 +186,58 @@ const QString &cArchive::GetDrive() const
 // get file attributes
 const QString cArchive::GetFileAttr(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetFileAttr
-	return QString();
+	int iAttributes;
+	QString qsAttributes;
+	tHeaderData *thdFile;
+
+	thdFile = &qhPath->operator [](qtwiFile);
+
+	if (thdFile->FileAttr & cPackerPlugin::iREAD_ONLY) {
+		iAttributes = FILE_ATTRIBUTE_READONLY;
+	} else {
+		iAttributes = 0;
+	} // if else
+	if (thdFile->FileAttr & cPackerPlugin::iHIDDEN) {
+		iAttributes |= FILE_ATTRIBUTE_HIDDEN;
+	} // if
+	if (thdFile->FileAttr & cPackerPlugin::iSYSTEM) {
+		iAttributes |= FILE_ATTRIBUTE_SYSTEM;
+	} // if
+	if (thdFile->FileAttr & cPackerPlugin::iARCHIVE) {
+		iAttributes |= FILE_ATTRIBUTE_ARCHIVE;
+	} // if
+
+	if (iAttributes & FILE_ATTRIBUTE_READONLY) {
+		qsAttributes = 'r';
+	} // if
+	if (iAttributes & FILE_ATTRIBUTE_ARCHIVE) {
+		qsAttributes += 'a';
+	} // if
+	if (iAttributes & FILE_ATTRIBUTE_HIDDEN) {
+		qsAttributes += 'h';
+	} // if
+	if (iAttributes & FILE_ATTRIBUTE_SYSTEM) {
+		qsAttributes += 's';
+	} // if
+
+	return qsAttributes;
 } // GetFileAttr
 #endif
 
 // get file extension
 const QString cArchive::GetFileExtension(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetFileExtension
-	return QString();
+	return QFileInfo(qhPath->value(qtwiFile).FileName).suffix();
 } // GetFileExtension
 
 // get icon for specified file
 const QIcon cArchive::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetFileIcon
-	return QIcon();
+	if (qhPath->value(qtwiFile).FileAttr & cPackerPlugin::iDIRECTORY) {
+		return qfipIconProvider.icon(QFileIconProvider::Folder);
+	} else {
+		return qfipIconProvider.icon(QFileIconProvider::File);
+	} // if else
 } // GetFileIcon
 
 // file list of specified file system's type
@@ -191,36 +250,58 @@ void *cArchive::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 // get file name without extension
 const QString cArchive::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	// TODO GetFileName
-	return QString();
+	QString qsName;
+	tHeaderData *thdFile;
+
+	thdFile = &qhPath->operator [](qtwiFile);
+
+	if (thdFile->FileName == "..") {
+		// special handle for ".." directory to show just both points
+		qsName = "..";
+	} else {
+		qsName = QFileInfo(thdFile->FileName).completeBaseName();
+	} // if else
+
+	if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+		qsName = '[' + qsName + ']';
+	} // if
+
+	return qsName;
 } // GetFileName
 
 // get file name with extension
 const QString cArchive::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	// TODO GetFileNameWithExtension
-	return QString();
+	QString qsName;
+	tHeaderData *thdFile;
+
+	thdFile = &qhPath->operator [](qtwiFile);
+
+	qsName = QFileInfo(thdFile->FileName).fileName();
+
+	if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+		qsName = '[' + qsName + ']';
+	} // if
+
+	return qsName;
 } // GetFileNameWithExtension
 
 // get file name with full path
 const QString cArchive::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetFilePath
-	return QString();
+	return QFileInfo(qhPath->value(qtwiFile).FileName).filePath();
 } // GetFilePath
 
 // get file size
 const qint64 cArchive::GetFileSize(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetFileSize
-	return qint64();
+	return qhPath->value(qtwiFile).UnpSize;
 } // GetFileSize
 
 // get file's last modified date/time stamp
 const QDateTime cArchive::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetLastModified
-	return QDateTime();
+	return ToQDateTime(qhPath->value(qtwiFile).FileTime);
 } // GetLastModified
 
 // file paths from operation file list
@@ -436,6 +517,22 @@ const int cArchive::ToPackerDateTime(const QDateTime &qdtDateTime) const
 
 	return iDateTime;
 } // ToPackerDateTime
+
+// converts packer plugin's date time format to QDateTime
+const QDateTime cArchive::ToQDateTime(const int &iDateTime) const
+{
+	QDate qdDate;
+	QDateTime qdtDateTime;
+	QTime qtTime;
+
+	qdDate.setDate((iDateTime >> 25) + 1980, (iDateTime >> 21) & 0xF, (iDateTime >> 16) & 0x1F);
+	qtTime.setHMS((iDateTime >> 11) & 0x1F, (iDateTime >> 5) & 0x3F, (iDateTime & 0x1F) * 2);
+
+	qdtDateTime.setDate(qdDate);
+	qdtDateTime.setTime(qtTime);
+
+	return qdtDateTime;
+} // ToQDateTime
 
 // write local files to this file system
 const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)

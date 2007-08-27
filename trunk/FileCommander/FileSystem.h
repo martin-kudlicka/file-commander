@@ -6,6 +6,7 @@
 #include <QtGui/QTreeWidgetItem>
 #include "FileSystem/FileOperation.h"
 #include "FileControl/FileOperationDialog.h"
+#include <QtGui/QFileIconProvider>
 
 class cFileSystem : public QObject
 {
@@ -159,6 +160,7 @@ class cFileSystem : public QObject
 
 	protected:
 		cSettings *csSettings;																	///< main settings
+		QFileIconProvider qfipIconProvider;													///< file icon provider
 		QHBoxLayout *qhblOperations;															///< layout for background widget
 		QMainWindow *qmwParent;																	///< qmwParent parent window for dialogs
 		QString qsDrive;																			///< drive handled by this file system class

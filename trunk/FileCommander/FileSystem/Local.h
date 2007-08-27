@@ -6,7 +6,6 @@
 #include "FileSystem.h"
 #include <QtCore/QDir>
 #include "Settings.h"
-#include <QtGui/QFileIconProvider>
 #include "Plugins/ContentPlugin.h"
 #include "Plugins/ContentPluginDelayed.h"
 #include <QtCore/QFileSystemWatcher>
@@ -43,7 +42,6 @@ class cLocal : public cFileSystem
 		cLocalDelete *cldDelete;														///< delete local files thread
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
 		QDir qdDir;																			///< current directory
-		QFileIconProvider qfipIconProvider;											///< file icon provider
 		QFileInfoList qfilOperation;													///< operation file list
 		QFileSystemWatcher qfswWatcher;												///< file system watcher for changes in current directory
 		QHash<QTreeWidgetItem *, QFileInfo> qhCustom;							///< custom file list
