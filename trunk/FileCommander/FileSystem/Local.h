@@ -191,8 +191,6 @@ class cLocal : public cFileSystem
 																									  \param eopPosition operation position type */
 
 	signals:
-		void ContentChanged(const cFileSystem *cfsFileSystem) const;		///< directory content changed for this filesystem
-																								/**< \param cfsFileSystem filesystem identifier */
 		void GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
@@ -202,6 +200,9 @@ class cLocal : public cFileSystem
 		void Unaccessible() const;														///< file system unaccessible
 
 	private slots:
+		const void on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const;
+																								///< content changed in archive
+																								/**< \param cfsFileSystem filesystem identifier */
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */

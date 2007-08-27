@@ -42,7 +42,7 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 		if (csSettings->GetTreatArchivesLikeDirectories()) {
 			caArchive = new cArchive(qsDrive, qsRootPath, qhFiles.value(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
 			if (caArchive->SetPath(".", true)) {
-				// TODO ActivateCurrent caArchive connections
+				connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
 				bArchive = true;
 			} else {
 				caArchive->deleteLater();
@@ -564,6 +564,12 @@ const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).isFile();
 } // IsFile
 
+// content changed in archive
+const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const
+{
+	emit ContentChanged(cfsFileSystem);
+} // on_caArchive_ContentChanged
+
 // got golumn value from plugin
 const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const
 {
@@ -627,8 +633,7 @@ const void cLocal::SetOperationFileList(void *vFileList)
 const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup /* false */)
 {
 	if (caArchive) {
-		caArchive->SetPath(qsDrive, qsRootPath, qsPath, bStartup);
-		return;
+		return caArchive->SetPath(qsDrive, qsRootPath, qsPath, bStartup);
 	} // if
 
 	this->qsDrive = qsDrive;
@@ -641,6 +646,10 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
+
+	if (caArchive) {
+		return caArchive->SetPath(qsPath, bStartup);
+	} // if
 
 	if (!bStartup) {
 		qfswWatcher.removePath(qdDir.path());

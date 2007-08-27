@@ -9,6 +9,8 @@
 
 class cFileSystem : public QObject
 {
+	Q_OBJECT
+
 	public:
 		/// parameters for content plugin value
 		struct sContentPluginRequest {
@@ -161,6 +163,10 @@ class cFileSystem : public QObject
 		QMainWindow *qmwParent;																	///< qmwParent parent window for dialogs
 		QString qsDrive;																			///< drive handled by this file system class
 		QString qsRootPath;																		///< path to root of this file system
+
+	signals:
+		void ContentChanged(const cFileSystem *cfsFileSystem) const;				///< directory content changed for this filesystem
+																										/**< \param cfsFileSystem filesystem identifier */
 }; // cFileSystem
 
 #endif
