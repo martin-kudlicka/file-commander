@@ -396,6 +396,17 @@ const bool cArchive::SetPath(const QString &qsPath, const bool &bStartup /* fals
 	} // if
 
 	// find path in archive
+	if (bResult) {
+		if (qhDirectories.contains(qsPath)) {
+			qhPath = qhDirectories.value(qsPath);
+		} else {
+			bResult = false;
+		} // if else
+	} // if
+
+	if (bResult) {
+		emit ContentChanged(this);
+	} // if else
 
 	// TODO SetPath
 	return bResult;
