@@ -33,6 +33,8 @@ class cArchive : public cFileSystem
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true
 																									  \return  tree items for current directory */
+		const QString GetDirName() const;											///< get current directory name
+																								/**< \return current directory name */
 #ifdef Q_WS_WIN
 		const QString GetFileAttr(QTreeWidgetItem *qtwiFile) const;			///< get file attributes
 																								/**< \param qtwiFile file to find attributes for
@@ -63,6 +65,9 @@ class cArchive : public cFileSystem
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
+		const QString GetPath() const;												///< current path on file system
+																								/**< \return path on file system */
+		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file to check
 																									  \return true if directory */
@@ -125,8 +130,6 @@ class cArchive : public cFileSystem
 																									  \return file name with full path */
 		const qint64 GetDirectorySize() const;										///< get currently selected directory size
 																								/**< \return selected directory size */
-		const QString GetDirName() const;											///< get current directory name
-																								/**< \return current directory name */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
 																								/**< \return disk space information */
 		const QString &GetDrive() const;												///< drive represented by file system
@@ -137,8 +140,6 @@ class cArchive : public cFileSystem
 																									  \return file list of specified file system's type */
 		const QStringList GetOperationStringList() const;						///< file paths from operation file list
 																								/**< \return file paths from operation file list */
-		const QString GetPath() const;												///< current path on file system
-																								/**< \return path on file system */
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
 																								/**< \param qtwiFile file to get path for
 																									  \return path for specified file */
@@ -149,7 +150,6 @@ class cArchive : public cFileSystem
 		const QString GetVolumeName() const;										///< find out name of the disk
 																								/**< \return name of the disk */
 		const void GoToRootDir();														///< set path to root directory
-		const void GoToUpDir();															///< go one directory up if possible
 		const bool OpenArchive();														///< open archive
 																								/**< \return true if archive can be opened */
 		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
