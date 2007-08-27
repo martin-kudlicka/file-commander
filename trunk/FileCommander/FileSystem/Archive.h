@@ -5,6 +5,7 @@
 
 #include "FileSystem.h"
 #include "Plugins/PackerPlugin.h"
+#include <QtCore/QFileInfo>
 //#include <QtGui/QTreeWidgetItem>
 //#include "FileSystem/FileOperation.h"
 //#include "FileControl/FileOperationDialog.h"
@@ -12,16 +13,17 @@
 class cArchive : public cFileSystem
 {
 	public:
-		cArchive(const QString &qsDrive, const QString &qsRootPath, const QString &qsArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin);
+		cArchive(const QString &qsDrive, const QString &qsRootPath, const QFileInfo &qfiArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin);
 																								///< constructor
 																								/**< \param qsDrive drive handled by this file system class
 																									  \param qsRootPath path to root of this file system
-																									  \param qsArchive file path to archive
+																									  \param qfiArchive file path to archive
 																									  \param qsPath to initialize local file system
 																									  \param qmwParent parent window for dialogs
 																									  \param qhblOperations layout for background widget
 																				 					  \param csSettings main settings
 																				 					  \param cppPackerPlugin packer plugin interface */
+		~cArchive();																		///< destructor
 
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
@@ -37,10 +39,19 @@ class cArchive : public cFileSystem
 
 	private:
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
-		QString qsArchive;																///< archive file path represented by this file system
+		QFileInfo qfiArchive;															///< archive represented by this file system
+		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;
+																								///< table of all directories in archive
+		QHash<QTreeWidgetItem *, tHeaderData> *qhPath;							///< current path
+
+		cPackerPlugin::sPluginInfo	*spiPluginInfo;								///< plugin description for current archive
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
+		QHash<QTreeWidgetItem *, tHeaderData> *AddDirectory(const tHeaderData &thdHeaderData);
+																								///< add directory into directory table if it's not there already
+																								/**< \param thdHeaderData directory to add
+																									  \return created (or already existing) directory */
 		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
@@ -136,6 +147,10 @@ class cArchive : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
+		const bool OpenArchive();														///< open archive
+																								/**< \return true if archive can be opened */
+		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
+																								/**< \param hArchive archive handle */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */
@@ -146,6 +161,8 @@ class cArchive : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
+		const int ToPackerDateTime(const QDateTime &qdtDateTime) const;	///< converts Qt's date time format to packer's
+																								/**< \param qdtDateTime date time in Qt format */
 		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type

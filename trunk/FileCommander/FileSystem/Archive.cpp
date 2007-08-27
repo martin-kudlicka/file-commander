@@ -1,10 +1,50 @@
 #include "FileSystem/Archive.h"
 
+#include <QtCore/QDir>
+
+// destructor
+cArchive::~cArchive()
+{
+	// TODO delete files in qpRoot
+} // ~cArchive
+
 // activate current file
 const void cArchive::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
 	// TODO ActivateCurrent
 } // ActivateCurrent
+
+// add directory into directory table if it's not there already
+QHash<QTreeWidgetItem *, tHeaderData> *cArchive::AddDirectory(const tHeaderData &thdHeaderData)
+{
+	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
+	QString qsDirectory;
+
+	if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
+		qsDirectory = thdHeaderData.FileName;
+	} else {
+		qsDirectory = QFileInfo(thdHeaderData.FileName).path();
+	} // if else
+
+	if (!qhDirectories.contains(qsDirectory)) {
+		// add new directory
+		tHeaderData thdDotDot;
+
+		qhDirectory = new QHash<QTreeWidgetItem *, tHeaderData>;
+		// add ".." directory
+		strcpy(thdDotDot.FileName, "..");
+		thdDotDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+		thdDotDot.FileAttr = cPackerPlugin::iDIRECTORY;
+		qhDirectory->insert(new QTreeWidgetItem(), thdDotDot);
+
+		// add new directory to directory list
+		qhDirectories.insert(qsDirectory, qhDirectory);
+	} else {
+		qhDirectory = qhDirectories.value(qsDirectory);
+	} // if else
+
+	return qhDirectory;
+} // AddDirectory
 
 // add file to custom file list
 QTreeWidgetItem *cArchive::AddToCustomList(QTreeWidgetItem *qtwiFile)
@@ -20,9 +60,9 @@ const void cArchive::BeginSearch()
 } // BeginSearch
 
 // constructor
-cArchive::cArchive(const QString &qsDrive, const QString &qsRootPath, const QString &qsArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin)
+cArchive::cArchive(const QString &qsDrive, const QString &qsRootPath, const QFileInfo &qfiArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin)
 {
-	this->qsArchive = qsArchive;
+	this->qfiArchive = qfiArchive;
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
@@ -251,6 +291,78 @@ const bool cArchive::IsFile(QTreeWidgetItem *qtwiFile) const
 	return false;
 } // IsFile
 
+// open archive
+const bool cArchive::OpenArchive()
+{
+	int iI;
+	QHash<QString, cPackerPlugin::sPluginInfo> qhPluginsInfo;
+	QList<cSettings::sPlugin> qlPackerPlugins;
+
+	qhPluginsInfo = cppPackerPlugin->GetPluginsInfo();
+	qlPackerPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
+
+	for (iI = 0; iI < qlPackerPlugins.count(); iI++) {
+		const cSettings::sPlugin *spPlugin;
+
+		spPlugin = &qlPackerPlugins.at(iI);
+		if (spPlugin->bEnabled) {
+			QStringList qslExtensions;
+
+			qslExtensions = spPlugin->qsExtensions.split(';');
+			if (qslExtensions.contains(qfiArchive.suffix(), Qt::CaseInsensitive)) {
+				HANDLE hArchive;
+				tOpenArchiveData toadArchiveData;
+
+				toadArchiveData.ArcName = new char[qfiArchive.filePath().length() + 1];
+				strcpy(toadArchiveData.ArcName, QDir::toNativeSeparators(qfiArchive.filePath()).toLatin1().constData());
+				toadArchiveData.OpenMode = PK_OM_LIST;
+
+				hArchive = qhPluginsInfo.value(QFileInfo(spPlugin->qsName).fileName()).toaOpenArchive(&toadArchiveData);
+
+				delete toadArchiveData.ArcName;
+
+				if (hArchive) {
+					// archive opened successfully
+					spiPluginInfo = &qhPluginsInfo[QFileInfo(spPlugin->qsName).fileName()];
+					// read archive files
+					ReadArchiveFiles(hArchive);
+					// path in archive
+					qhPath = qhDirectories.value(".");
+					// close archive
+					qhPluginsInfo.value(QFileInfo(spPlugin->qsName).fileName()).tcaCloseArchive(hArchive);
+
+					return true;
+				} // if
+			} // if
+		} // if
+	} // for
+
+	return false;
+} // OpenArchive
+
+// read archive files
+const void cArchive::ReadArchiveFiles(const HANDLE &hArchive)
+{
+	tHeaderData thdHeaderData;
+
+	memset(&thdHeaderData, 0, sizeof(tHeaderData));
+	// go through archive files
+	while (!spiPluginInfo->trhReadHeader(hArchive, &thdHeaderData)) {
+		QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
+
+		// add directory
+		qhDirectory = AddDirectory(thdHeaderData);
+
+		if (!(thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY)) {
+			// add file
+			qhDirectory->insert(new QTreeWidgetItem(), thdHeaderData);
+		} // if
+
+		spiPluginInfo->tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+		memset(&thdHeaderData, 0, sizeof(tHeaderData));
+	} // while
+} // ReadArchiveFiles
+
 // start retreiving of content delayed values
 const void cArchive::RetreiveContentDelayedValues()
 {
@@ -275,8 +387,18 @@ const void cArchive::SetPath(const QString &qsDrive, const QString &qsRootPath, 
 // change path for this file system without drive change
 const bool cArchive::SetPath(const QString &qsPath, const bool &bStartup /* false */)
 {
+	bool bResult;
+
+	bResult = true;
+	if (bStartup) {
+		// open archive
+		bResult = OpenArchive();
+	} // if
+
+	// find path in archive
+
 	// TODO SetPath
-	return false;
+	return bResult;
 } // SetPath
 
 // custom context menu on right click
@@ -288,6 +410,21 @@ const void cArchive::ShowContextMenu(const QPoint &qcPosition
 {
 	// TODO ShowContextMenu
 } // ShowContextMenu
+
+// converts Qt's date time format to packer's
+const int cArchive::ToPackerDateTime(const QDateTime &qdtDateTime) const
+{
+	int iDateTime;
+
+	iDateTime = (qdtDateTime.date().year() - 1980) << 25;
+	iDateTime |= qdtDateTime.date().month() << 21;
+	iDateTime |= qdtDateTime.date().day() << 16;
+	iDateTime |= qdtDateTime.time().hour() << 11;
+	iDateTime |= qdtDateTime.time().minute() << 5;
+	iDateTime |= qdtDateTime.time().second() / 2;
+
+	return iDateTime;
+} // ToPackerDateTime
 
 // write local files to this file system
 const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)

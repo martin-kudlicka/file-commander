@@ -1456,6 +1456,7 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort) c
 	stTab = &qlTabs.at(iIndex);
 
 	// remember marked items and clear tree
+	// TODO removeChild, takeChildren
 	while (ctwDir->topLevelItemCount() > 0) {
 		if (ctwDir->topLevelItem(0)->isSelected()) {
 			qlMarked.append(ctwDir->takeTopLevelItem(0));
