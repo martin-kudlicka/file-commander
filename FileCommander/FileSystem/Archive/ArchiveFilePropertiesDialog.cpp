@@ -1,7 +1,8 @@
-#include "ArchiveOperation/ArchiveFilePropertiesDialog.h"
+#include "FileSystem/Archive/ArchiveFilePropertiesDialog.h"
 
 #include <QtCore/QFileInfo>
-#include "ArchiveOperation.h"
+#include "FileSystem/Archive/ArchiveCommon.h"
+#include "Plugins/PackerPlugin.h"
 
 cArchiveFilePropertiesDialog::cArchiveFilePropertiesDialog(QMainWindow *qmwParent, const tHeaderData &thdFile)
 {
@@ -16,7 +17,7 @@ cArchiveFilePropertiesDialog::cArchiveFilePropertiesDialog(QMainWindow *qmwParen
 	qlPackedSize->setText(QString("%1 bytes").arg(thdFile.PackSize));
 	qlMethod->setText(QVariant(thdFile.Method).toString());
 	qlCRC->setText(QString("%1").arg(thdFile.FileCRC, 0, 16));
-	qlDateTime->setText(cArchiveOperation::ToQDateTime(thdFile.FileTime).toString());
+	qlDateTime->setText(cArchiveCommon::ToQDateTime(thdFile.FileTime).toString());
 	if (thdFile.FileAttr & cPackerPlugin::iREAD_ONLY) {
 		qslAttributes.append(tr("read only"));
 	} // if

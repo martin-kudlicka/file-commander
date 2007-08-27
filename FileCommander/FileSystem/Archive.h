@@ -12,6 +12,8 @@
 
 class cArchive : public cFileSystem
 {
+	Q_OBJECT
+
 	public:
 		cArchive(const QString &qsDrive, const QString &qsRootPath, const QFileInfo &qfiArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin);
 																								///< constructor
@@ -25,6 +27,8 @@ class cArchive : public cFileSystem
 																				 					  \param cppPackerPlugin packer plugin interface */
 		~cArchive();																		///< destructor
 
+		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
+																								/**< \param qtwiFile file to activate */
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true
@@ -59,6 +63,12 @@ class cArchive : public cFileSystem
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
+		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
+																								/**< \param qtwiFile file to check
+																									  \return true if directory */
+		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
+																								/**< \param qtwiFile file to check
+																									  \return true if file */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
 																								/**< \param qsDrive drive handled by this file system class
@@ -81,8 +91,6 @@ class cArchive : public cFileSystem
 
 		cPackerPlugin::sPluginInfo	*spiPluginInfo;								///< plugin description for current archive
 
-		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
-																								/**< \param qtwiFile file to activate */
 		QHash<QTreeWidgetItem *, tHeaderData> *AddDirectory(const tHeaderData &thdHeaderData);
 																								///< add directory into directory table if it's not there already
 																								/**< \param thdHeaderData directory to add
@@ -142,12 +150,6 @@ class cArchive : public cFileSystem
 																								/**< \return name of the disk */
 		const void GoToRootDir();														///< set path to root directory
 		const void GoToUpDir();															///< go one directory up if possible
-		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
-																								/**< \param qtwiFile file to check
-																									  \return true if directory */
-		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
-																								/**< \param qtwiFile file to check
-																									  \return true if file */
 		const bool OpenArchive();														///< open archive
 																								/**< \return true if archive can be opened */
 		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
@@ -164,9 +166,6 @@ class cArchive : public cFileSystem
 																									  \param hwParent parent window to show menu in */
 		const int ToPackerDateTime(const QDateTime &qdtDateTime) const;	///< converts Qt's date time format to packer's
 																								/**< \param qdtDateTime date time in Qt format */
-		const QDateTime ToQDateTime(const int &iDateTime) const;				///< converts packer plugin's date time format to QDateTime
-																								/**< \param iDateTime packed file date time
-																									  \return date time in Qt format */
 		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type
@@ -174,6 +173,9 @@ class cArchive : public cFileSystem
 																									  \param qsFilter filter to chose files by
 																									  \param qsDestination destination path on this file system
 																									  \param eopPosition operation position type */
+
+	signals:
+		void LeaveFileSystem() const;													///< leaving file system
 }; // cArchive
 
 #endif
