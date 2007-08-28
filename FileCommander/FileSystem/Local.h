@@ -166,6 +166,12 @@ class cLocal : public cFileSystem
 																								/**< \param qsPath path to test
 																									  \return true if path exists and is accessible */
 #endif
+		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
+																								///< write local files to this file system
+																								/**< \param eoOperation operation type
+																									  \param qsFilter filter to chose files by
+																									  \param qsDestination destination path on this file system
+																									  \param eopPosition operation position type */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */
@@ -200,8 +206,6 @@ class cLocal : public cFileSystem
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
 		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
-		void OperationFinished(cFileSystem *cfsFileSystem) const;			///< file operation finished
-																								/**< \param cfsFileSystem filesystem identifier */
 		void Unaccessible() const;														///< file system unaccessible
 
 	private slots:
