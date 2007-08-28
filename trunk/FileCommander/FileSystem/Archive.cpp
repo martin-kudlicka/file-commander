@@ -133,8 +133,15 @@ const void cArchive::Delete(const QString &qsFilter, const cFileOperation::eOper
 // check if specified directory exists
 const bool cArchive::DirExists(const QString &qsDirectory) const
 {
-	// TODO DirExists
-	return false;
+	QString qsPath;
+
+	if (qsDirectory.isEmpty()) {
+		qsPath = '.';
+	} else {
+		qsPath = QDir::cleanPath(qsDirectory);
+	} // if else
+
+	return qhDirectories.contains(qsPath);
 } // DirExists
 
 // searching of files finished
