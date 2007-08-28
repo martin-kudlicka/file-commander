@@ -422,6 +422,12 @@ const bool cArchive::IsFile(QTreeWidgetItem *qtwiFile) const
 	return !(qhPath->value(qtwiFile).FileAttr & cPackerPlugin::iDIRECTORY);
 } // IsFile
 
+// local file system test
+const bool cArchive::IsLocal() const
+{
+	return false;
+} // IsLocal
+
 // open archive
 const bool cArchive::OpenArchive()
 {

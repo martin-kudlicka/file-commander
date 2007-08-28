@@ -74,6 +74,8 @@ class cArchive : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
+		const bool IsLocal() const;													///< local file system test
+																								/**< \return true if it is local file system */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
 																								/**< \param qsDrive drive handled by this file system class

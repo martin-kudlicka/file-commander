@@ -154,6 +154,8 @@ class cLocal : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
+		const bool IsLocal() const;													///< local file system test
+																								/**< \return true if it is local file system */
 #ifdef Q_WS_WIN
 		const bool PathExists(const QString &qsPath) const;					///< check if path is valid
 																								/**< \param qsPath path to test
