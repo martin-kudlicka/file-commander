@@ -412,6 +412,10 @@ void *cLocal::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 	int iI;
 	QFileInfoList *qfilFiles;
 
+	if (caArchive) {
+		return caArchive->GetFileList(qlSelected);
+	} // if
+
 	qfilFiles = new QFileInfoList();
 
 	for (iI = 0; iI < qlSelected.count(); iI++) {
@@ -735,6 +739,10 @@ const void cLocal::RetreiveContentDelayedValues()
 // set file list for file operation
 const void cLocal::SetOperationFileList(void *vFileList)
 {
+	if (caArchive) {
+		return caArchive->SetOperationFileList(vFileList);
+	} // if
+
 	qfilOperation = *static_cast<QFileInfoList *>(vFileList);
 } // SetOperationFileList
 

@@ -48,6 +48,10 @@ class cArchive : public cFileSystem
 		const QIcon GetFileIcon(QTreeWidgetItem *qtwiFile) const;			///< get icon for specified file
 																								/**< \param qtwiFile file to find icon for
 																									  \return file icon */
+		void *GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const;
+																								///< file list of specified file system's type
+																								/**< \param qlSelected selected files to get file list for
+																									  \return file list of specified file system's type */
 		const QString GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed = true);
 																								///< get file name without extension
 																								/**< \param qtwiFile file to find name for
@@ -78,6 +82,8 @@ class cArchive : public cFileSystem
 																									  \return true if file */
 		const bool IsLocal() const;													///< local file system test
 																								/**< \return true if it is local file system */
+		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
+																								/**< \param vFileList file list to store */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
 																								///< change path for this file system
 																								/**< \param qsDrive drive handled by this file system class
@@ -104,6 +110,7 @@ class cArchive : public cFileSystem
 																								///< add directory into directory table if it's not there already
 																								/**< \param thdHeaderData directory to add
 																									  \return created (or already existing) directory */
+		QList<tHeaderData> qlOperation;												///< operation file list
 		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
@@ -138,10 +145,6 @@ class cArchive : public cFileSystem
 																								/**< \return disk space information */
 		const QString &GetDrive() const;												///< drive represented by file system
 																								/**< \return drive represented by file system */
-		void *GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const;
-																								///< file list of specified file system's type
-																								/**< \param qlSelected selected files to get file list for
-																									  \return file list of specified file system's type */
 		const QStringList GetOperationStringList() const;						///< file paths from operation file list
 																								/**< \return file paths from operation file list */
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
@@ -159,8 +162,6 @@ class cArchive : public cFileSystem
 		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
 																								/**< \param hArchive archive handle */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
-		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
-																								/**< \param vFileList file list to store */
 		const void ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent

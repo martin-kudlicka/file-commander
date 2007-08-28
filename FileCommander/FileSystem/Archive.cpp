@@ -296,8 +296,16 @@ const QIcon cArchive::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 // file list of specified file system's type
 void *cArchive::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 {
-	// TODO GetFileList
-	return NULL;
+	int iI;
+	QList<tHeaderData> *thdFiles;
+
+	thdFiles = new QList<tHeaderData>();
+
+	for (iI = 0; iI < qlSelected.count(); iI++) {
+		thdFiles->append(qhPath->value(qlSelected.at(iI)));
+	} // for
+
+	return thdFiles;
 } // GetFileList
 
 // get file name without extension
@@ -521,7 +529,7 @@ const void cArchive::RetreiveContentDelayedValues()
 // set file list for file operation
 const void cArchive::SetOperationFileList(void *vFileList)
 {
-	// TODO SetOperationFileList
+	qlOperation = *static_cast<QList<tHeaderData> *>(vFileList);
 } // SetOperationFileList
 
 // change path for this file system
