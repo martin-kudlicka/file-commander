@@ -6,6 +6,7 @@
 #include "Settings.h"
 #include "Plugins/WCXHead.h"
 #include <QtCore/QHash>
+#include <QtCore/QLibrary>
 
 class cPackerPlugin
 {
@@ -56,18 +57,25 @@ class cPackerPlugin
 #ifdef Q_WS_WIN
 			tSetProcessDataProc tspdpSetProcessDataProc;													///< SetProcessDataProc function
 #endif
+			QLibrary *qlLibrary;																					///< library identifying this plugin
 		};
 
 		cPackerPlugin(cSettings *csSettings);																///< constructor
 																														/**< \param csSettings application's settings */
+		~cPackerPlugin();																							///< destructor
 
 		const QHash<QString, sPluginInfo> &GetPluginsInfo() const;									///< retrieve packer plugins info
 		const void Load();																						///< loads packer plugins
+		const void cPackerPlugin::Unload();																	///< unloads packer plugins
 
 	private:
 		cSettings *csSettings;																					///< main settings "file"
 		QHash<QString, sPluginInfo> qhPlugins;																///< table of plugins
 																														/**< key is plugin name, value contains plugin's info */
+
+		const sPluginInfo LoadPlugin(const QString &qsName) const;									///< load packer plugin
+																														/**< \param qsName file path to plugin
+																															  \return plugin's description */
 }; // cPackerPlugin
 
 #endif

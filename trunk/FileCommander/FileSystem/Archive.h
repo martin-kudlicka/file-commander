@@ -6,9 +6,7 @@
 #include "FileSystem.h"
 #include "Plugins/PackerPlugin.h"
 #include <QtCore/QFileInfo>
-//#include <QtGui/QTreeWidgetItem>
-//#include "FileSystem/FileOperation.h"
-//#include "FileControl/FileOperationDialog.h"
+#include "FileSystem/Archive/ArchiveCopy.h"
 
 class cArchive : public cFileSystem
 {
@@ -100,6 +98,7 @@ class cArchive : public cFileSystem
 																									  \return true if succesfull */
 
 	private:
+		cArchiveCopy *cacCopy;															///< copy files from archive thread
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
 		QFileInfo qfiArchive;															///< archive represented by this file system
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;
@@ -159,6 +158,12 @@ class cArchive : public cFileSystem
 		const void GoToRootDir();														///< set path to root directory
 		const bool OpenArchive();														///< open archive
 																								/**< \return true if archive can be opened */
+		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
+																								///< write local files to this file system
+																								/**< \param eoOperation operation type
+																									  \param qsFilter filter to chose files by
+																									  \param qsDestination destination path on this file system
+																									  \param eopPosition operation position type */
 		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
 																								/**< \param hArchive archive handle */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
@@ -181,6 +186,9 @@ class cArchive : public cFileSystem
 
 	signals:
 		void LeaveFileSystem() const;													///< leaving file system
+
+	private slots:
+		const void on_cArchiveCopy_OperationFinished();							///< archive file copy operation finished
 }; // cArchive
 
 #endif

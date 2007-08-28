@@ -30,4 +30,5 @@ const void cPlugins::Unload() const
 {
 	ccpContentPlugin->Unload();
 	clpListerPlugin->Unload();
+	cppPackerPlugin->Unload();
 } // Unload

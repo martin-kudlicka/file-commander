@@ -482,8 +482,7 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 			soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} else {
 			connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-			// TODO ProcessOperation Read file system method
-			//soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+			soOperation.cfsDestination->Read(soOperation.eoType, soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} // if else
 	} // if else
 } // ProcessOperation

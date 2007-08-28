@@ -455,6 +455,13 @@ const bool cArchive::IsLocal() const
 	return false;
 } // IsLocal
 
+// archive file copy operation finished
+const void cArchive::on_cArchiveCopy_OperationFinished()
+{
+	cacCopy->deleteLater();
+	emit OperationFinished(this);
+} // on_cArchiveCopy_OperationFinished
+
 // open archive
 const bool cArchive::OpenArchive()
 {
@@ -503,6 +510,14 @@ const bool cArchive::OpenArchive()
 
 	return false;
 } // OpenArchive
+
+// write local files to this file system
+const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+{
+	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
+	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
+	//cacCopy->Copy(qlOperation, qsDestination, qsFilter, eopPosition, spiPluginInfo);
+} // Read
 
 // read archive files
 const void cArchive::ReadArchiveFiles(const HANDLE &hArchive)

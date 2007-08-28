@@ -737,6 +737,12 @@ const bool cLocal::PathExists(const QString &qsPath) const
 } // PathExists
 #endif
 
+// write local files to this file system
+const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+{
+	// useless in this class
+} // Read
+
 // start retreiving of content delayed values
 const void cLocal::RetreiveContentDelayedValues()
 {
