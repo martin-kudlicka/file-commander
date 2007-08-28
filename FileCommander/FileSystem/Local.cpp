@@ -632,6 +632,16 @@ const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).isFile();
 } // IsFile
 
+// local file system test
+const bool cLocal::IsLocal() const
+{
+	if (caArchive) {
+		return caArchive->IsLocal();
+	} // if
+
+	return true;
+} // IsLocal
+
 // content changed in archive
 const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const
 {

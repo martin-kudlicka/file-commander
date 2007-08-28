@@ -129,6 +129,8 @@ class cFileSystem : public QObject
 		virtual const bool IsFile(QTreeWidgetItem *qtwiFile) const = 0;			///< check if file is really file
 																										/**< \param qtwiFile file to check
 																											  \return true if file */
+		virtual const bool IsLocal() const = 0;											///< local file system test
+																										/**< \return true if it is local file system */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
 		virtual const void SetOperationFileList(void *vFileList) = 0;				///< set file list for file operation
 																										/**< \param vFileList file list to store */

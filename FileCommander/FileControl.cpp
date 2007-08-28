@@ -511,7 +511,10 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTre
 const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const
 {
 	if (cfsFileSystem->IsFile(qtwiFile)) {
-		// TODO View test for local file
+		if (!cfsFileSystem->IsLocal()) {
+			// TODO View copy file to temp dir
+		} // if
+
 		if (csSettings->GetViewerType() == qsINTERNAL) {
 			cListerMainWindow *clmwLister;
 
