@@ -123,6 +123,11 @@ class cFileControl : public QObject
 		QQueue<QPair<QListWidgetItem *, sOperation> > qqOperations;	///< queued operations
 		QMainWindow *qmwParent;													///< parent window for dialogs
 
+		cFileSystem *CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath = "") const;
+																						///< copy specified file system
+																						/**< \param cfsSource file system to copy
+																							  \param qsNewPath new path on copied file system
+																							  \return new copy of source file system */
 		const void Enqueue(const sOperation &soOperation);				///< place operation into queue
 																						/**< \param soOperation operation description */
 		const sTypeCount GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const;

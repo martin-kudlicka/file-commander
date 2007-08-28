@@ -16,10 +16,11 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 	public:
 		/// file operation type
 		enum eOperation {
-			CopyOperation,									///< copy
-			MoveOperation,									///< move
-			DeleteOperation								///< delete
+			CopyOperation = 1,							///< copy
+			DeleteOperation = 2,							///< delete
+			MoveOperation = 3								///< move
 		};
+		Q_DECLARE_FLAGS(eOperations, eOperation);
 		/// action done by user
 		enum eUserAction {
 			CancelAction,									///< cancel button selected
@@ -60,5 +61,7 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 																///< OK button clicked on
 																/**< \param checked true if button is checkable and checked */
 }; // cFileOperationDialog
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(cFileOperationDialog::eOperations)
 
 #endif

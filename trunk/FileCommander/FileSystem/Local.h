@@ -55,6 +55,8 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
 		const void BeginSearch();														///< begin of searching files
+		const bool CanCopy() const;													///< file system can copy files to local file system
+		const bool CanDelete() const;													///< file system can delete files
 		const bool CheckPath();															///< check if current path available
 																								/**< \return true if avalable (at least some upper directory) */
 		const void ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const;
@@ -156,6 +158,9 @@ class cLocal : public cFileSystem
 																									  \return true if file */
 		const bool IsLocal() const;													///< local file system test
 																								/**< \return true if it is local file system */
+		const bool OpenArchive(const QFileInfo &qfiArchive);					///< try to open archive
+																								/**< \param qfiArchive archive file path
+																									  \return true if archive can be opened */
 #ifdef Q_WS_WIN
 		const bool PathExists(const QString &qsPath) const;					///< check if path is valid
 																								/**< \param qsPath path to test
