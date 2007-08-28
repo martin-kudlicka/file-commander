@@ -31,6 +31,9 @@ class cArchive : public cFileSystem
 																								/**< \param qtwiFile file to activate */
 		const bool CanCopy() const;													///< file system can copy files to local file system
 		const bool CanDelete() const;													///< file system can delete files
+		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
+																								/**< \param qsDirectory directory to check
+																									  \return true if directory exists */
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true
@@ -121,9 +124,6 @@ class cArchive : public cFileSystem
 																								///< delete files in operation file list
 																								/**< \param qsFilter filter to chose files by
 																									  \param eopPosition operation position type */
-		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
-																								/**< \param qsDirectory directory to check
-																									  \return true if directory exists */
 		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
 																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);

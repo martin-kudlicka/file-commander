@@ -162,6 +162,14 @@ const bool cLocal::DirExists(const QString &qsDirectory) const
 {
 	QDir qdDir;
 
+	if (caArchive) {
+		QString qsArchivePath;
+
+		qsArchivePath = QDir::toNativeSeparators(qsDirectory.mid(this->qdDir.path().length() + 1));
+		qsArchivePath = qsArchivePath.mid(qsArchivePath.indexOf(QDir::separator()) + 1);
+		return caArchive->DirExists(qsArchivePath);
+	} // if
+
 	qdDir.setPath(qsDirectory);
 	return qdDir.exists();
 } // DirExists

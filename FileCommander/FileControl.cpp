@@ -447,7 +447,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 	// correct destination path
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
-		if (cfsSource->DirExists(qsDestination)) {
+		if (soOperation.cfsDestination->DirExists(qsDestination)) {
 			qsDestination = QDir::cleanPath(qsDestination) += "/*.*";
 		} // if
 	} // if
@@ -471,15 +471,20 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 {
 	if (soOperation.eoType == cFileOperationDialog::DeleteOperation) {
 		// delete
-		connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
 		qlOperations.append(soOperation);
+		connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
 		soOperation.cfsSource->Delete(soOperation.qsFilter, eopPosition);
 	} else {
 		// copy or move
-		// TODO connect other file system later if source not local
-		connect(soOperation.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
 		qlOperations.append(soOperation);
-		soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+		if (soOperation.cfsSource->IsLocal()) {
+			connect(soOperation.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+			soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+		} else {
+			connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+			// TODO ProcessOperation Read file system method
+			//soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+		} // if else
 	} // if else
 } // ProcessOperation
 
