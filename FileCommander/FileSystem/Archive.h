@@ -29,6 +29,8 @@ class cArchive : public cFileSystem
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
+		const bool CanCopy() const;													///< file system can copy files to local file system
+		const bool CanDelete() const;													///< file system can delete files
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true

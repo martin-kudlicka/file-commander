@@ -39,22 +39,8 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 #endif
 	} else {
 		// file
-		bool bArchive;
-
 		// check if it's supported archive with browsing archive enabled
-		bArchive = false;
-		if (csSettings->GetTreatArchivesLikeDirectories()) {
-			caArchive = new cArchive(qsDrive, qsRootPath, qhFiles.value(qtwiFile), "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
-			connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
-			if (caArchive->SetPath(".", true)) {
-				bArchive = true;
-				connect(caArchive, SIGNAL(LeaveFileSystem()), SLOT(on_caArchive_LeaveFileSystem()));
-			} else {
-				caArchive->deleteLater();
-				caArchive = NULL;
-			} // if else
-		} // if
-		if (!bArchive) {
+		if (!(csSettings->GetTreatArchivesLikeDirectories() && OpenArchive(qhFiles.value(qtwiFile)))) {
 			// not an (supported) archive or browsing archive disabled
 			cProcess cpProcess;
 
@@ -80,6 +66,26 @@ const void cLocal::BeginSearch()
 	// clear before next search (especially for branch view)
 	qhCustom.clear();
 } // BeginSearch
+
+// file system can copy files to local file system
+const bool cLocal::CanCopy() const
+{
+	if (caArchive) {
+		return caArchive->CanCopy();
+	} // if
+
+	return true;
+} // CanCopy
+
+// file system can delete files
+const bool cLocal::CanDelete() const
+{
+	if (caArchive) {
+		return caArchive->CanDelete();
+	} // if
+
+	return true;
+} // CanDelete
 
 // check if current path available
 const bool cLocal::CheckPath()
@@ -682,6 +688,23 @@ const void cLocal::on_qfswWatcher_directoryChanged(const QString &path) const
 	emit ContentChanged(this);
 } // on_qfswWatcher_directoryChanged
 
+// try to open archive
+const bool cLocal::OpenArchive(const QFileInfo &qfiArchive)
+{
+	caArchive = new cArchive(qsDrive, qsRootPath, qfiArchive, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+	connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
+	if (caArchive->SetPath(".", true)) {
+		connect(caArchive, SIGNAL(LeaveFileSystem()), SLOT(on_caArchive_LeaveFileSystem()));
+
+		return true;
+	} else {
+		caArchive->deleteLater();
+		caArchive = NULL;
+
+		return false;
+	} // if else
+} // OpenArchive
+
 #ifdef Q_WS_WIN
 // check if path is valid
 const bool cLocal::PathExists(const QString &qsPath) const
@@ -732,6 +755,8 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
+	QDir qdNotFile;
+	QString qsNewPath;
 
 	if (caArchive) {
 		return caArchive->SetPath(qsPath, bStartup);
@@ -740,7 +765,24 @@ const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false 
 	if (!bStartup) {
 		qfswWatcher.removePath(qdDir.path());
 	} // if
-	bResult = qdDir.cd(qsPath);
+
+	// find right path
+	qsNewPath = qsPath;
+	while (!qdDir.exists(qsNewPath)) {
+		qsNewPath = QFileInfo(qsNewPath).path();
+	} // while
+
+	qdNotFile.setPath(qsNewPath);
+	if (!qdNotFile.exists()) {
+		// can be path to archive
+		if (OpenArchive(qsNewPath)) {
+			caArchive->SetPath(qsPath.mid(qsNewPath.length() + 1));
+		} // if
+
+		qsNewPath = QFileInfo(qsNewPath).path();
+	} // if
+
+	bResult = qdDir.cd(qsNewPath);
 	qfswWatcher.addPath(qdDir.path());
 
 	if (bResult) {

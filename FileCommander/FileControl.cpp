@@ -112,6 +112,31 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 	} // for
 } // CompareDirectories
 
+// copy specified file system
+cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath /* "" */) const
+{
+	cFileSystem *cfsCopy;
+	QString qsDrive, qsPath;
+
+	// copied file system path correction
+	if (qsNewPath.length() > 2 && qsNewPath.at(1) == ':') {
+		// new path probably on different file system
+		sPathInfo spiPathInfo;
+
+		spiPathInfo = GetPathInfo(qsNewPath);
+		qsDrive = spiPathInfo.qsDrive;
+		qsPath = qsNewPath;
+	} else {
+		// new path on the same file system (can be relative)
+		qsDrive = cfsSource->GetDrive();
+		qsPath = cfsSource->GetPath();
+	} // if else
+
+	cfsCopy = GetFileSystem(cfsSource->GetDrive(), qsPath);
+
+	return cfsCopy;
+} // CopyFileSystem
+
 // create new directory
 const QString cFileControl::CreateDirectory(cFileSystem *cfsFileSystem) const
 {
@@ -352,6 +377,12 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	sTypeCount stcTypeCount;
 	void *vFileList;
 
+	if (eoOperation & cFileOperationDialog::CopyOperation && !cfsSource->CanCopy()
+		 || eoOperation & cFileOperationDialog::DeleteOperation && !cfsSource->CanDelete()) {
+		 // operation is not allowed
+		 return;
+	} // if
+
 	// ignore ".." directory
 	for (iI = 0; iI < qlSource.count(); iI++) {
 		if (cfsSource->GetFileName(qlSource.at(iI), false) == "..") {
@@ -401,18 +432,9 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	} // if
 
 	// create file systems for file operation
-	soOperation.cfsSource = GetFileSystem(cfsSource->GetDrive(), cfsSource->GetPath());
+	soOperation.cfsSource = CopyFileSystem(cfsSource);
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
-		if (qsDestination.length() > 2 && qsDestination.at(1) == ':') {
-			// absolute path -> can be different file system than source
-			sPathInfo spiPathInfo;
-
-			spiPathInfo = GetPathInfo(qsDestination);
-			soOperation.cfsDestination = GetFileSystem(spiPathInfo.qsDrive, spiPathInfo.qsRootPath);
-		} else {
-			// relative path -> same file system as source
-			soOperation.cfsDestination = GetFileSystem(cfsSource->GetDrive(), cfsSource->GetPath());
-		} // if else
+		soOperation.cfsDestination = CopyFileSystem(cfsSource, qsDestination);
 	} else {
 		soOperation.cfsDestination = NULL;
 	} // if else

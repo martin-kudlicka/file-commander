@@ -37,9 +37,8 @@ QHash<QTreeWidgetItem *, tHeaderData> *cArchive::AddDirectory(const tHeaderData 
 	if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
 		qsDirectory = thdHeaderData.FileName;
 	} else {
-		qsDirectory = QFileInfo(thdHeaderData.FileName).path();
+		qsDirectory = QDir::toNativeSeparators(QFileInfo(thdHeaderData.FileName).path());
 	} // if else
-	qsDirectory = QDir::toNativeSeparators(qsDirectory);
 
 	if (!qhDirectories.contains(qsDirectory)) {
 		// add new directory
@@ -93,6 +92,19 @@ const void cArchive::BeginSearch()
 {
 	// TODO BeginSearch
 } // BeginSearch
+
+// file system can copy files to local file system
+const bool cArchive::CanCopy() const
+{
+	return true;
+} // CanCopy
+
+// file system can delete files
+const bool cArchive::CanDelete() const
+{
+	// TODO CanDelete
+	return false;
+} // CanDelete
 
 // constructor
 cArchive::cArchive(const QString &qsDrive, const QString &qsRootPath, const QFileInfo &qfiArchive, const QString &qsPath, QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cPackerPlugin *cppPackerPlugin)
