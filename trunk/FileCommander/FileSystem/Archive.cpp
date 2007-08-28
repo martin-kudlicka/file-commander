@@ -466,7 +466,7 @@ const void cArchive::on_cArchiveCopy_OperationFinished()
 const bool cArchive::OpenArchive()
 {
 	int iI;
-	QHash<QString, cPackerPlugin::sPluginInfo> qhPluginsInfo;
+	QHash<QString, cPackerPlugin::sPluginInfo> *qhPluginsInfo;
 	QList<cSettings::sPlugin> qlPackerPlugins;
 
 	qhPluginsInfo = cppPackerPlugin->GetPluginsInfo();
@@ -488,19 +488,19 @@ const bool cArchive::OpenArchive()
 				strcpy(toadArchiveData.ArcName, QDir::toNativeSeparators(qfiArchive.filePath()).toLatin1().constData());
 				toadArchiveData.OpenMode = PK_OM_LIST;
 
-				hArchive = qhPluginsInfo.value(QFileInfo(spPlugin->qsName).fileName()).toaOpenArchive(&toadArchiveData);
+				hArchive = qhPluginsInfo->value(QFileInfo(spPlugin->qsName).fileName()).toaOpenArchive(&toadArchiveData);
 
 				delete toadArchiveData.ArcName;
 
 				if (hArchive) {
 					// archive opened successfully
-					spiPluginInfo = &qhPluginsInfo[QFileInfo(spPlugin->qsName).fileName()];
+					spiPluginInfo = &qhPluginsInfo->operator [](QFileInfo(spPlugin->qsName).fileName());
 					// read archive files
 					ReadArchiveFiles(hArchive);
 					// path in archive
 					qhPath = qhDirectories.value(".");
 					// close archive
-					qhPluginsInfo.value(QFileInfo(spPlugin->qsName).fileName()).tcaCloseArchive(hArchive);
+					qhPluginsInfo->value(QFileInfo(spPlugin->qsName).fileName()).tcaCloseArchive(hArchive);
 
 					return true;
 				} // if
@@ -516,7 +516,7 @@ const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, c
 {
 	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
 	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
-	//cacCopy->Copy(qlOperation, qsDestination, qsFilter, eopPosition, spiPluginInfo);
+	cacCopy->Copy(qlOperation, qfiArchive, qsDestination, qsFilter, cppPackerPlugin, spiPluginInfo, eopPosition);
 } // Read
 
 // read archive files

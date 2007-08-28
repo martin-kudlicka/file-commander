@@ -132,7 +132,7 @@ cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QS
 		qsPath = cfsSource->GetPath();
 	} // if else
 
-	cfsCopy = GetFileSystem(cfsSource->GetDrive(), qsPath);
+	cfsCopy = GetFileSystem(qsDrive, qsPath);
 
 	return cfsCopy;
 } // CopyFileSystem
@@ -482,7 +482,7 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 			soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} else {
 			connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-			soOperation.cfsDestination->Read(soOperation.eoType, soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+			soOperation.cfsSource->Read(soOperation.eoType, soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} // if else
 	} // if else
 } // ProcessOperation

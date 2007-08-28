@@ -19,9 +19,9 @@ cPackerPlugin::cPackerPlugin(cSettings *csSettings)
 } // cPackerPlugin
 
 // retrieve packer plugin info
-const QHash<QString, cPackerPlugin::sPluginInfo> &cPackerPlugin::GetPluginsInfo() const
+QHash<QString, cPackerPlugin::sPluginInfo> *cPackerPlugin::GetPluginsInfo()
 {
-	return qhPlugins;
+	return &qhPlugins;
 } // GetPluginsInfo
 
 // loads packer plugins
