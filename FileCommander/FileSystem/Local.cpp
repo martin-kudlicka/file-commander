@@ -836,5 +836,5 @@ const void cLocal::Write(const cFileOperationDialog::eOperation &eoOperation, co
 {
 	clcmCopyMove = new cLocalCopyMove(qmwParent, qhblOperations, csSettings);
 	connect(clcmCopyMove, SIGNAL(finished()), SLOT(on_cLocalCopyMove_OperationFinished()));
-	clcmCopyMove->CopyMove(eoOperation, qslSources, qsDestination, qsFilter, eopPosition);
+	clcmCopyMove->CopyMove(eoOperation, qslSources, qsFilter, qsDestination, eopPosition);
 } // Write

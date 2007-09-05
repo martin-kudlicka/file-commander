@@ -267,7 +267,7 @@ const bool cLocalCopyMove::Copy(const QString &qsSource, const QString &qsDestin
 } // Copy
 
 // start of copy or move operation
-const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsDestination, const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
+const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
 {
 	this->eoOperation = eoOperation;
 	this->qslSources = qslSources;
