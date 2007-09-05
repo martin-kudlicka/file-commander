@@ -2,6 +2,11 @@
 
 #include "FileSystem/CopyMoveConflict.h"
 #include "FileSystem/DiskSpace.h"
+#include "FileSystem/Archive/Continue.h"
+
+bool cArchiveCopy::bCanceled;				///< operation in progress is canceled (static class variable)
+qint64 cArchiveCopy::qi64CurrentValue;	///< current file progress (static class variable)
+qint64 cArchiveCopy::qi64TotalValue;	///< total progress (static class variable)
 
 // constructor
 cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -151,16 +156,33 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 	bCanceled = true;
 } // on_cLocalCopyMove_OperationCanceled
 
+#ifdef Q_WS_WIN
+// callback progress function
+int __stdcall cArchiveCopy::ProcessDataProc(char *cFileName, int iSize)
+{
+	qi64CurrentValue += iSize;
+	qi64TotalValue += iSize;
+	//emit SetCurrentValue(qi64CurrentValue);
+	//emit SetCurrentMaximum(qi64TotalValue);
+	//QApplication::processEvents();
+
+	return !bCanceled;
+} // ProcessDataProc
+#endif
+
 // separate thread process
 void cArchiveCopy::run()
 {
+	cContinue::eChoice ecContinue;
 	cCopyMoveConflict::eChoice ecConflict;
 	cDiskSpace::eChoice ecDiskSpace;
 #ifdef Q_WS_WIN
 	cPermission::eChoice ecPermission;
 #endif
+	HANDLE hArchive;
 	qint64 qi64TotalValue;
 	QStringList qslToExtract;
+	tOpenArchiveData toadArchiveData;
 
 	// collect files to extract
 	qslToExtract = GetFilesToExtractAndCountTotalSize();
@@ -173,12 +195,56 @@ void cArchiveCopy::run()
 #ifdef Q_WS_WIN
 	ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
 #endif
-	//ecContinue = cContinue::Ask;
+	ecContinue = cContinue::Ask;
 	ecDiskSpace = cDiskSpace::Ask;
 
-	qi64TotalValue = 0;
+	// open archive
+	toadArchiveData.ArcName = new char[qfiArchive.filePath().length() + 1];
+	strcpy(toadArchiveData.ArcName, qfiArchive.filePath().toLatin1().constData());
+	toadArchiveData.OpenMode = PK_OM_EXTRACT;
+	hArchive = spiPluginInfo.toaOpenArchive(&toadArchiveData);
 
-	// TODO run
+#ifdef Q_WS_WIN
+	// set callback function
+	spiPluginInfo.tspdpSetProcessDataProc(hArchive, &cArchiveCopy::ProcessDataProc);
+#endif
+
+	// extract files
+	qi64TotalValue = 0;
+	while (true) {
+		cContinue::eChoice ecContinueCurrent;
+		cCopyMoveConflict::eChoice ecConflictCurrent;
+		cDiskSpace::eChoice ecDiskSpaceCurrent;
+#ifdef Q_WS_WIN
+		cPermission::eChoice ecPermissionCurrent;
+#endif
+		tHeaderData thdHeaderData;
+
+		memset(&thdHeaderData, 0, sizeof(tHeaderData));
+		if (spiPluginInfo.trhReadHeader(hArchive, &thdHeaderData)) {
+			// no other file in archive
+			break;
+		} // if
+
+		if (qslToExtract.contains(thdHeaderData.FileName) && cFileOperation::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
+			// extract file
+		} // if
+
+		// cancel conditions
+		if (ecDiskSpaceCurrent == cDiskSpace::No || ecConflictCurrent == cCopyMoveConflict::Cancel || ecContinueCurrent == cContinue::No
+#ifdef Q_WS_WIN
+			 || ecPermissionCurrent == cPermission::Cancel
+#endif
+			) {
+			// process aborted
+			break;
+		} // if
+	} // while
+
+	// close archive
+	spiPluginInfo.tcaCloseArchive(hArchive);
+	delete toadArchiveData.ArcName;
+
 	spiPluginInfo.qlLibrary->unload();
 	spiPluginInfo.qlLibrary->deleteLater();
 } // run
