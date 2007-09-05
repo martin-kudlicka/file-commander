@@ -100,12 +100,6 @@ class cLocalCopyMove : public QThread
 																						  \param qi64TotalValue total progress
 																						  \return true if operation succesfull */
 		const void CreateWidget();											///< create widget for background operation
-		const QString GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination) const;
-																					///< return file name modified by wildcard
-																					/**< \param qfiFile source file to copy or move
-																						  \param qsSourcePath path for all sources
-																						  \param qsDestination destination string
-																						  \return modified file name */
 		void run();																///< separate thread process
 
 	signals:

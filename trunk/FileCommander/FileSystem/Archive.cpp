@@ -516,7 +516,7 @@ const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, c
 {
 	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
 	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
-	cacCopy->Copy(qlOperation, qfiArchive, qsFilter, qhDirectories, qsDestination, cppPackerPlugin, spiPluginInfo, eopPosition);
+	cacCopy->Copy(qlOperation, qfiArchive, qhDirectories.key(qhPath), qsFilter, qhDirectories, qsDestination, cppPackerPlugin, spiPluginInfo, eopPosition);
 } // Read
 
 // read archive files

@@ -1,8 +1,9 @@
 #include "FileSystem/Archive/ArchiveCopy.h"
 
 #include "FileSystem/CopyMoveConflict.h"
-#include "FileSystem/DiskSpace.h"
-#include "FileSystem/Archive/Continue.h"
+#include <QtCore/QDir>
+#include "FileSystem.h"
+#include "FileSystem/Local/LocalCommon.h"
 
 bool cArchiveCopy::bCanceled;				///< operation in progress is canceled (static class variable)
 qint64 cArchiveCopy::qi64CurrentValue;	///< current file progress (static class variable)
@@ -17,16 +18,62 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 
 	bCanceled = false;
 	qi64TotalMaximum = 0;
-} // cLocalCopyMove
+} // cArchiveCopy
+
+// check disk space
+cFileOperation::eCheckResult cArchiveCopy::CheckDiskSpace(const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
+{
+	cFileSystem::sDiskSpace sdsDiskSpace;
+
+	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
+	if (sdsDiskSpace.qi64Free < iUnpackedSize) {
+		ecDiskSpaceCurrent = cDiskSpace::Ask;
+
+		if (*ecDiskSpace == cDiskSpace::Ask) {
+			// disk space dialog
+			emit ShowDiskSpaceDialog(qsSource, iUnpackedSize, sdsDiskSpace.qi64Free);
+			// wait for answer
+			qsPause.acquire();
+
+			// solve
+			switch (ecDiskSpaceCurrent) {
+				case cDiskSpace::YesToAll:
+					*ecDiskSpace = cDiskSpace::YesToAll;
+					break;
+				case cDiskSpace::SkipAll:
+					*ecDiskSpace = cDiskSpace::SkipAll;
+				default:
+					;
+			} // switch
+		} // if
+
+		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
+			// skip current file
+			*qi64TotalValue += iUnpackedSize;
+			return cFileOperation::NextFile;
+		} else {
+			if (ecDiskSpaceCurrent == cDiskSpace::No) {
+				// cancel
+				return cFileOperation::Cancel;
+			} // if
+		} // if else
+	} // if
+
+	return cFileOperation::Nothing;
+} // CheckDiskSpace
 
 // start of copy or move operation
-const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
+const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath /* true */)
 {
 	this->qlOperation = qlOperation;
 	this->qfiArchive = qfiArchive;
+	if (qsArchivePath != ".") {
+		this->qsArchivePath = qsArchivePath;
+	} // if
 	this->qsFilter = qsFilter;
 	this->qhDirectories = qhDirectories;
 	this->qsDestination = qsDestination;
+	this->bFullPath = bFullPath;
 
 	// information windows
 	if (eopPosition == cFileOperation::ForegroundOperation) {
@@ -64,11 +111,11 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFile
 
 	// retry dialog
 	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
-	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
+	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));*/
 
 	// disk space dialog
 	connect(this, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), &cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
-	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));*/
+	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));
 
 	this->spiPluginInfo = cppPackerPlugin->LoadPlugin(spiPluginInfo->qlLibrary->fileName());
 
@@ -150,6 +197,13 @@ const void cArchiveCopy::on_ccmdCopyMoveDialog_Background()
 	ccmdDialog = NULL;
 } // on_ccmdCopyMoveDialog_Background
 
+// disk space dialog closed with user response
+const void cArchiveCopy::on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &ecResponse)
+{
+	ecDiskSpaceCurrent = ecResponse;
+	qsPause.release();
+} // on_cdsDiskSpace_Finished
+
 // copy or move operation was canceled
 const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 {
@@ -160,6 +214,7 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 // callback progress function
 int __stdcall cArchiveCopy::ProcessDataProc(char *cFileName, int iSize)
 {
+	// TODO ProcessDataProc
 	qi64CurrentValue += iSize;
 	qi64TotalValue += iSize;
 	//emit SetCurrentValue(qi64CurrentValue);
@@ -212,12 +267,6 @@ void cArchiveCopy::run()
 	// extract files
 	qi64TotalValue = 0;
 	while (true) {
-		cContinue::eChoice ecContinueCurrent;
-		cCopyMoveConflict::eChoice ecConflictCurrent;
-		cDiskSpace::eChoice ecDiskSpaceCurrent;
-#ifdef Q_WS_WIN
-		cPermission::eChoice ecPermissionCurrent;
-#endif
 		tHeaderData thdHeaderData;
 
 		memset(&thdHeaderData, 0, sizeof(tHeaderData));
@@ -228,9 +277,50 @@ void cArchiveCopy::run()
 
 		if (qslToExtract.contains(thdHeaderData.FileName) && cFileOperation::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
 			// extract file
-		} // if
+			QString qsSource, qsTarget;
 
-		// cancel conditions
+			qsSource = qfiArchive.filePath() + '/' + thdHeaderData.FileName;
+			if (bFullPath) {
+				qsTarget = thdHeaderData.FileName;
+			} else {
+				qsTarget = QFileInfo(thdHeaderData.FileName).fileName();
+			} // if else
+			qsTarget = cFileOperation::GetWildcardedName(QFileInfo(qsTarget), qsArchivePath, qsDestination);
+
+			emit SetSource(qsSource);
+			emit SetDestination(qsTarget);
+			qi64CurrentValue = 0;
+			emit SetCurrentMaximum(thdHeaderData.UnpSize);
+
+			if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
+				// extract directory
+				if (bFullPath) {
+					QDir qdDir;
+
+					qdDir.mkpath(qsTarget);
+				} // if
+				spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+			} else {
+				// extract file
+				cFileOperation::eCheckResult ecrCheck;
+
+				// check disk space on target
+				ecrCheck = CheckDiskSpace(thdHeaderData.UnpSize, &ecDiskSpace, &qi64TotalValue);
+				if (ecrCheck == cFileOperation::NextFile) {
+					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+					continue;
+				} else {
+					if (ecrCheck == cFileOperation::Cancel) {
+						break;
+					} // if
+				} // if else
+			} // if else
+		} else {
+			// skip file
+			spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+		} // if else
+
+		// stop conditions
 		if (ecDiskSpaceCurrent == cDiskSpace::No || ecConflictCurrent == cCopyMoveConflict::Cancel || ecContinueCurrent == cContinue::No
 #ifdef Q_WS_WIN
 			 || ecPermissionCurrent == cPermission::Cancel
@@ -247,4 +337,11 @@ void cArchiveCopy::run()
 
 	spiPluginInfo.qlLibrary->unload();
 	spiPluginInfo.qlLibrary->deleteLater();
+
+	// close dialog or widget
+	if (ccmdDialog) {
+		ccmdDialog->deleteLater();
+	} else {
+		ccmwWidget->deleteLater();
+	} // if else
 } // run
