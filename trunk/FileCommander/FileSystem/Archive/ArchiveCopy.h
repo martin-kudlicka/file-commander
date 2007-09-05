@@ -21,9 +21,9 @@ class cArchiveCopy : public QThread
 																	  \param qhblOperations layout for background widget
 																	  \param csSettings application's configuration */
 
-		const void Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsDestination, const QString &qsFilter, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition);
+		const void Copy(const QStringList &qslOperation, const QFileInfo &qfiArchive, const QString &qsDestination, const QString &qsFilter, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition);
 																	///< start of copy or move operation
-																	/**< \param qlOperation source file list
+																	/**< \param qslOperation source file list
 																		  \param qfiArchive archive file path
 																		  \param qsDestination destination path
 																		  \param qsFilter filter for input files
@@ -35,7 +35,7 @@ class cArchiveCopy : public QThread
 		cSettings *csSettings;								///< application's configuration
 		QFileInfo qfiArchive;								///< archive represented by this file system
 		QHBoxLayout *qhblOperations;						///< layout for background operations
-		QList<tHeaderData> qlOperation;					///< operation file list
+		QStringList qslOperation;							///< operation file list
 		QMainWindow *qmwParent;								///< parent window for foreground operation window
 		QString qsDestination;								///< destination path on local file system
 		QString qsFilter;										///< filter for source files

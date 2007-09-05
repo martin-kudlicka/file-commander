@@ -304,15 +304,15 @@ const QIcon cArchive::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 void *cArchive::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 {
 	int iI;
-	QList<tHeaderData> *thdFiles;
+	QStringList *qslFiles;
 
-	thdFiles = new QList<tHeaderData>();
+	qslFiles = new QStringList();
 
 	for (iI = 0; iI < qlSelected.count(); iI++) {
-		thdFiles->append(qhPath->value(qlSelected.at(iI)));
+		qslFiles->append(qhPath->value(qlSelected.at(iI)).FileName);
 	} // for
 
-	return thdFiles;
+	return qslFiles;
 } // GetFileList
 
 // get file name without extension
@@ -516,7 +516,7 @@ const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, c
 {
 	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
 	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
-	cacCopy->Copy(qlOperation, qfiArchive, qsDestination, qsFilter, cppPackerPlugin, spiPluginInfo, eopPosition);
+	cacCopy->Copy(qslOperation, qfiArchive, qsDestination, qsFilter, cppPackerPlugin, spiPluginInfo, eopPosition);
 } // Read
 
 // read archive files
@@ -551,7 +551,7 @@ const void cArchive::RetreiveContentDelayedValues()
 // set file list for file operation
 const void cArchive::SetOperationFileList(void *vFileList)
 {
-	qlOperation = *static_cast<QList<tHeaderData> *>(vFileList);
+	qslOperation = *static_cast<QStringList *>(vFileList);
 } // SetOperationFileList
 
 // change path for this file system

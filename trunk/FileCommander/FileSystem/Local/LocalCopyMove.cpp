@@ -6,6 +6,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include "FileSystem/Local/LocalCommon.h"
+#include "FileSystem.h"
 
 // constructor
 cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -112,12 +113,11 @@ const cFileOperation::eCheckResult cLocalCopyMove::CheckConflict(const QFileInfo
 } // CheckConflict
 
 // check disk space
-const cFileOperation::eCheckResult cLocalCopyMove::CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue) const
+const cFileOperation::eCheckResult cLocalCopyMove::CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
 {
-	// TODO CheckDiskSpace
-/*	cFileSystem::sDiskSpace sdsDiskSpace;
+	cFileSystem::sDiskSpace sdsDiskSpace;
 
-	sdsDiskSpace = cFileRoutine::GetDiskSpace(QFileInfo(qsTarget).path());
+	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
 	if (sdsDiskSpace.qi64Free < qi64SourceSize) {
 		ecDiskSpaceCurrent = cDiskSpace::Ask;
 
@@ -142,14 +142,14 @@ const cFileOperation::eCheckResult cLocalCopyMove::CheckDiskSpace(const qint64 &
 		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
 			// skip current file
 			*qi64TotalValue += qi64SourceSize;
-			return NextFile;
+			return cFileOperation::NextFile;
 		} else {
 			if (ecDiskSpaceCurrent == cDiskSpace::No) {
 				// cancel
 				return cFileOperation::Cancel;
 			} // if
 		} // if else
-	} // if*/
+	} // if
 
 	return cFileOperation::Nothing;
 } // CheckDiskSpace
