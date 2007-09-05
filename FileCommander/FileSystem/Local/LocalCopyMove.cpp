@@ -341,64 +341,6 @@ const void cLocalCopyMove::CreateWidget()
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_cLocalCopyMove_OperationCanceled()));
 } // CreateWidget
 
-// return file name modified by wildcard
-const QString cLocalCopyMove::GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination) const
-{
-	int iI;
-	QString qsNewFilename;
-	QStringList qslOutputs, qslPatterns, qslStrings;
-
-	if (!qsDestination.contains('*') && !qsDestination.contains('?')) {
-		// no wildcard in file name
-		return qsDestination;
-	} // if
-
-	// preparation
-	qslPatterns.append(QFileInfo(qsDestination).completeBaseName());
-	qslPatterns.append(QFileInfo(qsDestination).suffix());
-	qslStrings.append(qfiFile.completeBaseName());
-	qslStrings.append(qfiFile.suffix());
-	qslOutputs.append("");
-	qslOutputs.append("");
-
-	// apply patterns on strings
-	for (iI = 0; iI <= 1; iI++) {
-		int iPatternPos, iStringPos;
-		const QString *qsPattern;
-
-		iStringPos = 0;
-		qsPattern = &qslPatterns.at(iI);
-		for (iPatternPos = 0; iPatternPos < qsPattern->length(); iPatternPos++) {
-			const QString *qsString;
-
-			qsString = &qslStrings.at(iI);
-			if (qsPattern->at(iPatternPos) == '*') {
-				// copy rest of the source name
-				int iJ;
-
-				for (iJ = iStringPos; iJ < qsString->length(); iJ++) {
-					qslOutputs[iI] += qsString->at(iStringPos);
-					iStringPos++;
-				} // for
-			} else
-				if (qsPattern->at(iPatternPos) == '?') {
-					// copy one character of the source name
-					if (iStringPos < qsString->length()) {
-						qslOutputs[iI] += qsString->at(iStringPos);
-						iStringPos++;
-					} // if
-				} else {
-					// copy character from pattern
-					qslOutputs[iI] += qsPattern->at(iPatternPos);
-					iStringPos++;
-				} // if else
-		} // while
-	} // for
-
-	qsNewFilename = qfiFile.path() + '/' + qslOutputs.at(0) + '.' + qslOutputs.at(1);
-	return QDir::cleanPath(QFileInfo(qsDestination).path() + '/' + qsNewFilename.mid(qsSourcePath.length()));
-} // GetWildcardedName
-
 // conflict dialog closed with user response
 const void cLocalCopyMove::on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse)
 {
@@ -496,7 +438,7 @@ void cLocalCopyMove::run()
 		qfiSource = &qfilSources.at(iI);
 		// show file names
 		qsSource = qfiSource->filePath();
-		qsTarget = GetWildcardedName(*qfiSource, qsSourcePath, qsDestination);
+		qsTarget = cFileOperation::GetWildcardedName(*qfiSource, qsSourcePath, qsDestination);
 		if (ccmdDialog) {
 			// name with path in dialog
 			emit SetSource(qsSource);
