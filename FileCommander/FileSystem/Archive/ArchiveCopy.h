@@ -38,7 +38,7 @@ class cArchiveCopy : public QThread
 																											  \param eStyle foreground or background operation */
 
 	private:
-		bool bCanceled;																			///< true if operation is canceled
+		static bool bCanceled;																	///< true if operation is canceled
 		cCopyMoveDialog *ccmdDialog;															///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;															///< copy/move widget
 		cSettings *csSettings;																	///< application's configuration
@@ -46,7 +46,9 @@ class cArchiveCopy : public QThread
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;	///< list of all source archive files
 		QHBoxLayout *qhblOperations;															///< layout for background operations
 		qint64 qi64CurrentMaximum;																///< size of currently copied file
+		static qint64 qi64CurrentValue;														///< current file progress
 		qint64 qi64TotalMaximum;																///< total size of all files
+		static qint64 qi64TotalValue;															///< total progress
 		QList<tHeaderData> qlOperation;														///< file list to extract
 		QMainWindow *qmwParent;																	///< parent window for foreground operation window
 		QString qsDestination;																	///< destination path on local file system
@@ -62,6 +64,12 @@ class cArchiveCopy : public QThread
 																										///< get file list to extract from specified source directory
 																										/**< \param cDirectory source directory
 																											  \return file list to extract from specified source directory */
+#ifdef Q_WS_WIN
+		static int __stdcall ProcessDataProc(char *cFileName, int iSize);			///< callback progress function
+																										/**< \param cFileName file processed
+																											  \param iSize bytes processed since last call
+																											  \return zero if operation canceled */
+#endif
 		void run();																					///< separate thread process
 
 	signals:

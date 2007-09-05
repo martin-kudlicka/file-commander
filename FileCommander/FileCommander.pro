@@ -55,6 +55,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Archive/ArchiveFilePropertiesDialog.h \
 			 FileSystem/Archive/ArchiveCommon.h \
 			 FileSystem/Archive/ArchiveCopy.h \
+			 FileSystem/Archive/Continue.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -108,6 +109,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Archive/ArchiveFilePropertiesDialog.cpp \
 			 FileSystem/Archive/ArchiveCommon.cpp \
 			 FileSystem/Archive/ArchiveCopy.cpp \
+			 FileSystem/Archive/Continue.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \
