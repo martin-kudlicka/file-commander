@@ -341,31 +341,6 @@ const void cLocalCopyMove::CreateWidget()
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_cLocalCopyMove_OperationCanceled()));
 } // CreateWidget
 
-// default overwrite mode from settings file
-const cCopyMoveConflict::eChoice cLocalCopyMove::GetDefaultOverwriteMode() const
-{
-	cCopyMoveConflict::eChoice ecConflict;
-	QString qsOverwrite;
-
-	qsOverwrite = csSettings->GetFileOverwrite();
-
-	if (qsOverwrite == qsASK) {
-		ecConflict = cCopyMoveConflict::Ask;
-	} else {
-		if (qsOverwrite == qsOVERWRITE_ALL) {
-			ecConflict = cCopyMoveConflict::OverwriteAll;
-		} else {
-			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
-				ecConflict = cCopyMoveConflict::OverwriteAllOlder;
-			} else {
-				ecConflict = cCopyMoveConflict::SkipAll;
-			} // if else
-		} // if else
-	} // if else
-
-	return ecConflict;
-} // GetDefaultOverwriteMode
-
 // return file name modified by wildcard
 const QString cLocalCopyMove::GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination) const
 {
@@ -498,14 +473,14 @@ void cLocalCopyMove::run()
 	qfilSources = cLocalCommon::GetFiles(qslSources, qsFilter);
 	qsSourcePath = qfilSources.at(0).path();
 
-	// prepare progress bars
+	// prepare progress bar
 	for (iI = 0; iI < qfilSources.count(); iI++) {
 		qi64TotalMaximum += qfilSources.at(iI).size();
 	} // for
 	emit SetTotalMaximum(qi64TotalMaximum);
 
 	// get default modes
-	ecConflict = GetDefaultOverwriteMode();
+	ecConflict = cFileOperation::GetDefaultOverwriteMode(csSettings);
 #ifdef Q_WS_WIN
 	ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
 #endif

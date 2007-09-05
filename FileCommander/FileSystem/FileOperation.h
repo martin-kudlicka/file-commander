@@ -5,6 +5,7 @@
 
 #include "FileSystem/Permission.h"
 #include "Settings.h"
+#include "FileSystem/CopyMoveConflict.h"
 
 class cFileOperation
 {
@@ -23,18 +24,22 @@ class cFileOperation
 
 		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 
+		static const cCopyMoveConflict::eChoice GetDefaultOverwriteMode(cSettings *csSettings);
+																			///< default overwrite mode from settings file
+																			/**< \param csSettings settings file
+																				  \return default overwrite mode from settings file */
 #ifdef Q_WS_WIN
 		static const cPermission::eChoice GetDefaultReadonlyOverwritePermission(cSettings *csSettings);
 																			///< default readonly overwrite permission
 																			/**< \param csSettings settings file
 																				  \return default readonly overwrite permission */
+#endif
 		static const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false);
 																			///< check if filename suits filter
 																			/**< \param qsName filename to check
 																				  \param qsFilter filter to suit
 																				  \param bRegularExpression qsFilter is regular expression
 																				  \return true if filename suits filter */
-#endif
 }; // cFileOperation
 
 #endif
