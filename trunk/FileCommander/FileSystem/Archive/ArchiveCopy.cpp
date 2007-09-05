@@ -12,12 +12,13 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cLocalCopyMove
 
 // start of copy or move operation
-const void cArchiveCopy::Copy(const QStringList &qslOperation, const QFileInfo &qfiArchive, const QString &qsDestination, const QString &qsFilter, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
+const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
 {
-	this->qslOperation = qslOperation;
+	this->qlOperation = qlOperation;
 	this->qfiArchive = qfiArchive;
-	this->qsDestination = qsDestination;
 	this->qsFilter = qsFilter;
+	this->qhDirectories = qhDirectories;
+	this->qsDestination = qsDestination;
 
 	// information windows
 	if (eopPosition == cFileOperation::ForegroundOperation) {
@@ -80,6 +81,55 @@ const void cArchiveCopy::CreateWidget()
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_cLocalCopyMove_OperationCanceled()));
 } // CreateWidget
 
+// get file list to extract and count size of all those files
+const QStringList cArchiveCopy::GetFilesToExtractAndCountTotalSize()
+{
+	int iI;
+	QStringList qslFiles;
+
+	for (iI = 0; iI < qlOperation.count(); iI++) {
+		const tHeaderData *thdFile;
+
+		thdFile = &qlOperation.at(iI);
+		qslFiles.append(thdFile->FileName);
+		if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
+			qslFiles += GetFilesToExtractAndCountTotalSizeInDirectory(thdFile->FileName);
+		} else {
+			qi64TotalMaximum += thdFile->UnpSize;
+		} // if else
+	} // for
+
+	return qslFiles;
+} // GetFilesToExtractAndCountTotalSize
+
+// get file list to extract from specified source directory
+const QStringList cArchiveCopy::GetFilesToExtractAndCountTotalSizeInDirectory(const char *cDirectory)
+{
+	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
+	QStringList qslFiles;
+
+	qhDirectory = qhDirectories.value(cDirectory);
+
+	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhDirectory);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (QString(qhiFile.value().FileName).endsWith("..")) {
+			// skip ".." directory
+			continue;
+		} // if
+
+		qslFiles.append(qhiFile.value().FileName);
+		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
+			qslFiles += GetFilesToExtractAndCountTotalSizeInDirectory(qhiFile.value().FileName);
+		} else {
+			qi64TotalMaximum += qhiFile.value().UnpSize;
+		} // if else
+	} // while
+
+	return qslFiles;
+} // GetFilesToExtractAndCountTotalSizeInDirectory
+
 // move operation to background
 const void cArchiveCopy::on_ccmdCopyMoveDialog_Background()
 {
@@ -101,6 +151,14 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 // separate thread process
 void cArchiveCopy::run()
 {
+	qint64 qi64TotalValue;
+	QStringList qslToExtract;
+
+	// collect files to extract
+	qslToExtract = GetFilesToExtractAndCountTotalSize();
+
+	qi64TotalValue = 0;
+
 	// TODO run
 	spiPluginInfo.qlLibrary->unload();
 	spiPluginInfo.qlLibrary->deleteLater();

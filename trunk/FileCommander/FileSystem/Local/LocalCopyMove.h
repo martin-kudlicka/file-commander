@@ -31,12 +31,12 @@ class cLocalCopyMove : public QThread
 																						  \param qhblOperations layout for background widget
 																						  \param csSettings application's configuration */
 
-		const void CopyMove(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSource, const QString &qsDestination, const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
+		const void CopyMove(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSource, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
 																					///< start of copy or move operation
 																					/**< \param eoOperation copy or move operation
 																						  \param qslSource source file list
-																						  \param qsDestination destination path
-																						  \param qsFilter filter for input files
+																						  \param qsFilter destination path
+																						  \param qsDestination filter for input files
 																						  \param eStyle foreground or background operation */
 
 	private:
