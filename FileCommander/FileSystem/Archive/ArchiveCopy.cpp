@@ -12,16 +12,16 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cLocalCopyMove
 
 // start of copy or move operation
-const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsDestination, const QString &qsFilter, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
+const void cArchiveCopy::Copy(const QStringList &qslOperation, const QFileInfo &qfiArchive, const QString &qsDestination, const QString &qsFilter, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
 {
-	this->qlOperation = qlOperation;
+	this->qslOperation = qslOperation;
 	this->qfiArchive = qfiArchive;
 	this->qsDestination = qsDestination;
 	this->qsFilter = qsFilter;
 
 	this->spiPluginInfo = cppPackerPlugin->LoadPlugin(spiPluginInfo->qlLibrary->fileName());
 
-	// TODO Copy
+	start();
 } // Copy
 
 // separate thread process

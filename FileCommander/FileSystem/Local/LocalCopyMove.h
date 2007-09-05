@@ -75,7 +75,7 @@ class cLocalCopyMove : public QThread
 																						  \param ecConflict permanent conflict user answer
 																						  \param qi64TotalValue total copied file size
 																						  \return action after conflict check */
-		const cFileOperation::eCheckResult CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue) const;
+		const cFileOperation::eCheckResult CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
 																					///< check disk space
 																					/**< \param qi64SourceSize source file size to check disk space for
 																						  \param ecDiskSpace permanent disk space user answer

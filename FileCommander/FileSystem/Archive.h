@@ -118,7 +118,7 @@ class cArchive : public cFileSystem
 																								///< add directory into directory table if it's not there already
 																								/**< \param thdHeaderData directory to add
 																									  \return created (or already existing) directory */
-		QList<tHeaderData> qlOperation;												///< operation file list
+		QStringList qslOperation;														///< operation file list
 		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
