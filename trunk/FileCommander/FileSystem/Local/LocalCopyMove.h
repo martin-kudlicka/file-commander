@@ -100,10 +100,6 @@ class cLocalCopyMove : public QThread
 																						  \param qi64TotalValue total progress
 																						  \return true if operation succesfull */
 		const void CreateWidget();											///< create widget for background operation
-		const cCopyMoveConflict::eChoice GetDefaultOverwriteMode() const;
-																					///< default overwrite mode from settings file
-																					/**< \param csSettings settings file
-																						  \return default overwrite mode from settings file */
 		const QString GetWildcardedName(const QFileInfo &qfiFile, const QString &qsSourcePath, const QString &qsDestination) const;
 																					///< return file name modified by wildcard
 																					/**< \param qfiFile source file to copy or move

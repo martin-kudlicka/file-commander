@@ -1,5 +1,30 @@
 #include "FileSystem/FileOperation.h"
 
+// default overwrite mode from settings file
+const cCopyMoveConflict::eChoice cFileOperation::GetDefaultOverwriteMode(cSettings *csSettings)
+{
+	cCopyMoveConflict::eChoice ecConflict;
+	QString qsOverwrite;
+
+	qsOverwrite = csSettings->GetFileOverwrite();
+
+	if (qsOverwrite == qsASK) {
+		ecConflict = cCopyMoveConflict::Ask;
+	} else {
+		if (qsOverwrite == qsOVERWRITE_ALL) {
+			ecConflict = cCopyMoveConflict::OverwriteAll;
+		} else {
+			if (qsOverwrite == qsOVERWRITE_ALL_OLDER) {
+				ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+			} else {
+				ecConflict = cCopyMoveConflict::SkipAll;
+			} // if else
+		} // if else
+	} // if else
+
+	return ecConflict;
+} // GetDefaultOverwriteMode
+
 #ifdef Q_WS_WIN
 // default readonly overwrite permission
 const cPermission::eChoice cFileOperation::GetDefaultReadonlyOverwritePermission(cSettings *csSettings)

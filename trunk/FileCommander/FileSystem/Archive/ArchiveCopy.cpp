@@ -1,5 +1,8 @@
 #include "FileSystem/Archive/ArchiveCopy.h"
 
+#include "FileSystem/CopyMoveConflict.h"
+#include "FileSystem/DiskSpace.h"
+
 // constructor
 cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
@@ -151,11 +154,27 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 // separate thread process
 void cArchiveCopy::run()
 {
+	cCopyMoveConflict::eChoice ecConflict;
+	cDiskSpace::eChoice ecDiskSpace;
+#ifdef Q_WS_WIN
+	cPermission::eChoice ecPermission;
+#endif
 	qint64 qi64TotalValue;
 	QStringList qslToExtract;
 
 	// collect files to extract
 	qslToExtract = GetFilesToExtractAndCountTotalSize();
+
+	// prepare progress bar
+	emit SetTotalMaximum(qi64TotalMaximum);
+
+	// get default modes
+	ecConflict = cFileOperation::GetDefaultOverwriteMode(csSettings);
+#ifdef Q_WS_WIN
+	ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
+#endif
+	//ecContinue = cContinue::Ask;
+	ecDiskSpace = cDiskSpace::Ask;
 
 	qi64TotalValue = 0;
 
