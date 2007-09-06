@@ -10,11 +10,11 @@ class cRename : public QObject
 	Q_OBJECT
 
 	signals:
-		void Finished(const QString &NewFilename) const;		///< dialog closed with user response
-																				/**< \param NewFilename new file name */
+		void Finished() const;									///< dialog closed with user response
+
 	private slots:
-		const void Show(const QString &qsOldFilename) const;	///< show conflict dialog (multithread)
-																				/**< \param qsOldFilename file to rename */
+		const void Show(QString *qsNewFilename) const;	///< show conflict dialog
+																		/**< \param qsOldFilename new file name */
 }; // cRename
 
 #endif

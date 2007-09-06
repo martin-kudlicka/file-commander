@@ -4,6 +4,102 @@
 #include "FileSystem.h"
 #include "FileSystem/Local/LocalCommon.h"
 
+// check existing destination file conflict
+const cFileOperation::eCheckResult cFileOperation::CheckConflict(const cFileOperationDialog::eOperation &eoOperation, const cCopyMoveConflict *ccmcConflict, const cRename *crRename, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, QString &qsTarget, cCopyMoveConflict::eChoice *ecConflict, cCopyMoveConflict::eChoice *ecConflictCurrent, QSemaphore *qsPause)
+{
+	if (QFile::exists(qsTarget)) {
+		*ecConflictCurrent = cCopyMoveConflict::Ask;
+
+		if (*ecConflict == cCopyMoveConflict::Ask) {
+			while (true) {
+				// no permanent conflict answer yet
+				cFileOperation cfoFileOperation;
+				QString qsOperation;
+
+				// conflict dialog
+				if (eoOperation == cFileOperationDialog::CopyOperation) {
+					qsOperation = tr("Copy");
+				} else {
+					qsOperation = tr("Move");
+				} // if else
+				connect(&cfoFileOperation, SIGNAL(ShowConflictDialog(const QString &, const QString &, const qint64 &, const QDateTime &, const QFileInfo &)), ccmcConflict, SLOT(Show(const QString &, const QString &, const qint64 &, const QDateTime &, const QFileInfo &)));
+				emit cfoFileOperation.ShowConflictDialog(qsOperation, qsSource, qi64SourceSize, qdtSourceLastModified, QFileInfo(qsTarget));
+				// wait for answer
+				qsPause->acquire();
+
+				// solve conflict
+				switch (*ecConflictCurrent) {
+					case cCopyMoveConflict::SkipAll:
+						*ecConflict = cCopyMoveConflict::SkipAll;
+						break;
+					case cCopyMoveConflict::OverwriteAll:
+						*ecConflict = cCopyMoveConflict::OverwriteAll;
+						break;
+					case cCopyMoveConflict::OverwriteAllOlder:
+						*ecConflict = cCopyMoveConflict::OverwriteAllOlder;
+					default:
+						;
+				} // switch
+
+				if (*ecConflictCurrent == cCopyMoveConflict::Rename) {
+					// rename
+					QString qsNewFilename;
+
+					// rename dialog
+					connect(&cfoFileOperation, SIGNAL(ShowRenameDialog(QString *)), crRename, SLOT(Show(QString *)));
+					emit cfoFileOperation.ShowRenameDialog(&qsNewFilename);
+					// wait for answer
+					qsPause->acquire();
+
+					// solve
+					if (!qsNewFilename.isEmpty()) {
+						// new file name typed
+						qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
+						if (!QFile::exists(qsTarget)) {
+							// rename ok, continue
+							break;
+						} // if
+					} else {
+						// cancel
+						*ecConflictCurrent = cCopyMoveConflict::Cancel;
+						break;
+					} // if else
+				} else {
+					// no rename
+					break;
+				} // if else
+			} // while
+			if (*ecConflictCurrent == cCopyMoveConflict::Cancel) {
+				// cancel
+				return cFileOperation::Cancel;
+			} // if
+		} // if
+
+		if (*ecConflict == cCopyMoveConflict::SkipAll || *ecConflictCurrent == cCopyMoveConflict::Skip) {
+			// skip or skip all -> move onto next file
+			return cFileOperation::NextFile;
+		} else {
+			if (*ecConflict == cCopyMoveConflict::OverwriteAll || *ecConflictCurrent == cCopyMoveConflict::Overwrite) {
+				// overwrite, overwrite all -> delete target file
+				QFile::remove(qsTarget);
+			} else {
+				if (*ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
+					// overwrite all older
+					if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
+						// target file is older -> delete it
+						QFile::remove(qsTarget);
+					} else {
+						// target file is newer -> move onto next file
+						return cFileOperation::NextFile;
+					} // if else
+				} // if
+			} // if else
+		} // if else
+	} // if
+
+	return cFileOperation::Nothing;
+} // CheckConflict
+
 // check disk space
 const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause)
 {

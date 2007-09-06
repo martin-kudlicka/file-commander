@@ -64,17 +64,10 @@ class cLocalCopyMove : public QThread
 		QSemaphore qsPause;													///< to wait for answer on dialog
 		QString qsDestination;												///< destination path
 		QString qsFilter;														///< filter for input files
-		QString qsNewFilename;												///< new filename after rename
 		QString qsSource;														///< currently copied/moved source file
 		QString qsTarget;														///< target of currently copied/moved file
 		QStringList qslSources;												///< source file list
 
-		const cFileOperation::eCheckResult CheckConflict(const QFileInfo &qfiSource, cCopyMoveConflict::eChoice *ecConflict, qint64 *qi64TotalValue);
-																					///< check existing destination file conflict
-																					/**< \param qfiSource source file to check conflict
-																						  \param ecConflict permanent conflict user answer
-																						  \param qi64TotalValue total copied file size
-																						  \return action after conflict check */
 		const cFileOperation::eCheckResult CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
 																					///< check target file permission
 																					/**< \param qi64SourceSize source file size to increase copied file size by if skipped
@@ -109,20 +102,12 @@ class cLocalCopyMove : public QThread
 																					/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value) const;			///< set overall progress
 																					/**< \param qi64Value overall progress */
-		void ShowConflictDialog(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination) const;
-																					///< show conflict dialog
-																					/**< \param qsOperation type of operation - copy or move
-																						  \param qfiSource source file information
-																						  \param qfiDestination destination file information */
 #ifdef Q_WS_WIN
 		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation) const;
 																					///< show permission dialog
 																					/**< \param qsFilename concerned file
 																						  \param qsInformation question about file */
 #endif
-		void ShowRenameDialog(const QString &qsOldFilename) const;
-																					///< show rename dialog
-																					/**< \param qsOldFilename file to rename */
 		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename) const;
 																					///< show retry dialog
 																					/**< \param qsInformation question about file
@@ -142,9 +127,7 @@ class cLocalCopyMove : public QThread
 																					///< permission dialog closed with user response
 																					/**< \param ecResponse dialog result */
 #endif
-		const void on_crRename_Finished(const QString &qsNewFilename);
-																					///< rename dialog closed with user's reponse
-																					/**< \param NewFilename new file name */
+		const void on_crRename_Finished();								///< rename dialog closed with user's reponse
 		const void on_crRetry_Finished(const cRetry::eChoice &ecResponse);
 																					///< retry dialog closed with user response
 																					/**< \param ecResponse dialog result */

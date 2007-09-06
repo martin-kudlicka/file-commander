@@ -13,7 +13,7 @@ cCopyMoveConflict::cCopyMoveConflict()
 } // cCopyMoveConflict
 
 // show conflict dialog
-const void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination) const
+const void cCopyMoveConflict::Show(const QString &qsOperation, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, const QFileInfo &qfiDestination) const
 {
 	eChoice ecResponse;
 	QMessageBox qmbDialog;
@@ -22,7 +22,7 @@ const void cCopyMoveConflict::Show(const QString &qsOperation, const QFileInfo &
 	// prepare dialog
 	qmbDialog.setIcon(QMessageBox::Warning);
 	qmbDialog.setWindowTitle(qsOperation);
-	qmbDialog.setText(tr("Overwrite %1\n\t%2 byte, %3\nWith %4\n\t%5 byte, %6").arg(qfiDestination.fileName()).arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()).arg(qfiSource.fileName()).arg(qfiSource.size()).arg(qfiSource.lastModified().toString()));
+	qmbDialog.setText(tr("Overwrite %1\n\t%2 byte, %3\nWith %4\n\t%5 byte, %6").arg(qfiDestination.fileName()).arg(qfiDestination.size()).arg(qfiDestination.lastModified().toString()).arg(qsSource).arg(qi64SourceSize).arg(qdtSourceLastModified.toString()));
 	qpbOverwrite = qmbDialog.addButton(tr("&Overwrite"), QMessageBox::YesRole);
 	qpbCancel = qmbDialog.addButton(QMessageBox::Cancel);
 	qpbOverwriteAll = qmbDialog.addButton(tr("Overwrite &all"), QMessageBox::YesRole);
