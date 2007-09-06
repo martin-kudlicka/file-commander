@@ -5,12 +5,12 @@
 #include "FileSystem/Local/LocalCommon.h"
 
 // check disk space
-const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause)
+const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause)
 {
 	cFileSystem::sDiskSpace sdsDiskSpace;
 
 	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
-	if (sdsDiskSpace.qi64Free > iUnpackedSize) {
+	if (sdsDiskSpace.qi64Free < qi64SourceSize) {
 		*ecDiskSpaceCurrent = cDiskSpace::Ask;
 
 		if (*ecDiskSpace == cDiskSpace::Ask) {
@@ -18,7 +18,7 @@ const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpa
 
 			// disk space dialog
 			connect(&cfoFileOperation, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
-			emit cfoFileOperation.ShowDiskSpaceDialog(qsSource, iUnpackedSize, sdsDiskSpace.qi64Free);
+			emit cfoFileOperation.ShowDiskSpaceDialog(qsSource, qi64SourceSize, sdsDiskSpace.qi64Free);
 			// wait for answer
 			qsPause->acquire();
 

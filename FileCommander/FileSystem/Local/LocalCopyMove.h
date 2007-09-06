@@ -75,12 +75,6 @@ class cLocalCopyMove : public QThread
 																						  \param ecConflict permanent conflict user answer
 																						  \param qi64TotalValue total copied file size
 																						  \return action after conflict check */
-		const cFileOperation::eCheckResult CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
-																					///< check disk space
-																					/**< \param qi64SourceSize source file size to check disk space for
-																						  \param ecDiskSpace permanent disk space user answer
-																						  \param qi64TotalValue total copied file size
-																						  \return action after disk space check */
 		const cFileOperation::eCheckResult CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
 																					///< check target file permission
 																					/**< \param qi64SourceSize source file size to increase copied file size by if skipped
@@ -120,11 +114,6 @@ class cLocalCopyMove : public QThread
 																					/**< \param qsOperation type of operation - copy or move
 																						  \param qfiSource source file information
 																						  \param qfiDestination destination file information */
-		void ShowDiskSpaceDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace) const;
-																					///< show disk space dialog
-																					/**< \param qsFilename concerned file
-																						  \param qi64FileSize file size
-																						  \param qi64FreeSpace free space on target disk */
 #ifdef Q_WS_WIN
 		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation) const;
 																					///< show permission dialog

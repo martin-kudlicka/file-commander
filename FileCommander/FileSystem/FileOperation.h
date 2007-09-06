@@ -28,11 +28,12 @@ class cFileOperation : public QObject
 
 		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 
-		static const eCheckResult CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause);
+		static const eCheckResult CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause);
 																								///< check disk space
 																								/**< \param cdsDiskSpace disk space dialog
+																									  \param qsSource source file to read
 																									  \param qsTarget target file to write
-																									  \param iUnpackedSize size of unpacked source file
+																									  \param qi64SourceSize size of source file
 																									  \param ecDiskSpace disk space permanent user answer
 																									  \param ecDiskSpaceCurrent disk space current user answer
 																									  \param qsPause thread pause
