@@ -55,6 +55,7 @@ class cArchiveCopy : public QThread
 		cCopyMoveConflict::eChoice ecConflictCurrent;									///< current conflict user's response
 		cDiskSpace::eChoice ecDiskSpaceCurrent;											///< current disk space user's response
 #ifdef Q_WS_WIN
+		cPermission cpPermission;																///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;											///< current permission dialog user's response
 #endif
 		QFileInfo qfiArchive;																	///< archive represented by this file system
@@ -120,6 +121,11 @@ class cArchiveCopy : public QThread
 																										///< disk space dialog closed with user response
 																										/**< \param ecResponse dialog result */
 		const void on_cLocalCopyMove_OperationCanceled();								///< copy or move operation was canceled
+#ifdef Q_WS_WIN
+		const void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
+																										///< permission dialog closed with user response
+																										/**< \param ecResponse dialog result */
+#endif
 		const void on_crRename_Finished();													///< rename dialog closed with user's reponse
 }; // cArchiveCopy
 
