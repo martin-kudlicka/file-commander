@@ -19,46 +19,6 @@ cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 } // cLocalCopyMove
 
-#ifdef Q_WS_WIN
-// check target file permission
-const cFileOperation::eCheckResult cLocalCopyMove::CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue)
-{
-	ecPermissionCurrent = cPermission::Ask;
-	if (QFile::permissions(qsTarget) & QFile::ReadOther) {
-		if (*ecPermission == cPermission::Ask) {
-			// show permission dialog
-			emit ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
-
-			// wait for answer
-			qsPause.acquire();
-
-			switch (ecPermissionCurrent) {
-				case cPermission::YesToAll:
-					*ecPermission = cPermission::YesToAll;
-					break;
-				case cPermission::NoToAll:
-					*ecPermission = cPermission::NoToAll;
-				default:
-					;
-			} // switch
-
-			if (ecPermissionCurrent == cPermission::Cancel) {
-				return cFileOperation::Cancel;
-			} // if
-		} // if
-		if (*ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
-			*qi64TotalValue += qi64SourceSize;
-			return cFileOperation::NextFile;
-		} else {
-			// remove target file readonly permission
-			SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & ~FILE_ATTRIBUTE_READONLY);
-		} // if else
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckPermission
-#endif
-
 // retry if copy/move unsuccesfull
 const cFileOperation::eCheckResult cLocalCopyMove::CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue)
 {
@@ -175,7 +135,6 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), &cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
@@ -358,8 +317,9 @@ void cLocalCopyMove::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = CheckPermission(qfiSource->size(), &ecPermission, &qi64TotalValue);
+			ecrCheck = cFileOperation::CheckPermission(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
+				qi64TotalValue += qfiSource->size();
 				continue;
 			} else {
 				if (ecrCheck == cFileOperation::Cancel) {

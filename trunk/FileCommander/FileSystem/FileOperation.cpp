@@ -3,6 +3,9 @@
 #include <QtCore/QDir>
 #include "FileSystem.h"
 #include "FileSystem/Local/LocalCommon.h"
+#ifdef Q_WS_WIN
+#include <windows.h>
+#endif
 
 // check existing destination file conflict
 const cFileOperation::eCheckResult cFileOperation::CheckConflict(const cFileOperationDialog::eOperation &eoOperation, const cCopyMoveConflict *ccmcConflict, const cRename *crRename, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, QString &qsTarget, cCopyMoveConflict::eChoice *ecConflict, cCopyMoveConflict::eChoice *ecConflictCurrent, QSemaphore *qsPause)
@@ -143,6 +146,47 @@ const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpa
 
 	return cFileOperation::Nothing;
 } // CheckDiskSpace
+
+#ifdef Q_WS_WIN
+// check target file permission
+const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause)
+{
+	*ecPermissionCurrent = cPermission::Ask;
+	if (QFile::permissions(qsTarget) & QFile::ReadOther) {
+		if (*ecPermission == cPermission::Ask) {
+			cFileOperation cfoFileOperation;
+
+			// show permission dialog
+			connect(&cfoFileOperation, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), cpPermission, SLOT(Show(const QString &, const QString &)));
+			emit cfoFileOperation.ShowPermissionDialog(QFile(qsTarget).fileName(), tr("is readonly."));
+			// wait for answer
+			qsPause->acquire();
+
+			switch (*ecPermissionCurrent) {
+				case cPermission::YesToAll:
+					*ecPermission = cPermission::YesToAll;
+					break;
+				case cPermission::NoToAll:
+					*ecPermission = cPermission::NoToAll;
+				default:
+					;
+			} // switch
+
+			if (*ecPermissionCurrent == cPermission::Cancel) {
+				return cFileOperation::Cancel;
+			} // if
+		} // if
+		if (*ecPermission == cPermission::NoToAll || *ecPermissionCurrent == cPermission::No) {
+			return cFileOperation::NextFile;
+		} else {
+			// remove target file readonly permission
+			SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & ~FILE_ATTRIBUTE_READONLY);
+		} // if else
+	} // if
+
+	return cFileOperation::Nothing;
+} // CheckPermission
+#endif
 
 // default overwrite mode from settings file
 const cCopyMoveConflict::eChoice cFileOperation::GetDefaultOverwriteMode(cSettings *csSettings)

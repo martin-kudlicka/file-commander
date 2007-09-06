@@ -30,7 +30,17 @@ class cFileOperation : public QObject
 
 		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 
-		static const cFileOperation::eCheckResult CheckConflict(const cFileOperationDialog::eOperation &eoOperation, const cCopyMoveConflict *ccmcConflict, const cRename *crRename, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, QString &qsTarget, cCopyMoveConflict::eChoice *ecConflict, cCopyMoveConflict::eChoice *ecConflictCurrent, QSemaphore *qsPause);
+#ifdef Q_WS_WIN
+		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause);
+																					///< check target file permission
+																					/**< \param cpPermission permission dialog
+																						  \param qsTarget target file path
+																						  \param ecPermission permanent permission user answer
+																						  \param ecPermissionCurrent current permission user answer
+																						  \param qsPause thread pause
+																						  \return action after permission check */
+#endif
+		static const eCheckResult CheckConflict(const cFileOperationDialog::eOperation &eoOperation, const cCopyMoveConflict *ccmcConflict, const cRename *crRename, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, QString &qsTarget, cCopyMoveConflict::eChoice *ecConflict, cCopyMoveConflict::eChoice *ecConflictCurrent, QSemaphore *qsPause);
 																			///< check existing destination file conflict
 																			/**< \param eoOperation copy or move operation
 																				  \param ccmcConflict copy/move conflict dialog
@@ -89,6 +99,12 @@ class cFileOperation : public QObject
 																			/**< \param qsFilename concerned file
 																				  \param qi64FileSize file size
 																				  \param qi64FreeSpace free space on target disk */
+#ifdef Q_WS_WIN
+		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation) const;
+																			///< show permission dialog
+																			/**< \param qsFilename concerned file
+																				  \param qsInformation question about file */
+#endif
 		void ShowRenameDialog(QString *qsOldFilename) const;
 																			///< show rename dialog
 																			/**< \param qsOldFilename file to rename */
