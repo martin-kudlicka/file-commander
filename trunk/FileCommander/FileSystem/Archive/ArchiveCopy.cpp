@@ -2,6 +2,7 @@
 
 #include "FileSystem/CopyMoveConflict.h"
 #include <QtCore/QDir>
+#include "FileSystem/Archive/ArchiveCommon.h"
 
 cArchiveCopy *cArchiveCopy::cacCallback;	///< to handle callback in static function (static class variable)
 
@@ -51,15 +52,13 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFile
 		ccmdDialog = NULL;
 	} // if else
 
-	/*// conflict dialog
-	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), &ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
+	// conflict dialog
 	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
-	connect(this, SIGNAL(ShowRenameDialog(const QString &)), &crRename, SLOT(Show(const QString &)));
 	connect(&crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
 
-#ifdef Q_WS_WIN
+/*#ifdef Q_WS_WIN
 	// permission dialog
 	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), &cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
@@ -140,6 +139,13 @@ const QStringList cArchiveCopy::GetFilesToExtractAndCountTotalSizeInDirectory(co
 	return qslFiles;
 } // GetFilesToExtractAndCountTotalSizeInDirectory
 
+// conflict dialog closed with user response
+const void cArchiveCopy::on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse)
+{
+	ecConflictCurrent = ecResponse;
+	qsPause.release();
+} // on_ccmcConflict_Finished
+
 // move operation to background
 const void cArchiveCopy::on_ccmdCopyMoveDialog_Background()
 {
@@ -164,6 +170,12 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 {
 	bCanceled = true;
 } // on_cLocalCopyMove_OperationCanceled
+
+// rename dialog closed with user's reponse
+const void cArchiveCopy::on_crRename_Finished()
+{
+	qsPause.release();
+} // on_crRename_Finished
 
 #ifdef Q_WS_WIN
 // callback progress function
@@ -269,6 +281,17 @@ void cArchiveCopy::run()
 				if (ecrCheck == cFileOperation::NextFile) {
 					qi64TotalValue += thdHeaderData.UnpSize;
 					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
+					continue;
+				} else {
+					if (ecrCheck == cFileOperation::Cancel) {
+						break;
+					} // if
+				} // if else
+
+				// conflict solving
+				ecrCheck = cFileOperation::CheckConflict(cFileOperationDialog::CopyOperation, &ccmcConflict, &crRename, QFileInfo(qsSource).fileName(), thdHeaderData.UnpSize, cArchiveCommon::ToQDateTime(thdHeaderData.FileTime), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
+				if (ecrCheck == cFileOperation::NextFile) {
+					qi64TotalValue += thdHeaderData.UnpSize;
 					continue;
 				} else {
 					if (ecrCheck == cFileOperation::Cancel) {
