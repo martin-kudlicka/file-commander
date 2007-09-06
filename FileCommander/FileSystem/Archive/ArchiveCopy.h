@@ -45,9 +45,11 @@ class cArchiveCopy : public QThread
 		bool bCanceled;																			///< true if operation is canceled
 		bool bFullPath;																			///< extract files with full path
 		static cArchiveCopy *cacCallback;													///< pointer to this class
+		cCopyMoveConflict ccmcConflict;														///< conflict dialog
 		cCopyMoveDialog *ccmdDialog;															///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;															///< copy/move widget
 		cDiskSpace cdsDiskSpace;																///< disk space dialog
+		cRename crRename;																			///< rename dialog
 		cSettings *csSettings;																	///< application's configuration
 		cContinue::eChoice ecContinueCurrent;												///< current continue user's response
 		cCopyMoveConflict::eChoice ecConflictCurrent;									///< current conflict user's response
@@ -110,11 +112,15 @@ class cArchiveCopy : public QThread
 																											  \param qi64FreeSpace free space on target disk */
 
 	private slots:
+		const void on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse);
+																										///< conflict dialog closed with user response
+																										/**< \param ecResponse user's response */
 		const void on_ccmdCopyMoveDialog_Background();									///< move operation to background
 		const void on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &ecResponse);
 																										///< disk space dialog closed with user response
 																										/**< \param ecResponse dialog result */
 		const void on_cLocalCopyMove_OperationCanceled();								///< copy or move operation was canceled
+		const void on_crRename_Finished();													///< rename dialog closed with user's reponse
 }; // cArchiveCopy
 
 #endif
