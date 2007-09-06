@@ -1,6 +1,52 @@
 #include "FileSystem/FileOperation.h"
 
 #include <QtCore/QDir>
+#include "FileSystem.h"
+#include "FileSystem/Local/LocalCommon.h"
+
+// check disk space
+const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause)
+{
+	cFileSystem::sDiskSpace sdsDiskSpace;
+
+	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
+	if (sdsDiskSpace.qi64Free > iUnpackedSize) {
+		*ecDiskSpaceCurrent = cDiskSpace::Ask;
+
+		if (*ecDiskSpace == cDiskSpace::Ask) {
+			cFileOperation cfoFileOperation;
+
+			// disk space dialog
+			connect(&cfoFileOperation, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
+			emit cfoFileOperation.ShowDiskSpaceDialog(qsSource, iUnpackedSize, sdsDiskSpace.qi64Free);
+			// wait for answer
+			qsPause->acquire();
+
+			// solve
+			switch (*ecDiskSpaceCurrent) {
+				case cDiskSpace::YesToAll:
+					*ecDiskSpace = cDiskSpace::YesToAll;
+					break;
+				case cDiskSpace::SkipAll:
+					*ecDiskSpace = cDiskSpace::SkipAll;
+				default:
+					;
+			} // switch
+		} // if
+
+		if (*ecDiskSpace == cDiskSpace::SkipAll || *ecDiskSpaceCurrent == cDiskSpace::Skip) {
+			// skip current file
+			return cFileOperation::NextFile;
+		} else {
+			if (*ecDiskSpaceCurrent == cDiskSpace::No) {
+				// cancel
+				return cFileOperation::Cancel;
+			} // if
+		} // if else
+	} // if
+
+	return cFileOperation::Nothing;
+} // CheckDiskSpace
 
 // default overwrite mode from settings file
 const cCopyMoveConflict::eChoice cFileOperation::GetDefaultOverwriteMode(cSettings *csSettings)

@@ -2,8 +2,6 @@
 
 #include "FileSystem/CopyMoveConflict.h"
 #include <QtCore/QDir>
-#include "FileSystem.h"
-#include "FileSystem/Local/LocalCommon.h"
 
 cArchiveCopy *cArchiveCopy::cacCallback;	///< to handle callback in static function (static class variable)
 
@@ -19,48 +17,6 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 
 	cacCallback = this;
 } // cArchiveCopy
-
-// check disk space
-cFileOperation::eCheckResult cArchiveCopy::CheckDiskSpace(const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
-{
-	cFileSystem::sDiskSpace sdsDiskSpace;
-
-	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
-	if (sdsDiskSpace.qi64Free < iUnpackedSize) {
-		ecDiskSpaceCurrent = cDiskSpace::Ask;
-
-		if (*ecDiskSpace == cDiskSpace::Ask) {
-			// disk space dialog
-			emit ShowDiskSpaceDialog(qsSource, iUnpackedSize, sdsDiskSpace.qi64Free);
-			// wait for answer
-			qsPause.acquire();
-
-			// solve
-			switch (ecDiskSpaceCurrent) {
-				case cDiskSpace::YesToAll:
-					*ecDiskSpace = cDiskSpace::YesToAll;
-					break;
-				case cDiskSpace::SkipAll:
-					*ecDiskSpace = cDiskSpace::SkipAll;
-				default:
-					;
-			} // switch
-		} // if
-
-		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
-			// skip current file
-			*qi64TotalValue += iUnpackedSize;
-			return cFileOperation::NextFile;
-		} else {
-			if (ecDiskSpaceCurrent == cDiskSpace::No) {
-				// cancel
-				return cFileOperation::Cancel;
-			} // if
-		} // if else
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckDiskSpace
 
 // start of copy or move operation
 const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath /* true */)
@@ -114,7 +70,6 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFile
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));*/
 
 	// disk space dialog
-	connect(this, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), &cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
 	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));
 
 	this->spiPluginInfo = cppPackerPlugin->LoadPlugin(spiPluginInfo->qlLibrary->fileName());
@@ -310,8 +265,9 @@ void cArchiveCopy::run()
 				cFileOperation::eCheckResult ecrCheck;
 
 				// check disk space on target
-				ecrCheck = CheckDiskSpace(thdHeaderData.UnpSize, &ecDiskSpace, &qi64TotalValue);
+				ecrCheck = cFileOperation::CheckDiskSpace(&cdsDiskSpace, qsSource, qsTarget, thdHeaderData.UnpSize, &ecDiskSpace, &ecDiskSpaceCurrent, &qsPause);
 				if (ecrCheck == cFileOperation::NextFile) {
+					qi64TotalValue += thdHeaderData.UnpSize;
 					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 					continue;
 				} else {
