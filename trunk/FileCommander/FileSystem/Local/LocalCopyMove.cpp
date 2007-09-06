@@ -6,7 +6,6 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include "FileSystem/Local/LocalCommon.h"
-#include "FileSystem.h"
 
 // constructor
 cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -111,48 +110,6 @@ const cFileOperation::eCheckResult cLocalCopyMove::CheckConflict(const QFileInfo
 
 	return cFileOperation::Nothing;
 } // CheckConflict
-
-// check disk space
-const cFileOperation::eCheckResult cLocalCopyMove::CheckDiskSpace(const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue)
-{
-	cFileSystem::sDiskSpace sdsDiskSpace;
-
-	sdsDiskSpace = cLocalCommon::GetDiskSpace(QFileInfo(qsTarget).path());
-	if (sdsDiskSpace.qi64Free < qi64SourceSize) {
-		ecDiskSpaceCurrent = cDiskSpace::Ask;
-
-		if (*ecDiskSpace == cDiskSpace::Ask) {
-			// disk space dialog
-			emit ShowDiskSpaceDialog(qsSource, qi64SourceSize, sdsDiskSpace.qi64Free);
-			// wait for answer
-			qsPause.acquire();
-
-			// solve
-			switch (ecDiskSpaceCurrent) {
-				case cDiskSpace::YesToAll:
-					*ecDiskSpace = cDiskSpace::YesToAll;
-					break;
-				case cDiskSpace::SkipAll:
-					*ecDiskSpace = cDiskSpace::SkipAll;
-				default:
-					;
-			} // switch
-		} // if
-
-		if (*ecDiskSpace == cDiskSpace::SkipAll || ecDiskSpaceCurrent == cDiskSpace::Skip) {
-			// skip current file
-			*qi64TotalValue += qi64SourceSize;
-			return cFileOperation::NextFile;
-		} else {
-			if (ecDiskSpaceCurrent == cDiskSpace::No) {
-				// cancel
-				return cFileOperation::Cancel;
-			} // if
-		} // if else
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckDiskSpace
 
 #ifdef Q_WS_WIN
 // check target file permission
@@ -321,7 +278,6 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	// disk space dialog
-	connect(this, SIGNAL(ShowDiskSpaceDialog(const QString &, const qint64 &, const qint64 &)), &cdsDiskSpace, SLOT(Show(const QString &, const qint64 &, const qint64 &)));
 	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));
 
 	start();
@@ -464,8 +420,9 @@ void cLocalCopyMove::run()
 			emit SetCurrentValue(0);
 
 			// check disk space on target
-			ecrCheck = CheckDiskSpace(qfiSource->size(), &ecDiskSpace, &qi64TotalValue);
+			ecrCheck = cFileOperation::CheckDiskSpace(&cdsDiskSpace, qsSource, qsTarget, qfiSource->size(), &ecDiskSpace, &ecDiskSpaceCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
+				qi64TotalValue += qfiSource->size();
 				continue;
 			} else {
 				if (ecrCheck == cFileOperation::Cancel) {
