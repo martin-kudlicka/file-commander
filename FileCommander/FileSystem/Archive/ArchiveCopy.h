@@ -43,8 +43,9 @@ class cArchiveCopy : public QThread
 																											  \param bFullPath extract files with full path */
 
 	private:
-		static bool bCanceled;																	///< true if operation is canceled
+		bool bCanceled;																			///< true if operation is canceled
 		bool bFullPath;																			///< extract files with full path
+		static cArchiveCopy *cacCallback;													///< pointer to this class
 		cCopyMoveDialog *ccmdDialog;															///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;															///< copy/move widget
 		cDiskSpace cdsDiskSpace;																///< disk space dialog
@@ -59,9 +60,9 @@ class cArchiveCopy : public QThread
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;	///< list of all source archive files
 		QHBoxLayout *qhblOperations;															///< layout for background operations
 		qint64 qi64CurrentMaximum;																///< size of currently copied file
-		static qint64 qi64CurrentValue;														///< current file progress
+		qint64 qi64CurrentValue;																///< current file progress
 		qint64 qi64TotalMaximum;																///< total size of all files
-		static qint64 qi64TotalValue;															///< total progress
+		qint64 qi64TotalValue;																	///< total progress
 		QList<tHeaderData> qlOperation;														///< file list to extract
 		QMainWindow *qmwParent;																	///< parent window for foreground operation window
 		QSemaphore qsPause;																		///< to wait for answer on dialog
@@ -87,6 +88,10 @@ class cArchiveCopy : public QThread
 																											  \return file list to extract from specified source directory */
 #ifdef Q_WS_WIN
 		static int __stdcall ProcessDataProc(char *cFileName, int iSize);			///< callback progress function
+																										/**< \param cFileName file processed
+																											  \param iSize bytes processed since last call
+																											  \return zero if operation canceled */
+		const int ProcessDataProc2(char *cFileName, int iSize);						///< nonstatic callback progress function
 																										/**< \param cFileName file processed
 																											  \param iSize bytes processed since last call
 																											  \return zero if operation canceled */

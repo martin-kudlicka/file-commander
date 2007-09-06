@@ -5,9 +5,7 @@
 #include "FileSystem.h"
 #include "FileSystem/Local/LocalCommon.h"
 
-bool cArchiveCopy::bCanceled;				///< operation in progress is canceled (static class variable)
-qint64 cArchiveCopy::qi64CurrentValue;	///< current file progress (static class variable)
-qint64 cArchiveCopy::qi64TotalValue;	///< total progress (static class variable)
+cArchiveCopy *cArchiveCopy::cacCallback;	///< to handle callback in static function (static class variable)
 
 // constructor
 cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -18,6 +16,8 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 
 	bCanceled = false;
 	qi64TotalMaximum = 0;
+
+	cacCallback = this;
 } // cArchiveCopy
 
 // check disk space
@@ -214,15 +214,20 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 // callback progress function
 int __stdcall cArchiveCopy::ProcessDataProc(char *cFileName, int iSize)
 {
-	// TODO ProcessDataProc
+	return cacCallback->ProcessDataProc2(cFileName, iSize);
+} // ProcessDataProc
+
+// nonstatic callback progress function
+const int cArchiveCopy::ProcessDataProc2(char *cFileName, int iSize)
+{
 	qi64CurrentValue += iSize;
 	qi64TotalValue += iSize;
-	//emit SetCurrentValue(qi64CurrentValue);
-	//emit SetCurrentMaximum(qi64TotalValue);
+	emit SetCurrentValue(qi64CurrentValue);
+	emit SetCurrentMaximum(qi64TotalValue);
 	//QApplication::processEvents();
 
 	return !bCanceled;
-} // ProcessDataProc
+} // ProcessDataProc2
 #endif
 
 // separate thread process
