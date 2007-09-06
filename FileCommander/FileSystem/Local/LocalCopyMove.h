@@ -16,9 +16,6 @@
 #include "FileSystem/FileOperation.h"
 #include "FileSystem/Retry.h"
 #include <QtCore/QSemaphore>
-#ifdef Q_WS_WIN
-//#include "FileSystem/Permission.h"
-#endif
 
 class cLocalCopyMove : public QThread
 {
@@ -68,12 +65,6 @@ class cLocalCopyMove : public QThread
 		QString qsTarget;														///< target of currently copied/moved file
 		QStringList qslSources;												///< source file list
 
-		const cFileOperation::eCheckResult CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue);
-																					///< check target file permission
-																					/**< \param qi64SourceSize source file size to increase copied file size by if skipped
-																						  \param ecPermission permanent permission user answer
-																						  \param qi64TotalValue total copied file size
-																						  \return action after permission check */
 		const cFileOperation::eCheckResult CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue);
 																					///< retry if copy/move unsuccesfull
 																					/**< \param qfiSource source file to try to retry
@@ -102,12 +93,6 @@ class cLocalCopyMove : public QThread
 																					/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value) const;			///< set overall progress
 																					/**< \param qi64Value overall progress */
-#ifdef Q_WS_WIN
-		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation) const;
-																					///< show permission dialog
-																					/**< \param qsFilename concerned file
-																						  \param qsInformation question about file */
-#endif
 		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename) const;
 																					///< show retry dialog
 																					/**< \param qsInformation question about file
