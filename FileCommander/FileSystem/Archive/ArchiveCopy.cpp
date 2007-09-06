@@ -58,13 +58,12 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFile
 	// rename dialog
 	connect(&crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
 
-/*#ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
 	// permission dialog
-	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), &cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
-	// retry dialog
+	/*// retry dialog
 	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));*/
 
@@ -170,6 +169,15 @@ const void cArchiveCopy::on_cLocalCopyMove_OperationCanceled()
 {
 	bCanceled = true;
 } // on_cLocalCopyMove_OperationCanceled
+
+#ifdef Q_WS_WIN
+// permission dialog closed with user response
+const void cArchiveCopy::on_cpPermission_Finished(const cPermission::eChoice &ecResponse)
+{
+	ecPermissionCurrent = ecResponse;
+	qsPause.release();
+} // on_cpPermission_Finished
+#endif
 
 // rename dialog closed with user's reponse
 const void cArchiveCopy::on_crRename_Finished()
@@ -298,6 +306,19 @@ void cArchiveCopy::run()
 						break;
 					} // if
 				} // if else
+
+#ifdef Q_WS_WIN
+				// check readonly permission
+				ecrCheck = cFileOperation::CheckPermission(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
+				if (ecrCheck == cFileOperation::NextFile) {
+					qi64TotalValue += thdHeaderData.UnpSize;
+					continue;
+				} else {
+					if (ecrCheck == cFileOperation::Cancel) {
+						break;
+					} // if
+				} // if else
+#endif
 			} // if else
 		} else {
 			// skip file
