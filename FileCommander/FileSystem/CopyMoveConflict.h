@@ -29,10 +29,12 @@ class cCopyMoveConflict : public QObject
 		void Finished(const cCopyMoveConflict::eChoice &ecResponse) const;	///< dialog closed with user response
 																									/**< \param ecResponse user's response */
 	private slots:
-		const void Show(const QString &qsOperation, const QFileInfo &qfiSource, const QFileInfo &qfiDestination) const;
+		const void Show(const QString &qsOperation, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, const QFileInfo &qfiDestination) const;
 																									///< show conflict dialog
 																									/**< \param qsOperation type of operation - copy or move
-																										  \param qfiSource source file information
+																										  \param qsSource source file
+																										  \param qi64SourceSize source file size
+																										  \param qdtSourceLastModified source file last modified timestamp
 																										  \param qfiDestination destination file information */
 }; // cCopyMoveConflict
 

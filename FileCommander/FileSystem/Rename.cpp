@@ -2,16 +2,10 @@
 
 #include <QtGui/QInputDialog>
 
-// show conflict dialog (multithread)
-const void cRename::Show(const QString &qsOldFilename) const
+// show conflict dialog
+const void cRename::Show(QString *qsNewFilename) const
 {
-	QString qsNewName;
+	*qsNewFilename = QInputDialog::getText(NULL, tr("Rename"), tr("New filename:"));
 
-	qsNewName = QInputDialog::getText(NULL, tr("Rename"), tr("New filename:"));
-
-	if (qsNewName.isEmpty()) {
-		emit Finished(NULL);
-	} else {
-		emit Finished(qsNewName);
-	} // if else
+	emit Finished();
 } // Show

@@ -19,98 +19,6 @@ cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 } // cLocalCopyMove
 
-// check existing destination file conflict
-const cFileOperation::eCheckResult cLocalCopyMove::CheckConflict(const QFileInfo &qfiSource, cCopyMoveConflict::eChoice *ecConflict, qint64 *qi64TotalValue)
-{
-	if (QFile::exists(qsTarget)) {
-		ecConflictCurrent = cCopyMoveConflict::Ask;
-
-		if (*ecConflict == cCopyMoveConflict::Ask) {
-			while (true) {
-				// no permanent conflict answer yet
-				QString qsOperation;
-
-				// conflict dialog
-				if (eoOperation == cFileOperationDialog::CopyOperation) {
-					qsOperation = tr("Copy");
-				} else {
-					qsOperation = tr("Move");
-				} // if else
-				emit ShowConflictDialog(qsOperation, qfiSource, QFileInfo(qsTarget));
-				// wait for answer
-				qsPause.acquire();
-				// solve conflict
-				switch (ecConflictCurrent) {
-					case cCopyMoveConflict::SkipAll:
-						*ecConflict = cCopyMoveConflict::SkipAll;
-						break;
-					case cCopyMoveConflict::OverwriteAll:
-						*ecConflict = cCopyMoveConflict::OverwriteAll;
-						break;
-					case cCopyMoveConflict::OverwriteAllOlder:
-						*ecConflict = cCopyMoveConflict::OverwriteAllOlder;
-					default:
-						;
-				} // switch
-
-				// rename dialog
-				if (ecConflictCurrent == cCopyMoveConflict::Rename) {
-					// rename
-					emit ShowRenameDialog(QFileInfo(qsTarget).fileName());
-
-					// wait for answer
-					qsPause.acquire();
-
-					if (!qsNewFilename.isEmpty()) {
-						// new file name typed
-						qsTarget = QFileInfo(qsTarget).path() + '/' + qsNewFilename;
-						if (!QFile::exists(qsTarget)) {
-							// rename ok, continue
-							break;
-						} // if
-					} else {
-						// cancel
-						ecConflictCurrent = cCopyMoveConflict::Cancel;
-						break;
-					} // if else
-				} else {
-					// no rename
-					break;
-				} // if else
-			} // while
-			if (ecConflictCurrent == cCopyMoveConflict::Cancel) {
-				// cancel
-				return cFileOperation::Cancel;
-			} // if
-		} // if
-
-		if (*ecConflict == cCopyMoveConflict::SkipAll || ecConflictCurrent == cCopyMoveConflict::Skip) {
-			// skip or skip all -> move onto next file
-			*qi64TotalValue += qfiSource.size();
-			return cFileOperation::NextFile;
-		} else {
-			if (*ecConflict == cCopyMoveConflict::OverwriteAll || ecConflictCurrent == cCopyMoveConflict::Overwrite) {
-				// overwrite, overwrite all -> delete target file
-				QFile::remove(qsTarget);
-			} else {
-				if (*ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
-					// overwrite all older
-					if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
-						// target file is older -> delete it
-						QFile::remove(qsTarget);
-					} else {
-						// target file is newer -> move onto next file
-						*qi64TotalValue += qfiSource.size();
-						return cFileOperation::NextFile;
-					} // if else
-				} // if
-			} // if else
-		} // if else
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckConflict
-
 #ifdef Q_WS_WIN
 // check target file permission
 const cFileOperation::eCheckResult cLocalCopyMove::CheckPermission(const qint64 &qi64SourceSize, cPermission::eChoice *ecPermission, qint64 *qi64TotalValue)
@@ -260,12 +168,10 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 	} // if else
 
 	// conflict dialog
-	connect(this, SIGNAL(ShowConflictDialog(const QString &, const QFileInfo &, const QFileInfo &)), &ccmcConflict, SLOT(Show(const QString &, const QFileInfo &, const QFileInfo &)));
 	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
-	connect(this, SIGNAL(ShowRenameDialog(const QString &)), &crRename, SLOT(Show(const QString &)));
-	connect(&crRename, SIGNAL(Finished(const QString &)), SLOT(on_crRename_Finished(const QString &)));
+	connect(&crRename, SIGNAL(Finished()), SLOT(on_crRename_Finished()));
 
 #ifdef Q_WS_WIN
 	// permission dialog
@@ -339,9 +245,8 @@ const void cLocalCopyMove::on_cpPermission_Finished(const cPermission::eChoice &
 #endif
 
 // rename dialog closed with user's reponse
-const void cLocalCopyMove::on_crRename_Finished(const QString &qsNewFilename)
+const void cLocalCopyMove::on_crRename_Finished()
 {
-	this->qsNewFilename = qsNewFilename;
 	qsPause.release();
 } // on_crRename_Finished
 
@@ -431,8 +336,9 @@ void cLocalCopyMove::run()
 			} // if else
 
 			// conflict solving
-			ecrCheck = CheckConflict(*qfiSource, &ecConflict, &qi64TotalValue);
+			ecrCheck = cFileOperation::CheckConflict(eoOperation, &ccmcConflict, &crRename, qfiSource->fileName(), qfiSource->size(), qfiSource->lastModified(), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
+				qi64TotalValue += qfiSource->size();
 				continue;
 			} else {
 				if (ecrCheck == cFileOperation::Cancel) {
