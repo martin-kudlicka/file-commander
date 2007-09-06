@@ -16,7 +16,6 @@
 #include <QtGui/QTreeWidgetItem>
 #include "FileSystem/Archive/Continue.h"
 #include "FileSystem/DiskSpace.h"
-#include <QtCore/QSemaphore>
 
 class cArchiveCopy : public QThread
 {
@@ -73,12 +72,6 @@ class cArchiveCopy : public QThread
 		QString qsTarget;																			///< target of currently copied file
 		cPackerPlugin::sPluginInfo	spiPluginInfo;											///< plugin description for current archive
 
-		cFileOperation::eCheckResult CheckDiskSpace(const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, qint64 *qi64TotalValue);
-																								///< check disk space
-																								/**< \param iUnpackedSize size of unpacked source file
-																									  \param ecDiskSpace disk space permanent user answer
-																									  \param qi64TotalValue total size of unpacked files
-																									  \return action after disk space check */
 		const void CreateWidget();																///< create widget for background operation
 		const QStringList GetFilesToExtractAndCountTotalSize();						///< get file list to extract and count size of all those files
 																										/**< \return file list to extract */

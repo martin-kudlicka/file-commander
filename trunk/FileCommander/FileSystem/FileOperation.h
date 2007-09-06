@@ -6,9 +6,13 @@
 #include "FileSystem/Permission.h"
 #include "Settings.h"
 #include "FileSystem/CopyMoveConflict.h"
+#include "FileSystem/DiskSpace.h"
+#include <QtCore/QSemaphore>
 
-class cFileOperation
+class cFileOperation : public QObject
 {
+	Q_OBJECT
+
 	public:
 		/// operation checks
 		enum eCheckResult {
@@ -24,6 +28,15 @@ class cFileOperation
 
 		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 
+		static const eCheckResult CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const int &iUnpackedSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause);
+																								///< check disk space
+																								/**< \param cdsDiskSpace disk space dialog
+																									  \param qsTarget target file to write
+																									  \param iUnpackedSize size of unpacked source file
+																									  \param ecDiskSpace disk space permanent user answer
+																									  \param ecDiskSpaceCurrent disk space current user answer
+																									  \param qsPause thread pause
+																									  \return action after disk space check */
 		static const cCopyMoveConflict::eChoice GetDefaultOverwriteMode(cSettings *csSettings);
 																			///< default overwrite mode from settings file
 																			/**< \param csSettings settings file
@@ -46,6 +59,13 @@ class cFileOperation
 																				  \param qsFilter filter to suit
 																				  \param bRegularExpression qsFilter is regular expression
 																				  \return true if filename suits filter */
+
+	signals:
+		void ShowDiskSpaceDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace) const;
+																			///< show disk space dialog
+																			/**< \param qsFilename concerned file
+																				  \param qi64FileSize file size
+																				  \param qi64FreeSpace free space on target disk */
 }; // cFileOperation
 
 #endif
