@@ -12,6 +12,10 @@ cLocal::~cLocal()
 
 	ClearFileTable(qhFiles);
 	qhCustom.clear();
+
+	if (caArchive) {
+		caArchive->deleteLater();
+	} // if
 } // ~cLocal
 
 // activate current file

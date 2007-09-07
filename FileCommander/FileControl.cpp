@@ -356,6 +356,8 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 			qpOperation = &qqOperations.at(iJ);
 			if (qpOperation->first == qlItems.at(iI)) {
 				delete qpOperation->first;
+				CloseFileSystem(qpOperation->second.cfsSource);
+				CloseFileSystem(qpOperation->second.cfsDestination);
 				qqOperations.removeAt(iJ);
 				break;
 			} // if
