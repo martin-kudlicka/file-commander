@@ -31,7 +31,7 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive) const
 {
 	// TODO ChangeFileSystem get last path on the drive (QHash)
-	return ChangeFileSystem(cfsFileSystem, qsDrive, "\\");
+	return ChangeFileSystem(cfsFileSystem, qsDrive, "/");
 } // ChangeFileSystem
 
 // change file system according to new drive

@@ -35,7 +35,12 @@ class cLocal : public cFileSystem
 	private:
 		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
 
-		cArchive *caArchive;																///< archive file system
+		/// archive information
+		struct sArchive {
+			cArchive *caArchive;															///< archive file system
+			QString qsFilePath;															///< file path to archive
+		};
+		
 		cContentPlugin *ccpContentPlugin;											///< content plugin interface
 		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
 		cLocalCopyMove *clcmCopyMove;													///< copy/move local files thread
@@ -48,6 +53,7 @@ class cLocal : public cFileSystem
 		QHash<QTreeWidgetItem *, QFileInfo> qhFiles;								///< files in current directory
 		QQueue<cContentPluginDelayed::sParameters> qqContentDelayedParameters;
 																								///< parameters for content delayed values
+		sArchive saArchive;																///< archive information
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
@@ -62,6 +68,7 @@ class cLocal : public cFileSystem
 		const void ClearFileTable(QHash<QTreeWidgetItem *, QFileInfo> &qhTable) const;
 																								///< clear file table before next fill of it
 																								/**< \param qhTable file table to clear */
+		const void CloseArchive();														///< close archive
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
 		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);

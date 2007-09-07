@@ -13,8 +13,8 @@ cLocal::~cLocal()
 	ClearFileTable(qhFiles);
 	qhCustom.clear();
 
-	if (caArchive) {
-		caArchive->deleteLater();
+	if (saArchive.caArchive) {
+		CloseArchive();
 	} // if
 } // ~cLocal
 
@@ -23,8 +23,8 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 {
 	QFileInfo *qfiFile;
 
-	if (caArchive) {
-		return caArchive->ActivateCurrent(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->ActivateCurrent(qtwiFile);
 	} // if
 
 	qfiFile = &qhFiles[qtwiFile];
@@ -41,7 +41,10 @@ const void cLocal::ActivateCurrent(QTreeWidgetItem *qtwiFile)
 	} else {
 		// file
 		// check if it's supported archive with browsing archive enabled
-		if (!(csSettings->GetTreatArchivesLikeDirectories() && OpenArchive(qhFiles.value(qtwiFile)))) {
+		if (csSettings->GetTreatArchivesLikeDirectories() && OpenArchive(qhFiles.value(qtwiFile))) {
+			// going into archive
+			saArchive.caArchive->SetPath("");
+		} else {
 			// not an (supported) archive or browsing archive disabled
 			cProcess cpProcess;
 
@@ -71,8 +74,8 @@ const void cLocal::BeginSearch()
 // file system can copy files to local file system
 const bool cLocal::CanCopy() const
 {
-	if (caArchive) {
-		return caArchive->CanCopy();
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->CanCopy();
 	} // if
 
 	return true;
@@ -81,8 +84,8 @@ const bool cLocal::CanCopy() const
 // file system can delete files
 const bool cLocal::CanDelete() const
 {
-	if (caArchive) {
-		return caArchive->CanDelete();
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->CanDelete();
 	} // if
 
 	return true;
@@ -128,7 +131,7 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 	this->ccpContentPlugin = ccpContentPlugin;
 	this->cppPackerPlugin = cppPackerPlugin;
 
-	caArchive = NULL;
+	saArchive.caArchive = NULL;
 
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
@@ -138,6 +141,13 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 
 	SetPath(qsDrive, qsRootPath, qsPath, true);
 } // cLocal
+
+// close archive
+const void cLocal::CloseArchive()
+{
+	saArchive.caArchive->deleteLater();
+	saArchive.caArchive = NULL;
+} // CloseArchive
 
 // create new directory
 const void cLocal::CreateDir(const QString &qsName)
@@ -163,12 +173,12 @@ const bool cLocal::DirExists(const QString &qsDirectory) const
 {
 	QDir qdDir;
 
-	if (caArchive) {
+	if (saArchive.caArchive) {
 		QString qsArchivePath;
 
 		qsArchivePath = QDir::toNativeSeparators(qsDirectory.mid(this->qdDir.path().length() + 1));
 		qsArchivePath = qsArchivePath.mid(qsArchivePath.indexOf(QDir::separator()) + 1);
-		return caArchive->DirExists(qsArchivePath);
+		return saArchive.caArchive->DirExists(qsArchivePath);
 	} // if
 
 	qdDir.setPath(qsDirectory);
@@ -250,8 +260,8 @@ const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 // get tree items for current directory
 QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* true */)
 {
-	if (caArchive) {
-		return caArchive->GetDirectoryContent(bRefresh);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetDirectoryContent(bRefresh);
 	} // if
 
 	if (bRefresh) {
@@ -321,8 +331,8 @@ const qint64 cLocal::GetDirectorySize() const
 // get current directory name
 const QString cLocal::GetDirName() const
 {
-	if (caArchive) {
-		return caArchive->GetDirName();
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetDirName();
 	} // if
 
 	return qdDir.dirName();
@@ -347,8 +357,8 @@ const QString cLocal::GetFileAttr(QTreeWidgetItem *qtwiFile) const
 	DWORD dwAttributes;
 	QString qsAttributes;
 
-	if (caArchive) {
-		return caArchive->GetFileAttr(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileAttr(qtwiFile);
 	} // if
 
 	dwAttributes = GetFileAttributes(reinterpret_cast<LPCWSTR>(qhFiles.value(qtwiFile).filePath().unicode()));
@@ -379,8 +389,8 @@ const QString cLocal::GetFileAttr(QTreeWidgetItem *qtwiFile) const
 // get file extension
 const QString cLocal::GetFileExtension(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->GetFileExtension(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileExtension(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).suffix();
@@ -389,8 +399,8 @@ const QString cLocal::GetFileExtension(QTreeWidgetItem *qtwiFile) const
 // get icon for specified file
 const QIcon cLocal::GetFileIcon(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->GetFileIcon(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileIcon(qtwiFile);
 	} // if
 
 	return qfipIconProvider.icon(qhFiles.value(qtwiFile));
@@ -402,8 +412,8 @@ void *cLocal::GetFileList(const QList<QTreeWidgetItem *> &qlSelected) const
 	int iI;
 	QFileInfoList *qfilFiles;
 
-	if (caArchive) {
-		return caArchive->GetFileList(qlSelected);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileList(qlSelected);
 	} // if
 
 	qfilFiles = new QFileInfoList();
@@ -421,8 +431,8 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 	QFileInfo *qfiFile;
 	QString qsName;
 
-	if (caArchive) {
-		return caArchive->GetFileName(qtwiFile, bBracketsAllowed);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileName(qtwiFile, bBracketsAllowed);
 	} // if
 
 	qfiFile = &qhFiles[qtwiFile];
@@ -447,8 +457,8 @@ const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const 
 	QString qsName;
 	QFileInfo *qfiFile;
 
-	if (caArchive) {
-		return caArchive->GetFileNameWithExtension(qtwiFile, bBracketsAllowed);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileNameWithExtension(qtwiFile, bBracketsAllowed);
 	} // if
 
 	qfiFile = &qhFiles[qtwiFile];
@@ -465,8 +475,8 @@ const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const 
 // get file name with full path
 const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->GetFilePath(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFilePath(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).filePath();
@@ -475,8 +485,8 @@ const QString cLocal::GetFilePath(QTreeWidgetItem *qtwiFile) const
 // get file size
 const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->GetFileSize(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetFileSize(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).size();
@@ -485,8 +495,8 @@ const qint64 cLocal::GetFileSize(QTreeWidgetItem *qtwiFile) const
 // get file's last modified date/time stamp
 const QDateTime cLocal::GetLastModified(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->GetLastModified(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetLastModified(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).lastModified();
@@ -510,8 +520,8 @@ const QString cLocal::GetPath() const
 {
 	QString qsPath;
 
-	if (caArchive) {
-		qsPath = '/' + caArchive->GetPath();
+	if (saArchive.caArchive) {
+		qsPath = '/' + saArchive.caArchive->GetPath();
 	} // if
 
 	return qdDir.path() + qsPath;
@@ -594,9 +604,8 @@ const QString cLocal::GetVolumeName() const
 // set path to root directory
 const void cLocal::GoToRootDir()
 {
-	if (caArchive) {
-		caArchive->deleteLater();
-		caArchive = NULL;
+	if (saArchive.caArchive) {
+		CloseArchive();
 	} // if
 
 	SetPath(qsRootPath);
@@ -605,8 +614,8 @@ const void cLocal::GoToRootDir()
 // go one directory up if possible
 const void cLocal::GoToUpDir()
 {
-	if (caArchive) {
-		return caArchive->GoToUpDir();
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GoToUpDir();
 	} // if
 
 	SetPath("..");
@@ -615,8 +624,8 @@ const void cLocal::GoToUpDir()
 // check if file is directory
 const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->IsDir(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->IsDir(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).isDir();
@@ -625,8 +634,8 @@ const bool cLocal::IsDir(QTreeWidgetItem *qtwiFile) const
 // check if file is really file
 const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 {
-	if (caArchive) {
-		return caArchive->IsFile(qtwiFile);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->IsFile(qtwiFile);
 	} // if
 
 	return qhFiles.value(qtwiFile).isFile();
@@ -635,8 +644,8 @@ const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 // local file system test
 const bool cLocal::IsLocal() const
 {
-	if (caArchive) {
-		return caArchive->IsLocal();
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->IsLocal();
 	} // if
 
 	return true;
@@ -651,16 +660,14 @@ const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem)
 // leave archive file system
 const void cLocal::on_caArchive_LeaveFileSystem()
 {
-	caArchive->deleteLater();
-	caArchive = NULL;
+	CloseArchive();
 	emit ContentChanged(this);
 } // on_caArchive_LeaveFileSystem
 
 // operation finished in archive file system
 const void cLocal::on_caArchive_OperationFinished(cFileSystem *cfsFileSystem)
 {
-	caArchive->deleteLater();
-	caArchive = NULL;
+	CloseArchive();
 	emit OperationFinished(this);
 } // on_caArchive_OperationFinished
 
@@ -693,15 +700,15 @@ const void cLocal::on_qfswWatcher_directoryChanged(const QString &path) const
 // try to open archive
 const bool cLocal::OpenArchive(const QFileInfo &qfiArchive)
 {
-	caArchive = new cArchive(qsDrive, qsRootPath, qfiArchive, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
-	connect(caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
-	if (caArchive->SetPath(".", true)) {
-		connect(caArchive, SIGNAL(LeaveFileSystem()), SLOT(on_caArchive_LeaveFileSystem()));
+	saArchive.caArchive = new cArchive(qsDrive, qsRootPath, qfiArchive, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+	connect(saArchive.caArchive, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_caArchive_ContentChanged(const cFileSystem *)));
+	if (saArchive.caArchive->SetPath("", true)) {
+		saArchive.qsFilePath = qfiArchive.filePath();
+		connect(saArchive.caArchive, SIGNAL(LeaveFileSystem()), SLOT(on_caArchive_LeaveFileSystem()));
 
 		return true;
 	} else {
-		caArchive->deleteLater();
-		caArchive = NULL;
+		CloseArchive();
 
 		return false;
 	} // if else
@@ -730,9 +737,9 @@ const bool cLocal::PathExists(const QString &qsPath) const
 // write local files to this file system
 const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
 {
-	if (caArchive) {
-		connect(caArchive, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_caArchive_OperationFinished(cFileSystem *)));
-		caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition);
+	if (saArchive.caArchive) {
+		connect(saArchive.caArchive, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_caArchive_OperationFinished(cFileSystem *)));
+		saArchive.caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition);
 	} // if
 } // Read
 
@@ -746,8 +753,8 @@ const void cLocal::RetreiveContentDelayedValues()
 // set file list for file operation
 const void cLocal::SetOperationFileList(void *vFileList)
 {
-	if (caArchive) {
-		return caArchive->SetOperationFileList(vFileList);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->SetOperationFileList(vFileList);
 	} // if
 
 	qfilOperation = *static_cast<QFileInfoList *>(vFileList);
@@ -756,8 +763,14 @@ const void cLocal::SetOperationFileList(void *vFileList)
 // change path for this file system
 const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup /* false */)
 {
-	if (caArchive) {
-		return caArchive->SetPath(qsDrive, qsRootPath, qsPath, bStartup);
+	if (saArchive.caArchive) {
+		if (qsPath.startsWith(saArchive.qsFilePath)) {
+			// change still in archive
+			return saArchive.caArchive->SetPath(qsDrive, qsRootPath, qsPath.mid(saArchive.qsFilePath.length() + 1), bStartup);
+		} else {
+			// another path
+			CloseArchive();
+		} // if else
 	} // if
 
 	this->qsDrive = qsDrive;
@@ -770,11 +783,10 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 const bool cLocal::SetPath(const QString qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
-	QDir qdNotFile;
 	QString qsNewPath;
 
-	if (caArchive) {
-		return caArchive->SetPath(qsPath, bStartup);
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->SetPath(qsPath, bStartup);
 	} // if
 
 	if (!bStartup) {
@@ -797,19 +809,27 @@ const bool cLocal::SetPath(const QString qsPath, const bool &bStartup /* false *
 	} // while
 
 	if (bResult) {
-		qdNotFile.setPath(qsNewPath);
-		if (!qdNotFile.exists()) {
-			// can be path to archive
-			if (OpenArchive(qsNewPath)) {
-				caArchive->SetPath(qsPath.mid(qsNewPath.length() + 1));
-			} // if
+		QDir qdNotFile;
+		QString qsArchive;
 
+		qdNotFile.setPath(qsNewPath);
+
+		if (!qdNotFile.exists()) {
+			// new path is file in fact -> can be archive
+			qsArchive = qsNewPath;
 			qsNewPath = QFileInfo(qsNewPath).path();
 		} // if
 
 		bResult = qdDir.cd(qsNewPath);
 
-		if (bResult) {
+		if (!qdNotFile.exists()) {
+			// try to open archive
+			if (OpenArchive(qsArchive)) {
+				saArchive.caArchive->SetPath(qsPath.mid(qsArchive.length() + 1));
+			} // if
+		} // if
+
+		if (bResult && !saArchive.caArchive) {
 			qfswWatcher.addPath(qdDir.path());
 			emit ContentChanged(this);
 		} // if

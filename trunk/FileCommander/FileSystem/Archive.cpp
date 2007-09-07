@@ -567,42 +567,44 @@ const void cArchive::SetPath(const QString &qsDrive, const QString &qsRootPath, 
 const bool cArchive::SetPath(const QString qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
+	QString qsNewPath;
 
-	bResult = true;
 	if (bStartup) {
-		// open archive
-		bResult = OpenArchive();
+		// just try to open archive
+		return OpenArchive();
 	} // if
 
+	bResult = true;
 	// find path in archive
-	if (bResult) {
-		QString qsNewPath;
-
-		if (QFileInfo(qsPath).fileName() == "..") {
-			if (qsPath == "./..") {
-				// going from archive
-				bResult = false;
-				emit LeaveFileSystem();
-			} else {
-				// correct new path
-				qsNewPath = QFileInfo(QFileInfo(qsPath).path()).path();
-			} // if else
+	if (QFileInfo(qsPath).fileName() == "..") {
+		if (qsPath == "./..") {
+			// going from archive
+			bResult = false;
+			emit LeaveFileSystem();
+		} else {
+			// correct new path
+			qsNewPath = QFileInfo(QFileInfo(qsPath).path()).path();
+		} // if else
+	} else {
+		if (qsPath.isEmpty()) {
+			qsNewPath = '.';
 		} else {
 			qsNewPath = qsPath;
 		} // if else
+	} // if else
 
+	if (bResult) {
 		if (qhDirectories.contains(qsNewPath)) {
 			qhPath = qhDirectories.value(qsNewPath);
 		} else {
 			bResult = false;
 		} // if else
+
+		if (bResult) {
+			emit ContentChanged(this);
+		} // if
 	} // if
 
-	if (bResult) {
-		emit ContentChanged(this);
-	} // if else
-
-	// TODO SetPath
 	return bResult;
 } // SetPath
 
