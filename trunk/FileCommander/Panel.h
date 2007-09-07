@@ -219,7 +219,8 @@ class cPanel : public QObject
 
 	signals:
 		void Delete() const;													///< delete marked files
-		void GotFocus() const;												///< panel got focus
+		void GotFocus(const cPanel *cpPanel) const;					///< panel got focus
+																					/**< \param cpPanel pointer to this panel */
 
 	private slots:
 		const void on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSystem);
