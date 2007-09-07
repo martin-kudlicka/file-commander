@@ -795,7 +795,7 @@ const void cPanel::on_ctwTree_GotFocus()
 	if (qswLastActive != qswDirs) {
 		qswLastActive = qswDirs;
 		qlGlobalPath->setText(qlTabs.at(qswDirs->currentIndex()).swWidgets.qsPath);
-		emit GotFocus();
+		emit GotFocus(this);
 	} // if
 } // on_ctwTree_GotFocus
 

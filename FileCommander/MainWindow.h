@@ -84,9 +84,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																								  \param qpCursor cursor position on tab */
 
 	private slots:
-		const void on_cpLeft_GotFocus();											///< left panel got focus
-		const void on_cpPanel_Delete() const;									///< delete marked files
-		const void on_cpRight_GotFocus();										///< right panel got focus
+		const void on_cPanel_Delete() const;									///< delete marked files
+		const void on_cPanel_GotFocus(const cPanel *cpPanel);				///< panel got focus
+																							/**< \param cpPanel panel that got the focus */
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected
 																							/**< \param checked true if menu item is checkable and checked */
 		const void on_qaBranchView_triggered(bool checked = false) const;
