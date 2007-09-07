@@ -63,6 +63,10 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void ActualizeColumnSets();										///< actualize column sets submenu
 		const void ActualizeFavouriteDirectories();							///< actualize favourite directories context menu
 		const void AssignShortcuts();												///< assign shortcuts
+		const void DriveIndexChanged(cPanel *cpPanel, const QString &qsDrive) const;
+																							///< drive changed in panel
+																							/**< \param cpPanel panel that drive changes in
+																								  \param qsDrive drive to change to */
 		bool eventFilter(QObject *watched, QEvent *event);					///< event filter
 																							/**< \param watched filtered object
 																								  \param event event description
@@ -143,6 +147,12 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		const void on_qaUnselectGroup_triggered(bool checked = false) const;
 																							///< unselect group selected
 																							/**< \param checked true if menu item is checkable and checked */
+		const void on_qcbLeftDrive_currentIndexChanged(int index) const;
+																							///< selected drive in left panel changes
+																							/**< \param index index of new drive */
+		const void on_qcbRightDrive_currentIndexChanged(int index) const;
+																							///< selected drive in right panel changes
+																							/**< \param index index of new drive */
 		const void on_qmColumnSets_triggered(QAction *action) const;	///< selected column set from column set submenu
 																							/**< \param action column set */
 		const void on_qmFavouriteDirectories_triggered(QAction *action) const;

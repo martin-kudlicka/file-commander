@@ -27,6 +27,13 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	connect(&cqwQueue, SIGNAL(RemoveQueuedItems(QList<QListWidgetItem *>)), SLOT(on_cqwQueue_RemoveQueuedItems(QList<QListWidgetItem *>)));
 } // cFileControl
 
+// change file system according to new drive with last path there
+const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive) const
+{
+	// TODO ChangeFileSystem get last path on the drive (QHash)
+	return ChangeFileSystem(cfsFileSystem, qsDrive, "\\");
+} // ChangeFileSystem
+
 // change file system according to new drive
 const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
 {

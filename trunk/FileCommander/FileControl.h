@@ -47,6 +47,10 @@ class cFileControl : public QObject
 																							  \param clpListerPlugin lister plugin interface
 																							  \param cppPackerPlugin packer plugin interace */
 
+		const bool ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive) const;
+																						///< change file system according to new drive with last path there
+																						/**< \param cfsFileSystem currently set file system
+																							  \param qsDrive drive to get file system for */
 		const bool ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const;
 																						///< change file system according to new drive
 																						/**< \param cfsFileSystem currently set file system
