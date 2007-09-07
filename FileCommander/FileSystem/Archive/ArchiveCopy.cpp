@@ -326,8 +326,6 @@ void cArchiveCopy::run()
 
 		if (qslToExtract.contains(thdHeaderData.FileName) && cFileOperation::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
 			// extract file
-			QString qsSource, qsTarget;
-
 			qsSource = qfiArchive.filePath() + '/' + thdHeaderData.FileName;
 			if (bFullPath) {
 				qsTarget = thdHeaderData.FileName;
@@ -339,7 +337,8 @@ void cArchiveCopy::run()
 			emit SetSource(qsSource);
 			emit SetDestination(qsTarget);
 			qi64CurrentValue = 0;
-			emit SetCurrentMaximum(thdHeaderData.UnpSize);
+			qi64CurrentMaximum = thdHeaderData.UnpSize;
+			emit SetCurrentMaximum(qi64CurrentMaximum);
 
 			if (thdHeaderData.FileAttr & cPackerPlugin::iDIRECTORY) {
 				// extract directory
