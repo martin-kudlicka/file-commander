@@ -88,7 +88,7 @@ const cFileOperation::eCheckResult cFileOperation::CheckConflict(const cFileOper
 			} else {
 				if (*ecConflict == cCopyMoveConflict::OverwriteAllOlder) {
 					// overwrite all older
-					if (QFileInfo(qsSource).lastModified() > QFileInfo(qsTarget).lastModified()) {
+					if (qdtSourceLastModified > QFileInfo(qsTarget).lastModified()) {
 						// target file is older -> delete it
 						QFile::remove(qsTarget);
 					} else {
