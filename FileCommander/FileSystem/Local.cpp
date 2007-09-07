@@ -886,11 +886,13 @@ const bool cLocal::TryPath(const QString &qsPath) const
 	qsNewPath = qsPath;
 
 	do {
+#ifndef Q_WS_WIN
 		qdDir.setPath(qsNewPath);
+#endif
 #ifdef Q_WS_WIN
-	if (PathExists(qdDir.path())) {
+		if (PathExists(qsNewPath)) {
 #else
-	if (qdDir.exists()) {
+		if (qdDir.exists()) {
 #endif
 			bResult = true;
 		} else {
