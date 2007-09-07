@@ -652,6 +652,14 @@ const void cLocal::on_caArchive_LeaveFileSystem()
 	emit ContentChanged(this);
 } // on_caArchive_LeaveFileSystem
 
+// operation finished in archive file system
+const void cLocal::on_caArchive_OperationFinished(cFileSystem *cfsFileSystem)
+{
+	caArchive->deleteLater();
+	caArchive = NULL;
+	emit OperationFinished(this);
+} // on_caArchive_OperationFinished
+
 // got golumn value from plugin
 const void cLocal::on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const
 {
@@ -719,6 +727,7 @@ const bool cLocal::PathExists(const QString &qsPath) const
 const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
 {
 	if (caArchive) {
+		connect(caArchive, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_caArchive_OperationFinished(cFileSystem *)));
 		caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition);
 	} // if
 } // Read
