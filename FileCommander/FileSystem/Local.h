@@ -181,7 +181,7 @@ class cLocal : public cFileSystem
 																									  \param qsRootPath path to root of this file system
 																									  \param qsPath to initialize local file system
 																									  \param bStartup true if initializing file system class */
-		const bool SetPath(const QString &qsPath, const bool &bStartup = false);
+		const bool SetPath(const QString qsPath, const bool &bStartup = false);
 																								///< change path for this file system without drive change
 																								/**< \param qsPath to initialize local file system
 																									  \param bStartup true if initializing file system class
@@ -193,6 +193,9 @@ class cLocal : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
+		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system
+																								/**< \param qsPath path to check
+																									  \return true if possible to set path to qsPath */
 		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type

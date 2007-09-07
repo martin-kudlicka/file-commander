@@ -1410,9 +1410,6 @@ const void cPanel::SetPath(const QString &qsPath) const
 		if (cfcFileControl->ChangeFileSystem(stTab->cfsFileSystem, spiPathInfo.qsDrive, qsPath)) {
 			ConnectFileSystem(stTab->cfsFileSystem);
 		} // if
-
-		// set path
-		stTab->cfsFileSystem->SetPath(spiPathInfo.qsDrive, spiPathInfo.qsRootPath, qsPath);
 	} // if
 } // SetPath
 

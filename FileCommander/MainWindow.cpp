@@ -255,10 +255,15 @@ cMainWindow::cMainWindow()
 // drive changed in panel
 const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDrive) const
 {
+	if (qswLeft->currentIndex() == -1) {
+		// tabs are not yet initialized
+		return;
+	} // if
+
 	if (cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive)) {
 		// TODO DriveIndexChanged connect new file system
 	} // if
-	cpPanel->RefreshContent();
+	//cpPanel->RefreshContent();
 } // DriveIndexChanged
 
 // event filter

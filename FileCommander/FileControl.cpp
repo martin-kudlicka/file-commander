@@ -28,16 +28,26 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cFileControl
 
 // change file system according to new drive with last path there
-const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive) const
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive) const
 {
 	// TODO ChangeFileSystem get last path on the drive (QHash)
 	return ChangeFileSystem(cfsFileSystem, qsDrive, "\\");
 } // ChangeFileSystem
 
 // change file system according to new drive
-const bool cFileControl::ChangeFileSystem(const cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
 {
 	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, wath FS list) (copy FTP, at least logon info if same drive as existing FTP)
+	sPathInfo spiPathInfo;
+
+	spiPathInfo = GetPathInfo(qsPath);
+
+	if (cfsFileSystem->TryPath(qsPath)) {
+		cfsFileSystem->SetPath(qsDrive, spiPathInfo.qsRootPath, qsPath);
+	} else {
+		// TODO ChangeFileSystem change file system (drive) dialog, on OK try change FS again, cancel - stay on current fs without change
+	} // if else
+
 	return false;
 } // ChangeFileSystem
 
