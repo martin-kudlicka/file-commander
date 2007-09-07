@@ -564,7 +564,7 @@ const void cArchive::SetPath(const QString &qsDrive, const QString &qsRootPath, 
 } // SetPath
 
 // change path for this file system without drive change
-const bool cArchive::SetPath(const QString &qsPath, const bool &bStartup /* false */)
+const bool cArchive::SetPath(const QString qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
 
@@ -630,6 +630,13 @@ const int cArchive::ToPackerDateTime(const QDateTime &qdtDateTime) const
 
 	return iDateTime;
 } // ToPackerDateTime
+
+// try if path exists on file system
+const bool cArchive::TryPath(const QString &qsPath) const
+{
+	// TODO TryPath
+	return false;
+} // TryPath
 
 // write local files to this file system
 const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)

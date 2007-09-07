@@ -767,7 +767,7 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 } // SetPath
 
 // change path for this file system without drive change
-const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false */)
+const bool cLocal::SetPath(const QString qsPath, const bool &bStartup /* false */)
 {
 	bool bResult;
 	QDir qdNotFile;
@@ -782,26 +782,37 @@ const bool cLocal::SetPath(const QString &qsPath, const bool &bStartup /* false 
 	} // if
 
 	// find right path
+	bResult = true;
 	qsNewPath = qsPath;
 	while (!qdDir.exists(qsNewPath)) {
-		qsNewPath = QFileInfo(qsNewPath).path();
+		QString qsUpDir;
+
+		qsUpDir = QFileInfo(qsNewPath).path();
+		if (qsUpDir == qsNewPath) {
+			bResult = false;
+			break;
+		} else {
+			qsNewPath = qsUpDir;
+		} // if else
 	} // while
 
-	qdNotFile.setPath(qsNewPath);
-	if (!qdNotFile.exists()) {
-		// can be path to archive
-		if (OpenArchive(qsNewPath)) {
-			caArchive->SetPath(qsPath.mid(qsNewPath.length() + 1));
+	if (bResult) {
+		qdNotFile.setPath(qsNewPath);
+		if (!qdNotFile.exists()) {
+			// can be path to archive
+			if (OpenArchive(qsNewPath)) {
+				caArchive->SetPath(qsPath.mid(qsNewPath.length() + 1));
+			} // if
+
+			qsNewPath = QFileInfo(qsNewPath).path();
 		} // if
 
-		qsNewPath = QFileInfo(qsNewPath).path();
-	} // if
+		bResult = qdDir.cd(qsNewPath);
 
-	bResult = qdDir.cd(qsNewPath);
-	qfswWatcher.addPath(qdDir.path());
-
-	if (bResult) {
-		emit ContentChanged(this);
+		if (bResult) {
+			qfswWatcher.addPath(qdDir.path());
+			emit ContentChanged(this);
+		} // if
 	} // if
 
 	return bResult;
@@ -843,6 +854,39 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
 } // ShowContextMenu
+
+// try if path exists on file system
+const bool cLocal::TryPath(const QString &qsPath) const
+{
+	bool bResult;
+	QDir qdDir;
+	QString qsNewPath;
+
+	bResult = false;
+	qsNewPath = qsPath;
+
+	do {
+		qdDir.setPath(qsNewPath);
+#ifdef Q_WS_WIN
+	if (PathExists(qdDir.path())) {
+#else
+	if (qdDir.exists()) {
+#endif
+			bResult = true;
+		} else {
+			QString qsUpDir;
+
+			qsUpDir = QFileInfo(qsNewPath).path();
+			if (qsUpDir == qsNewPath) {
+				break;
+			} else {
+				qsNewPath = qsUpDir;
+			} // if else
+		} // if else
+	} while (!bResult);
+
+	return bResult;
+} // TryPath
 
 // write local files to this file system
 const void cLocal::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
