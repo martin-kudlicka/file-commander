@@ -28,14 +28,33 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cFileControl
 
 // change file system according to new drive with last path there
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive) const
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive)
 {
-	// TODO ChangeFileSystem get last path on the drive (QHash)
-	return ChangeFileSystem(cfsFileSystem, qsDrive, "/");
+	QString qsPath;
+
+	if (qhLastPaths.contains(qsDrive)) {
+		qsPath = qhLastPaths.value(qsDrive);
+	} else {
+		int iI;
+		QList<QPair<QString, sDrive> > qlDrives;
+
+		qlDrives = GetDrives();
+
+		for (iI = 0; iI < qlDrives.count(); iI++) {
+			const QPair<QString, sDrive> *qpDrive;
+
+			qpDrive = &qlDrives.at(iI);
+			if (qpDrive->first == qsDrive) {
+				qsPath = qpDrive->second.qsPath;
+			} // if
+		} // for
+	} // if else
+
+	return ChangeFileSystem(cfsFileSystem, qsDrive, qsPath);
 } // ChangeFileSystem
 
 // change file system according to new drive
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath)
 {
 	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, wath FS list) (copy FTP, at least logon info if same drive as existing FTP)
 	sPathInfo spiPathInfo;
@@ -43,6 +62,7 @@ const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QStr
 	spiPathInfo = GetPathInfo(qsPath);
 
 	if (cfsFileSystem->TryPath(qsPath)) {
+		qhLastPaths.insert(cfsFileSystem->GetDrive(), cfsFileSystem->GetPath());
 		cfsFileSystem->SetPath(qsDrive, spiPathInfo.qsRootPath, qsPath);
 	} else {
 		// TODO ChangeFileSystem change file system (drive) dialog, on OK try change FS again, cancel - stay on current fs without change

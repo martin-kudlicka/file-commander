@@ -47,11 +47,11 @@ class cFileControl : public QObject
 																							  \param clpListerPlugin lister plugin interface
 																							  \param cppPackerPlugin packer plugin interace */
 
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive) const;
+		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive);
 																						///< change file system according to new drive with last path there
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qsDrive drive to get file system for */
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath) const;
+		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath);
 																						///< change file system according to new drive
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qsDrive drive to get file system for
@@ -122,6 +122,7 @@ class cFileControl : public QObject
 		cPackerPlugin *cppPackerPlugin;										///< packer plugin interface
 		cQueueWidget cqwQueue;													///< list of queued operations
 		cSettings *csSettings;													///< application's configuration
+		QHash<QString, QString> qhLastPaths;								///< last path table on drives
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
 		QList<sOperation> qlOperations;										///< operations in processing
 		QQueue<QPair<QListWidgetItem *, sOperation> > qqOperations;	///< queued operations
