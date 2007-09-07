@@ -252,6 +252,15 @@ cMainWindow::cMainWindow()
 	static_cast<cTreeWidget *>(qswLeft->currentWidget())->setFocus(Qt::OtherFocusReason);
 } // cMainWindow
 
+// drive changed in panel
+const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDrive) const
+{
+	if (cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive)) {
+		// TODO DriveIndexChanged connect new file system
+	} // if
+	cpPanel->RefreshContent();
+} // DriveIndexChanged
+
 // event filter
 bool cMainWindow::eventFilter(QObject *watched, QEvent *event)
 {
@@ -661,6 +670,18 @@ const void cMainWindow::on_qaUnselectGroup_triggered(bool checked /* false */) c
 {
 	cpSource->Select(cSelectFilesDialog::Unselect, cpPlugins->clpListerPlugin);
 } // on_qaUnselectGroup_triggered
+
+// selected drive in left panel changes
+const void cMainWindow::on_qcbLeftDrive_currentIndexChanged(int index) const
+{
+	DriveIndexChanged(cpLeft, qcbLeftDrive->currentText());
+} // on_qcbLeftDrive_currentIndexChanged
+
+// selected drive in right panel changes
+const void cMainWindow::on_qcbRightDrive_currentIndexChanged(int index) const
+{
+	DriveIndexChanged(cpRight, qcbRightDrive->currentText());
+} // on_qcbRightDrive_currentIndexChanged
 
 // selected column set from column set submenu
 const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
