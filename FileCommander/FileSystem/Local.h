@@ -213,6 +213,9 @@ class cLocal : public cFileSystem
 																								///< content changed in archive
 																								/**< \param cfsFileSystem filesystem identifier */
 		const void on_caArchive_LeaveFileSystem();								///< leave archive file system
+		const void on_caArchive_OperationFinished(cFileSystem *cfsFileSystem);
+																								///< operation finished in archive file system
+																								/**< \param cfsFileSystem filesystem identifier */
 		const void on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &soOutput) const;
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
