@@ -324,7 +324,7 @@ const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
 {
 	connect(cfsFileSystem, SIGNAL(ContentChanged(const cFileSystem *)), SLOT(on_cfsFileSystem_ContentChanged(const cFileSystem *)));
 	connect(cfsFileSystem, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::sOutput &)));
-	connect(cfsFileSystem, SIGNAL(Unaccessible()), SLOT(on_cfsFileSystem_Unaccessible()));
+	connect(cfsFileSystem, SIGNAL(Unaccessible(const cFileSystem *)), SLOT(on_cfsFileSystem_Unaccessible(const cFileSystem *)));
 } // ConnectFileSystem
 
 // constructor
@@ -776,9 +776,26 @@ const void cPanel::on_cfsFileSystem_GotColumnValue(const cContentPluginDelayed::
 } // on_cfsFileSystem_GotColumnValue
 
 // file system unacessible
-const void cPanel::on_cfsFileSystem_Unaccessible() const
+const void cPanel::on_cfsFileSystem_Unaccessible(const cFileSystem *cfsFileSystem)
 {
-	// TODO on_cfsFileSystem_Unaccessible - change drive dialog
+	int iI;
+
+	for (iI = 0; iI < qlTabs.count(); iI++) {
+		sTab *stTab;
+
+		stTab = &qlTabs[iI];
+		if (stTab->cfsFileSystem == cfsFileSystem) {
+			// unaccessible file system found
+			if (qswDirs->currentIndex() == iI) {
+				// current directory view unaccessible
+				// TODO on_cfsFileSystem_Unaccessible - change drive dialog
+			} else {
+				// unacessible direcotry view from inactive tab
+				stTab->bValid = false;
+			} // if else
+			break;
+		} // if
+	} // for
 } // on_cfsFileSystem_Unaccessible
 
 // double click in tree view

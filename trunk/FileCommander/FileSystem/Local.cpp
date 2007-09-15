@@ -102,7 +102,10 @@ const bool cLocal::CheckPath()
 		// invalid path
 		if (!SetPath("..")) {
 			// even root doesn't exists
-			emit Unaccessible();
+			if (!bUnaccessible) {
+				bUnaccessible = true;
+				emit Unaccessible(this);
+			} // if
 			return false;
 		} // if
 	} // while
@@ -132,6 +135,7 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 	this->cppPackerPlugin = cppPackerPlugin;
 
 	saArchive.caArchive = NULL;
+	bUnaccessible = false;
 
 	// signals
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
@@ -279,6 +283,8 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 
 	if (bRefresh) {
 		// reload
+		bUnaccessible = false;
+
 		if (CheckPath()) {
 			// file system accessible
 			int iI;
@@ -315,7 +321,7 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 
 			return qhFiles.keys();
 		} else {
-			// file system unacessible
+			// file system unaccessible
 			return QList<QTreeWidgetItem *>();
 		} // if else
 	} else {
@@ -788,6 +794,10 @@ const void cLocal::SetPath(const QString &qsDrive, const QString &qsRootPath, co
 
 	this->qsDrive = qsDrive;
 	this->qsRootPath = qsRootPath;
+
+	if (bUnaccessible) {
+		bUnaccessible = false;
+	} // if
 	
 	SetPath(qsPath, bStartup);
 } // SetPath
