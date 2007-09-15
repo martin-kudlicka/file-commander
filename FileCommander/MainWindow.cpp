@@ -222,9 +222,11 @@ cMainWindow::cMainWindow()
 	// connections
 	connect(cpLeft, SIGNAL(GotFocus(const cPanel *)), SLOT(on_cPanel_GotFocus(const cPanel *)));
 	connect(cpLeft, SIGNAL(Delete()), SLOT(on_cPanel_Delete()));
+	connect(cpLeft, SIGNAL(FileSystemUnaccessible(cPanel *)), SLOT(on_cPanel_FileSystemUnaccessible(cPanel *)));
 	//connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
 	connect(cpRight, SIGNAL(GotFocus(const cPanel *)), SLOT(on_cPanel_GotFocus(const cPanel *)));
 	connect(cpRight, SIGNAL(Delete()), SLOT(on_cPanel_Delete()));
+	connect(cpRight, SIGNAL(FileSystemUnaccessible(cPanel *)), SLOT(on_cPanel_FileSystemUnaccessible(cPanel *)));
 	//connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
@@ -286,7 +288,6 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 	if (bChangeFileSystem) {
 		// TODO DriveIndexChanged connect new file system
 	} // if
-	//cpPanel->RefreshContent();
 } // DriveIndexChanged
 
 // event filter
@@ -431,6 +432,22 @@ const void cMainWindow::on_cPanel_Delete() const
 {
 	qpbDelete->animateClick();
 } // on_cPanel_Delete
+
+// panel's file system unaccessible
+const void cMainWindow::on_cPanel_FileSystemUnaccessible(cPanel *cpPanel) const
+{
+	QComboBox *qcbDrive;
+
+	if (cpPanel == cpLeft) {
+		qcbDrive = qcbLeftDrive;
+	} else {
+		qcbDrive = qcbRightDrive;
+	} // if else
+
+	if (cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, cpPanel->GetFileSystem()->GetDrive())) {
+		// TODO on_cPanel_FileSystemUnaccessible connect new file system
+	} // if
+} // on_cPanel_FileSystemUnaccessible
 
 // panel got focus
 const void cMainWindow::on_cPanel_GotFocus(const cPanel *cpPanel)

@@ -89,6 +89,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 
 	private slots:
 		const void on_cPanel_Delete() const;									///< delete marked files
+		const void on_cPanel_FileSystemUnaccessible(cPanel *cpPanel) const;
+																							///< panel's file system unaccessible
+																							/**< \param cpPanel panel with unaccessible file system */
 		const void on_cPanel_GotFocus(const cPanel *cpPanel);				///< panel got focus
 																							/**< \param cpPanel panel that got the focus */
 		const void on_qaAbout_triggered(bool checked = false);			///< about is selected

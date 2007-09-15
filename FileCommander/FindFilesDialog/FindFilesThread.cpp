@@ -182,9 +182,9 @@ void cFindFilesThread::run()
 		// get content of directory
 		cfsFileSystem->SetPath(qqDirectories.dequeue());
 		if (ecfCalledFrom == SelectFiles) {
-			qlDirContent = cfsFileSystem->GetDirectoryContent(false);
+			cfsFileSystem->GetDirectoryContent(&qlDirContent, false);
 		} else {
-			qlDirContent = cfsFileSystem->GetDirectoryContent();
+			cfsFileSystem->GetDirectoryContent(&qlDirContent);
 		} // if else
 
 		// check conditions

@@ -185,7 +185,7 @@ const QString cArchive::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 } // GetCustomFilePath
 
 // get tree items for current directory
-QList<QTreeWidgetItem *> cArchive::GetDirectoryContent(const bool &bRefresh /* true */)
+const bool cArchive::GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh /* true */)
 {
 	if (bRefresh) {
 		// reload
@@ -212,7 +212,8 @@ QList<QTreeWidgetItem *> cArchive::GetDirectoryContent(const bool &bRefresh /* t
 		} // while
 	} // if
 
-	return qhFiles.keys();
+	*qlFiles = qhFiles.keys();
+	return true;
 } // GetDirectoryContent
 
 // get currently selected directory size
