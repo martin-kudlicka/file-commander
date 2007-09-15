@@ -97,10 +97,11 @@ class cLocal : public cFileSystem
 		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
 																								/**< \param qtwiFile file to find file path for
 																									  \return file name with full path */
-		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
+		const bool GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh = true);
 																								///< get tree items for current directory
-																								/**< \param bRefresh reload directory content if true
-																									  \return  tree items for current directory */
+																								/**< \param qlFiles tree items for current directory
+																									  \param bRefresh reload directory content if true
+																									  \return true if file system is accessible */
 		const qint64 GetDirectorySize() const;										///< get currently selected directory size
 																								/**< \return selected directory size */
 		const QString GetDirName() const;											///< get current directory name

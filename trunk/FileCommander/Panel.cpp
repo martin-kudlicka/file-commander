@@ -183,9 +183,12 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));*/
 
 	// drive letter in combo
-	qcbDrive->blockSignals(true);
-	qcbDrive->setCurrentIndex(qcbDrive->findText(stiTabInfo.qsDrive));
-	qcbDrive->blockSignals(false);
+	if (bStartUp && iIndex == 0) {
+		// only for the first drive
+		qcbDrive->blockSignals(true);
+		qcbDrive->setCurrentIndex(qcbDrive->findText(stiTabInfo.qsDrive));
+		qcbDrive->blockSignals(false);
+	} // if
 
 	// set tab properties
 	stTab.swWidgets.qsPath = stiTabInfo.qsPath;
@@ -788,9 +791,9 @@ const void cPanel::on_cfsFileSystem_Unaccessible(const cFileSystem *cfsFileSyste
 			// unaccessible file system found
 			if (qswDirs->currentIndex() == iI) {
 				// current directory view unaccessible
-				// TODO on_cfsFileSystem_Unaccessible - change drive dialog
+				emit FileSystemUnaccessible(this);
 			} else {
-				// unacessible direcotry view from inactive tab
+				// unacessible directory view from inactive tab
 				stTab->bValid = false;
 			} // if else
 			break;
@@ -978,7 +981,7 @@ const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
 	QList<QTreeWidgetItem *> qlFiles;
 
-	qlFiles = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false);
+	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(&qlFiles, false);
 	Sort(qswDirs->currentIndex(), qlFiles);
 } // on_qhvTreeHeader_sectionClicked
 
@@ -1103,7 +1106,10 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
 	stTab = &qlTabs[iIndex];
 
-	qlFiles = stTab->cfsFileSystem->GetDirectoryContent(bRefresh);
+	if (!stTab->cfsFileSystem->GetDirectoryContent(&qlFiles, bRefresh)) {
+		// unaccessible file system -> select drive dialog will be shown by unacessible slot method
+		return;
+	} // if
 
 	// fill tree widget items
 	for (iI = 0; iI < qlFiles.count(); iI++) {
@@ -1586,7 +1592,7 @@ const void cPanel::SortBy(const int &iColumn) const
 	ctwDir->header()->setSortIndicator(iColumn, soSortOrder);
 
 	// sort again
-	qlFiles = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false);
+	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(&qlFiles, false);
 	Sort(qswDirs->currentIndex(), qlFiles);
 } // SortBy
 

@@ -34,10 +34,11 @@ class cArchive : public cFileSystem
 																									  \return true if directory exists */
 		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
 																								/**< \param vFileList pointer to file operation list in memory */
-		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
+		const bool GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh = true);
 																								///< get tree items for current directory
-																								/**< \param bRefresh reload directory content if true
-																									  \return  tree items for current directory */
+																								/**< \param qlFiles tree items for current directory
+																									  \param bRefresh reload directory content if true
+																									  \return true if file system is accessible */
 		const QString GetDirName() const;											///< get current directory name
 																								/**< \return current directory name */
 #ifdef Q_WS_WIN

@@ -75,6 +75,9 @@ const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox 
 		QString qsNewDrive;
 
 		qsNewDrive = SelectDrive(qsDrive);
+		if (qsNewDrive.isEmpty()) {
+			qsNewDrive = qsDrive;
+		} // if
 		return ChangeFileSystem(cfsFileSystem, qcbDrive, qsNewDrive);
 	} // if else
 
@@ -94,8 +97,8 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 	int iI;
 	QList<QTreeWidgetItem *> qlLeft, qlRight;
 
-	qlLeft = cfsLeft->GetDirectoryContent(false);
-	qlRight = cfsRight->GetDirectoryContent(false);
+	cfsLeft->GetDirectoryContent(&qlLeft, false);
+	cfsRight->GetDirectoryContent(&qlRight, false);
 
 	// mark first all files in the right panel, unmark directories
 	for (iI = 0; iI < qlRight.count(); iI++) {

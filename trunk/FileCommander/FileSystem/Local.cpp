@@ -100,7 +100,7 @@ const bool cLocal::CheckPath()
 	while (!qdDir.exists()) {
 #endif
 		// invalid path
-		if (!SetPath("..")) {
+		if (bUnaccessible || !SetPath("..")) {
 			// even root doesn't exists
 			if (!bUnaccessible) {
 				bUnaccessible = true;
@@ -275,10 +275,10 @@ const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 } // GetCustomFilePath
 
 // get tree items for current directory
-QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* true */)
+const bool cLocal::GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh /* true */)
 {
 	if (saArchive.caArchive) {
-		return saArchive.caArchive->GetDirectoryContent(bRefresh);
+		return saArchive.caArchive->GetDirectoryContent(qlFiles, bRefresh);
 	} // if
 
 	if (bRefresh) {
@@ -319,14 +319,16 @@ QList<QTreeWidgetItem *> cLocal::GetDirectoryContent(const bool &bRefresh /* tru
 				} // if
 			} // for
 
-			return qhFiles.keys();
+			*qlFiles = qhFiles.keys();
+			return true;
 		} else {
 			// file system unaccessible
-			return QList<QTreeWidgetItem *>();
+			return false;
 		} // if else
 	} else {
 		// no reload
-		return qhFiles.keys();
+		*qlFiles = qhFiles.keys();
+		return true;
 	} // if else
 } // GetDirectoryContent
 

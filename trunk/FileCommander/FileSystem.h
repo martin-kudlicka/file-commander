@@ -64,10 +64,11 @@ class cFileSystem : public QObject
 		virtual const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile) = 0;	///< get file name from custom list with full path
 																										/**< \param qtwiFile file to find file path for
 																											  \return file name with full path */
-		virtual QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true) = 0;
+		virtual const bool GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh = true) = 0;
 																										///< get tree items for current directory
-																										/**< \param bRefresh reload directory content if true
-																											  \return  tree items for current directory */
+																										/**< \param qlFiles tree items for current directory
+																											  \param bRefresh reload directory content if true
+																											  \return true if file system is accessible */
 		virtual const qint64 GetDirectorySize() const = 0;								///< get currently selected directory size
 																										/**< \return selected directory size */
 		virtual const QString GetDirName() const = 0;									///< get current directory name
