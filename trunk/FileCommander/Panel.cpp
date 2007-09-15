@@ -81,6 +81,9 @@ const void cPanel::ActualizeWidgets() const
 	SetTabText(qswDirs->currentIndex());
 
 	ActualizeVolumeInfo();
+	qcbDrive->blockSignals(true);
+	qcbDrive->setCurrentIndex(qcbDrive->findText(stTab->cfsFileSystem->GetDrive()));
+	qcbDrive->blockSignals(false);
 	qlPath->setText(stTab->swWidgets.qsPath);
 	qlSelected->setText(stTab->swWidgets.qsSelected);
 	qlGlobalPath->setText(stTab->swWidgets.qsPath);
