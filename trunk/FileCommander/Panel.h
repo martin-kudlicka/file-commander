@@ -12,6 +12,7 @@
 #include "FileControl.h"
 #include "Plugins/ContentPluginDelayed.h"
 #include "Panel/SelectFilesDialog.h"
+#include "Panel/TreeWidget.h"
 
 class cPanel : public QObject
 {
@@ -152,6 +153,7 @@ class cPanel : public QObject
 		QStackedWidget *qswDirs;											///< directory views
 		static QStackedWidget *qswLastActive;							///< last active panel
 		QTabBar *qtbTab;														///< tabs for dir views
+		QTreeWidgetItem *qtwiLastMovedOver;								///< last item moved over when dragging
 		static cSettings::sSort ssSort;									///< sort information
 
 		const void ActualizeDrives() const;								///< drive list actualization
@@ -241,10 +243,20 @@ class cPanel : public QObject
 		const void on_ctwTree_customContextMenuRequested(const QPoint &pos) const;
 																					///< show tree view context menu
 																					/**< \param pos position of context menu */
+		const void on_ctwTree_DragEvent();								///< start dragging of selected objects
+		const void on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &qlUrls, const QString &qsSourceFileSystem, QTreeWidgetItem *qtwiDroppedOn) const;
+																					///< drop event occured
+																					/**< \param edaAction action to do in this event with source
+																						  \param qlUrls source objects location
+																						  \param qsSourceFileSystem address of source file system in memory
+																						  \param qtwiDroppedOn item dropped on */
 		const void on_ctwTree_GotFocus();								///< dir view got focus
 		const void on_ctwTree_itemSelectionChanged();				///< changed selected items in current directory view
 		const void on_ctwTree_KeyPressed(QKeyEvent *qkeEvent);	///< space pressed in dir view
 																					/**< \param qkeEvent key event description */
+		const void on_ctwTree_MoveEvent(QTreeWidgetItem *qtwiMovedOver);
+																					///< dragging items
+																					/**< \param qtwiMovedOver dragging over qtwiMovedOver item */
 		const void on_qhvTreeHeader_sectionClicked(int logicalIndex);
 																					///< click on header in tree (dir) view
 																					/**< \param logicalIndex column index clicked on */
