@@ -5,7 +5,7 @@
 #include "FileSystem/Archive/ArchiveCommon.h"
 #include <QtGui/QMessageBox>
 
-cArchiveCopy *cArchiveCopy::cacCallback;	///< to handle callback in static function (static class variable)
+QHash<QString, cArchiveCopy *> cArchiveCopy::qhCallback;	///< callback function table for several background operations (static class variable)
 
 // constructor
 cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -16,8 +16,6 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 
 	bCanceled = false;
 	qi64TotalMaximum = 0;
-
-	cacCallback = this;
 } // cArchiveCopy
 
 // continue after unsuccessfull file extraction
@@ -254,7 +252,11 @@ const void cArchiveCopy::on_crRename_Finished()
 // callback progress function
 int __stdcall cArchiveCopy::ProcessDataProc(char *cFileName, int iSize)
 {
-	return cacCallback->ProcessDataProc2(cFileName, iSize);
+	if (cFileName) {
+		return qhCallback.value(cFileName)->ProcessDataProc2(cFileName, iSize);
+	} else {
+		return true;
+	} // if else
 } // ProcessDataProc
 
 // nonstatic callback progress function
@@ -396,7 +398,11 @@ void cArchiveCopy::run()
 				qdDir.mkpath(QFileInfo(qsTarget).path());
 
 				// extract file
+				qhCallback.insert(QFileInfo(qsTarget).fileName(), this);
+				qhCallback.insert(qsTarget, this);
 				iErrorCode = spiPluginInfo.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
+				qhCallback.remove(QFileInfo(qsTarget).fileName());
+				qhCallback.remove(qsTarget);
 
 				// check for errors
 				if (iErrorCode) {
