@@ -41,7 +41,8 @@ class cLocal : public cFileSystem
 			cArchive *caArchive;															///< archive file system
 			QString qsFilePath;															///< file path to archive
 		};
-		
+
+		bool bUnaccessible;																///< unacessbile signal called
 		cContentPlugin *ccpContentPlugin;											///< content plugin interface
 		cContentPluginDelayed *ccpdContentPluginDelayed;						///< thread to get delayed content plugins values
 		cLocalCopyMove *clcmCopyMove;													///< copy/move local files thread
@@ -221,7 +222,8 @@ class cLocal : public cFileSystem
 																								///< got golumn value from plugin
 																								/**< \param soOutput information to update dir view */
 		void InterruptContentDelayed() const;										///< interrupt delayed content processing before refresh dir view content
-		void Unaccessible() const;														///< file system unaccessible
+		void Unaccessible(const cFileSystem *cfsFileSystem) const;			///< file system unaccessible
+																								/**< \param cfsFileSystem filesystem identifier */
 
 	private slots:
 		const void on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const;
