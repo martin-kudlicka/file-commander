@@ -1,6 +1,52 @@
 #include "Panel/TreeWidget.h"
 
 #include <QtGui/QKeyEvent>
+#include <QtGui/QApplication>
+
+// constructor
+cTreeWidget::cTreeWidget()
+{
+	setDragDropMode(QAbstractItemView::DragDrop);
+	bDraggingFromPanel = false;
+} // cTreeWidget
+
+// drag enter event
+void cTreeWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasUrls() || event->mimeData()->hasFormat(qsMIME__SOURCE_FILE_SYSTEM)) {
+		event->acceptProposedAction();
+	} // if
+} // dragEnterEvent
+
+// drag leave event
+void cTreeWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+	emit MoveEvent(NULL);
+} // dragLeaveEvent
+
+// drag move event
+void cTreeWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+	if (bDraggingFromPanel
+		 && (qlDragStart.contains(itemAt(event->pos())) || !itemAt(event->pos()) || qlIgnore.contains(itemAt(event->pos())))) {
+		event->ignore(visualItemRect(itemAt(event->pos())));
+	} else {
+		event->acceptProposedAction();
+	} // if else
+
+	emit MoveEvent(itemAt(event->pos()));
+} // dragMoveEvent
+
+// drop of object in dir view
+void cTreeWidget::dropEvent(QDropEvent *event)
+{
+	if (event->mouseButtons() == Qt::LeftButton) {
+		emit DropEvent(CopyDropAction, event->mimeData()->urls(), event->mimeData()->data(qsMIME__SOURCE_FILE_SYSTEM), itemAt(event->pos()));
+	} else {
+		emit DropEvent(ChooseDropAction, event->mimeData()->urls(), event->mimeData()->data(qsMIME__SOURCE_FILE_SYSTEM), itemAt(event->pos()));
+	} // if else
+	event->acceptProposedAction();
+} // dropEvent
 
 // dir view got focus
 void cTreeWidget::focusInEvent(QFocusEvent *event)
@@ -32,3 +78,37 @@ void cTreeWidget::keyPressEvent(QKeyEvent *event)
 			} // if else
 	} // switch
 } // keyPressEvent
+
+// mouse move in dir view
+void cTreeWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & (Qt::LeftButton | Qt::RightButton)) {
+		if ((event->pos() - qpDragStart).manhattanLength() >= QApplication::startDragDistance()) {
+			emit DragEvent();
+		} // if
+	} // if
+} // mouseMoveEvent
+
+// mouse click in dir view
+void cTreeWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
+		qpDragStart = event->pos();
+	} // if
+
+	QTreeWidget::mousePressEvent(event);
+} // mousePressEvent
+
+// dragging will start from directory view
+const void cTreeWidget::StartDragFromPanel(const QList<QTreeWidgetItem *> &qlIgnore)
+{
+	bDraggingFromPanel = true;
+	qlDragStart = selectedItems();
+	this->qlIgnore = qlIgnore;
+} // StartDragFromPanel
+
+// dragging from directory view ended
+const void cTreeWidget::StopDragFromPanel()
+{
+	bDraggingFromPanel = false;
+} // StopDragFromPanel

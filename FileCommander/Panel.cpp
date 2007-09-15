@@ -1,6 +1,5 @@
 #include "Panel.h"
 
-#include "Panel/TreeWidget.h"
 #include <QtGui/QHeaderView>
 #include <QtCore/QDateTime>
 #include <QtGui/QMessageBox>
@@ -9,6 +8,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QApplication>
 #include "FindFilesDialog/FindFilesThread.h"
+#include <QtCore/QUrl>
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
@@ -180,9 +180,9 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 	connect(ctwTree, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
 	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *)));
 	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
-	/*connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, const QString &, QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)));
 	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
-	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));*/
+	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));
 
 	// drive letter in combo
 	if (bStartUp && iIndex == 0) {
@@ -819,6 +819,138 @@ const void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos) cons
 	);
 } // on_ctwTree_customContextMenuRequested
 
+// start dragging of selected objects
+const void cPanel::on_ctwTree_DragEvent()
+{
+	cTreeWidget *ctwDir;
+
+	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
+
+	if (ctwDir->selectedItems().count() > 0) {
+		int iI;
+		QDrag *qdDrag;
+		QList<QTreeWidgetItem *> qlIgnore;
+		QMimeData *qmdMimeData;
+		const sTab *stTab;
+
+		stTab = &qlTabs.at(qswDirs->currentIndex());
+
+		qmdMimeData = new QMimeData();
+		qdDrag = new QDrag(static_cast<cTreeWidget *>(qswDirs->currentWidget()));
+		qdDrag->setMimeData(qmdMimeData);
+
+		if (stTab->cfsFileSystem->IsLocal()) {
+			// set URLs to be able to drag items outside application
+			QList<QTreeWidgetItem *> qlSelected;
+			QList<QUrl> qlUrls;
+
+			qlSelected = GetSelectedFiles();
+			for (iI = 0; iI < qlSelected.count(); iI++) {
+				qlUrls.append(QUrl::fromLocalFile(stTab->cfsFileSystem->GetFilePath(qlSelected.at(iI))));
+			} // for
+			qmdMimeData->setUrls(qlUrls);
+		} // if
+
+		// get files from current directory to not be able drag on them
+		for (iI = 0; iI < ctwDir->topLevelItemCount(); iI++) {
+			if (stTab->cfsFileSystem->IsFile(ctwDir->topLevelItem(iI))) {
+				qlIgnore.append(ctwDir->topLevelItem(iI));
+			} // if
+		} // for
+
+		// remember source file system for drop operation
+		qmdMimeData->setData(qsMIME__SOURCE_FILE_SYSTEM, QVariant(reinterpret_cast<int>(stTab->cfsFileSystem)).toString().toLatin1());
+
+		// start drag
+		ctwDir->StartDragFromPanel(qlIgnore);
+		qdDrag->start(Qt::CopyAction | Qt::MoveAction);
+		ctwDir->StopDragFromPanel();
+		qtwiLastMovedOver = NULL;
+	} // if
+} // on_ctwTree_DragEvent
+
+// drop event occured
+const void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaAction, const QList<QUrl> &qlUrls, const QString &qsSourceFileSystem, QTreeWidgetItem *qtwiDroppedOn) const
+{
+	cFileOperationDialog::eOperation eoOperation;
+	QString qsDestination;
+	const sTab *stTab;
+
+	stTab = &qlTabs.at(qswDirs->currentIndex());
+
+	if (edaAction == cTreeWidget::CopyDropAction) {
+		eoOperation = cFileOperationDialog::CopyOperation;
+	} else {
+		QAction *qaCancel, *qaChoice, *qaCopy, *qaMove;
+		QMenu qmMenu;
+
+		qaCopy = qmMenu.addAction(tr("C&opy"));
+		qaMove = qmMenu.addAction(tr("&Move"));
+		qmMenu.addSeparator();
+		qaCancel = qmMenu.addAction(tr("&Cancel"));
+
+		qaChoice = qmMenu.exec(QCursor::pos());
+
+		if (qaChoice == qaCopy) {
+			eoOperation = cFileOperationDialog::CopyOperation;
+		} else {
+			if (qaChoice == qaMove) {
+				eoOperation = cFileOperationDialog::MoveOperation;
+			} else {
+				return;
+			} // if else
+		} // if else
+	} // if else
+
+	// destination path
+	if (qtwiDroppedOn && stTab->cfsFileSystem->IsDir(qtwiDroppedOn)) {
+		qsDestination = stTab->cfsFileSystem->GetFilePath(qtwiDroppedOn);
+	} else {
+		qsDestination = stTab->cfsFileSystem->GetPath();
+	} // if else
+
+	if (qlUrls.count() > 0) {
+		// copy/move dragged files
+	} else {
+		// copy/move from another panel
+		cFileSystem *cfsSource;
+
+		cfsSource = reinterpret_cast<cFileSystem *>(qsSourceFileSystem.toInt());
+	} // if else
+
+	/*QFileInfoList qfilFiles;
+
+	if (clUrls.count() > 0) {
+		// copy/move from local directory
+		int iI;
+
+		// get list of source files
+		for (iI = 0; iI < clUrls.count(); iI++) {
+			qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
+		} // for
+
+		cfoFileOperation->Operate(eoOperation, qfilFiles, qsDestination);
+	} else {
+		// copy/move from archive
+		cArchiveOperation caoArchiveOperation(qmwParent, csSettings);
+		int iI;
+		QList<tHeaderData> qlSourceSelected;
+		QStringList qslToExtract;
+		cArchiveOperation::sArchive *saArchive;
+
+		saArchive = reinterpret_cast<cArchiveOperation::sArchive *>(qsArchiveInformation.toInt());
+		// get list of source files
+		qslToExtract = qsArchiveFiles.split(qcFILE_SEPARATOR);
+		for (iI = 0; iI < saArchive->qlFiles.count(); iI++) {
+			if (qslToExtract.contains(saArchive->qlFiles.at(iI).FileName)) {
+				qlSourceSelected.append(saArchive->qlFiles.at(iI));
+			} // if
+		} // for
+
+		caoArchiveOperation.Operate(cArchiveOperation::Extract, *saArchive, qlSourceSelected, qsDestination);
+	} // if else*/
+} // on_ctwTree_DropEvent
+
 // dir view got focus
 const void cPanel::on_ctwTree_GotFocus()
 {
@@ -977,6 +1109,24 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 			} // if else
 	} // switch
 } // on_ctwTree_KeyPressed
+
+// dragging items
+const void cPanel::on_ctwTree_MoveEvent(QTreeWidgetItem *qtwiMovedOver)
+{
+	// unselect last item moved over
+	if (static_cast<cTreeWidget *>(qswDirs->currentWidget())->indexOfTopLevelItem(qtwiLastMovedOver) != -1) {
+		qtwiLastMovedOver->setSelected(false);
+	} // if
+
+	// memorize current
+	if (qtwiMovedOver && !qtwiMovedOver->isSelected()) {
+		qtwiMovedOver->setSelected(true);
+		qtwiLastMovedOver = qtwiMovedOver;
+	} else {
+		// will not be unselected next time
+		qtwiLastMovedOver = NULL;
+	} // if else
+} // on_ctwTree_MoveEvent
 
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
