@@ -44,7 +44,6 @@ class cArchiveCopy : public QThread
 	private:
 		bool bCanceled;																				///< true if operation is canceled
 		bool bFullPath;																				///< extract files with full path
-		static cArchiveCopy *cacCallback;														///< pointer to this class
 		cContinue ccContinue;																		///< continue dialog
 		cCopyMoveConflict ccmcConflict;															///< conflict dialog
 		cCopyMoveDialog *ccmdDialog;																///< copy/move dialog
@@ -60,6 +59,7 @@ class cArchiveCopy : public QThread
 		cPermission::eChoice ecPermissionCurrent;												///< current permission dialog user's response
 #endif
 		QFileInfo qfiArchive;																		///< archive represented by this file system
+		static QHash<QString, cArchiveCopy *> qhCallback;									///< callback function table for several background operations
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;		///< list of all source archive files
 		QHBoxLayout *qhblOperations;																///< layout for background operations
 		qint64 qi64CurrentMaximum;																	///< size of currently copied file
