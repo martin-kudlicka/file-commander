@@ -269,6 +269,11 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 		cpOther = cpLeft;
 	} // if else
 
+	// check if drive change is neccessary
+	if (qsDrive != cpOther->GetFileSystem()->GetDrive() && qsDrive == cpPanel->GetFileSystem()->GetDrive()) {
+		return;
+	} // if
+
 	if (qsDrive == cpOther->GetFileSystem()->GetDrive()) {
 		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive, cpOther->GetFileSystem()->GetPath());
 	} else {
