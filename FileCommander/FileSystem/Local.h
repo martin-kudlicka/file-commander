@@ -154,8 +154,10 @@ class cLocal : public cFileSystem
 																									  \return path for specified file */
 		const QStringList GetSelectedDirectoryStringList() const;			///< selected directory list for current directory
 																								/**< \return selected directory list */
-		const QFileInfoList GetSelectedFiles() const;							///< selected files in tree view
+		const QFileInfoList GetSelectedFileList() const;						///< selected files in tree view
 																								/**< \return selected files in tree view */
+		const QList<QTreeWidgetItem *> GetSelectedFiles() const;				///< selected items from current directory list
+																								/**< \return selected items from current directory list */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */
 		const bool GetVolumeName(QString *qsName) const;						///< find out name of the disk

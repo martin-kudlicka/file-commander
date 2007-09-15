@@ -415,6 +415,23 @@ const QStringList cArchive::GetSelectedDirectoryStringList() const
 	return QStringList();
 } // GetSelectedDirectoryStringList
 
+// selected items from current directory list
+const QList<QTreeWidgetItem *> cArchive::GetSelectedFiles() const
+{
+	QList<QTreeWidgetItem *> qlSelected;
+
+	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.key()->isSelected()) {
+			qlSelected.append(qhiFile.key());
+		} // if
+	} // while
+
+	return qlSelected;
+} // GetSelectedFiles
+
 // get text for tab in directory view
 const QString cArchive::GetTabText() const
 {
