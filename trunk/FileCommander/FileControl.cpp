@@ -419,12 +419,12 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination)
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
 	int iI;
-	QString qsDestination, qsFilter;
+	QString qsFilter;
 	sOperation soOperation;
 	sTypeCount stcTypeCount;
 	void *vFileList;
@@ -449,18 +449,24 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 	// prepare destination path for dialog
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
-		qsDestination = cfsDestination->GetPath();
+		if (qsDestination.isEmpty()) {
+			// called by main button
+			qsDestination = cfsDestination->GetPath();
 
-		if (qlSource.count() == 1) {
-			// one file selected
-			QTreeWidgetItem *qtwiFile;
+			if (qlSource.count() == 1) {
+				// one file selected
+				QTreeWidgetItem *qtwiFile;
 
-			qtwiFile = qlSource.at(0);
-			if (cfsSource->IsFile(qtwiFile)) {
-				qsDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
-			} // if
+				qtwiFile = qlSource.at(0);
+				if (cfsSource->IsFile(qtwiFile)) {
+					qsDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
+				} // if
+			} else {
+				// many files selected
+				qsDestination += "/*.*";
+			} // if else
 		} else {
-			// many files selected
+			// drag and drop operation
 			qsDestination += "/*.*";
 		} // if else
 	} // if

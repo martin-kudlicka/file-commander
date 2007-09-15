@@ -77,6 +77,8 @@ class cArchive : public cFileSystem
 																									  \return file's last modified date/time stamp */
 		const QString GetPath() const;												///< current path on file system
 																								/**< \return path on file system */
+		const QList<QTreeWidgetItem *> GetSelectedFiles() const;				///< selected items from current directory list
+																								/**< \return selected items from current directory list */
 		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory
 																								/**< \param qtwiFile file to check

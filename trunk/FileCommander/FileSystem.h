@@ -122,6 +122,8 @@ class cFileSystem : public QObject
 																											  \return path for specified file */
 		virtual const QStringList GetSelectedDirectoryStringList() const = 0;	///< selected directory list for current directory
 																										/**< \return selected directory list */
+		virtual const QList<QTreeWidgetItem *> GetSelectedFiles() const = 0;		///< selected items from current directory list
+																										/**< \return selected items from current directory list */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
 																										/**< \return tab text */
 		virtual const bool GetVolumeName(QString *qsName) const = 0;				///< find out name of the disk

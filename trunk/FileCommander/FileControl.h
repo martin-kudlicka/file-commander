@@ -86,12 +86,13 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination);
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "");
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
 																							  \param qlSource selected source files
-																							  \param cfsDestination destination file system */
+																							  \param cfsDestination destination file system
+																							  \param qsDestination default destination path */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
 		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;

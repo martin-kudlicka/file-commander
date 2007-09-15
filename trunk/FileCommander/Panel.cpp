@@ -916,6 +916,7 @@ const void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaActio
 		cFileSystem *cfsSource;
 
 		cfsSource = reinterpret_cast<cFileSystem *>(qsSourceFileSystem.toInt());
+		cfcFileControl->Operation(eoOperation, cfsSource, cfsSource->GetSelectedFiles(), stTab->cfsFileSystem, qsDestination);
 	} // if else
 
 	/*QFileInfoList qfilFiles;

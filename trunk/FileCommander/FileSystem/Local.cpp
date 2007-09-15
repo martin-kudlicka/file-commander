@@ -572,11 +572,11 @@ const QStringList cLocal::GetSelectedDirectoryStringList() const
 } // GetSelectedDirectoryStringList
 
 // selected files in tree view
-const QFileInfoList cLocal::GetSelectedFiles() const
+const QFileInfoList cLocal::GetSelectedFileList() const
 {
-	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
 	QFileInfoList qfilSelected;
 
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
 	while (qhiFile.hasNext()) {
 		qhiFile.next();
 
@@ -586,6 +586,27 @@ const QFileInfoList cLocal::GetSelectedFiles() const
 	} // while
 
 	return qfilSelected;
+} // GetSelectedFileList
+
+// selected items from current directory list
+const QList<QTreeWidgetItem *> cLocal::GetSelectedFiles() const
+{
+	QList<QTreeWidgetItem *> qlSelected;
+
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetSelectedFiles();
+	} // if
+
+	QHashIterator<QTreeWidgetItem *, QFileInfo> qhiFile(qhFiles);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.key()->isSelected()) {
+			qlSelected.append(qhiFile.key());
+		} // if
+	} // while
+
+	return qlSelected;
 } // GetSelectedFiles
 
 // get text for tab in directory view
@@ -886,7 +907,7 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	QFileInfoList qfilSelected;
 	QStringList qslSelected;
 
-	qfilSelected = GetSelectedFiles();
+	qfilSelected = GetSelectedFileList();
 
 #ifdef Q_WS_WIN
 	for (iI = 0; iI < qfilSelected.count(); iI++) {
