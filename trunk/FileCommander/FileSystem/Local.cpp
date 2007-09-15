@@ -607,19 +607,25 @@ const QString cLocal::GetTabText() const
 } // GetTabText
 
 // find out name of the disk
-const QString cLocal::GetVolumeName() const
+const bool cLocal::GetVolumeName(QString *qsName) const
 {
-	QString qsName;
-
 #ifdef Q_WS_WIN
-	qsName.fill(32, uiVOLUME_NAME * sizeof(WCHAR));
-	GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName.data()), qsName.size() / sizeof(WCHAR), NULL, NULL, NULL, NULL, 0);
-	qsName = qsName.left(qsName.trimmed().size() - 1);
-#else
-	qsName = qsDrive;
-#endif
+	bool bResult;
 
-	return qsName;
+	qsName->fill(32, uiVOLUME_NAME * sizeof(WCHAR));
+	bResult = GetVolumeInformation(reinterpret_cast<LPCWSTR>(qsRootPath.unicode()), reinterpret_cast<LPWSTR>(qsName->data()), qsName->size() / sizeof(WCHAR), NULL, NULL, NULL, NULL, 0);
+
+	if (bResult) {
+		*qsName = qsName->left(qsName->trimmed().size() - 1);
+		return true;
+	} // if
+
+	return bResult;
+#else
+	*qsName = qsDrive;
+
+	return true;
+#endif
 } // GetVolumeName
 
 // set path to root directory

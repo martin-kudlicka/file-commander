@@ -423,10 +423,10 @@ const QString cArchive::GetTabText() const
 } // GetTabText
 
 // find out name of the disk
-const QString cArchive::GetVolumeName() const
+const bool cArchive::GetVolumeName(QString *qsName) const
 {
 	// TODO GetVolumeName
-	return QString();
+	return false;
 } // GetVolumeName
 
 // set path to root directory
