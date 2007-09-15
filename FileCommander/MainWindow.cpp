@@ -255,12 +255,27 @@ cMainWindow::cMainWindow()
 // drive changed in panel
 const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDrive) const
 {
+	bool bChangeFileSystem;
+	cPanel *cpOther;
+
 	if (qswLeft->currentIndex() == -1) {
 		// tabs are not yet initialized
 		return;
 	} // if
 
-	if (cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive)) {
+	if (cpPanel == cpLeft) {
+		cpOther = cpRight;
+	} else {
+		cpOther = cpLeft;
+	} // if else
+
+	if (qsDrive == cpOther->GetFileSystem()->GetDrive()) {
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive, cpOther->GetFileSystem()->GetPath());
+	} else {
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive);
+	} // if else
+
+	if (bChangeFileSystem) {
 		// TODO DriveIndexChanged connect new file system
 	} // if
 	//cpPanel->RefreshContent();
