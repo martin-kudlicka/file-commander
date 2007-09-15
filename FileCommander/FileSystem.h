@@ -124,8 +124,9 @@ class cFileSystem : public QObject
 																										/**< \return selected directory list */
 		virtual const QString GetTabText() const = 0;									///< get text for tab in directory view
 																										/**< \return tab text */
-		virtual const QString GetVolumeName() const = 0;								///< find out name of the disk
-																										/**< \return name of the disk */
+		virtual const bool GetVolumeName(QString *qsName) const = 0;				///< find out name of the disk
+																										/**< \param qsName name of the disk
+																											  \return true if successful */
 		virtual const void GoToRootDir() = 0;												///< set path to root directory
 		virtual const void GoToUpDir() = 0;													///< go one directory up if possible
 		virtual const bool IsDir(QTreeWidgetItem *qtwiFile) const = 0;				///< check if file is directory

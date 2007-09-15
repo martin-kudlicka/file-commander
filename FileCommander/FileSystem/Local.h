@@ -158,8 +158,9 @@ class cLocal : public cFileSystem
 																								/**< \return selected files in tree view */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */
-		const QString GetVolumeName() const;										///< find out name of the disk
-																								/**< \return name of the disk */
+		const bool GetVolumeName(QString *qsName) const;						///< find out name of the disk
+																								/**< \param qsName name of the disk
+																									  \return true if successful */
 		const void GoToRootDir();														///< set path to root directory
 		const void GoToUpDir();															///< go one directory up if possible
 		const bool IsDir(QTreeWidgetItem *qtwiFile) const;						///< check if file is directory

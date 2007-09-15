@@ -59,15 +59,17 @@ const void cPanel::ActualizeDrives() const
 const void cPanel::ActualizeVolumeInfo() const
 {
 	if (!qlTabs.isEmpty() && qlTabs.at(qswDirs->currentIndex()).bValid) {
-		cFileSystem::sDiskSpace sdsInfo;
 		QString qsName;
 		const sTab *stTab;
 
 		stTab = &qlTabs.at(qswDirs->currentIndex());
 
-		qsName = stTab->cfsFileSystem->GetVolumeName();
-		sdsInfo = stTab->cfsFileSystem->GetDiskSpace();
-		qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(GetSizeString(sdsInfo.qi64Free)).arg(GetSizeString(sdsInfo.qi64Total)));
+		if (stTab->cfsFileSystem->GetVolumeName(&qsName)) {
+			cFileSystem::sDiskSpace sdsInfo;
+
+			sdsInfo = stTab->cfsFileSystem->GetDiskSpace();
+			qlDriveInfo->setText(tr("[%1] %2 of %3 free").arg(qsName).arg(GetSizeString(sdsInfo.qi64Free)).arg(GetSizeString(sdsInfo.qi64Total)));
+		} // if
 	} // if
 } // ActualizeVolumeInfo
 

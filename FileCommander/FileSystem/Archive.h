@@ -162,8 +162,9 @@ class cArchive : public cFileSystem
 																								/**< \return selected directory list */
 		const QString GetTabText() const;											///< get text for tab in directory view
 																								/**< \return tab text */
-		const QString GetVolumeName() const;										///< find out name of the disk
-																								/**< \return name of the disk */
+		const bool GetVolumeName(QString *qsName) const;						///< find out name of the disk
+																								/**< \param qsName name of the disk
+																									  \return true if successful */
 		const void GoToRootDir();														///< set path to root directory
 		const bool OpenArchive();														///< open archive
 																								/**< \return true if archive can be opened */
