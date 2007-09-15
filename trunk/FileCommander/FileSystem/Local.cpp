@@ -198,6 +198,16 @@ const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 	} // if else
 } // EndSearch
 
+// free file operation list from memory
+const void cLocal::FreeOperationList(void *vFileList) const
+{
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->FreeOperationList(vFileList);
+	} // if
+
+	delete static_cast<QFileInfoList *>(vFileList);
+} // FreeOperationList
+
 // get value from content plugin
 const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)
 {

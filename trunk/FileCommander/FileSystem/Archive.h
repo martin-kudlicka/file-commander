@@ -32,6 +32,8 @@ class cArchive : public cFileSystem
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
 																									  \return true if directory exists */
+		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
+																								/**< \param vFileList pointer to file operation list in memory */
 		QList<QTreeWidgetItem *> GetDirectoryContent(const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param bRefresh reload directory content if true

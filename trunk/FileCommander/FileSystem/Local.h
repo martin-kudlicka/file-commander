@@ -80,6 +80,8 @@ class cLocal : public cFileSystem
 																									  \return true if directory exists */
 		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
 																								/**< \param bClearCustomOnly just clear custom file list if true */
+		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
+																								/**< \param vFileList pointer to file operation list in memory */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description

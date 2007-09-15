@@ -482,7 +482,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	// copy selected file list to the new source file system
 	vFileList = cfsSource->GetFileList(qlSource);
 	soOperation.cfsSource->SetOperationFileList(vFileList);
-	delete vFileList;
+	cfsSource->FreeOperationList(vFileList);
 
 	// correct destination path
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
@@ -502,6 +502,9 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 			break;
 		case cFileOperationDialog::EnqueueAction:
 			Enqueue(soOperation);
+			break;
+		default:
+			;
 	} // if
 } // Operation
 
