@@ -6,6 +6,7 @@
 #include "FileControl/Process.h"
 #include <QtCore/QDateTime>
 #include <QtGui/QInputDialog>
+#include "FileControl/SelectDriveDialog.h"
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin)
@@ -28,7 +29,7 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cFileControl
 
 // change file system according to new drive with last path there
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive)
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive)
 {
 	QString qsPath;
 
@@ -50,22 +51,31 @@ const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QStr
 		} // for
 	} // if else
 
-	return ChangeFileSystem(cfsFileSystem, qsDrive, qsPath);
+	return ChangeFileSystem(cfsFileSystem, qcbDrive, qsDrive, qsPath);
 } // ChangeFileSystem
 
 // change file system according to new drive
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath)
+const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath)
 {
-	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, wath FS list) (copy FTP, at least logon info if same drive as existing FTP)
+	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, watch FS list) (copy FTP, at least logon info if same drive as existing FTP)
 	sPathInfo spiPathInfo;
 
 	spiPathInfo = GetPathInfo(qsPath);
 
 	if (cfsFileSystem->TryPath(qsPath)) {
+		// remember last path
 		qhLastPaths.insert(cfsFileSystem->GetDrive(), cfsFileSystem->GetPath());
+		// change drive combo box
+		qcbDrive->blockSignals(true);
+		qcbDrive->setCurrentIndex(qcbDrive->findText(qsDrive));
+		qcbDrive->blockSignals(false);
+		// set path
 		cfsFileSystem->SetPath(qsDrive, spiPathInfo.qsRootPath, qsPath);
 	} else {
-		// TODO ChangeFileSystem change file system (drive) dialog, on OK try change FS again, cancel - stay on current fs without change
+		QString qsNewDrive;
+
+		qsNewDrive = SelectDrive(qsDrive);
+		return ChangeFileSystem(cfsFileSystem, qcbDrive, qsNewDrive);
 	} // if else
 
 	return false;
@@ -549,6 +559,30 @@ const void cFileControl::ProcessQueue()
 	} // if else
 } // ProcessQueue
 
+// show change drive dialog to set new drive for file system
+const QString cFileControl::SelectDrive(const QString &qsDrive) const
+{
+	cSelectDriveDialog *csddSelectDrive;
+	int iI;
+	QList<QPair<QString, sDrive> > qlDrives;
+	QString qsNewDrive;
+	QStringList qslDrives;
+
+	qlDrives = GetDrives();
+
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		qslDrives.append(qlDrives.at(iI).first);
+	} // for
+
+	csddSelectDrive = new cSelectDriveDialog(qmwParent, qslDrives, qsDrive);
+	if (csddSelectDrive->exec() == QDialog::Accepted) {
+		qsNewDrive = csddSelectDrive->qcbDrive->currentText();
+	} // if
+	csddSelectDrive->deleteLater();
+
+	return qsNewDrive;
+} // SelectDrive
+
 // start shell command window
 const void cFileControl::StartTerminal(const QString &qsPath) const
 {
@@ -561,7 +595,7 @@ const void cFileControl::StartTerminal(const QString &qsPath) const
 		cpProcess.StartDetached("cmd", qsPath);
 	} // if else
 #else
-	// TODO Linux terminal
+	// TODO StartTerminal Linux terminal
 #endif
 } // StartTerminal
 
