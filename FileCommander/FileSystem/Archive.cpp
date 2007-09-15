@@ -150,6 +150,12 @@ const void cArchive::EndSearch(const bool &bClearCustomOnly /* false */)
 	// TODO EndSearch
 } // EndSearch
 
+// free file operation list from memory
+const void cArchive::FreeOperationList(void *vFileList) const
+{
+	delete static_cast<QList<tHeaderData> *>(vFileList);
+} // FreeOperationList
+
 // get value from content plugin
 const QString cArchive::GetContentPluginValue(const sContentPluginRequest &sContent)
 {

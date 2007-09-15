@@ -17,6 +17,9 @@ const void cContinue::Show(const QString &qsError, const QString &qsFilename) co
 			break;
 		case QMessageBox::YesToAll:
 			ecResponse = YesToAll;
+			break;
+		default:
+			;
 	} // switch
 
 	emit Finished(ecResponse);

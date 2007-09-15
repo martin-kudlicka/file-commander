@@ -956,7 +956,10 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 // click on header in tree (dir) view
 const void cPanel::on_qhvTreeHeader_sectionClicked(int logicalIndex)
 {
-	Sort(qswDirs->currentIndex(), qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
+	QList<QTreeWidgetItem *> qlFiles;
+
+	qlFiles = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false);
+	Sort(qswDirs->currentIndex(), qlFiles);
 } // on_qhvTreeHeader_sectionClicked
 
 // tab bar's index changed
@@ -1550,6 +1553,7 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort) c
 const void cPanel::SortBy(const int &iColumn) const
 {
 	cTreeWidget *ctwDir;
+	QList<QTreeWidgetItem *> qlFiles;
 	Qt::SortOrder soSortOrder;
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->currentWidget());
@@ -1568,7 +1572,8 @@ const void cPanel::SortBy(const int &iColumn) const
 	ctwDir->header()->setSortIndicator(iColumn, soSortOrder);
 
 	// sort again
-	Sort(qswDirs->currentIndex(), qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false));
+	qlFiles = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetDirectoryContent(false);
+	Sort(qswDirs->currentIndex(), qlFiles);
 } // SortBy
 
 // automatic actualizations
