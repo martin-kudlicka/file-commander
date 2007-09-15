@@ -33,6 +33,7 @@ class cLocal : public cFileSystem
 		~cLocal();																			///< destructor
 
 	private:
+		static const int iTIMER_INTERVAL = 1;										///< periodical check interval in seconds
 		static const uint uiVOLUME_NAME = 32;										///< volume name buffer size
 
 		/// archive information
@@ -202,6 +203,8 @@ class cLocal : public cFileSystem
 		) const;																				///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
 																									  \param hwParent parent window to show menu in */
+		void timerEvent(QTimerEvent *event);										///< periodical file system check
+																								/**< \param event event description */
 		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system
 																								/**< \param qsPath path to check
 																									  \return true if possible to set path to qsPath */

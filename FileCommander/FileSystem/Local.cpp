@@ -133,11 +133,14 @@ cLocal::cLocal(const QString &qsDrive, const QString &qsRootPath, const QString 
 
 	saArchive.caArchive = NULL;
 
+	// signals
 	ccpdContentPluginDelayed = new cContentPluginDelayed(ccpContentPlugin);
 	connect(ccpdContentPluginDelayed, SIGNAL(GotColumnValue(const cContentPluginDelayed::sOutput &)), SLOT(on_ccpdContentPluginDelayed_GotColumnValue(const cContentPluginDelayed::sOutput &)));
 	connect(this, SIGNAL(InterruptContentDelayed()), ccpdContentPluginDelayed, SLOT(on_InterruptContentDelayed()));
-
 	connect(&qfswWatcher, SIGNAL(directoryChanged(const QString &)), SLOT(on_qfswWatcher_directoryChanged(const QString &)));
+
+	// timer
+	startTimer(iTIMER_INTERVAL * 1000);
 
 	SetPath(qsDrive, qsRootPath, qsPath, true);
 } // cLocal
@@ -884,6 +887,12 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
 } // ShowContextMenu
+
+// periodical file system check
+void cLocal::timerEvent(QTimerEvent *event)
+{
+	CheckPath();
+} // timerEvent
 
 // try if path exists on file system
 const bool cLocal::TryPath(const QString &qsPath) const
