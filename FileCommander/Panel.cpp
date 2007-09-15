@@ -1408,14 +1408,8 @@ const void cPanel::SetPath(const QString &qsPath) const
 		const sTab *stTab;
 
 		stTab = &qlTabs.at(qswDirs->currentIndex());
-
-		// change drive
-		qcbDrive->blockSignals(true);
-		qcbDrive->setCurrentIndex(iIndex);
-		qcbDrive->blockSignals(false);
-
-		// possible change of file system
-		if (cfcFileControl->ChangeFileSystem(stTab->cfsFileSystem, spiPathInfo.qsDrive, qsPath)) {
+		// change drive and possible change of file system
+		if (cfcFileControl->ChangeFileSystem(stTab->cfsFileSystem, qcbDrive, spiPathInfo.qsDrive, qsPath)) {
 			ConnectFileSystem(stTab->cfsFileSystem);
 		} // if
 	} // if

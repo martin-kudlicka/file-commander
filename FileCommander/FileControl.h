@@ -47,15 +47,19 @@ class cFileControl : public QObject
 																							  \param clpListerPlugin lister plugin interface
 																							  \param cppPackerPlugin packer plugin interace */
 
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive);
+		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive);
 																						///< change file system according to new drive with last path there
 																						/**< \param cfsFileSystem currently set file system
-																							  \param qsDrive drive to get file system for */
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, const QString &qsDrive, const QString &qsPath);
+																							  \param qcbDrive drive combo box
+																							  \param qsDrive drive to get file system for
+																							  \return true if cfsFileSystem was changed */
+		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath);
 																						///< change file system according to new drive
 																						/**< \param cfsFileSystem currently set file system
+																							  \param qcbDrive drive combo box
 																							  \param qsDrive drive to get file system for
-																							  \param startup path */
+																							  \param startup path
+																							  \return true if cfsFileSystem was changed */
 		const void CloseFileSystem(cFileSystem *cfsFileSystem) const;
 																						///< close used file system
 																						/**< \param cfsFileSystem file system to close */
@@ -145,6 +149,8 @@ class cFileControl : public QObject
 																						/**< \param soOperation operation description
 																							  \param eopPosition position of operation */
 		const void ProcessQueue();												///< process first queued operation
+		const QString SelectDrive(const QString &qsDrive) const;		///< show change drive dialog to set new drive for file system
+																						/**< \param const QString &qsDrive default selected drive in dialog */
 
 	signals:
 		void AddIntoQueueList(QListWidgetItem *qlwiItem) const;		///< add new item into queue list

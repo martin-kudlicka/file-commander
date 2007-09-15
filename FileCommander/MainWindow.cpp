@@ -257,6 +257,7 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 {
 	bool bChangeFileSystem;
 	cPanel *cpOther;
+	QComboBox *qcbDrive;
 
 	if (qswLeft->currentIndex() == -1) {
 		// tabs are not yet initialized
@@ -265,8 +266,10 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 
 	if (cpPanel == cpLeft) {
 		cpOther = cpRight;
+		qcbDrive = qcbLeftDrive;
 	} else {
 		cpOther = cpLeft;
+		qcbDrive = qcbRightDrive;
 	} // if else
 
 	// check if drive change is neccessary
@@ -275,9 +278,9 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 	} // if
 
 	if (qsDrive == cpOther->GetFileSystem()->GetDrive()) {
-		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive, cpOther->GetFileSystem()->GetPath());
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, qsDrive, cpOther->GetFileSystem()->GetPath());
 	} else {
-		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qsDrive);
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, qsDrive);
 	} // if else
 
 	if (bChangeFileSystem) {
