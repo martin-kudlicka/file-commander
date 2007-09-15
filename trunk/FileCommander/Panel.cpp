@@ -479,6 +479,11 @@ bool cPanel::eventFilter(QObject *watched, QEvent *event)
 
 						iIndex = qcbDrive->findText(static_cast<QKeyEvent *>(event)->text().toUpper());
 						if (iIndex != -1) {
+							// set undefined drive to invoke drive change event with the same drive
+							qcbDrive->blockSignals(true);
+							qcbDrive->setCurrentIndex(-1);
+							qcbDrive->blockSignals(false);
+							// change drive
 							qcbDrive->setCurrentIndex(iIndex);
 							qcbDrive->hidePopup();
 							static_cast<cTreeWidget *>(qswDirs->currentWidget())->setFocus(Qt::OtherFocusReason);
