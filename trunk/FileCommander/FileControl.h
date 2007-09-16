@@ -71,7 +71,7 @@ class cFileControl : public QObject
 																						///< create new directory
 																						/**< \param cfsFileSystem file system to create new directory in
 																							  \return new directory name */
-		const void Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
+		const void Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles) const;
 																						///< edit selected files
 																						/**< \param cfsFileSystem file system
 																							  \param qlSelectedFiles files to edit */
@@ -86,17 +86,22 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "", QFileInfoList qfilLocalSource = QFileInfoList());
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, QString qsDestinationDragAndDrop = "", QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
 																							  \param qlSource selected source files
-																							  \param cfsDestination destination file system
-																							  \param qsDestination default destination path from drag & drop operation
+																							  \param qsDestinationPath destination file system's path
+																							  \param qsDestinationDragAndDrop default destination path from drag & drop operation
 																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
-		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
+		const void UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination) const;
+																						///< unpack selected files
+																						/**< \param cfsFileSystem file system
+																							  \param qlSelectedFiles files to unpack
+																							  \param qsDestination default destination path */
+		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles) const;
 																						///< view selected files
 																						/**< \param cfsFileSystem file system
 																							  \param qlSelectedFiles files to show */
@@ -141,6 +146,13 @@ class cFileControl : public QObject
 																							  \return new copy of source file system */
 		const void Enqueue(const sOperation &soOperation);				///< place operation into queue
 																						/**< \param soOperation operation description */
+		const QString GetDialogDestinationPath(cFileSystem *cfsSource, const QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop = "") const;
+																						///< prepare destination path for dialog
+																						/**< \param cfsSource source file system
+																							  \param qlSource source files to operate with
+																							  \param qsDestinationPath default destination path
+																							  \param qsDestinationDragAndDrop default destination path for drag and drop operation
+																							  \return prepared destination path */
 		const sTypeCount GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const;
 																						///< count files type
 																						/**< \param cfsFileSystem file system

@@ -397,12 +397,15 @@ void cArchiveCopy::run()
 				// make destination path if doesn't exist
 				qdDir.mkpath(QFileInfo(qsTarget).path());
 
-				// extract file
+				// to call right callback function (several variants for various plugins)
 				qhCallback.insert(QFileInfo(qsTarget).fileName(), this);
 				qhCallback.insert(qsTarget, this);
+				qhCallback.insert(thdHeaderData.FileName, this);
+				// extract file
 				iErrorCode = spiPluginInfo.tpfProcessFile(hArchive, PK_EXTRACT, NULL, qsTarget.toLatin1().data());
 				qhCallback.remove(QFileInfo(qsTarget).fileName());
 				qhCallback.remove(qsTarget);
+				qhCallback.remove(thdHeaderData.FileName);
 
 				// check for errors
 				if (iErrorCode) {

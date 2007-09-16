@@ -15,18 +15,18 @@ class cUnpackFilesDialog : public QDialog, public Ui::qdUnpackFiles
 
 	public:
 		cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qsDestination, cSettings *csSettings);
-																	///< constructor
-																	/**< \param qmwParent parent widget (window) of this dialog
-																		  \param qsDestination destination path for extraction
-																		  \param csSettings application's settings */
+																			///< constructor
+																			/**< \param qmwParent parent widget (window) of this dialog
+																				  \param qsDestination destination path for extraction
+																				  \param csSettings application's settings */
 
 	private:
-		cSettings *csSettings;								///< application's settings file
-		QCompleter qcDestination;							///< completer for destination combo box
+		cSettings *csSettings;										///< application's settings file
+		QCompleter qcDestination;									///< completer for destination combo box
 
 	private slots:
-		void on_qpbOK_clicked(bool checked = false);	///< OK button is clicked on
-																	/**< \param checked true if button is checkable and checked */
+		const void on_qpbOK_clicked(bool checked = false);	///< OK button is clicked on
+																			/**< \param checked true if button is checkable and checked */
 }; // cUnpackFilesDialog
 
 #endif

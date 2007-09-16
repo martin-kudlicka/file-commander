@@ -1,4 +1,4 @@
-#include "ArchiveOperation/UnpackFilesDialog.h"
+#include "FileSystem/Archive/UnpackFilesDialog.h"
 
 #include <QtGui/QDirModel>
 
@@ -22,7 +22,7 @@ cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qs
 } // cUnpackFilesDialog
 
 // OK button is clicked on
-void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
+const void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
 	int iIndex;
 	QString qsDestination, qsFilter;
