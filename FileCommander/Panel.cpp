@@ -839,7 +839,7 @@ const void cPanel::on_ctwTree_DragEvent()
 		qdDrag = new QDrag(static_cast<cTreeWidget *>(qswDirs->currentWidget()));
 		qdDrag->setMimeData(qmdMimeData);
 
-		if (stTab->cfsFileSystem->IsLocal()) {
+		if (stTab->cfsFileSystem->Type() == cFileSystem::Local) {
 			// set URLs to be able to drag items outside application
 			QList<QTreeWidgetItem *> qlSelected;
 			QList<QUrl> qlUrls;

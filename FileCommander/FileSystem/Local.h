@@ -171,8 +171,6 @@ class cLocal : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
-		const bool IsLocal() const;													///< local file system test
-																								/**< \return true if it is local file system */
 		const bool OpenArchive(const QFileInfo &qfiArchive);					///< try to open archive
 																								/**< \param qfiArchive archive file path
 																									  \return true if archive can be opened */
@@ -214,6 +212,7 @@ class cLocal : public cFileSystem
 		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system
 																								/**< \param qsPath path to check
 																									  \return true if possible to set path to qsPath */
+		const eType Type() const;														///< file system type
 		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type

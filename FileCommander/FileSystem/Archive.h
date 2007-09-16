@@ -86,8 +86,6 @@ class cArchive : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
-		const bool IsLocal() const;													///< local file system test
-																								/**< \return true if it is local file system */
 		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type
@@ -108,6 +106,7 @@ class cArchive : public cFileSystem
 																								/**< \param qsPath to initialize archive file system
 																									  \param bStartup true if initializing file system class
 																									  \return true if succesfull */
+		const eType Type() const;														///< file system type
 
 	private:
 		cArchiveCopy *cacCopy;															///< copy files from archive thread

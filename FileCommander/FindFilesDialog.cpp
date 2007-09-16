@@ -475,7 +475,7 @@ const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 
 		qsPath = &qslPaths.at(iI);
 		spiPathInfo = cfcFileControl->GetPathInfo(*qsPath);
-		if (spiPathInfo.edtType == cFileControl::Local) {
+		if (spiPathInfo.etType == cFileSystem::Local) {
 			if (!bLocalIncluded) {
 				// create local file system to search, local is enough to create only once
 				stsLocal.cfsFileSystem = cfcFileControl->GetFileSystem(spiPathInfo.qsDrive, *qsPath);

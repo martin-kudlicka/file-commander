@@ -13,6 +13,12 @@ class cFileSystem : public QObject
 	Q_OBJECT
 
 	public:
+		/// drive types
+		enum eType {
+			Local,																					///< local drive
+			Archive																					///< archive
+		};
+
 		/// parameters for content plugin value
 		struct sContentPluginRequest {
 			QTreeWidgetItem *qtwiFile;															///< file to get value from
@@ -137,8 +143,6 @@ class cFileSystem : public QObject
 		virtual const bool IsFile(QTreeWidgetItem *qtwiFile) const = 0;			///< check if file is really file
 																										/**< \param qtwiFile file to check
 																											  \return true if file */
-		virtual const bool IsLocal() const = 0;											///< local file system test
-																										/**< \return true if it is local file system */
 		virtual const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath) = 0;
 																										///< write local files to this file system
 																										/**< \param eoOperation operation type
@@ -170,6 +174,7 @@ class cFileSystem : public QObject
 		virtual const bool TryPath(const QString &qsPath) const = 0;				///< try if path exists on file system
 																										/**< \param qsPath path to check
 																											  \return true if possible to set path to qsPath */
+		virtual const eType Type() const = 0;												///< file system type
 		virtual const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition) = 0;
 																										///< write local files to this file system
 																										/**< \param eoOperation operation type
