@@ -181,12 +181,13 @@ class cLocal : public cFileSystem
 																								/**< \param qsPath path to test
 																									  \return true if path exists and is accessible */
 #endif
-		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
+		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type
 																									  \param qsFilter filter to chose files by
 																									  \param qsDestination destination path on this file system
-																									  \param eopPosition operation position type */
+																									  \param eopPosition operation position type
+																									  \param bFullPath extract files with full path if true */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */

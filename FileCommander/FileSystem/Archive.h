@@ -88,12 +88,13 @@ class cArchive : public cFileSystem
 																									  \return true if file */
 		const bool IsLocal() const;													///< local file system test
 																								/**< \return true if it is local file system */
-		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
+		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
 																								///< write local files to this file system
 																								/**< \param eoOperation operation type
 																									  \param qsFilter filter to chose files by
 																									  \param qsDestination destination path on this file system
-																									  \param eopPosition operation position type */
+																									  \param eopPosition operation position type
+																									  \param bFullPath extract files with full path if true */
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);

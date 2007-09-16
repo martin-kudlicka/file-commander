@@ -35,13 +35,17 @@ const void cArchiveCopy::CheckContinue(const int &iErrorCode, cContinue::eChoice
 } // CheckContinue
 
 // start of copy or move operation
-const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath /* true */)
+const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
 {
 	this->qlOperation = qlOperation;
 	this->qfiArchive = qfiArchive;
-	if (qsArchivePath != ".") {
-		this->qsArchivePath = qsArchivePath;
-	} // if
+	if (bFullPath) {
+		if (qsArchivePath != ".") {
+			this->qsArchivePath = qsArchivePath;
+		} // if
+	} else {
+		this->qsArchivePath = '.';
+	} // if else
 	this->qsFilter = qsFilter;
 	this->qhDirectories = qhDirectories;
 	this->qsDestination = qsDestination;

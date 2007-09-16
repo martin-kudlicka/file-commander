@@ -120,6 +120,7 @@ class cFileControl : public QObject
 			cFileSystem *cfsDestination;										///< destination file system
 			QString qsFilter;														///< filter for source files
 			QString qsDestination;												///< destination for copy/move operation
+			bool bFullPath;														///< preserve full file path
 		};
 		/// count of file types
 		struct sTypeCount {
@@ -162,7 +163,7 @@ class cFileControl : public QObject
 																						///< get specified file system type
 																						/**< \param edtType type of file system to obtain
 																							  \return file system handling class */
-		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, QFileInfoList qfilLocalSource = QFileInfoList());
+		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, const bool &bFullPath, QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< preprocess file operation
 																						/**< \param eoOperation type of operation
 																							  \param euaAction user's action in file operation dialog
@@ -170,6 +171,7 @@ class cFileControl : public QObject
 																							  \param qlSource selected source files
 																							  \param qsFilter filter for source files
 																							  \param qsDestination destination path
+																							  \param bFullPath extract files with full path if true
 																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
 																						///< process file operation
