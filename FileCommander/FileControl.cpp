@@ -7,6 +7,7 @@
 #include <QtCore/QDateTime>
 #include <QtGui/QInputDialog>
 #include "FileControl/SelectDriveDialog.h"
+#include "FileSystem/Archive/UnpackFilesDialog.h"
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin)
@@ -205,7 +206,7 @@ const QString cFileControl::CreateDirectory(cFileSystem *cfsFileSystem) const
 } // CreateDirectory
 
 // edit selected files
-const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const
+const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles) const
 {
 	int iI;
 
@@ -255,6 +256,35 @@ const void cFileControl::Enqueue(const sOperation &soOperation)
 
 	ProcessQueue();
 } // Enqueue
+
+// prepare destination path for dialog
+const QString cFileControl::GetDialogDestinationPath(cFileSystem *cfsSource, const QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop /* "" */) const
+{
+	QString qsNewDestination;
+
+	if (qsDestinationDragAndDrop.isEmpty()) {
+		// called by main button
+		qsNewDestination = qsDestinationPath;
+
+		if (qlSource.count() == 1) {
+			// one file selected
+			QTreeWidgetItem *qtwiFile;
+
+			qtwiFile = qlSource.at(0);
+			if (cfsSource->IsFile(qtwiFile)) {
+				qsNewDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
+			} // if
+		} else {
+			// many files selected
+			qsNewDestination += "/*.*";
+		} // if else
+	} else {
+		// drag and drop operation
+		qsNewDestination = qsDestinationDragAndDrop + "/*.*";
+	} // if else
+
+	return qsNewDestination;
+} // GetDialogDestinationPath
 
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const
@@ -447,12 +477,12 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, QString qsDestinationDragAndDrop /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
 	int iI;
-	QString qsFilter;
+	QString qsDestination, qsFilter;
 	sOperation soOperation;
 	sTypeCount stcTypeCount;
 	void *vFileList;
@@ -480,26 +510,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 	// prepare destination path for dialog
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
-		if (qsDestination.isEmpty()) {
-			// called by main button
-			qsDestination = cfsDestination->GetPath();
-
-			if (qlSource.count() == 1) {
-				// one file selected
-				QTreeWidgetItem *qtwiFile;
-
-				qtwiFile = qlSource.at(0);
-				if (cfsSource->IsFile(qtwiFile)) {
-					qsDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
-				} // if
-			} else {
-				// many files selected
-				qsDestination += "/*.*";
-			} // if else
-		} else {
-			// drag and drop operation
-			qsDestination += "/*.*";
-		} // if else
+		qsDestination = GetDialogDestinationPath(cfsSource, qlSource, qsDestinationPath, qsDestinationDragAndDrop);
 	} // if
 
 	if (cfsSource) {
@@ -665,8 +676,43 @@ const void cFileControl::StartTerminal(const QString &qsPath) const
 #endif
 } // StartTerminal
 
+// unpack selected files
+const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination) const
+{
+	cUnpackFilesDialog *cufdDialog;
+	int iI;
+	QList<QTreeWidgetItem *> qlSources;
+	QString qsPreparedDestination;
+
+	// files only
+	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
+		if (cfsFileSystem->IsFile(qlSelectedFiles.at(iI))) {
+			qlSources.append(qlSelectedFiles.at(iI));
+		} // if
+	} // for
+
+	if (qlSources.isEmpty()) {
+		// nothing to unpack
+		return;
+	} // if
+
+	qsPreparedDestination = GetDialogDestinationPath(cfsFileSystem, qlSelectedFiles, qsDestination);
+	cufdDialog = new cUnpackFilesDialog(qmwParent, qsPreparedDestination, csSettings);
+
+	if (cufdDialog->exec() == QDialog::Accepted) {
+		if (cfsFileSystem->IsLocal()) {
+			// local file system -> sources can be archive files
+		} else {
+			// nonlocal -> (probably) already in archive
+			cfsFileSystem->Read(cFileOperationDialog::CopyOperation, cufdDialog->qcbFilter->currentText(), qsPreparedDestination, cFileOperation::ForegroundOperation);
+		} // if else
+	} // if
+
+	cufdDialog->deleteLater();
+} // UnpackSelectedFiles
+
 // view selected files
-const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const
+const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles) const
 {
 	int iI;
 

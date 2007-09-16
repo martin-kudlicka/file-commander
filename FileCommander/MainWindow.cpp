@@ -486,7 +486,7 @@ const void cMainWindow::on_qaCompareDirectories_triggered(bool checked /* false 
 // favourite directories are selected
 const void cMainWindow::on_qaFavouriteDirectories_triggered(bool checked /* false */) const
 {
-	if (qhFavouriteDirectories.count() != 0) {
+	if (!qhFavouriteDirectories.isEmpty()) {
 		if (cpSource == cpLeft) {
 			qpbLeftFavourites->showMenu();
 		} else {
@@ -704,6 +704,12 @@ const void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false 
 	} // if
 } // on_qaTabBarDuplicateTab_triggered
 
+// unpack selected files chosen
+const void cMainWindow::on_qaUnpackSelectedFiles_triggered(bool checked /* false */) const
+{
+	cfcFileControl->UnpackSelectedFiles(cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetPath());
+} // on_qaUnpackSelectedFiles_triggered
+
 // unselect all selected
 const void cMainWindow::on_qaUnselectAll_triggered(bool checked /* false */) const
 {
@@ -774,13 +780,13 @@ const void cMainWindow::on_qmRightHistoryDirectoryList_triggered(QAction *action
 // copy button is clicked on
 const void cMainWindow::on_qpbCopy_clicked(bool checked /* false */) const
 {
-	cfcFileControl->Operation(cFileOperationDialog::CopyOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem());
+	cfcFileControl->Operation(cFileOperationDialog::CopyOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem()->GetPath());
 } // on_qpbCopy_clicked
 
 // delete button is clicked on
 const void cMainWindow::on_qpbDelete_clicked(bool checked /* false */) const
 {
-	cfcFileControl->Operation(cFileOperationDialog::DeleteOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), NULL);
+	cfcFileControl->Operation(cFileOperationDialog::DeleteOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), "");
 } // on_qpbDelete_clicked
 
 // edit button is clicked on
@@ -804,7 +810,7 @@ const void cMainWindow::on_qpbLeftUpDir_clicked(bool checked /* false */) const
 // copy button is clicked on
 const void cMainWindow::on_qpbMove_clicked(bool checked /* false */) const
 {
-	cfcFileControl->Operation(cFileOperationDialog::MoveOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem());
+	cfcFileControl->Operation(cFileOperationDialog::MoveOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem()->GetPath());
 } // on_qpbMove_clicked
 
 // new directory button is clicked on

@@ -21,6 +21,7 @@ FORMS = MainWindow.ui \
 		  FileSystem/CopyMoveDialog.ui \
 		  FileSystem/CopyMoveWidget.ui \
 		  FileSystem/Archive/ArchiveFilePropertiesDialog.ui \
+		  FileSystem/Archive/UnpackFilesDialog.ui \
 		  Panel/SelectFilesDialog.ui \
 		  FindFilesDialog.ui \
 		  FindFilesDialog/DrivesDialog.ui \
@@ -58,6 +59,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Archive/ArchiveCommon.h \
 			 FileSystem/Archive/ArchiveCopy.h \
 			 FileSystem/Archive/Continue.h \
+			 FileSystem/Archive/UnpackFilesDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -113,6 +115,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Archive/ArchiveCommon.cpp \
 			 FileSystem/Archive/ArchiveCopy.cpp \
 			 FileSystem/Archive/Continue.cpp \
+			 FileSystem/Archive/UnpackFilesDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \
