@@ -259,8 +259,11 @@ const void cArchiveCopy::on_crRename_Finished()
 // callback progress function
 int __stdcall cArchiveCopy::ProcessDataProc(char *cFileName, int iSize)
 {
-	if (cFileName) {
-		return qhCallback.value(cFileName)->ProcessDataProc2(cFileName, iSize);
+	cArchiveCopy *cacCallback;
+
+	cacCallback = qhCallback.value(cFileName);
+	if (cacCallback) {
+		return cacCallback->ProcessDataProc2(cFileName, iSize);
 	} else {
 		return true;
 	} // if else
