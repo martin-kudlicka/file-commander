@@ -86,7 +86,7 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "", QFileInfoList &qfilLocalSource = QFileInfoList());
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "", QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
