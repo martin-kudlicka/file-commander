@@ -8,6 +8,7 @@
 #include <QtGui/QInputDialog>
 #include "FileControl/SelectDriveDialog.h"
 #include "FileSystem/Archive/UnpackFilesDialog.h"
+#include <QtGui/QMessageBox>
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin)
@@ -753,7 +754,10 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 					cfsArchive->GetDirectoryContent(&qlFiles);
 					PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::EnqueueAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());
 					CloseFileSystem(cfsArchive);
-				} // if
+				} else {
+					// unsupported archive file or not archive file
+					QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(cfsFileSystem->GetFileNameWithExtension(qlSources.at(iI))));
+				} // if else
 			} // for
 		} else {
 			// nonlocal -> (probably) already in archive
