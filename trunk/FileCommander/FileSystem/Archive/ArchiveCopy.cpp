@@ -157,12 +157,15 @@ const QStringList cArchiveCopy::GetFilesToExtractAndCountTotalSize()
 		const tHeaderData *thdFile;
 
 		thdFile = &qlOperation.at(iI);
-		qslFiles.append(thdFile->FileName);
-		if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
-			qslFiles += GetFilesToExtractAndCountTotalSizeInDirectory(thdFile->FileName);
-		} else {
-			qi64TotalMaximum += thdFile->UnpSize;
-		} // if else
+
+		if (!QString(thdFile->FileName).endsWith("..")) {
+			qslFiles.append(thdFile->FileName);
+			if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY) {
+				qslFiles += GetFilesToExtractAndCountTotalSizeInDirectory(thdFile->FileName);
+			} else {
+				qi64TotalMaximum += thdFile->UnpSize;
+			} // if else
+		} // if
 	} // for
 
 	return qslFiles;
