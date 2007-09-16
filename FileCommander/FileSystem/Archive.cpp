@@ -157,10 +157,10 @@ const void cArchive::FreeOperationList(void *vFileList) const
 } // FreeOperationList
 
 // archive file path
-const QFileInfo &cArchive::GetArchivePath() const
+const QFileInfo &cArchive::GetArchiveFilePath() const
 {
 	return qfiArchive;
-} // GetArchivePath
+} // GetArchiveFilePath
 
 // get value from content plugin
 const QString cArchive::GetContentPluginValue(const sContentPluginRequest &sContent)
