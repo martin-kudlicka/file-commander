@@ -34,6 +34,8 @@ class cArchive : public cFileSystem
 																									  \return true if directory exists */
 		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
 																								/**< \param vFileList pointer to file operation list in memory */
+		const QFileInfo &GetArchivePath() const;									///< archive file path
+																								/**< \return archive file path if archive file system */
 		const bool GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param qlFiles tree items for current directory

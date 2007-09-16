@@ -169,21 +169,27 @@ cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QS
 	cFileSystem *cfsCopy;
 	QString qsDrive, qsPath;
 
-	// copied file system path correction
-	if (qsNewPath.length() > 2 && qsNewPath.at(1) == ':') {
-		// new path probably on different file system
-		sPathInfo spiPathInfo;
+	if (cfsSource->Type() == cFileSystem::Local) {
+		// local file system
+		// copied file system path correction
+		if (qsNewPath.length() > 2 && qsNewPath.at(1) == ':') {
+			// new path probably on different file system
+			sPathInfo spiPathInfo;
 
-		spiPathInfo = GetPathInfo(qsNewPath);
-		qsDrive = spiPathInfo.qsDrive;
-		qsPath = qsNewPath;
+			spiPathInfo = GetPathInfo(qsNewPath);
+			qsDrive = spiPathInfo.qsDrive;
+			qsPath = qsNewPath;
+		} else {
+			// new path on the same file system (can be relative)
+			qsDrive = cfsSource->GetDrive();
+			qsPath = cfsSource->GetPath();
+		} // if else
+
+		cfsCopy = GetFileSystem(qsDrive, qsPath);
 	} else {
-		// new path on the same file system (can be relative)
-		qsDrive = cfsSource->GetDrive();
-		qsPath = cfsSource->GetPath();
+		// archive file system
+		cfsCopy = GetFileSystem(cFileSystem::Archive, cfsSource->GetArchivePath());
 	} // if else
-
-	cfsCopy = GetFileSystem(qsDrive, qsPath);
 
 	return cfsCopy;
 } // CopyFileSystem
@@ -329,31 +335,34 @@ const cFileControl::sTypeCount cFileControl::GetFilesTypeCount(const cFileSystem
 } // GetFilesTypeCount
 
 // get specified file system type
-cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType) const
+cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath /* QFileInfo() */) const
 {
 	// TODO GetFileSystem add FS to some FS list later
-	cFileSystem *cfsFileSystem;
-	int iI;
-	QList<QPair<QString, sDrive> > qlDrives;
+	if (etType == cFileSystem::Local) {
+		// local file system
+		int iI;
+		QList<QPair<QString, sDrive> > qlDrives;
 
-	qlDrives = GetDrives();
+		qlDrives = GetDrives();
 
-	for (iI = 0; iI < qlDrives.count(); iI++) {
-		const QPair<QString, sDrive> *qpDrive;
+		for (iI = 0; iI < qlDrives.count(); iI++) {
+			const QPair<QString, sDrive> *qpDrive;
 
-		qpDrive = &qlDrives.at(iI);
-		if (qpDrive->second.etType == etType) {
-			switch (etType) {
-				case cFileSystem::Local:	cfsFileSystem = new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
-			} // switch
-		} // if
+			qpDrive = &qlDrives.at(iI);
+			if (qpDrive->second.etType == etType) {
+				return new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+			} // if
+		} // for
+	} else {
+		// archive file system
+		cArchive *caArchive;
 
-		if (cfsFileSystem) {
-			break;
-		} // if
-	} // for
+		caArchive = new cArchive("", "", qfiArchivePath, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+		caArchive->SetPath("", true);
+		return caArchive;
+	} // if else
 
-	return cfsFileSystem;
+	return NULL;
 } // GetFileSystem
 
 cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
