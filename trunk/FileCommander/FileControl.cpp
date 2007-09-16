@@ -298,6 +298,34 @@ const cFileControl::sTypeCount cFileControl::GetFilesTypeCount(const cFileSystem
 	return stcTypeCount;
 } // GetFilesTypeCount
 
+// get specified file system type
+cFileSystem *cFileControl::GetFileSystem(const eDriveType &edtType) const
+{
+	// TODO GetFileSystem add FS to some FS list later
+	cFileSystem *cfsFileSystem;
+	int iI;
+	QList<QPair<QString, sDrive> > qlDrives;
+
+	qlDrives = GetDrives();
+
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		const QPair<QString, sDrive> *qpDrive;
+
+		qpDrive = &qlDrives.at(iI);
+		if (qpDrive->second.edtType == edtType) {
+			switch (edtType) {
+				case Local:	cfsFileSystem = new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+			} // switch
+		} // if
+
+		if (cfsFileSystem) {
+			break;
+		} // if
+	} // for
+
+	return cfsFileSystem;
+} // GetFileSystem
+
 cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
 {
 	// TODO GetFileSystem add FS to some FS list later
@@ -419,7 +447,7 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */)
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */, QFileInfoList &qfilLocalSource /* QFileInfoList() */)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
@@ -429,22 +457,25 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	sTypeCount stcTypeCount;
 	void *vFileList;
 
-	if (eoOperation & cFileOperationDialog::CopyOperation && !cfsSource->CanCopy()
-		 || eoOperation & cFileOperationDialog::DeleteOperation && !cfsSource->CanDelete()) {
-		 // operation is not allowed
-		 return;
-	} // if
-
-	// ignore ".." directory
-	for (iI = 0; iI < qlSource.count(); iI++) {
-		if (cfsSource->GetFileName(qlSource.at(iI), false) == "..") {
-			qlSource.removeAt(iI);
-			break;
+	if (cfsSource) {
+		// operation called by main button
+		if (eoOperation & cFileOperationDialog::CopyOperation && !cfsSource->CanCopy()
+			 || eoOperation & cFileOperationDialog::DeleteOperation && !cfsSource->CanDelete()) {
+			 // operation is not allowed
+			 return;
 		} // if
-	} // for
 
-	if (qlSource.isEmpty()) {
-		return;
+		// ignore ".." directory
+		for (iI = 0; iI < qlSource.count(); iI++) {
+			if (cfsSource->GetFileName(qlSource.at(iI), false) == "..") {
+				qlSource.removeAt(iI);
+				break;
+			} // if
+		} // for
+
+		if (qlSource.isEmpty()) {
+			return;
+		} // if
 	} // if
 
 	// prepare destination path for dialog
@@ -471,7 +502,21 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // if else
 	} // if
 
-	stcTypeCount = GetFilesTypeCount(cfsSource, qlSource);
+	if (cfsSource) {
+		// operation called by main button
+		stcTypeCount = GetFilesTypeCount(cfsSource, qlSource);
+	} else {
+		// drag and drop operation
+		stcTypeCount.DirectoryType = 0;
+		stcTypeCount.FileType = 0;
+		for (iI = 0; iI < qfilLocalSource.count(); iI++) {
+			if (qfilLocalSource.at(iI).isDir()) {
+				stcTypeCount.DirectoryType++;
+			} else {
+				stcTypeCount.FileType++;
+			} // if else
+		} // for
+	} // if else
 
 	euaAction = cFileOperationDialog::CancelAction;
 	switch (eoOperation) {
@@ -490,7 +535,13 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	} // if
 
 	// create file systems for file operation
-	soOperation.cfsSource = CopyFileSystem(cfsSource);
+	if (cfsSource) {
+		// operation called by main button
+		soOperation.cfsSource = CopyFileSystem(cfsSource);
+	} else {
+		// drag and drop operation
+		soOperation.cfsSource = GetFileSystem(Local);
+	} // if else
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
 		soOperation.cfsDestination = CopyFileSystem(cfsSource, qsDestination);
 	} else {
@@ -499,9 +550,15 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	// operation type
 
 	// copy selected file list to the new source file system
-	vFileList = cfsSource->GetFileList(qlSource);
-	soOperation.cfsSource->SetOperationFileList(vFileList);
-	cfsSource->FreeOperationList(vFileList);
+	if (cfsSource) {
+		// operation called by main button
+		vFileList = cfsSource->GetFileList(qlSource);
+		soOperation.cfsSource->SetOperationFileList(vFileList);
+		cfsSource->FreeOperationList(vFileList);
+	} else {
+		// drag and drop operation
+		soOperation.cfsSource->SetOperationFileList(&qfilLocalSource);
+	} // if else
 
 	// correct destination path
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
