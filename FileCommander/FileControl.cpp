@@ -477,15 +477,13 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, QString qsDestinationDragAndDrop /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
 	int iI;
 	QString qsDestination, qsFilter;
-	sOperation soOperation;
 	sTypeCount stcTypeCount;
-	void *vFileList;
 
 	if (cfsSource) {
 		// operation called by main button
@@ -520,6 +518,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		// drag and drop operation
 		stcTypeCount.DirectoryType = 0;
 		stcTypeCount.FileType = 0;
+
 		for (iI = 0; iI < qfilLocalSource.count(); iI++) {
 			if (qfilLocalSource.at(iI).isDir()) {
 				stcTypeCount.DirectoryType++;
@@ -545,6 +544,14 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		return;
 	} // if
 
+	PreProcessOperation(eoOperation, euaAction, cfsSource, qlSource, qsFilter, qsDestination, qfilLocalSource);
+} // Operation
+
+// preprocess file operation
+const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, QFileInfoList qfilLocalSource /* QFileInfoList() */)
+{
+	sOperation soOperation;
+
 	// create file systems for file operation
 	if (cfsSource) {
 		// operation called by main button
@@ -563,6 +570,8 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	// copy selected file list to the new source file system
 	if (cfsSource) {
 		// operation called by main button
+		void *vFileList;
+
 		vFileList = cfsSource->GetFileList(qlSource);
 		soOperation.cfsSource->SetOperationFileList(vFileList);
 		cfsSource->FreeOperationList(vFileList);
@@ -593,7 +602,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		default:
 			;
 	} // if
-} // Operation
+} // PreProcessOperation
 
 // process file operation
 const void cFileControl::ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition)
@@ -677,7 +686,7 @@ const void cFileControl::StartTerminal(const QString &qsPath) const
 } // StartTerminal
 
 // unpack selected files
-const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination) const
+const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination)
 {
 	cUnpackFilesDialog *cufdDialog;
 	int iI;
@@ -686,9 +695,17 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 
 	// files only
 	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
-		if (cfsFileSystem->IsFile(qlSelectedFiles.at(iI))) {
-			qlSources.append(qlSelectedFiles.at(iI));
-		} // if
+		if (cfsFileSystem->IsLocal()) {
+			// local file system -> ignore directories
+			if (cfsFileSystem->IsFile(qlSelectedFiles.at(iI))) {
+				qlSources.append(qlSelectedFiles.at(iI));
+			} // if
+		} else {
+			// (probably) archive file system -> ignore just ".." directory
+			if (cfsFileSystem->GetFileName(qlSelectedFiles.at(iI), false) != "..") {
+				qlSources.append(qlSelectedFiles.at(iI));
+			} // if
+		} // if else
 	} // for
 
 	if (qlSources.isEmpty()) {
@@ -704,7 +721,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 			// local file system -> sources can be archive files
 		} else {
 			// nonlocal -> (probably) already in archive
-			cfsFileSystem->Read(cFileOperationDialog::CopyOperation, cufdDialog->qcbFilter->currentText(), qsPreparedDestination, cFileOperation::ForegroundOperation);
+			PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsFileSystem, qlSelectedFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText());
 		} // if else
 	} // if
 

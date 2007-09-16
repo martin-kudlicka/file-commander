@@ -86,7 +86,7 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, QString qsDestinationDragAndDrop = "", QFileInfoList qfilLocalSource = QFileInfoList());
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop = "", QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
@@ -96,7 +96,7 @@ class cFileControl : public QObject
 																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
-		const void UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination) const;
+		const void UnpackSelectedFiles(cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> &qlSelectedFiles, const QString &qsDestination);
 																						///< unpack selected files
 																						/**< \param cfsFileSystem file system
 																							  \param qlSelectedFiles files to unpack
@@ -162,6 +162,15 @@ class cFileControl : public QObject
 																						///< get specified file system type
 																						/**< \param edtType type of file system to obtain
 																							  \return file system handling class */
+		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, QFileInfoList qfilLocalSource = QFileInfoList());
+																						///< preprocess file operation
+																						/**< \param eoOperation type of operation
+																							  \param euaAction user's action in file operation dialog
+																							  \param cfsSource source file system
+																							  \param qlSource selected source files
+																							  \param qsFilter filter for source files
+																							  \param qsDestination destination path
+																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
 																						///< process file operation
 																						/**< \param soOperation operation description
