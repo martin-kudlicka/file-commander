@@ -911,6 +911,14 @@ const void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaActio
 
 	if (qlUrls.count() > 0) {
 		// copy/move dragged files
+		int iI;
+		QFileInfoList qfilFiles;
+
+		for (iI = 0; iI < qlUrls.count(); iI++) {
+			qfilFiles.append(QFileInfo(qlUrls.at(iI).toLocalFile()));
+		} // for
+
+		cfcFileControl->Operation(eoOperation, NULL, QList<QTreeWidgetItem *>(), stTab->cfsFileSystem, qsDestination, qfilFiles);
 	} else {
 		// copy/move from another panel
 		cFileSystem *cfsSource;

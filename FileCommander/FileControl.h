@@ -86,13 +86,14 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "");
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination = "", QFileInfoList &qfilLocalSource = QFileInfoList());
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
 																							  \param qlSource selected source files
 																							  \param cfsDestination destination file system
-																							  \param qsDestination default destination path */
+																							  \param qsDestination default destination path from drag & drop operation
+																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
 																						/**< \param qsPath path to start shell in */
 		const void View(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlSelectedFiles) const;
@@ -145,6 +146,10 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
+		cFileSystem *GetFileSystem(const eDriveType &edtType) const;
+																						///< get specified file system type
+																						/**< \param edtType type of file system to obtain
+																							  \return file system handling class */
 		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
 																						///< process file operation
 																						/**< \param soOperation operation description
