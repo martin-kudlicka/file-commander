@@ -156,6 +156,12 @@ const void cArchive::FreeOperationList(void *vFileList) const
 	delete static_cast<QList<tHeaderData> *>(vFileList);
 } // FreeOperationList
 
+// archive file path
+const QFileInfo &cArchive::GetArchivePath() const
+{
+	return qfiArchive;
+} // GetArchivePath
+
 // get value from content plugin
 const QString cArchive::GetContentPluginValue(const sContentPluginRequest &sContent)
 {

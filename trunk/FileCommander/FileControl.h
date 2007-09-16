@@ -154,9 +154,10 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
-		cFileSystem *GetFileSystem(const cFileSystem::eType &etType) const;
+		cFileSystem *GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath = QFileInfo()) const;
 																						///< get specified file system type
 																						/**< \param etType type of file system to obtain
+																							  \param qfiArchivePath path to archive if archive file system type
 																							  \return file system handling class */
 		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, const bool &bFullPath, QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< preprocess file operation
