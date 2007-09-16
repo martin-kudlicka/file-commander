@@ -216,14 +216,14 @@ const void cLocal::FreeOperationList(void *vFileList) const
 } // FreeOperationList
 
 // archive file path
-const QFileInfo &cLocal::GetArchivePath() const
+const QFileInfo &cLocal::GetArchiveFilePath() const
 {
 	if (saArchive.caArchive) {
-		return saArchive.caArchive->GetArchivePath();
+		return saArchive.caArchive->GetArchiveFilePath();
 	} // if
 
 	return QFileInfo();
-} // GetArchivePath
+} // GetArchiveFilePath
 
 // get value from content plugin
 const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sContent)

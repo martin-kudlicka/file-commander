@@ -188,7 +188,15 @@ cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QS
 		cfsCopy = GetFileSystem(qsDrive, qsPath);
 	} else {
 		// archive file system
-		cfsCopy = GetFileSystem(cFileSystem::Archive, cfsSource->GetArchivePath());
+		cfsCopy = GetFileSystem(cFileSystem::Archive, cfsSource->GetArchiveFilePath());
+		if (cfsCopy) {
+			// set archive path
+			QString qsPath;
+
+			qsPath = cfsSource->GetPath();
+			qsPath = qsPath.mid(cfsSource->GetArchiveFilePath().filePath().length() + 1);
+			cfsCopy->SetPath(qsPath);
+		} // if
 	} // if else
 
 	return cfsCopy;
@@ -279,7 +287,9 @@ const QString cFileControl::GetDialogDestinationPath(cFileSystem *cfsSource, con
 			qtwiFile = qlSource.at(0);
 			if (cfsSource->IsFile(qtwiFile)) {
 				qsNewDestination += '/' + cfsSource->GetFileNameWithExtension(qtwiFile);
-			} // if
+			} else {
+				qsNewDestination += "/*.*";
+			} // if else
 		} else {
 			// many files selected
 			qsNewDestination += "/*.*";
@@ -358,8 +368,12 @@ cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType, const
 		cArchive *caArchive;
 
 		caArchive = new cArchive("", "", qfiArchivePath, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
-		caArchive->SetPath("", true);
-		return caArchive;
+		if (caArchive->SetPath("", true)) {
+			return caArchive;
+		} else {
+			CloseFileSystem(caArchive);
+			return NULL;
+		} // if else
 	} // if else
 
 	return NULL;
@@ -729,6 +743,18 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 	if (cufdDialog->exec() == QDialog::Accepted) {
 		if (cfsFileSystem->Type() == cFileSystem::Local) {
 			// local file system -> sources can be archive files
+			for (iI = 0; iI < qlSources.count(); iI++) {
+				cFileSystem *cfsArchive;
+
+				cfsArchive = GetFileSystem(cFileSystem::Archive, cfsFileSystem->GetFilePath(qlSources.at(iI)));
+				if (cfsArchive) {
+					QList<QTreeWidgetItem *> qlFiles;
+
+					cfsArchive->GetDirectoryContent(&qlFiles);
+					//PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());
+					CloseFileSystem(cfsArchive);
+				} // if
+			} // for
 		} else {
 			// nonlocal -> (probably) already in archive
 			PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsFileSystem, qlSources, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());

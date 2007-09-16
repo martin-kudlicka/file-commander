@@ -57,7 +57,7 @@ class cFileSystem : public QObject
 																										/**< \param bClearCustomOnly just clear custom file list if true */
 		virtual const void FreeOperationList(void *vFileList) const = 0;			///< free file operation list from memory
 																										/**< \param vFileList pointer to file operation list in memory */
-		virtual const QFileInfo &GetArchivePath() const = 0;							///< archive file path
+		virtual const QFileInfo &GetArchiveFilePath() const = 0;						///< archive file path
 																										/**< \return archive file path if archive file system */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
 																										///< get value from content plugin

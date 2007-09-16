@@ -84,7 +84,7 @@ class cLocal : public cFileSystem
 																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
 																								/**< \param vFileList pointer to file operation list in memory */
-		const QFileInfo &GetArchivePath() const;									///< archive file path
+		const QFileInfo &GetArchiveFilePath() const;								///< archive file path
 																								/**< \return archive file path if archive file system */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
