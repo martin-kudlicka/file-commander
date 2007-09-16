@@ -447,7 +447,7 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 } // on_cqwQueue_RemoveQueuedItems
 
 // file operation selected
-const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */, QFileInfoList &qfilLocalSource /* QFileInfoList() */)
+const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination, QString qsDestination /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
 	cFileOperationDialog cfodDialog(qmwParent, csSettings);
 	cFileOperationDialog::eUserAction euaAction;
