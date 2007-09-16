@@ -689,16 +689,6 @@ const bool cLocal::IsFile(QTreeWidgetItem *qtwiFile) const
 	return qhFiles.value(qtwiFile).isFile();
 } // IsFile
 
-// local file system test
-const bool cLocal::IsLocal() const
-{
-	if (saArchive.caArchive) {
-		return saArchive.caArchive->IsLocal();
-	} // if
-
-	return true;
-} // IsLocal
-
 // content changed in archive
 const void cLocal::on_caArchive_ContentChanged(const cFileSystem *cfsFileSystem) const
 {
@@ -967,6 +957,16 @@ const bool cLocal::TryPath(const QString &qsPath) const
 
 	return bResult;
 } // TryPath
+
+// file system type
+const cFileSystem::eType cLocal::Type() const
+{
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->Type();
+	} // if
+
+	return Local;
+} // Type
 
 // write local files to this file system
 const void cLocal::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)

@@ -301,7 +301,7 @@ const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() con
 
 		qfiDrive = &qfilDrives.at(iI);
 		sdDrive.qsPath = qfiDrive->path();
-		sdDrive.edtType = Local;
+		sdDrive.etType = cFileSystem::Local;
 		qlDrives.append(QPair<QString, sDrive>(qfiDrive->path().at(0), sdDrive));
 	} // for
 
@@ -329,7 +329,7 @@ const cFileControl::sTypeCount cFileControl::GetFilesTypeCount(const cFileSystem
 } // GetFilesTypeCount
 
 // get specified file system type
-cFileSystem *cFileControl::GetFileSystem(const eDriveType &edtType) const
+cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType) const
 {
 	// TODO GetFileSystem add FS to some FS list later
 	cFileSystem *cfsFileSystem;
@@ -342,9 +342,9 @@ cFileSystem *cFileControl::GetFileSystem(const eDriveType &edtType) const
 		const QPair<QString, sDrive> *qpDrive;
 
 		qpDrive = &qlDrives.at(iI);
-		if (qpDrive->second.edtType == edtType) {
-			switch (edtType) {
-				case Local:	cfsFileSystem = new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+		if (qpDrive->second.etType == etType) {
+			switch (etType) {
+				case cFileSystem::Local:	cfsFileSystem = new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
 			} // switch
 		} // if
 
@@ -371,8 +371,8 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 
 		qpDrive = &qlDrives.at(iI);
 		if (qpDrive->first == qsDrive) {
-			switch (qpDrive->second.edtType) {
-				case Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+			switch (qpDrive->second.etType) {
+				case cFileSystem::Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
 			} // switch
 		} // if
 
@@ -411,7 +411,7 @@ const cFileControl::sPathInfo cFileControl::GetPathInfo(const QString &qsPath) c
 		if (qsPath.startsWith(qpDrive->second.qsPath)) {
 			spiPathInfo.qsDrive = qpDrive->first;
 			spiPathInfo.qsRootPath = qpDrive->second.qsPath;
-			spiPathInfo.edtType = qpDrive->second.edtType;
+			spiPathInfo.etType = qpDrive->second.etType;
 			break;
 		} // if
 	} // for
@@ -558,7 +558,7 @@ const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperat
 		soOperation.cfsSource = CopyFileSystem(cfsSource);
 	} else {
 		// drag and drop operation
-		soOperation.cfsSource = GetFileSystem(Local);
+		soOperation.cfsSource = GetFileSystem(cFileSystem::Local);
 	} // if else
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
 		soOperation.cfsDestination = CopyFileSystem(cfsSource, qsDestination);
@@ -616,7 +616,7 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 	} else {
 		// copy or move
 		qlOperations.append(soOperation);
-		if (soOperation.cfsSource->IsLocal()) {
+		if (soOperation.cfsSource->Type() == cFileSystem::Local) {
 			connect(soOperation.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
 			soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} else {
@@ -696,7 +696,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 
 	// files only
 	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
-		if (cfsFileSystem->IsLocal()) {
+		if (cfsFileSystem->Type() == cFileSystem::Local) {
 			// local file system -> ignore directories
 			if (cfsFileSystem->IsFile(qlSelectedFiles.at(iI))) {
 				qlSources.append(qlSelectedFiles.at(iI));
@@ -718,7 +718,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 	cufdDialog = new cUnpackFilesDialog(qmwParent, qsPreparedDestination, csSettings);
 
 	if (cufdDialog->exec() == QDialog::Accepted) {
-		if (cfsFileSystem->IsLocal()) {
+		if (cfsFileSystem->Type() == cFileSystem::Local) {
 			// local file system -> sources can be archive files
 		} else {
 			// nonlocal -> (probably) already in archive
@@ -743,7 +743,7 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTre
 const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const
 {
 	if (cfsFileSystem->IsFile(qtwiFile)) {
-		if (!cfsFileSystem->IsLocal()) {
+		if (cfsFileSystem->Type() != cFileSystem::Local) {
 			// TODO View copy file to temp dir
 		} // if
 

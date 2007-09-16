@@ -20,22 +20,17 @@ class cFileControl : public QObject
 	Q_OBJECT
 
 	public:
-		/// drive types
-		enum eDriveType {
-			Local																		///< local drive
-		};
-
 		/// drive information
 		struct sDrive {
 			QString qsPath;														///< path to drive's root
-			eDriveType edtType;													///< drive type
+			cFileSystem::eType etType;											///< drive type
 			// TODO sDrive add drive type and show next to drive letters
 		};
 		/// path information
 		struct sPathInfo {
 			QString qsDrive;														///< path's drive
 			QString qsRootPath;													///< drive's root path
-			eDriveType edtType;													///< drive type
+			cFileSystem::eType etType;											///< drive type
 		};
 
 		cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin);
@@ -159,9 +154,9 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
-		cFileSystem *GetFileSystem(const eDriveType &edtType) const;
+		cFileSystem *GetFileSystem(const cFileSystem::eType &etType) const;
 																						///< get specified file system type
-																						/**< \param edtType type of file system to obtain
+																						/**< \param etType type of file system to obtain
 																							  \return file system handling class */
 		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, const bool &bFullPath, QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< preprocess file operation

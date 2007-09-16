@@ -473,12 +473,6 @@ const bool cArchive::IsFile(QTreeWidgetItem *qtwiFile) const
 	return !(qhPath->value(qtwiFile).FileAttr & cPackerPlugin::iDIRECTORY);
 } // IsFile
 
-// local file system test
-const bool cArchive::IsLocal() const
-{
-	return false;
-} // IsLocal
-
 // archive file copy operation finished
 const void cArchive::on_cArchiveCopy_OperationFinished()
 {
@@ -663,6 +657,12 @@ const bool cArchive::TryPath(const QString &qsPath) const
 	// TODO TryPath
 	return false;
 } // TryPath
+
+// file system type
+const cFileSystem::eType cArchive::Type() const
+{
+	return Archive;
+} // Type
 
 // write local files to this file system
 const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
