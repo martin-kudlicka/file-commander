@@ -229,11 +229,16 @@ void cLocalCopyMove::run()
 	QDir qdDir;
 	QFileInfoList qfilSources;
 	qint64 qi64TotalValue;
-	QString qsOverwrite, qsSourcePath;
+	QString qsOverwrite;
+	QStringList qslSourcePaths;
 
-	// gather source files and source path
+	// get default source paths
+	for (iI = 0; iI < qslSources.count(); iI++) {
+		qslSourcePaths.append(QFileInfo(qslSources.at(iI)).path());
+	} // for
+
+	// gather source files
 	qfilSources = cLocalCommon::GetFiles(qslSources, qsFilter);
-	qsSourcePath = qfilSources.at(0).path();
 
 	// prepare progress bar
 	for (iI = 0; iI < qfilSources.count(); iI++) {
@@ -250,12 +255,26 @@ void cLocalCopyMove::run()
 	ecDiskSpace = cDiskSpace::Ask;
 
 	// main process
-	qdDir.setCurrent(qsSourcePath);
+	qdDir.setCurrent(qfilSources.at(0).path());
 	qi64TotalValue = 0;
 	for (iI = 0; iI < qfilSources.count() && !bCanceled; iI++) {
 		const QFileInfo *qfiSource;
+		int iJ;
+		QString qsSourcePath;
 
 		qfiSource = &qfilSources.at(iI);
+
+		// find proper source path
+		for (iJ = 0; iJ < qslSourcePaths.count(); iJ++) {
+			const QString *qsPath;
+
+			qsPath = &qslSourcePaths.at(iJ);
+			if (qfiSource->path().startsWith(*qsPath)) {
+				qsSourcePath = *qsPath;
+				break;
+			} // if
+		} // for
+
 		// show file names
 		qsSource = qfiSource->filePath();
 		qsTarget = cFileOperation::GetWildcardedName(*qfiSource, qsSourcePath, qsDestination);
