@@ -544,11 +544,11 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		return;
 	} // if
 
-	PreProcessOperation(eoOperation, euaAction, cfsSource, qlSource, qsFilter, qsDestination, qfilLocalSource);
+	PreProcessOperation(eoOperation, euaAction, cfsSource, qlSource, qsFilter, qsDestination, true, qfilLocalSource);
 } // Operation
 
 // preprocess file operation
-const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, QFileInfoList qfilLocalSource /* QFileInfoList() */)
+const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, const bool &bFullPath, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
 	sOperation soOperation;
 
@@ -590,6 +590,7 @@ const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperat
 	soOperation.eoType = eoOperation;
 	soOperation.qsFilter = qsFilter;
 	soOperation.qsDestination = qsDestination;
+	soOperation.bFullPath = bFullPath;
 
 	// process
 	switch (euaAction) {
@@ -620,7 +621,7 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 			soOperation.cfsDestination->Write(soOperation.eoType, soOperation.cfsSource->GetOperationStringList(), soOperation.qsFilter, soOperation.qsDestination, eopPosition);
 		} else {
 			connect(soOperation.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-			soOperation.cfsSource->Read(soOperation.eoType, soOperation.qsFilter, soOperation.qsDestination, eopPosition);
+			soOperation.cfsSource->Read(soOperation.eoType, soOperation.qsFilter, soOperation.qsDestination, eopPosition, soOperation.bFullPath);
 		} // if else
 	} // if else
 } // ProcessOperation
@@ -721,7 +722,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 			// local file system -> sources can be archive files
 		} else {
 			// nonlocal -> (probably) already in archive
-			PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsFileSystem, qlSelectedFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText());
+			PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsFileSystem, qlSources, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());
 		} // if else
 	} // if
 

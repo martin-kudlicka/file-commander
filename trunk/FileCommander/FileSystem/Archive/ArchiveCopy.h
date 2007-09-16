@@ -28,7 +28,7 @@ class cArchiveCopy : public QThread
 																											  \param qhblOperations layout for background widget
 																											  \param csSettings application's configuration */
 
-		const void Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath = true);
+		const void Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
 																											///< start of copy or move operation
 																											/**< \param qlOperation file list to extract
 																												  \param qfiArchive archive file path
@@ -39,7 +39,7 @@ class cArchiveCopy : public QThread
 																												  \param cppPackerPlugin packer plugin interface
 																												  \param spiPluginInfo interace for archive access
 																												  \param eStyle foreground or background operation
-																												  \param bFullPath extract files with full path */
+																												  \param bFullPath extract files with full path if true */
 
 	private:
 		bool bCanceled;																				///< true if operation is canceled

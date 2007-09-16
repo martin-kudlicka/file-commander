@@ -139,12 +139,13 @@ class cFileSystem : public QObject
 																											  \return true if file */
 		virtual const bool IsLocal() const = 0;											///< local file system test
 																										/**< \return true if it is local file system */
-		virtual const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition) = 0;
+		virtual const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath) = 0;
 																										///< write local files to this file system
 																										/**< \param eoOperation operation type
 																											  \param qsFilter filter to chose files by
 																											  \param qsDestination destination path on this file system
-																											  \param eopPosition operation position type */
+																											  \param eopPosition operation position type
+																											  \param bFullPath extract files with full path if true */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
 		virtual const void SetOperationFileList(void *vFileList) = 0;				///< set file list for file operation
 																										/**< \param vFileList file list to store */

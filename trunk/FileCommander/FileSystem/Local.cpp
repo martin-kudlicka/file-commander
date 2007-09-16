@@ -783,11 +783,11 @@ const bool cLocal::PathExists(const QString &qsPath) const
 #endif
 
 // write local files to this file system
-const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
 {
 	if (saArchive.caArchive) {
 		connect(saArchive.caArchive, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_caArchive_OperationFinished(cFileSystem *)));
-		saArchive.caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition);
+		saArchive.caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition, bFullPath);
 	} // if
 } // Read
 
