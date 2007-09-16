@@ -737,7 +737,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 		return;
 	} // if
 
-	qsPreparedDestination = GetDialogDestinationPath(cfsFileSystem, qlSelectedFiles, qsDestination);
+	qsPreparedDestination = GetDialogDestinationPath(cfsFileSystem, qlSelectedFiles, "", qsDestination);
 	cufdDialog = new cUnpackFilesDialog(qmwParent, qsPreparedDestination, csSettings);
 
 	if (cufdDialog->exec() == QDialog::Accepted) {
@@ -751,7 +751,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 					QList<QTreeWidgetItem *> qlFiles;
 
 					cfsArchive->GetDirectoryContent(&qlFiles);
-					//PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());
+					PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::OkAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), cufdDialog->qcbDestination->currentText(), cufdDialog->qcbUnpackWithFullPath->isChecked());
 					CloseFileSystem(cfsArchive);
 				} // if
 			} // for
