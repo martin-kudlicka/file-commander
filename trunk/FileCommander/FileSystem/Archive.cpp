@@ -7,7 +7,11 @@
 // destructor
 cArchive::~cArchive()
 {
-	// TODO delete qpRoot
+	// TODO delete qhDirectories
+	if (bCustom) {
+		ClearFileTable(qhFiles);
+	} // if
+	qhCustom.clear();
 } // ~cArchive
 
 // activate current file
@@ -83,14 +87,19 @@ QHash<QTreeWidgetItem *, tHeaderData> *cArchive::AddDirectory(const tHeaderData 
 // add file to custom file list
 QTreeWidgetItem *cArchive::AddToCustomList(QTreeWidgetItem *qtwiFile)
 {
-	// TODO AddToCustomList
-	return &QTreeWidgetItem();
+	QTreeWidgetItem *qtwiNew;
+
+	qtwiNew = qtwiFile->clone();
+	qhCustom.insert(qtwiNew, qhFiles.value(qtwiFile));
+
+	return qtwiNew;
 } // AddToCustomList
 
 // begin of searching files
 const void cArchive::BeginSearch()
 {
-	// TODO BeginSearch
+	// clear before next search (especially for branch view)
+	qhCustom.clear();
 } // BeginSearch
 
 // file system can copy files to local file system
@@ -117,6 +126,17 @@ cArchive::cArchive(const QString &qsDrive, const QString &qsRootPath, const QFil
 
 	SetPath(qsDrive, qsRootPath, qsPath);
 } // cArchive
+
+// clear file table before next fill of it
+const void cArchive::ClearFileTable(QHash<QTreeWidgetItem *, tHeaderData> &qhTable) const
+{
+	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(qhTable);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		delete qhiFile.key();
+	} // while
+	qhTable.clear();
+} // ClearFileTable
 
 // create new directory
 const void cArchive::CreateDir(const QString &qsName)
@@ -147,7 +167,19 @@ const bool cArchive::DirExists(const QString &qsDirectory) const
 // searching of files finished
 const void cArchive::EndSearch(const bool &bClearCustomOnly /* false */)
 {
-	// TODO EndSearch
+	if (bClearCustomOnly) {
+		ClearFileTable(qhCustom);
+	} else {
+		// clear file hash table first
+		if (bCustom) {
+			ClearFileTable(qhFiles);
+		} else {
+			qhFiles.clear();
+			bCustom = true;
+		} // if else
+
+		qhFiles = qhCustom;
+	} // if else
 } // EndSearch
 
 // free file operation list from memory
@@ -172,22 +204,30 @@ const QString cArchive::GetContentPluginValue(const sContentPluginRequest &sCont
 // custom file list
 const QList<QTreeWidgetItem *> cArchive::GetCustomFileList() const
 {
-	// TODO GetCustomFileList
-	return QList<QTreeWidgetItem *>();
+	return qhCustom.keys();
 } // GetCustomFileList
 
 // get file name with extension from custom list
 const QString cArchive::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const
 {
-	// TODO GetCustomFileNameWithExtension
-	return QString();
+	return QFileInfo(qhCustom.value(qtwiFile).FileName).fileName();
 } // GetCustomFileNameWithExtension
 
 // get file name from custom list with full path
 const QString cArchive::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 {
-	// TODO GetCustomFilePath
-	return QString();
+	QString qsName;
+	tHeaderData *thdFile;
+
+	thdFile = &qhCustom[qtwiFile];
+
+	qsName = thdFile->FileName;
+
+	if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY && csSettings->GetShowBracketsAroundDirectoryName()) {
+		qsName = '[' + qsName + ']';
+	} // if
+
+	return qsName;
 } // GetCustomFilePath
 
 // get tree items for current directory
@@ -198,7 +238,12 @@ const bool cArchive::GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, cons
 		int iDontShow;
 		QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhPath);
 
-		qhFiles.clear();
+		if (bCustom) {
+			ClearFileTable(qhFiles);
+			bCustom = false;
+		} else {
+			qhFiles.clear();
+		} // if else
 
 		if (!csSettings->GetShowSystemFiles()) {
 			iDontShow = cPackerPlugin::iSYSTEM;
