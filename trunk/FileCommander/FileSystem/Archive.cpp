@@ -7,7 +7,13 @@
 // destructor
 cArchive::~cArchive()
 {
-	// TODO delete qhDirectories
+	QHashIterator<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectory(qhDirectories);
+	while (qhDirectory.hasNext()) {
+		qhDirectory.next();
+		ClearFileTable(*qhDirectory.value());
+		delete qhDirectory.value();
+	} // while
+
 	if (bCustom) {
 		ClearFileTable(qhFiles);
 	} // if
