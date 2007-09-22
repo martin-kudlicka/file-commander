@@ -27,15 +27,30 @@ class cArchive : public cFileSystem
 
 		const void ActivateCurrent(QTreeWidgetItem *qtwiFile);				///< activate current file
 																								/**< \param qtwiFile file to activate */
+		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
+																								/**< \param qtwiFile file to add to custom list
+																									  \return new item in custom list */
+		const void BeginSearch();														///< begin of searching files
 		const bool CanCopy() const;													///< file system can copy files to local file system
 		const bool CanDelete() const;													///< file system can delete files
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
 																									  \return true if directory exists */
+		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
+																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
 																								/**< \param vFileList pointer to file operation list in memory */
 		const QFileInfo &GetArchiveFilePath() const;								///< archive file path
 																								/**< \return archive file path if archive file system */
+		const QList<QTreeWidgetItem *> GetCustomFileList() const;			///< custom file list
+																								/**< \return custom file list */
+		const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const;
+																								///< get file name with extension from custom list
+																								/**< \param qtwiFile file to find file name with extension for
+																									  \return file name with extension */
+		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
+																								/**< \param qtwiFile file to find file path for
+																									  \return file name with full path */
 		const bool GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, const bool &bRefresh = true);
 																								///< get tree items for current directory
 																								/**< \param qlFiles tree items for current directory
@@ -111,46 +126,35 @@ class cArchive : public cFileSystem
 		const eType Type() const;														///< file system type
 
 	private:
+		bool bCustom;																		///< custom file list in current file list flag
 		cArchiveCopy *cacCopy;															///< copy files from archive thread
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
 		QFileInfo qfiArchive;															///< archive represented by this file system
+		QHash<QTreeWidgetItem *, tHeaderData> qhCustom;							///< custom file list
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;
 																								///< table of all directories in archive
 		QHash<QTreeWidgetItem *, tHeaderData> qhFiles;							///< visible files
 		QHash<QTreeWidgetItem *, tHeaderData> *qhPath;							///< current path
-
+		QList<tHeaderData> qlOperation;												///< operation file list
 		cPackerPlugin::sPluginInfo	*spiPluginInfo;								///< plugin description for current archive
 
 		QHash<QTreeWidgetItem *, tHeaderData> *AddDirectory(const tHeaderData &thdHeaderData);
 																								///< add directory into directory table if it's not there already
 																								/**< \param thdHeaderData directory to add
 																									  \return created (or already existing) directory */
-		QList<tHeaderData> qlOperation;												///< operation file list
-		QTreeWidgetItem *AddToCustomList(QTreeWidgetItem *qtwiFile);		///< add file to custom file list
-																								/**< \param qtwiFile file to add to custom list
-																									  \return new item in custom list */
-		const void BeginSearch();														///< begin of searching files
+		const void ClearFileTable(QHash<QTreeWidgetItem *, tHeaderData> &qhTable) const;
+																								///< clear file table before next fill of it
+																								/**< \param qhTable file table to clear */
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
 		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
 																								///< delete files in operation file list
 																								/**< \param qsFilter filter to chose files by
 																									  \param eopPosition operation position type */
-		const void EndSearch(const bool &bClearCustomOnly = false);			///< searching of files finished
-																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
 																									  \return content plugin (nondelayed) value */
-		const QList<QTreeWidgetItem *> GetCustomFileList() const;			///< custom file list
-																								/**< \return custom file list */
-		const QString GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const;
-																								///< get file name with extension from custom list
-																								/**< \param qtwiFile file to find file name with extension for
-																									  \return file name with extension */
-		const QString GetCustomFilePath(QTreeWidgetItem *qtwiFile);			///< get file name from custom list with full path
-																								/**< \param qtwiFile file to find file path for
-																									  \return file name with full path */
 		const qint64 GetDirectorySize() const;										///< get currently selected directory size
 																								/**< \return selected directory size */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information

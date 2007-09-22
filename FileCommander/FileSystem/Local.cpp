@@ -58,6 +58,10 @@ QTreeWidgetItem *cLocal::AddToCustomList(QTreeWidgetItem *qtwiFile)
 {
 	QTreeWidgetItem *qtwiNew;
 
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->AddToCustomList(qtwiFile);
+	} // if
+
 	qtwiNew = qtwiFile->clone();
 	qhCustom.insert(qtwiNew, qhFiles.value(qtwiFile));
 
@@ -67,6 +71,10 @@ QTreeWidgetItem *cLocal::AddToCustomList(QTreeWidgetItem *qtwiFile)
 // begin of searching files
 const void cLocal::BeginSearch()
 {
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->BeginSearch();
+	} // if
+
 	// clear before next search (especially for branch view)
 	qhCustom.clear();
 } // BeginSearch
@@ -195,6 +203,11 @@ const bool cLocal::DirExists(const QString &qsDirectory) const
 // searching of files finished
 const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 {
+	
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->EndSearch(bClearCustomOnly);
+	} // if
+
 	if (bClearCustomOnly) {
 		ClearFileTable(qhCustom);
 	} else {
@@ -218,11 +231,7 @@ const void cLocal::FreeOperationList(void *vFileList) const
 // archive file path
 const QFileInfo &cLocal::GetArchiveFilePath() const
 {
-	if (saArchive.caArchive) {
-		return saArchive.caArchive->GetArchiveFilePath();
-	} // if
-
-	return QFileInfo();
+	return saArchive.caArchive->GetArchiveFilePath();
 } // GetArchiveFilePath
 
 // get value from content plugin
@@ -258,12 +267,20 @@ const QString cLocal::GetContentPluginValue(const sContentPluginRequest &sConten
 // custom file list
 const QList<QTreeWidgetItem *> cLocal::GetCustomFileList() const
 {
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetCustomFileList();
+	} // if
+
 	return qhCustom.keys();
 } // GetCustomFileList
 
 // get file name with extension from custom list
 const QString cLocal::GetCustomFileNameWithExtension(QTreeWidgetItem *qtwiFile) const
 {
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetCustomFileNameWithExtension(qtwiFile);
+	} // if
+
 	return qhCustom.value(qtwiFile).fileName();
 } // GetCustomFileName
 
@@ -272,6 +289,10 @@ const QString cLocal::GetCustomFilePath(QTreeWidgetItem *qtwiFile)
 {
 	QFileInfo *qfiFile;
 	QString qsName;
+
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetCustomFilePath(qtwiFile);
+	} // if
 
 	qfiFile = &qhCustom[qtwiFile];
 
