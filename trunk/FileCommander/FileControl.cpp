@@ -206,18 +206,21 @@ cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QS
 // create new directory
 const QString cFileControl::CreateDirectory(cFileSystem *cfsFileSystem) const
 {
-	// TODO CreateDirectory CanCreateDirectory test
-	QString qsName;
+	if (cfsFileSystem->CanCreateDir()) {
+		QString qsName;
 
-	qsName = QInputDialog::getText(qmwParent, tr("New directory"), tr("Enter name of a new directory:"));
-	if (!qsName.isEmpty()) {
-		QDir qdDir;
-		QString qsNewDirectory;
+		qsName = QInputDialog::getText(qmwParent, tr("New directory"), tr("Enter name of a new directory:"));
+		if (!qsName.isEmpty()) {
+			QDir qdDir;
+			QString qsNewDirectory;
 
-		cfsFileSystem->CreateDir(qsName);
-	} // if
+			cfsFileSystem->CreateDir(qsName);
+		} // if
 
-	return qsName;
+		return qsName;
+	} else {
+		return QString();
+	} // if else
 } // CreateDirectory
 
 // edit selected files
@@ -229,8 +232,7 @@ const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTre
 		QTreeWidgetItem *qtwiFile;
 
 		qtwiFile = qlSelectedFiles.at(iI);
-		if (cfsFileSystem->IsFile(qtwiFile)) {
-			// TODO Edit test for local file
+		if (cfsFileSystem->IsFile(qtwiFile) && cfsFileSystem->Type() == cFileSystem::Local) {
 			cProcess cpProcess;
 			QString qsCommand;
 
@@ -781,11 +783,7 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, const QList<QTre
 // view selected file
 const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem *qtwiFile) const
 {
-	if (cfsFileSystem->IsFile(qtwiFile)) {
-		if (cfsFileSystem->Type() != cFileSystem::Local) {
-			// TODO View copy file to temp dir
-		} // if
-
+	if (cfsFileSystem->IsFile(qtwiFile) && cfsFileSystem->Type() == cFileSystem::Local) {
 		if (csSettings->GetViewerType() == qsINTERNAL) {
 			cListerMainWindow *clmwLister;
 
