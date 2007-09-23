@@ -126,6 +126,14 @@ class cArchive : public cFileSystem
 																								/**< \param qsPath to initialize archive file system
 																									  \param bStartup true if initializing file system class
 																									  \return true if succesfull */
+		const eContextAction ShowContextMenu(const QPoint &qcPosition
+#ifdef Q_WS_WIN
+			, const HWND hwParent
+#endif
+		);																						///< custom context menu on right click
+																								/**< \param qcPosition cursor position on the screen
+																									  \param hwParent parent window to show menu in
+																									  \return type of user action */
 		const eType Type() const;														///< file system type
 
 	private:
@@ -184,13 +192,6 @@ class cArchive : public cFileSystem
 		const void ReadArchiveFiles(const HANDLE &hArchive);					///< read archive files
 																								/**< \param hArchive archive handle */
 		const void RetreiveContentDelayedValues();								///< start retreiving of content delayed values
-		const void ShowContextMenu(const QPoint &qcPosition
-#ifdef Q_WS_WIN
-			, const HWND hwParent
-#endif
-		) const;																				///< custom context menu on right click
-																								/**< \param qcPosition cursor position on the screen
-																									  \param hwParent parent window to show menu in */
 		const int ToPackerDateTime(const QDateTime &qdtDateTime) const;	///< converts Qt's date time format to packer's
 																								/**< \param qdtDateTime date time in Qt format */
 		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system

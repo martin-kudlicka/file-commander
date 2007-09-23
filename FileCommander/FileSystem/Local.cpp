@@ -926,11 +926,11 @@ const bool cLocal::SetPath(const QString qsPath, const bool &bStartup /* false *
 } // SetPath
 
 // custom context menu on right click
-const void cLocal::ShowContextMenu(const QPoint &qcPosition
+const cFileSystem::eContextAction cLocal::ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 		, const HWND hwParent
 #endif
-	) const
+	)
 {
 	// shell context menu
 	cShellMenu csmMenu(
@@ -941,6 +941,14 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 	int iI;
 	QFileInfoList qfilSelected;
 	QStringList qslSelected;
+
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->ShowContextMenu(qcPosition
+#ifdef Q_WS_WIN
+				, hwParent
+#endif
+			);
+	} // if
 
 	qfilSelected = GetSelectedFileList();
 
@@ -960,6 +968,8 @@ const void cLocal::ShowContextMenu(const QPoint &qcPosition
 
 	csmMenu.Show(qslSelected, qhFiles.constBegin().key()->treeWidget()->viewport()->mapToGlobal(qcPosition));
 #endif
+
+	return ContextNothing;
 } // ShowContextMenu
 
 // periodical file system check

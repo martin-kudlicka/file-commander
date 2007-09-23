@@ -812,11 +812,17 @@ const void cPanel::on_ctwTree_itemActivated(QTreeWidgetItem *item, int column) c
 // show tree view context menu
 const void cPanel::on_ctwTree_customContextMenuRequested(const QPoint &pos) const
 {
-	qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ShowContextMenu(pos
+	cFileSystem::eContextAction ecaContextAction;
+
+	ecaContextAction = qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->ShowContextMenu(pos
 #ifdef Q_WS_WIN
 		, qswDirs->winId()
 #endif
 	);
+
+	if (ecaContextAction == cFileSystem::ContextCopyAction) {
+		emit Copy();
+	} // if
 } // on_ctwTree_customContextMenuRequested
 
 // start dragging of selected objects

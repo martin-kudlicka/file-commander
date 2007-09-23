@@ -3,6 +3,7 @@
 #include <QtCore/QDir>
 #include "FileSystem/Archive/ArchiveCommon.h"
 #include "FileSystem/Archive/ArchiveFilePropertiesDialog.h"
+#include <QtGui/QMenu>
 
 // destructor
 cArchive::~cArchive()
@@ -722,13 +723,31 @@ const bool cArchive::SetPath(const QString qsPath, const bool &bStartup /* false
 } // SetPath
 
 // custom context menu on right click
-const void cArchive::ShowContextMenu(const QPoint &qcPosition
+const cFileSystem::eContextAction cArchive::ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
 #endif
-		) const
+		)
 {
-	// TODO ShowContextMenu
+	QAction *qaCopy, *qaProperties, *qaSelected;
+	QMenu qmArchive;
+
+	// archive context menu items
+	qaCopy = qmArchive.addAction(tr("&Copy"));
+	qmArchive.addSeparator();
+	qaProperties = qmArchive.addAction(tr("&Properties"));
+
+	qaSelected = qmArchive.exec((qhFiles.constBegin().key()->treeWidget())->viewport()->mapToGlobal(qcPosition));
+
+	if (qaSelected == qaCopy) {
+		return ContextCopyAction;
+	} else {
+		if (qaSelected == qaProperties) {
+			ActivateCurrent(qhFiles.constBegin().key()->treeWidget()->currentItem());
+		} // if
+
+		return ContextNothing;
+	} // if else
 } // ShowContextMenu
 
 // converts Qt's date time format to packer's
