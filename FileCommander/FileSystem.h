@@ -43,6 +43,7 @@ class cFileSystem : public QObject
 																											  \return new item in custom list */
 		virtual const void BeginSearch() = 0;												///< begin of searching files
 		virtual const bool CanCopy() const = 0;											///< file system can copy files to local file system
+		virtual const bool CanCreateDir() const = 0;										///< file system can create directory in current location
 		virtual const bool CanDelete() const = 0;											///< file system can delete files
 		virtual const void CreateDir(const QString &qsName) = 0;						///< create new directory
 																										/**< \param qsName new directory name */

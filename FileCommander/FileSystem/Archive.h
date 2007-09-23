@@ -32,6 +32,7 @@ class cArchive : public cFileSystem
 																									  \return new item in custom list */
 		const void BeginSearch();														///< begin of searching files
 		const bool CanCopy() const;													///< file system can copy files to local file system
+		const bool CanCreateDir() const;												///< file system can create directory in current location
 		const bool CanDelete() const;													///< file system can delete files
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
@@ -56,6 +57,8 @@ class cArchive : public cFileSystem
 																								/**< \param qlFiles tree items for current directory
 																									  \param bRefresh reload directory content if true
 																									  \return true if file system is accessible */
+		const qint64 GetDirectorySize() const;										///< get currently selected directory size
+																								/**< \return selected directory size */
 		const QString GetDirName() const;											///< get current directory name
 																								/**< \return current directory name */
 #ifdef Q_WS_WIN
@@ -155,12 +158,14 @@ class cArchive : public cFileSystem
 																								///< get value from content plugin
 																								/**< \param sContent request description
 																									  \return content plugin (nondelayed) value */
-		const qint64 GetDirectorySize() const;										///< get currently selected directory size
-																								/**< \return selected directory size */
 		const sDiskSpace GetDiskSpace() const;										///< find out disk space information
 																								/**< \return disk space information */
 		const QString &GetDrive() const;												///< drive represented by file system
 																								/**< \return drive represented by file system */
+		const QList<tHeaderData> GetFiles(const QHash<QTreeWidgetItem *, tHeaderData> *qhPath) const;
+																								///< get archive files for specified path within subdirectories
+																								/**< \param qhPath path in archive to start from
+																									  \return archive files in defined path */
 		const QStringList GetOperationStringList() const;						///< file paths from operation file list
 																								/**< \return file paths from operation file list */
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file

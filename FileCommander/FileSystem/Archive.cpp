@@ -114,6 +114,12 @@ const bool cArchive::CanCopy() const
 	return true;
 } // CanCopy
 
+// file system can create directory in current location
+const bool cArchive::CanCreateDir() const
+{
+	return false;
+} // CanCreateDir
+
 // file system can delete files
 const bool cArchive::CanDelete() const
 {
@@ -276,8 +282,20 @@ const bool cArchive::GetDirectoryContent(QList<QTreeWidgetItem *> *qlFiles, cons
 // get currently selected directory size
 const qint64 cArchive::GetDirectorySize() const
 {
-	// TODO GetDirectorySize
-	return qint64();
+	int iI;
+	qint64 qi64Size;
+	QList<tHeaderData> qlFiles;
+	QString qsDirectory;
+
+	qsDirectory = qhFiles.value(qhFiles.constBegin().key()->treeWidget()->currentItem()).FileName;
+	qlFiles = GetFiles(qhDirectories.value(qsDirectory));
+
+	qi64Size = 0;
+	for (iI = 0; iI < qlFiles.count(); iI++) {
+		qi64Size += qlFiles.at(iI).UnpSize;
+	} // for
+
+	return qi64Size;
 } // GetDirectorySize
 
 // get current directory name
@@ -423,6 +441,26 @@ const QString cArchive::GetFilePath(QTreeWidgetItem *qtwiFile) const
 {
 	return qhPath->value(qtwiFile).FileName;
 } // GetFilePath
+
+// get archive files for specified path within subdirectories
+const QList<tHeaderData> cArchive::GetFiles(const QHash<QTreeWidgetItem *, tHeaderData> *qhPath) const
+{
+	QList<tHeaderData> qlFiles;
+
+	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhPath);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
+			if (!QString(qhiFile.value().FileName).endsWith("..")) {
+				qlFiles += GetFiles(qhDirectories.value(qhiFile.value().FileName));
+			} // if
+		} else {
+			qlFiles.append(qhiFile.value());
+		} // if else
+	} // while
+
+	return qlFiles;
+} // GetFiles
 
 // get file size
 const qint64 cArchive::GetFileSize(QTreeWidgetItem *qtwiFile) const

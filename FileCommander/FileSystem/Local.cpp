@@ -89,6 +89,16 @@ const bool cLocal::CanCopy() const
 	return true;
 } // CanCopy
 
+// file system can create directory in current location
+const bool cLocal::CanCreateDir() const
+{
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->CanCreateDir();
+	} // if
+
+	return true;
+} // CanCreateDir
+
 // file system can delete files
 const bool cLocal::CanDelete() const
 {
@@ -369,6 +379,10 @@ const qint64 cLocal::GetDirectorySize() const
 	int iI;
 	QFileInfoList qfilFiles;
 	qint64 qi64Size;
+
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->GetDirectorySize();
+	} // if
 
 	qfilFiles = cLocalCommon::GetFiles(qhFiles.value(qhFiles.constBegin().key()->treeWidget()->currentItem()));
 

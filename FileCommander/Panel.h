@@ -114,6 +114,8 @@ class cPanel : public QObject
 		const void UnselectAll() const;									///< unselect all files
 
 	private:
+		static const int iDATE_TIME_ROLE = Qt::UserRole;			///< position to store date/time in tree widget item
+		static const int iSIZE_ROLE = Qt::UserRole;					///< position to store file size in tree widget item
 		static const int iTIMER_INTERVAL = 1000;						///< timer interval (ms)
 
 		/// quick search direction in directory view

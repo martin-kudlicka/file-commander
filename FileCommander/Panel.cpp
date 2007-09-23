@@ -1003,7 +1003,7 @@ const void cPanel::on_ctwTree_itemSelectionChanged()
 
 			// size for directory can be known too
 			if (iColumnSize != -1) {
-				qi64DetectedSize = qtwiFile->data(iColumnSize, Qt::UserRole).toLongLong();
+				qi64DetectedSize = qtwiFile->data(iColumnSize, iSIZE_ROLE).toLongLong();
 				qi64TotalSize += qi64DetectedSize;
 			} // if
 			if (qtwiFile->isSelected()) {
@@ -1012,7 +1012,7 @@ const void cPanel::on_ctwTree_itemSelectionChanged()
 			} // if
 		} else {
 			iFilesTotal++;
-			qi64DetectedSize = qtwiFile->data(iColumnSize, Qt::UserRole).toLongLong();
+			qi64DetectedSize = qtwiFile->data(iColumnSize, iSIZE_ROLE).toLongLong();
 			qi64TotalSize += qi64DetectedSize;
 			if (qtwiFile->isSelected()) {
 				iFiles++;
@@ -1070,13 +1070,13 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 					qint64 qi64Size;
 
 					// check if size already calculated
-					qi64Size = ctwDir->currentItem()->data(iColumnExtension, Qt::UserRole).toLongLong();
+					qi64Size = ctwDir->currentItem()->data(iColumnExtension, iSIZE_ROLE).toLongLong();
 					if (qi64Size == 0) {
 						// not calculated yet
 						qi64Size = stTab->cfsFileSystem->GetDirectorySize();
 
 						// put size to data to count with it when selecting files
-						ctwDir->currentItem()->setData(iColumnExtension, Qt::UserRole, qi64Size);
+						ctwDir->currentItem()->setData(iColumnExtension, iSIZE_ROLE, qi64Size);
 						// show the size in size column
 						ctwDir->currentItem()->setText(iColumnExtension, GetSizeString(qi64Size));
 
@@ -1272,6 +1272,21 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 		return;
 	} // if
 
+	// clear size information
+	if (stTab->cfsFileSystem->Type() == cFileSystem::Archive) {
+		int iColumnSize;
+
+		iColumnSize = GetNativeColumnIndex(qsSIZE, qswDirs->currentIndex());
+
+		if (iColumnSize != -1) {
+			for (iI = 0; iI < qlFiles.count(); iI++) {
+				if (stTab->cfsFileSystem->IsDir(qlFiles.at(iI))) {
+					qlFiles.at(iI)->setData(iColumnSize, iSIZE_ROLE, 0);
+				} // if
+			} // for
+		} // if
+	} // if
+
 	// fill tree widget items
 	for (iI = 0; iI < qlFiles.count(); iI++) {
 		int iJ;
@@ -1303,7 +1318,7 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 
 										qi64Size = stTab->cfsFileSystem->GetFileSize(qtwiFile); 
 										qtwiFile->setText(iJ, GetSizeString(qi64Size));
-										qtwiFile->setData(iJ, Qt::UserRole, qi64Size);
+										qtwiFile->setData(iJ, iSIZE_ROLE, qi64Size);
 									} // if else
 								} else {
 									if (scColumn->qsIdentifier == qsDATE_TIME) {
@@ -1311,7 +1326,7 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 
 										qdtLastModified = stTab->cfsFileSystem->GetLastModified(qtwiFile);
 										qtwiFile->setText(iJ, GetDateTimeString(qdtLastModified));
-										qtwiFile->setData(iJ, Qt::UserRole, qdtLastModified);
+										qtwiFile->setData(iJ, iDATE_TIME_ROLE, qdtLastModified);
 									}
 #ifdef Q_WS_WIN
 									else {
@@ -1769,8 +1784,8 @@ const bool cPanel::TreeSortByQDateTime(const QTreeWidgetItem *qtwiItem1, const Q
 {
 	QDateTime qdtItem1, qdtItem2;
 
-	qdtItem1 = qtwiItem1->data(ssSort.iSortedColumn, Qt::UserRole).toDateTime();
-	qdtItem2 = qtwiItem2->data(ssSort.iSortedColumn, Qt::UserRole).toDateTime();
+	qdtItem1 = qtwiItem1->data(ssSort.iSortedColumn, iDATE_TIME_ROLE).toDateTime();
+	qdtItem2 = qtwiItem2->data(ssSort.iSortedColumn, iDATE_TIME_ROLE).toDateTime();
 
 	if ((qdtItem1 < qdtItem2 && ssSort.soSortOrder == Qt::AscendingOrder) || (qdtItem1 <= qdtItem2 && ssSort.soSortOrder == Qt::DescendingOrder)) {
 		if (ssSort.soSortOrder == Qt::AscendingOrder) {
@@ -1792,8 +1807,8 @@ const bool cPanel::TreeSortByQInt64(const QTreeWidgetItem *qtwiItem1, const QTre
 {
 	qint64 qi64Item1, qi64Item2;
 
-	qi64Item1 = qtwiItem1->data(ssSort.iSortedColumn, Qt::UserRole).toLongLong();
-	qi64Item2 = qtwiItem2->data(ssSort.iSortedColumn, Qt::UserRole).toLongLong();
+	qi64Item1 = qtwiItem1->data(ssSort.iSortedColumn, iDATE_TIME_ROLE).toLongLong();
+	qi64Item2 = qtwiItem2->data(ssSort.iSortedColumn, iDATE_TIME_ROLE).toLongLong();
 
 	if ((qi64Item1 < qi64Item2 && ssSort.soSortOrder == Qt::AscendingOrder) || (qi64Item1 <= qi64Item2 && ssSort.soSortOrder == Qt::DescendingOrder)) {
 		if (ssSort.soSortOrder == Qt::AscendingOrder) {
