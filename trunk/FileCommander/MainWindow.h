@@ -88,6 +88,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																								  \param qpCursor cursor position on tab */
 
 	private slots:
+		const void on_cPanel_Copy() const;										///< copy marked files
 		const void on_cPanel_Delete() const;									///< delete marked files
 		const void on_cPanel_FileSystemUnaccessible(cPanel *cpPanel) const;
 																							///< panel's file system unaccessible

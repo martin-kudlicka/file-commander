@@ -222,6 +222,7 @@ class cPanel : public QObject
 																						  \param qtwiItem2 2nd item */
 
 	signals:
+		void Copy() const;													///< copy marked files
 		void Delete() const;													///< delete marked files
 		void GotFocus(const cPanel *cpPanel) const;					///< panel got focus
 																					/**< \param cpPanel pointer to this panel */

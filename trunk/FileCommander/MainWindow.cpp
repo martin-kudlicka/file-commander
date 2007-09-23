@@ -223,11 +223,11 @@ cMainWindow::cMainWindow()
 	connect(cpLeft, SIGNAL(GotFocus(const cPanel *)), SLOT(on_cPanel_GotFocus(const cPanel *)));
 	connect(cpLeft, SIGNAL(Delete()), SLOT(on_cPanel_Delete()));
 	connect(cpLeft, SIGNAL(FileSystemUnaccessible(cPanel *)), SLOT(on_cPanel_FileSystemUnaccessible(cPanel *)));
-	//connect(cpLeft, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
+	connect(cpLeft, SIGNAL(Copy()), SLOT(on_cPanel_Copy()));
 	connect(cpRight, SIGNAL(GotFocus(const cPanel *)), SLOT(on_cPanel_GotFocus(const cPanel *)));
 	connect(cpRight, SIGNAL(Delete()), SLOT(on_cPanel_Delete()));
 	connect(cpRight, SIGNAL(FileSystemUnaccessible(cPanel *)), SLOT(on_cPanel_FileSystemUnaccessible(cPanel *)));
-	//connect(cpRight, SIGNAL(CopyArchiveFiles()), SLOT(on_cpPanel_CopyArchiveFiles()));
+	connect(cpRight, SIGNAL(Copy()), SLOT(on_cPanel_Copy()));
 	connect(qsLeftDrive, SIGNAL(activated()), SLOT(on_qsLeftDrive_activated()));
 	connect(qsRightDrive, SIGNAL(activated()), SLOT(on_qsRightDrive_activated()));
 	connect(qsHistoryBack, SIGNAL(activated()), SLOT(on_qsHistoryBack_activated()));
@@ -426,6 +426,12 @@ const void cMainWindow::LoadTabs(const cSettings::ePosition &epPosition)
 		} // if else
 	} // for
 } // LoadTabs
+
+// copy marked files
+const void cMainWindow::on_cPanel_Copy() const
+{
+	qpbCopy->animateClick();
+} // on_cPanel_Copy
 
 // delete marked files
 const void cMainWindow::on_cPanel_Delete() const

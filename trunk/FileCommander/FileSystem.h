@@ -13,6 +13,11 @@ class cFileSystem : public QObject
 	Q_OBJECT
 
 	public:
+		/// context menu  actions
+		enum eContextAction {
+			ContextNothing,																		///< no action
+			ContextCopyAction																		///< copy action
+		};
 		/// drive types
 		enum eType {
 			Local,																					///< local drive
@@ -167,13 +172,14 @@ class cFileSystem : public QObject
 																										/**< \param qsPath to initialize local file system
 																											  \param bStartup true if initializing file system class
 																											  \return true if succesfull */
-		virtual const void ShowContextMenu(const QPoint &qcPosition
+		virtual const eContextAction ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
 #endif
-		) const = 0;																				///< custom context menu on right click
+		) = 0;																						///< custom context menu on right click
 																										/**< \param qcPosition cursor position on the screen
-																											  \param hwParent parent window to show menu in */
+																											  \param hwParent parent window to show menu in
+																											  \return type of user action */
 		virtual const bool TryPath(const QString &qsPath) const = 0;				///< try if path exists on file system
 																										/**< \param qsPath path to check
 																											  \return true if possible to set path to qsPath */

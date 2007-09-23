@@ -203,13 +203,14 @@ class cLocal : public cFileSystem
 																								/**< \param qsPath to initialize local file system
 																									  \param bStartup true if initializing file system class
 																									  \return true if succesfull */
-		const void ShowContextMenu(const QPoint &qcPosition
+		const eContextAction ShowContextMenu(const QPoint &qcPosition
 #ifdef Q_WS_WIN
 			, const HWND hwParent
 #endif
-		) const;																				///< custom context menu on right click
+		);																						///< custom context menu on right click
 																								/**< \param qcPosition cursor position on the screen
-																									  \param hwParent parent window to show menu in */
+																									  \param hwParent parent window to show menu in
+																									  \return type of user action */
 		void timerEvent(QTimerEvent *event);										///< periodical file system check
 																								/**< \param event event description */
 		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system
