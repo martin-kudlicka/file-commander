@@ -608,7 +608,7 @@ const QStringList cLocal::GetSelectedDirectoryStringList() const
 	while (qhiFile.hasNext()) {
 		qhiFile.next();
 
-		if (qhiFile.key()->isSelected() && qhiFile.value().isDir()) {
+		if (qhiFile.key()->isSelected() && qhiFile.value().isDir() && qhiFile.value().fileName() != "..") {
 			qslSelectedDirectories.append(qhiFile.value().filePath());
 		} // if
 	} // while
