@@ -70,11 +70,11 @@ void cTreeWidget::keyPressEvent(QKeyEvent *event)
 			break;
 		default:
 			if (((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-				  && !(event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier))
-				 || event->text().isEmpty()) {
-				QTreeWidget::keyPressEvent(event);
-			} else {
+				  && (event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier))
+				 || event->key() < Qt::Key_Escape || event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete) {
 				emit KeyPressed(event);
+			} else {
+				QTreeWidget::keyPressEvent(event);
 			} // if else
 	} // switch
 } // keyPressEvent

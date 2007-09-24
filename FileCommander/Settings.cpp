@@ -649,12 +649,6 @@ const bool cSettings::GetQuickSearchEnabled() const
 	return qsSettings.value(qsQUICK_SEARCH__ENABLED, true).toBool();
 } // GetQuickSearchEnabled
 
-// shift key activity in quick search
-const bool cSettings::GetQuickSearchShift() const
-{
-	return qsSettings.value(qsQUICK_SEARCH__SHIFT).toBool();
-} // GetQuickSearchShift
-
 // quick search window visibility
 const bool cSettings::GetQuickSearchShowSearchWindow() const
 {
@@ -1282,12 +1276,6 @@ const void cSettings::SetQuickSearchEnabled(const bool &bEnable)
 {
 	qsSettings.setValue(qsQUICK_SEARCH__ENABLED, bEnable);
 } // SetQuickSearchEnabled
-
-// shift key activity in quick search
-const void cSettings::SetQuickSearchShift(const bool &bShift)
-{
-	qsSettings.setValue(qsQUICK_SEARCH__SHIFT, bShift);
-} // SetQuickSearchShift
 
 // quick search window visibility
 const void cSettings::SetQuickSearchShowSearchWindow(const bool &bShow)

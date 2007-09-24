@@ -292,8 +292,6 @@ class cSettings : private QObject
 																								/**< \return ctrl key activity flag */
 		const bool GetQuickSearchEnabled() const;									///< enabled/disabled quick search
 																								/**< \return enable/disable quick search flag */
-		const bool GetQuickSearchShift() const;									///< shift key activity in quick search
-																								/**< \return shift key activity flag */
 		const bool GetQuickSearchShowSearchWindow() const;						///< quick search window visibility
 																								/**< \return quick search window visibility flag */
 		const QString GetReadonlyFileOverwrite() const;							///< find out readonly file overwrite mode
@@ -401,8 +399,6 @@ class cSettings : private QObject
 																								/**< \param bCtrl ctrl key activity flag */
 		const void SetQuickSearchEnabled(const bool &bEnable);				///< enabled/disabled quick search
 																								/**< \param bEnable enable/disable quick search flag */
-		const void SetQuickSearchShift(const bool &bShift);					///< shift key activity in quick search
-																								/**< \param bShift shift key activity flag */
 		const void SetQuickSearchShowSearchWindow(const bool &bShow);		///< quick search window visibility
 																								/**< \param bShow quick search window visibility flag */
 		const void SetReadonlyFileOverwrite(const QString &qsMode);			///< set default readonly overwrite behaviour

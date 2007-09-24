@@ -590,7 +590,7 @@
            <property name="geometry" >
             <rect>
              <x>10</x>
-             <y>110</y>
+             <y>90</y>
              <width>121</width>
              <height>18</height>
             </rect>
@@ -605,7 +605,7 @@
              <x>10</x>
              <y>10</y>
              <width>120</width>
-             <height>91</height>
+             <height>71</height>
             </rect>
            </property>
            <property name="title" >
@@ -627,24 +627,11 @@
              <string>Alt</string>
             </property>
            </widget>
-           <widget class="QCheckBox" name="qcbQuickSearchShift" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>60</y>
-              <width>71</width>
-              <height>18</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Shift</string>
-            </property>
-           </widget>
            <widget class="QLabel" name="label_4" >
             <property name="geometry" >
              <rect>
               <x>70</x>
-              <y>40</y>
+              <y>30</y>
               <width>46</width>
               <height>14</height>
              </rect>
