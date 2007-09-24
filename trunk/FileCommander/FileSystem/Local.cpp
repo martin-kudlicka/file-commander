@@ -975,7 +975,9 @@ const cFileSystem::eContextAction cLocal::ShowContextMenu(const QPoint &qcPositi
 // periodical file system check
 void cLocal::timerEvent(QTimerEvent *event)
 {
-	CheckPath();
+	if (!bUnaccessible) {
+		CheckPath();
+	} // if
 } // timerEvent
 
 // try if path exists on file system
