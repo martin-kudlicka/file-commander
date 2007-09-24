@@ -295,10 +295,11 @@ const QString cFileOperation::GetWildcardedName(const QFileInfo &qfiFile, const 
 } // GetWildcardedName
 
 // check if filename suits filter
-const bool cFileOperation::SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression /* false */)
+const bool cFileOperation::SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bCaseSensitive /* false */, const bool &bRegularExpression /* false */)
 {
 	int iI;
 	QStringList qslFilter;
+	Qt::CaseSensitivity csCaseSensitivity;
 
 	qslFilter = qsFilter.split(';');
 	if (qslFilter.count() == 1 && qslFilter.at(0).isEmpty() && !bRegularExpression) {
@@ -313,9 +314,15 @@ const bool cFileOperation::SuitsFilter(const QString &qsName, const QString &qsF
 	} // for
 #endif
 
+	if (bCaseSensitive) {
+		csCaseSensitivity = Qt::CaseSensitive;
+	} else {
+		csCaseSensitivity = Qt::CaseInsensitive;
+	} // if else
+
 	// search for
 	for (iI = 0; iI < qslFilter.count(); iI++) {
-		QRegExp qreExpression(qslFilter.at(iI), Qt::CaseInsensitive);
+		QRegExp qreExpression(qslFilter.at(iI), csCaseSensitivity);
 
 		if (bRegularExpression) {
 			// regular expression

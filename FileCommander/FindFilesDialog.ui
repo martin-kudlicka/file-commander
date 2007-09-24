@@ -182,6 +182,19 @@
        <bool>false</bool>
       </property>
      </widget>
+     <widget class="QCheckBox" name="qcbSearchForCaseSensitive" >
+      <property name="geometry" >
+       <rect>
+        <x>200</x>
+        <y>50</y>
+        <width>91</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text" >
+       <string>Case sensitive</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="qgbFullText" >
      <property name="geometry" >
@@ -512,6 +525,11 @@
      <property name="rootIsDecorated" >
       <bool>false</bool>
      </property>
+     <column>
+      <property name="text" >
+       <string>1</string>
+      </property>
+     </column>
     </widget>
    </widget>
   </widget>
@@ -587,6 +605,11 @@
     <property name="rootIsDecorated" >
      <bool>false</bool>
     </property>
+    <column>
+     <property name="text" >
+      <string>1</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QPushButton" name="qpbStart" >

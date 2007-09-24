@@ -147,12 +147,13 @@ class cSettings : private QObject
 			// general
 			QString qsSearchFor;															///< search for this file(s)
 			bool bSearchForRegularExpression;										///< search for is regular expression flag
+			bool bSearchForCaseSensitive;												///< case sensitive file search
 			QString qsSearchIn;															///< search in this directory(s)
 			int iSubdirectoryDepth;														///< number of subdirectories to go through
 			bool bSearchForText;															///< search for text flag
 			QString qsFullText;															///< text to search
 			bool bFulTextWholeWords;													///< search whole words
-			bool bFullTextCaseSensitive;												///< case sensitive search
+			bool bFullTextCaseSensitive;												///< case sensitive text search
 			bool bFullTextNotContainingText;											///< search files not containing specified text
 			bool bFullTextHex;															///< specified text is hex code flag
 			bool bFullTextRegularExpression;											///< specified text is regular expression flag

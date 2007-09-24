@@ -79,10 +79,11 @@ class cFileOperation : public QObject
 																				  \param qsSourcePath path for all sources
 																				  \param qsDestination destination string
 																				  \return modified file name */
-		static const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bRegularExpression = false);
+		static const bool SuitsFilter(const QString &qsName, const QString &qsFilter, const bool &bCaseSensitive = false, const bool &bRegularExpression = false);
 																			///< check if filename suits filter
 																			/**< \param qsName filename to check
 																				  \param qsFilter filter to suit
+																				  \param bCaseSensitive case sensitive file name compare
 																				  \param bRegularExpression qsFilter is regular expression
 																				  \return true if filename suits filter */
 

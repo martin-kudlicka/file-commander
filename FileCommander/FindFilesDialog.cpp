@@ -65,6 +65,9 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileCont
 	qcbFileSizeType->addItems(qslFILE_SIZE_TYPE);
 	qtwSearch->headerItem()->setHidden(true);
 	qtwSavedFinds->headerItem()->setHidden(true);
+#ifdef Q_WS_X11
+	qcbSearchForCaseSensitive->setChecked(true);
+#endif
 
 	// refresh list of saved settings
 	RefreshSavedSettings();
@@ -108,6 +111,7 @@ const cSettings::sFindSettings cFindFilesDialog::GetSettings() const
 	// general
 	sfsFindSettings.qsSearchFor = qcbSearchFor->currentText();
 	sfsFindSettings.bSearchForRegularExpression = qcbSearchForRegularExpression->isChecked();
+	sfsFindSettings.bSearchForCaseSensitive = qcbSearchForCaseSensitive->isChecked();
 	sfsFindSettings.qsSearchIn = qcbSearchIn->currentText();
 	sfsFindSettings.iSubdirectoryDepth = qsbSubdirectoryDepth->value();
 	sfsFindSettings.bSearchForText = qgbFullText->isChecked();
@@ -373,6 +377,7 @@ const void cFindFilesDialog::on_qpbLoadFind_clicked(bool checked /* false */) co
 	// general
 	qcbSearchFor->setEditText(sfsFindSettings.qsSearchFor);
 	qcbSearchForRegularExpression->setChecked(sfsFindSettings.bSearchForRegularExpression);
+	qcbSearchForCaseSensitive->setChecked(sfsFindSettings.bSearchForCaseSensitive);
 	qcbSearchIn->setEditText(sfsFindSettings.qsSearchIn);
 	qsbSubdirectoryDepth->setValue(sfsFindSettings.iSubdirectoryDepth);
 	qgbFullText->setChecked(sfsFindSettings.bSearchForText);
