@@ -1111,11 +1111,23 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 		default:
 			if (csSettings->GetQuickSearchEnabled() &&
 				 static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) == csSettings->GetQuickSearchCtrl() &&
-				 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt() &&
-				 static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier) == csSettings->GetQuickSearchShift()) {
+				 static_cast<bool>(qkeEvent->modifiers() & Qt::AltModifier) == csSettings->GetQuickSearchAlt()) {
 				// quick search activated
+				QKeyEvent *qkeQuickSearch;
+				QString qsQuickSearch;
+
+				// correct quick search text
+				if (static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
+					qsQuickSearch = qkeEvent->key();
+				} else {
+					qsQuickSearch = QString(qkeEvent->key()).toLower();
+				} // if else
+
 				qleQuickSearch->show();
-				QApplication::sendEvent(qleQuickSearch, qkeEvent);
+				// send key to quick search edit box
+				qkeQuickSearch = new QKeyEvent(QEvent::KeyPress, qkeEvent->key(), qkeEvent->modifiers(), qsQuickSearch);
+				QApplication::sendEvent(qleQuickSearch, qkeQuickSearch);
+				delete qkeQuickSearch;
 			} else {
 				// pass key to command line
 				QApplication::sendEvent(qcbCommand, qkeEvent);
@@ -1205,6 +1217,7 @@ const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDire
 
 		if (stTab->cfsFileSystem->GetFileName(ctwDir->topLevelItem(iPos), false).startsWith(qsFilename)) {
 			// found
+			ctwDir->currentItem()->setSelected(false);
 			ctwDir->setCurrentItem(ctwDir->topLevelItem(iPos));
 			return true;
 		} // if

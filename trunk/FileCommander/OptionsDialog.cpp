@@ -427,7 +427,6 @@ const void cOptionsDialog::FillOptions()
 	qgbQuickSearch->setChecked(csSettings->GetQuickSearchEnabled());
 	qcbQuickSearchCtrl->setChecked(csSettings->GetQuickSearchCtrl());
 	qcbQuickSearchAlt->setChecked(csSettings->GetQuickSearchAlt());
-	qcbQuickSearchShift->setChecked(csSettings->GetQuickSearchShift());
 	qcbQuickSearchShowWindow->setChecked(csSettings->GetQuickSearchShowSearchWindow());
 
 	// operations
@@ -1521,7 +1520,6 @@ const void cOptionsDialog::SaveOptions()
 	csSettings->SetQuickSearchEnabled(qgbQuickSearch->isChecked());
 	csSettings->SetQuickSearchCtrl(qcbQuickSearchCtrl->isChecked());
 	csSettings->SetQuickSearchAlt(qcbQuickSearchAlt->isChecked());
-	csSettings->SetQuickSearchShift(qcbQuickSearchShift->isChecked());
 	csSettings->SetQuickSearchShowSearchWindow(qcbQuickSearchShowWindow->isChecked());
 
 	// operations
