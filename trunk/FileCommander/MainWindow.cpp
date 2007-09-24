@@ -118,7 +118,6 @@ const void cMainWindow::AssignShortcuts()
 // creates main window
 cMainWindow::cMainWindow()
 {
-	// TODO cMainWindow
 	cSettings::sMainWindowState smwsState;
 	QVBoxLayout *qvblTabBar;
 

@@ -426,7 +426,6 @@ const void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged() const
 // start button is clicked on
 const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
-	// TODO on_qpbStart_clicked
 	bool bLocalIncluded;
 	int iI, iIndex;
 	QString qsSearchFor, qsSearchIn;
