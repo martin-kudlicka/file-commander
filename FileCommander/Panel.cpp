@@ -1217,7 +1217,9 @@ const bool cPanel::QuickSearch(const QString &qsNextChar, const eQuickSearchDire
 
 		if (stTab->cfsFileSystem->GetFileName(ctwDir->topLevelItem(iPos), false).startsWith(qsFilename)) {
 			// found
-			ctwDir->currentItem()->setSelected(false);
+			if (!(QApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+				ctwDir->currentItem()->setSelected(false);
+			} // if
 			ctwDir->setCurrentItem(ctwDir->topLevelItem(iPos));
 			return true;
 		} // if
