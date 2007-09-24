@@ -1073,7 +1073,6 @@ const void cOptionsDialog::on_qpbFavouriteAddSubmenu_clicked(bool checked /* fal
 // remove favourite button is clicked on
 const void cOptionsDialog::on_qpbFavouriteRemove_clicked(bool checked /* false */)
 {
-	// TODO on_qpbFavouriteRemove_clicked remove subitems from hash
 	qhFavouriteDirectories.remove(qtwFavouriteDirectories->currentItem());
 	delete qtwFavouriteDirectories->currentItem();
 

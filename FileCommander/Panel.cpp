@@ -156,7 +156,6 @@ const void cPanel::AddHistory(const int &iIndex)
 // add new tab with dir view
 const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bStartUp /* false */, cFileSystem *cfsFileSystem /* NULL */)
 {
-	// TODO AddTab
 	cTreeWidget *ctwTree;
 	int iIndex;
 	sTab stTab;
@@ -1664,14 +1663,8 @@ const void cPanel::Sort(const int &iIndex, QList<QTreeWidgetItem *> &qlToSort) c
 	stTab = &qlTabs.at(iIndex);
 
 	// remember marked items and clear tree
-	// TODO removeChild, takeChildren
-	while (ctwDir->topLevelItemCount() > 0) {
-		if (ctwDir->topLevelItem(0)->isSelected()) {
-			qlMarked.append(ctwDir->takeTopLevelItem(0));
-		} else {
-			ctwDir->takeTopLevelItem(0);
-		} // if else
-	} // while
+	qlMarked = ctwDir->selectedItems();
+	ctwDir->invisibleRootItem()->takeChildren();
 
 	// split into directories and files
 	for (iI = 0; iI < qlToSort.count(); iI++) {

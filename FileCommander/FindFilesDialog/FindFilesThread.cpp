@@ -207,7 +207,6 @@ void cFindFilesThread::run()
 			} // if else
 
 			if (bAllowDotDot || ConditionSuit(qtwiFile)) {
-				// TODO run ConditionSuit
 				QTreeWidgetItem *qtwiFound;
 
 				// add file to custom list
