@@ -1282,10 +1282,13 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	cTreeWidget *ctwDir;
 	int iI;
 	QList<QTreeWidgetItem *> qlFiles;
+	QString qsLastFile;
 	sTab *stTab;
 
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
 	stTab = &qlTabs[iIndex];
+
+	qsLastFile = stTab->cfsFileSystem->GetFileNameWithExtension(ctwDir->currentItem(), false);
 
 	if (!stTab->cfsFileSystem->GetDirectoryContent(&qlFiles, bRefresh)) {
 		// unaccessible file system -> select drive dialog will be shown by unacessible slot method
@@ -1383,8 +1386,8 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	Sort(iIndex, qlFiles);
 	stTab->bValid = true;
 
-	// set directory went from
-	if (!GoToFile(stTab->qsDirectoryIn)) {
+	// set directory went from or last marked file
+	if (!(GoToFile(stTab->qsDirectoryIn) || GoToFile(qsLastFile))) {
 		if (ctwDir->topLevelItemCount() > 0) {
 			// focus to the first item
 			ctwDir->setCurrentItem(ctwDir->topLevelItem(0));
