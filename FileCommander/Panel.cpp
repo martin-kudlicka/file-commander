@@ -1322,10 +1322,16 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 					qtwiFile->setIcon(iJ, stTab->cfsFileSystem->GetFileIcon(qtwiFile));
 				} else {
 					if (scColumn->qsIdentifier == qsNAME) {
-						qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileName(qtwiFile));
+						if (stTab->cfsFileSystem->IsDir(qtwiFile)) {
+							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileNameWithExtension(qtwiFile));
+						} else {
+							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileName(qtwiFile));
+						} // if else
 					} else {
 						if (scColumn->qsIdentifier == qsEXTENSION) {
-							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
+							if (stTab->cfsFileSystem->IsFile(qtwiFile)) {
+								qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
+							} // if
 						} else {
 							if (scColumn->qsIdentifier == qsNAME_WITH_EXTENSION) {
 								qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileNameWithExtension(qtwiFile));
