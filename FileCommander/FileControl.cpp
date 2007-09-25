@@ -762,9 +762,25 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 				cfsArchive = GetFileSystem(cFileSystem::Archive, cfsFileSystem->GetFilePath(qlSources.at(iI)));
 				if (cfsArchive) {
 					QList<QTreeWidgetItem *> qlFiles;
+					QString qsExtractPath;
+
+					if (cufdDialog->qcbSeparatedSubdirectory->isChecked()) {
+						// modify destination path
+						QFileInfo qfiPath;
+
+						qfiPath.setFile(qsPreparedDestination);
+						if (qfiPath.fileName() == "*.*") {
+							qsExtractPath = qfiPath.path();
+						} else {
+							qsExtractPath = qsPreparedDestination;
+						} // if else
+						qsExtractPath = QDir::cleanPath(qsExtractPath) + '/' + cfsFileSystem->GetFileName(qlSources.at(iI)) + "/*.*";
+					} else {
+						qsExtractPath = qsPreparedDestination;
+					} // if else
 
 					cfsArchive->GetDirectoryContent(&qlFiles);
-					PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::EnqueueAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), qsPreparedDestination, cufdDialog->qcbUnpackWithFullPath->isChecked());
+					PreProcessOperation(cFileOperationDialog::CopyOperation, cFileOperationDialog::EnqueueAction, cfsArchive, qlFiles, cufdDialog->qcbFilter->currentText(), qsExtractPath, cufdDialog->qcbUnpackWithFullPath->isChecked());
 					CloseFileSystem(cfsArchive);
 				} else {
 					// unsupported archive file or not archive file
