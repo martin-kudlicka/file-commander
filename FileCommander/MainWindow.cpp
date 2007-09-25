@@ -179,8 +179,8 @@ cMainWindow::cMainWindow()
 	cfcFileControl = new cFileControl(this, qhblBackgroundOperations, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->clpListerPlugin, cpPlugins->cppPackerPlugin);
 
 	// create panels
-	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qlLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
-	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qlRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleRightQuickSearch);
+	cpLeft = new cPanel(this, qswLeft, qcbLeftDrive, qlLeftDriveInfo, &qtbLeft, qleLeftPath, qlLeftSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleLeftQuickSearch);
+	cpRight = new cPanel(this, qswRight, qcbRightDrive, qlRightDriveInfo, &qtbRight, qleRightPath, qlRightSelected, &csSettings, cpPlugins->ccpContentPlugin, qlGlobalPath, qcbCommand, cfcFileControl, qleRightQuickSearch);
 
 	// quick searches
 	qleLeftQuickSearch->hide();

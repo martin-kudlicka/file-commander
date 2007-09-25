@@ -29,14 +29,14 @@ class cPanel : public QObject
 			int iPosition;														///< actual directory position in the list
 		};
 
-		cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch);
+		cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLineEdit *qlePath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch);
 																					///< constructor
 																					/**< \param qmwParent parent window for dialogs
 																						  \param qswDirs panel for cTreeWidget
 																						  \param qcbDrive drive combo box
 																						  \param qlDriveInfo drive name and it's space information
 																						  \param qtbTab panel's tab bar
-																						  \param qlPath current path
+																						  \param qlePath current path
 																						  \param qlSelected information about selected directories and files
 																						  \param csSettings application's settings
 																						  \param ccpContentPlugin application's content plugins
@@ -147,8 +147,8 @@ class cPanel : public QObject
 		QComboBox *qcbDrive;													///< drive combo box
 		QLabel *qlDriveInfo;													///< drive info - label, used/free place
 		QLabel *qlGlobalPath;												///< path visible in the bottom of main window
-		QLabel *qlPath;														///< path
 		QLabel *qlSelected;													///< selected items
+		QLineEdit *qlePath;													///< path
 		QLineEdit *qleQuickSearch;											///< quick search window
 		QList<sTab> qlTabs;													///< tabs for dir view
 		QMainWindow *qmwParent;												///< parent window for dialogs

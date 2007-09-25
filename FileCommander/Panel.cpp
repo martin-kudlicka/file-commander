@@ -86,7 +86,7 @@ const void cPanel::ActualizeWidgets() const
 	qcbDrive->blockSignals(true);
 	qcbDrive->setCurrentIndex(qcbDrive->findText(stTab->cfsFileSystem->GetDrive()));
 	qcbDrive->blockSignals(false);
-	qlPath->setText(stTab->swWidgets.qsPath);
+	qlePath->setText(stTab->swWidgets.qsPath);
 	qlSelected->setText(stTab->swWidgets.qsSelected);
 	qlGlobalPath->setText(stTab->swWidgets.qsPath);
 } // ActualizeWidgets
@@ -332,14 +332,14 @@ const void cPanel::ConnectFileSystem(const cFileSystem *cfsFileSystem) const
 } // ConnectFileSystem
 
 // constructor
-cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLabel *qlPath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
+cPanel::cPanel(QMainWindow *qmwParent, QStackedWidget *qswDirs, QComboBox *qcbDrive, QLabel *qlDriveInfo, QTabBar *qtbTab, QLineEdit *qlePath, QLabel *qlSelected, cSettings *csSettings, cContentPlugin *ccpContentPlugin, QLabel *qlGlobalPath, QComboBox *qcbCommand, cFileControl *cfcFileControl, QLineEdit *qleQuickSearch)
 {
 	this->qmwParent = qmwParent;
 	this->qswDirs = qswDirs;
 	this->qcbDrive = qcbDrive;
 	this->qlDriveInfo = qlDriveInfo;
 	this->qtbTab = qtbTab;
-	this->qlPath = qlPath;
+	this->qlePath = qlePath;
 	this->qlSelected = qlSelected;
 	this->csSettings = csSettings;
 	this->ccpContentPlugin = ccpContentPlugin;
