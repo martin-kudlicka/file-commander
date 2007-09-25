@@ -423,18 +423,22 @@ const QString cArchive::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBrac
 // get file name with extension
 const QString cArchive::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	QString qsName;
-	tHeaderData *thdFile;
+	if (qhPath->contains(qtwiFile)) {
+		QString qsName;
+		tHeaderData *thdFile;
 
-	thdFile = &qhPath->operator [](qtwiFile);
+		thdFile = &qhPath->operator [](qtwiFile);
 
-	qsName = QFileInfo(thdFile->FileName).fileName();
+		qsName = QFileInfo(thdFile->FileName).fileName();
 
-	if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
-		qsName = '[' + qsName + ']';
-	} // if
+		if (thdFile->FileAttr & cPackerPlugin::iDIRECTORY && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+			qsName = '[' + qsName + ']';
+		} // if
 
-	return qsName;
+		return qsName;
+	} else {
+		return QString();
+	} // if else
 } // GetFileNameWithExtension
 
 // get file name with full path
