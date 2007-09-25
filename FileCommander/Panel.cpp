@@ -578,9 +578,9 @@ const int cPanel::GetNativeColumnIndex(const QString &qsColumn, const int &iTabI
 } // GetNativeColumnIndex
 
 // path in current directory view
-const QString cPanel::GetPath() const
+const QString cPanel::GetPath(const bool &bLocal /* false */) const
 {
-	return qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetPath();
+	return qlTabs.at(qswDirs->currentIndex()).cfsFileSystem->GetPath(bLocal);
 } // GetPath
 
 // selected files from current directory view

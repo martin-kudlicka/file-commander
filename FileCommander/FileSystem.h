@@ -129,8 +129,9 @@ class cFileSystem : public QObject
 																											  \return file's last modified date/time stamp */
 		virtual const QStringList GetOperationStringList() const = 0;				///< file paths from operation file list
 																										/**< \return file paths from operation file list */
-		virtual const QString GetPath() const = 0;										///< current path on file system
-																										/**< \return path on file system */
+		virtual const QString GetPath(const bool &bLocal = false) const = 0;		///< current path on file system
+																										/**< \param bLocal only local path if true
+																											  \return path on file system */
 		virtual const QString GetPath(QTreeWidgetItem *qtwiFile) const = 0;		///< retreive path of a file
 																										/**< \param qtwiFile file to get path for
 																											  \return path for specified file */
