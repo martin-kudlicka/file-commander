@@ -1289,7 +1289,10 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 	ctwDir = static_cast<cTreeWidget *>(qswDirs->widget(iIndex));
 	stTab = &qlTabs[iIndex];
 
-	qsLastFile = stTab->cfsFileSystem->GetFileNameWithExtension(ctwDir->currentItem(), false);
+	if (ctwDir->currentItem()) {
+		// remember current file name
+		qsLastFile = stTab->cfsFileSystem->GetFileNameWithExtension(ctwDir->currentItem(), false);
+	} // if
 
 	if (!stTab->cfsFileSystem->GetDirectoryContent(&qlFiles, bRefresh)) {
 		// unaccessible file system -> select drive dialog will be shown by unacessible slot method
