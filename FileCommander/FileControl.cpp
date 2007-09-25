@@ -730,15 +730,19 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 
 	// files only
 	for (iI = 0; iI < qlSelectedFiles.count(); iI++) {
+		QTreeWidgetItem *qlSelectedFile;
+
+		qlSelectedFile = qlSelectedFiles.at(iI);
+
 		if (cfsFileSystem->Type() == cFileSystem::Local) {
 			// local file system -> ignore directories
-			if (cfsFileSystem->IsFile(qlSelectedFiles.at(iI))) {
-				qlSources.append(qlSelectedFiles.at(iI));
+			if (cfsFileSystem->IsFile(qlSelectedFile)) {
+				qlSources.append(qlSelectedFile);
 			} // if
 		} else {
 			// (probably) archive file system -> ignore just ".." directory
-			if (cfsFileSystem->GetFileName(qlSelectedFiles.at(iI), false) != "..") {
-				qlSources.append(qlSelectedFiles.at(iI));
+			if (cfsFileSystem->GetFileName(qlSelectedFile, false) != "..") {
+				qlSources.append(qlSelectedFile);
 			} // if
 		} // if else
 	} // for
@@ -758,8 +762,11 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 			// local file system -> sources can be archive files
 			for (iI = 0; iI < qlSources.count(); iI++) {
 				cFileSystem *cfsArchive;
+				QTreeWidgetItem *qlSource;
 
-				cfsArchive = GetFileSystem(cFileSystem::Archive, cfsFileSystem->GetFilePath(qlSources.at(iI)));
+				qlSource = qlSources.at(iI);
+				cfsArchive = GetFileSystem(cFileSystem::Archive, cfsFileSystem->GetFilePath(qlSource));
+
 				if (cfsArchive) {
 					QList<QTreeWidgetItem *> qlFiles;
 					QString qsExtractPath;
@@ -774,7 +781,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 						} else {
 							qsExtractPath = qsPreparedDestination;
 						} // if else
-						qsExtractPath = QDir::cleanPath(qsExtractPath) + '/' + cfsFileSystem->GetFileName(qlSources.at(iI)) + "/*.*";
+						qsExtractPath = QDir::cleanPath(qsExtractPath) + '/' + cfsFileSystem->GetFileName(qlSource) + "/*.*";
 					} else {
 						qsExtractPath = qsPreparedDestination;
 					} // if else
@@ -784,7 +791,7 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 					CloseFileSystem(cfsArchive);
 				} else {
 					// unsupported archive file or not archive file
-					QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(cfsFileSystem->GetFileNameWithExtension(qlSources.at(iI))));
+					QMessageBox::warning(qmwParent, tr("Unpack archive"), tr("Archive %1 not supported.").arg(cfsFileSystem->GetFileNameWithExtension(qlSource)));
 				} // if else
 			} // for
 		} else {
