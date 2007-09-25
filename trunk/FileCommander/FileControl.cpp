@@ -237,7 +237,7 @@ const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTre
 			QString qsCommand;
 
 			qsCommand = csSettings->GetExternalEditor();
-			qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
+			qsCommand = qsCommand.replace("%1", '"' + cfsFileSystem->GetFilePath(qtwiFile) + '"');
 
 			cpProcess.StartDetached(qsCommand);
 		} // if
@@ -795,7 +795,7 @@ const void cFileControl::View(const cFileSystem *cfsFileSystem, QTreeWidgetItem 
 			QString qsCommand;
 
 			qsCommand = csSettings->GetExternalViewer();
-			qsCommand = qsCommand.replace("%1", cfsFileSystem->GetFilePath(qtwiFile));
+			qsCommand = qsCommand.replace("%1", '"' + cfsFileSystem->GetFilePath(qtwiFile) + '"');
 
 			cpProcess.StartDetached(qsCommand);
 		} // if else
