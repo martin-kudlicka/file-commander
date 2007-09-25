@@ -119,6 +119,7 @@ const void cMainWindow::AssignShortcuts()
 cMainWindow::cMainWindow()
 {
 	cSettings::sMainWindowState smwsState;
+	QPalette qpLineEdit;
 	QVBoxLayout *qvblTabBar;
 
 	// load plugins
@@ -127,6 +128,12 @@ cMainWindow::cMainWindow()
 
 	// setup GUI
 	setupUi(this);
+
+	// path's line edits palette change
+	qpLineEdit = qleLeftPath->palette();
+	qpLineEdit.setColor(QPalette::Base, qlLeftDriveInfo->palette().color(QPalette::Window));
+	qleLeftPath->setPalette(qpLineEdit);
+	qleRightPath->setPalette(qpLineEdit);
 
 	// main window parameters
 	smwsState = csSettings.GetWindowState();
