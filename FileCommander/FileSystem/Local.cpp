@@ -213,7 +213,6 @@ const bool cLocal::DirExists(const QString &qsDirectory) const
 // searching of files finished
 const void cLocal::EndSearch(const bool &bClearCustomOnly /* false */)
 {
-	
 	if (saArchive.caArchive) {
 		return saArchive.caArchive->EndSearch(bClearCustomOnly);
 	} // if
