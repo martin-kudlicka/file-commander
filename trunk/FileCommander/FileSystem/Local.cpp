@@ -519,22 +519,26 @@ const QString cLocal::GetFileName(QTreeWidgetItem *qtwiFile, const bool &bBracke
 // get file name with extension
 const QString cLocal::GetFileNameWithExtension(QTreeWidgetItem *qtwiFile, const bool &bBracketsAllowed /* true */)
 {
-	QString qsName;
-	QFileInfo *qfiFile;
-
 	if (saArchive.caArchive) {
 		return saArchive.caArchive->GetFileNameWithExtension(qtwiFile, bBracketsAllowed);
 	} // if
 
-	qfiFile = &qhFiles[qtwiFile];
+	if (qhFiles.contains(qtwiFile)) {
+		QString qsName;
+		QFileInfo *qfiFile;
 
-	qsName = qfiFile->fileName();
+		qfiFile = &qhFiles[qtwiFile];
 
-	if (qfiFile->isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
-		qsName = '[' + qsName + ']';
-	} // if
+		qsName = qfiFile->fileName();
 
-	return qsName;
+		if (qfiFile->isDir() && bBracketsAllowed && csSettings->GetShowBracketsAroundDirectoryName()) {
+			qsName = '[' + qsName + ']';
+		} // if
+
+		return qsName;
+	} else {
+		return QString();
+	} // if else
 } // GetFileNameWithExtension
 
 // get file name with full path
