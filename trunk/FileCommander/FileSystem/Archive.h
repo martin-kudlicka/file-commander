@@ -95,8 +95,9 @@ class cArchive : public cFileSystem
 		const QDateTime GetLastModified(QTreeWidgetItem *qtwiFile) const;	///< get file's last modified date/time stamp
 																								/**< \param qtwiFile file to check
 																									  \return file's last modified date/time stamp */
-		const QString GetPath() const;												///< current path on file system
-																								/**< \return path on file system */
+		const QString GetPath(const bool &bLocal = false) const;				///< current path on file system
+																								/**< \param bLocal only local path if true
+																									  \return path on file system */
 		const QList<QTreeWidgetItem *> GetSelectedFiles() const;				///< selected items from current directory list
 																								/**< \return selected items from current directory list */
 		const void GoToUpDir();															///< go one directory up if possible

@@ -582,11 +582,11 @@ const QStringList cLocal::GetOperationStringList() const
 } // GetOperationStringList
 
 // current path on file system
-const QString cLocal::GetPath() const
+const QString cLocal::GetPath(const bool &bLocal /* false */) const
 {
 	QString qsPath;
 
-	if (saArchive.caArchive) {
+	if (saArchive.caArchive && !bLocal) {
 		qsPath = '/' + saArchive.caArchive->GetPath();
 	} // if
 

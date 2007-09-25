@@ -847,7 +847,7 @@ const void cMainWindow::on_qpbRightUpDir_clicked(bool checked /* false */) const
 // terminal button is clicked on
 const void cMainWindow::on_qpbTerminal_clicked(bool checked /* false */) const
 {
-	cfcFileControl->StartTerminal(cpSource->GetPath());
+	cfcFileControl->StartTerminal(cpSource->GetPath(true));
 } // on_qpbTerminal_clicked
 
 // view button is clicked on

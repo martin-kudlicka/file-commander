@@ -483,7 +483,7 @@ const QStringList cArchive::GetOperationStringList() const
 } // GetOperationStringList
 
 // current path on file system
-const QString cArchive::GetPath() const
+const QString cArchive::GetPath(const bool &bLocal /* false */) const
 {
 	QString qsPath;
 

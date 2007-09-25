@@ -150,8 +150,9 @@ class cLocal : public cFileSystem
 																									  \return file's last modified date/time stamp */
 		const QStringList GetOperationStringList() const;						///< file paths from operation file list
 																								/**< \return file paths from operation file list */
-		const QString GetPath() const;												///< current path on file system
-																								/**< \return path on file system */
+		const QString GetPath(const bool &bLocal = false) const;				///< current path on file system
+																								/**< \param bLocal only local path if true
+																									  \return path on file system */
 		const QString GetPath(QTreeWidgetItem *qtwiFile) const;				///< retreive path of a file
 																								/**< \param qtwiFile file to get path for
 																									  \return path for specified file */
