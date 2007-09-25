@@ -140,6 +140,11 @@ class cFileControl : public QObject
 																						/**< \param cfsSource file system to copy
 																							  \param qsNewPath new path on copied file system
 																							  \return new copy of source file system */
+		const QString CorrectDestinationPath(const cFileSystem *cfsFileSystem, const QString &qsPath) const;
+																						///< correct destination path by adding "/*.*" if possible
+																						/**< \param cfsFileSystem file system to check path in
+																							  \param qsPath path to correct
+																							  \return corrected path */
 		const void Enqueue(const sOperation &soOperation);				///< place operation into queue
 																						/**< \param soOperation operation description */
 		const QString GetDialogDestinationPath(cFileSystem *cfsSource, const QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop = "") const;
