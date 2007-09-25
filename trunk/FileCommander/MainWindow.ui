@@ -162,23 +162,51 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="qlLeftPath" >
+           <widget class="QLineEdit" name="qleLeftPath" >
             <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
               <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize" >
-             <size>
-              <width>16777215</width>
-              <height>14</height>
-             </size>
+            <property name="palette" >
+             <palette>
+              <active>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
             </property>
-            <property name="text" >
-             <string>TextLabel</string>
-            </property>
-            <property name="wordWrap" >
+            <property name="readOnly" >
              <bool>true</bool>
             </property>
            </widget>
@@ -397,23 +425,51 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="qlRightPath" >
+           <widget class="QLineEdit" name="qleRightPath" >
             <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
               <horstretch>1</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize" >
-             <size>
-              <width>16777215</width>
-              <height>14</height>
-             </size>
+            <property name="palette" >
+             <palette>
+              <active>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="Base" >
+                <brush brushstyle="SolidPattern" >
+                 <color alpha="255" >
+                  <red>236</red>
+                  <green>233</green>
+                  <blue>216</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
             </property>
-            <property name="text" >
-             <string>TextLabel</string>
-            </property>
-            <property name="wordWrap" >
+            <property name="readOnly" >
              <bool>true</bool>
             </property>
            </widget>
