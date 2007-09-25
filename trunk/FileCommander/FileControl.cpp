@@ -407,9 +407,9 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 
 		qpDrive = &qlDrives.at(iI);
 		if (qpDrive->first == qsDrive) {
-			switch (qpDrive->second.etType) {
-				case cFileSystem::Local:	cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
-			} // switch
+			if (qpDrive->second.etType == cFileSystem::Local) {
+				cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+			} // if
 		} // if
 
 		if (cfsFileSystem) {

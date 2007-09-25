@@ -50,6 +50,8 @@ cFindFilesDialog::cFindFilesDialog(QWidget *qwParent, cPanel *cpPanel, cFileCont
 		qgbFoundFiles->setEnabled(false);
 		qpbStart->setEnabled(false);
 		qpbCancel->setText(tr("OK"));
+
+		iSelected = 0;
 	} // if else
 
 	if (iSelected > 0) {

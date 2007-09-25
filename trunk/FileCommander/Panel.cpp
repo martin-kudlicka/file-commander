@@ -751,6 +751,7 @@ const void cPanel::on_cfsFileSystem_ContentChanged(const cFileSystem *cfsFileSys
 	int iI;
 	sTab *stTab;
 
+	stTab = NULL;
 	for (iI = 0; iI < qlTabs.count(); iI++) {
 		stTab = &qlTabs[iI];
 
