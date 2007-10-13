@@ -65,14 +65,17 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 
 	// fill plugin properties
 	spiPluginInfo.tcaCloseArchive = (tCloseArchive)spiPluginInfo.qlLibrary->resolve("CloseArchive");
+	spiPluginInfo.tgpcGetPackerCaps = (tGetPackerCaps)spiPluginInfo.qlLibrary->resolve("GetPackerCaps");
 	spiPluginInfo.toaOpenArchive = (tOpenArchive)spiPluginInfo.qlLibrary->resolve("OpenArchive");
+	spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)spiPluginInfo.qlLibrary->resolve("PackSetDefaultParams");
 	spiPluginInfo.tpfProcessFile = (tProcessFile)spiPluginInfo.qlLibrary->resolve("ProcessFile");
 	spiPluginInfo.trhReadHeader = (tReadHeader)spiPluginInfo.qlLibrary->resolve("ReadHeader");
 #ifdef Q_WS_WIN
 	spiPluginInfo.tspdpSetProcessDataProc = (tSetProcessDataProc)spiPluginInfo.qlLibrary->resolve("SetProcessDataProc");
 #endif
 
-	spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)spiPluginInfo.qlLibrary->resolve("PackSetDefaultParams");
+	// get plugin's capabilites
+	spiPluginInfo.iCapabilities = spiPluginInfo.tgpcGetPackerCaps();
 	// set default parameters
 	if (spiPluginInfo.tpsdpPackSetDefaultParams) {
 		PackDefaultParamStruct pdpsParams;

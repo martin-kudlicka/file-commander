@@ -14,6 +14,8 @@ class cPackerPlugin
 		typedef int (__stdcall *tCloseArchive)(HANDLE hArcData);										///< close archive
 																														/**< \param hArcData handle representing archive
 																															  \return error value */
+		typedef int (__stdcall *tGetPackerCaps)();														///< plugin's capabilities
+																														/**< \return plugin's capabilities */
 		typedef HANDLE (__stdcall *tOpenArchive)(tOpenArchiveData *toadArchiveData);			///< open archive
 																														/**< \param toadArchiveData archive open mode
 																															  \return handle representing archive */
@@ -50,6 +52,7 @@ class cPackerPlugin
 		/// plugin info
 		struct sPluginInfo {
 			tCloseArchive tcaCloseArchive;																	///< CloseArchive function
+			tGetPackerCaps tgpcGetPackerCaps;																///< GetPackerCaps function
 			tOpenArchive toaOpenArchive;																		///< OpenArchive function
 			tPackSetDefaultParams tpsdpPackSetDefaultParams;											///< PackSetDefaultParams function
 			tProcessFile tpfProcessFile;																		///< ProcessFile function
@@ -57,6 +60,7 @@ class cPackerPlugin
 #ifdef Q_WS_WIN
 			tSetProcessDataProc tspdpSetProcessDataProc;													///< SetProcessDataProc function
 #endif
+			int iCapabilities;																					///< plugin's capabilities
 			QLibrary *qlLibrary;																					///< library identifying this plugin
 		};
 

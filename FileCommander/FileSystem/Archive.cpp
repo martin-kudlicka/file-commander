@@ -124,8 +124,7 @@ const bool cArchive::CanCreateDir() const
 // file system can delete files
 const bool cArchive::CanDelete() const
 {
-	// TODO CanDelete
-	return false;
+	return spiPluginInfo->iCapabilities & PK_CAPS_DELETE;
 } // CanDelete
 
 // constructor

@@ -74,7 +74,7 @@ const cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const e
 	qcbDestination->setEditText(*qsDestination);
 
 	if (eoOperation == DeleteOperation) {
-		qlCount->parentWidget()->setGeometry(qlCount->parentWidget()->geometry().x(), qlCount->parentWidget()->geometry().y(), qlCount->parentWidget()->geometry().width(), qlCount->parentWidget()->geometry().height() - qcbDestination->height()); setMaximumHeight(geometry().height() - qcbDestination->height());
+		setMaximumHeight(geometry().height() - qcbDestination->height());
 		qcbFilter->setFocus(Qt::OtherFocusReason);
 		delete qcbDestination;
 		delete qpbBrowse;
