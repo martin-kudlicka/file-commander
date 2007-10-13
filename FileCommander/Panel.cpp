@@ -1332,12 +1332,21 @@ const void cPanel::RefreshContent(const int &iIndex, const bool &bRefresh /* tru
 						if (stTab->cfsFileSystem->IsDir(qtwiFile)) {
 							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileNameWithExtension(qtwiFile));
 						} else {
-							qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileName(qtwiFile));
+							QString qsName;
+
+							qsName = stTab->cfsFileSystem->GetFileName(qtwiFile);
+							if (qsName.isEmpty()) {
+								qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileNameWithExtension(qtwiFile));
+							} else {
+								qtwiFile->setText(iJ, qsName);
+							} // if else
 						} // if else
 					} else {
 						if (scColumn->qsIdentifier == qsEXTENSION) {
 							if (stTab->cfsFileSystem->IsFile(qtwiFile)) {
-								qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
+								if (!stTab->cfsFileSystem->GetFileName(qtwiFile).isEmpty()) {
+									qtwiFile->setText(iJ, stTab->cfsFileSystem->GetFileExtension(qtwiFile));
+								} // if
 							} // if
 						} else {
 							if (scColumn->qsIdentifier == qsNAME_WITH_EXTENSION) {
