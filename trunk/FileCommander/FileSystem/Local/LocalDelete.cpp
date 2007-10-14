@@ -51,44 +51,6 @@ cFileOperation::eCheckResult cLocalDelete::CheckDeleteNonEmptyDirectory(const QF
 	return cFileOperation::Nothing;
 } // CheckDeleteNonEmptyDirectory
 
-#ifdef Q_WS_WIN
-// check target file permission
-cFileOperation::eCheckResult cLocalDelete::CheckPermission(const QFileInfo *qfiSource, cPermission::eChoice *ecPermission)
-{
-	if (GetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource->filePath().unicode())) & FILE_ATTRIBUTE_READONLY) {
-		ecPermissionCurrent = cPermission::Ask;
-
-		if (*ecPermission == cPermission::Ask) {
-			emit ShowPermissionDialog(qfiSource->fileName(), tr("is readonly."));
-			// wait for answer
-			qsPause.acquire();
-
-			switch (ecPermissionCurrent) {
-				case cPermission::YesToAll:
-					*ecPermission = cPermission::YesToAll;
-					break;
-				case cPermission::NoToAll:
-					*ecPermission = cPermission::NoToAll;
-				default:
-					;
-			} // switch
-
-			if (ecPermissionCurrent == cPermission::Cancel) {
-				return cFileOperation::Cancel;
-			} // if
-		} // if
-		if (*ecPermission == cPermission::NoToAll || ecPermissionCurrent == cPermission::No) {
-			return cFileOperation::NextFile;;
-		} else {
-			// remove target file readonly permission
-			SetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource->filePath().unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qfiSource->filePath().unicode())) & ~FILE_ATTRIBUTE_READONLY);
-		} // if else
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckPermission
-#endif
-
 // retry if delete unsuccesfull
 cFileOperation::eCheckResult cLocalDelete::CheckRetry(const QFileInfo *qfiSource, cRetry::eChoice *ecRetry)
 {
@@ -152,7 +114,6 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	connect(this, SIGNAL(ShowPermissionDialog(const QString &, const QString &)), &cpPermission, SLOT(Show(const QString &, const QString &)));
 	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
@@ -278,7 +239,7 @@ void cLocalDelete::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = CheckPermission(qfiSource, &ecPermission);
+			ecrCheck = cFileOperation::CheckPermission(&cpPermission, qfiSource->filePath(), &ecPermission, &ecPermissionCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				continue;
 			} else {

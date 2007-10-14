@@ -161,7 +161,7 @@ const void cArchive::Delete(const QString &qsFilter, const cFileOperation::eOper
 {
 	cadDelete = new cArchiveDelete(qmwParent, qhblOperations, csSettings);
 	connect(cadDelete, SIGNAL(finished()), SLOT(on_cArchiveDelete_OperationFinished()));
-	cadDelete->Delete(qlOperation, qsFilter, eopPosition);
+	cadDelete->Delete(qlOperation, qhDirectories, qsFilter, eopPosition);
 } // Delete
 
 // check if specified directory exists

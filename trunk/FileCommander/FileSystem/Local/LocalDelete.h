@@ -90,12 +90,6 @@ class cLocalDelete : public QThread
 		void ShowDeleteNonEmptyDirectoryDialog(const QString &qsDirectory);
 																		///< show question dialog
 																		/**< \param qsDirectory directory to delete */
-#ifdef Q_WS_WIN
-		void ShowPermissionDialog(const QString &qsFilename, const QString &qsInformation);
-																		///< show permission dialog
-																		/**< \param qsFilename concerned file
-																			  \param qsInformation question about file */
-#endif
 		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename);
 																		///< show retry dialog
 																		/**< \param qsInformation question about file
