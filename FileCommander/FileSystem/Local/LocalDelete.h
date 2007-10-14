@@ -1,4 +1,4 @@
-/// handling deleting files
+/// handling deleting local files
 
 #ifndef LOCAL_DELETE_H
 #define LOCAL_DELETE_H
@@ -28,6 +28,7 @@ class cLocalDelete : public QThread
 																		/**< \param qmwParent parent window for foreground dialog
 																			  \param qhblOperations layout for background widget
 																			  \param csSettings application's configuration (Windows only)*/
+
 		void Delete(const QFileInfoList &qfilSource, const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
 																			///< start of delete operation
 																			/**< \param qfilSource source file list

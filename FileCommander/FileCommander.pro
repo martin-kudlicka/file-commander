@@ -58,6 +58,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Archive/ArchiveFilePropertiesDialog.h \
 			 FileSystem/Archive/ArchiveCommon.h \
 			 FileSystem/Archive/ArchiveCopy.h \
+			 FileSystem/Archive/ArchiveDelete.h \
 			 FileSystem/Archive/Continue.h \
 			 FileSystem/Archive/UnpackFilesDialog.h \
 			 Panel.h \
@@ -114,6 +115,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Archive/ArchiveFilePropertiesDialog.cpp \
 			 FileSystem/Archive/ArchiveCommon.cpp \
 			 FileSystem/Archive/ArchiveCopy.cpp \
+			 FileSystem/Archive/ArchiveDelete.cpp \
 			 FileSystem/Archive/Continue.cpp \
 			 FileSystem/Archive/UnpackFilesDialog.cpp \
 			 Panel.cpp \
