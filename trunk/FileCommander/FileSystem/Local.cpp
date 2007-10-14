@@ -188,6 +188,10 @@ const void cLocal::CreateDir(const QString &qsName)
 // delete files in operation file list
 const void cLocal::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
 {
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->Delete(qsFilter, eopPosition);
+	} // if
+
 	cldDelete = new cLocalDelete(qmwParent, qhblOperations, csSettings);
 	connect(cldDelete, SIGNAL(finished()), SLOT(on_cLocalDelete_OperationFinished()));
 	cldDelete->Delete(qfilOperation, qsFilter, eopPosition);

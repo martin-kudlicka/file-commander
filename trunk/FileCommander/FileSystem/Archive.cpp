@@ -159,7 +159,9 @@ const void cArchive::CreateDir(const QString &qsName)
 // delete files in operation file list
 const void cArchive::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
 {
-	// TODO Delete
+	cadDelete = new cArchiveDelete(qmwParent, qhblOperations, csSettings);
+	connect(cadDelete, SIGNAL(finished()), SLOT(on_cArchiveDelete_OperationFinished()));
+	cadDelete->Delete(qlOperation, qsFilter, eopPosition);
 } // Delete
 
 // check if specified directory exists
@@ -578,6 +580,13 @@ const void cArchive::on_cArchiveCopy_OperationFinished()
 	cacCopy->deleteLater();
 	emit OperationFinished(this);
 } // on_cArchiveCopy_OperationFinished
+
+// archive file deletion operation finished
+const void cArchive::on_cArchiveDelete_OperationFinished()
+{
+	cadDelete->deleteLater();
+	emit OperationFinished(this);
+} // on_cArchiveDelete_OperationFinished
 
 // open archive
 const bool cArchive::OpenArchive()

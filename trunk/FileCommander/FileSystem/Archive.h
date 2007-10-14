@@ -7,6 +7,7 @@
 #include "Plugins/PackerPlugin.h"
 #include <QtCore/QFileInfo>
 #include "FileSystem/Archive/ArchiveCopy.h"
+#include "FileSystem/Archive/ArchiveDelete.h"
 
 class cArchive : public cFileSystem
 {
@@ -34,6 +35,10 @@ class cArchive : public cFileSystem
 		const bool CanCopy() const;													///< file system can copy files to local file system
 		const bool CanCreateDir() const;												///< file system can create directory in current location
 		const bool CanDelete() const;													///< file system can delete files
+		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
+																								///< delete files in operation file list
+																								/**< \param qsFilter filter to chose files by
+																									  \param eopPosition operation position type */
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
 																									  \return true if directory exists */
@@ -140,6 +145,7 @@ class cArchive : public cFileSystem
 	private:
 		bool bCustom;																		///< custom file list in current file list flag
 		cArchiveCopy *cacCopy;															///< copy files from archive thread
+		cArchiveDelete *cadDelete;														///< delete files from archive thread
 		cPackerPlugin *cppPackerPlugin;												///< packer plugin interface
 		QFileInfo qfiArchive;															///< archive represented by this file system
 		QHash<QTreeWidgetItem *, tHeaderData> qhCustom;							///< custom file list
@@ -159,10 +165,6 @@ class cArchive : public cFileSystem
 																								/**< \param qhTable file table to clear */
 		const void CreateDir(const QString &qsName);								///< create new directory
 																								/**< \param qsName new directory name */
-		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
-																								///< delete files in operation file list
-																								/**< \param qsFilter filter to chose files by
-																									  \param eopPosition operation position type */
 		const QString GetContentPluginValue(const sContentPluginRequest &sContent);
 																								///< get value from content plugin
 																								/**< \param sContent request description
@@ -211,6 +213,7 @@ class cArchive : public cFileSystem
 
 	private slots:
 		const void on_cArchiveCopy_OperationFinished();							///< archive file copy operation finished
+		const void on_cArchiveDelete_OperationFinished();						///< archive file deletion operation finished
 }; // cArchive
 
 #endif
