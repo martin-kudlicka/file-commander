@@ -10,6 +10,7 @@
 #include <QtCore/QSemaphore>
 #include "FileSystem/Rename.h"
 #include "FileControl/FileOperationDialog.h"
+#include "FileSystem/Retry.h"
 
 class cFileOperation : public QObject
 {
@@ -30,16 +31,6 @@ class cFileOperation : public QObject
 
 		static const int iQUEUED_OPERATION_POSITION = 1;	///< position of queued background operation in layout
 
-#ifdef Q_WS_WIN
-		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause);
-																					///< check target file permission
-																					/**< \param cpPermission permission dialog
-																						  \param qsTarget target file path
-																						  \param ecPermission permanent permission user answer
-																						  \param ecPermissionCurrent current permission user answer
-																						  \param qsPause thread pause
-																						  \return action after permission check */
-#endif
 		static const eCheckResult CheckConflict(const cFileOperationDialog::eOperation &eoOperation, const cCopyMoveConflict *ccmcConflict, const cRename *crRename, const QString &qsSource, const qint64 &qi64SourceSize, const QDateTime &qdtSourceLastModified, QString &qsTarget, cCopyMoveConflict::eChoice *ecConflict, cCopyMoveConflict::eChoice *ecConflictCurrent, QSemaphore *qsPause);
 																			///< check existing destination file conflict
 																			/**< \param eoOperation copy or move operation
@@ -63,6 +54,25 @@ class cFileOperation : public QObject
 																				  \param ecDiskSpaceCurrent disk space current user answer
 																				  \param qsPause thread pause
 																				  \return action after disk space check */
+#ifdef Q_WS_WIN
+		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause);
+																					///< check target file permission
+																					/**< \param cpPermission permission dialog
+																						  \param qsTarget target file path
+																						  \param ecPermission permanent permission user answer
+																						  \param ecPermissionCurrent current permission user answer
+																						  \param qsPause thread pause
+																						  \return action after permission check */
+#endif
+		static const eCheckResult CheckRetry(const cRetry *crRetry, const cFileOperationDialog::eOperation &eoOperation, const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, cRetry::eChoice *ecRetryCurrent, QSemaphore *qsPause);
+																					///< retry if file operation unsuccesfull
+																					/**< \param crRetry retry dialog
+																						  \param eoOperation file operation type
+																						  \param qfiSource source file to try to retry
+																						  \param ecRetry permanent retry user answer
+																						  \param ecRetryCurrent current retry user answer
+																						  \param qsPause thread pause
+																						  \return action after retry check */
 		static const cCopyMoveConflict::eChoice GetDefaultOverwriteMode(cSettings *csSettings);
 																			///< default overwrite mode from settings file
 																			/**< \param csSettings settings file
@@ -109,6 +119,10 @@ class cFileOperation : public QObject
 		void ShowRenameDialog(QString *qsOldFilename) const;
 																			///< show rename dialog
 																			/**< \param qsOldFilename file to rename */
+		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename) const;
+																			///< show retry dialog
+																			/**< \param qsInformation question about file
+																				  \param qsFilename concerned file */
 }; // cFileOperation
 
 #endif

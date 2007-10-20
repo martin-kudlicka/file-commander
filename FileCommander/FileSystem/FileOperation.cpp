@@ -188,6 +188,47 @@ const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermis
 } // CheckPermission
 #endif
 
+// retry if file operation unsuccesfull
+const cFileOperation::eCheckResult cFileOperation::CheckRetry(const cRetry *crRetry, const cFileOperationDialog::eOperation &eoOperation, const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, cRetry::eChoice *ecRetryCurrent, QSemaphore *qsPause)
+{
+	if (*ecRetry != cRetry::SkipAll) {
+		cFileOperation cfoFileOperation;
+		QString qsInformation;
+
+		switch (eoOperation) {
+			case cFileOperationDialog::CopyOperation:
+				qsInformation = tr("Can't copy following file:");
+				break;
+			case cFileOperationDialog::MoveOperation:
+				qsInformation = tr("Can't move following file:");
+				break;
+			case cFileOperationDialog::DeleteOperation:
+				if (qfiSource.isDir()) {
+					qsInformation = tr("Can't remove following directory:");
+				} else {
+					qsInformation = tr("Can't delete following file:");
+				} // if else
+		} // switch
+
+		// show retry dialog
+		connect(&cfoFileOperation, SIGNAL(ShowRetryDialog(const QString &, const QString &)), crRetry, SLOT(Show(const QString &, const QString &)));
+		emit cfoFileOperation.ShowRetryDialog(qsInformation, qfiSource.filePath());
+		// wait for answer
+		qsPause->acquire();
+
+		if (*ecRetryCurrent == cRetry::SkipAll) {
+			// memorize permanent answer
+			*ecRetry = cRetry::SkipAll;
+		} // if
+	} // if
+	if (*ecRetry == cRetry::SkipAll || *ecRetryCurrent == cRetry::Skip || *ecRetryCurrent == cRetry::Abort) {
+		// skip this file
+		return cFileOperation::NextFile;
+	} // if
+
+	return cFileOperation::Nothing;
+} // CheckRetry
+
 // default overwrite mode from settings file
 const cCopyMoveConflict::eChoice cFileOperation::GetDefaultOverwriteMode(cSettings *csSettings)
 {
