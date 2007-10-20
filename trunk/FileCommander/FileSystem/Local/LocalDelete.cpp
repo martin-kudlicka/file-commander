@@ -16,41 +16,6 @@ cLocalDelete::cLocalDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	qi64TotalMaximum = 0;
 } // cLocalDelete
 
-// delete non empty directory check
-cFileOperation::eCheckResult cLocalDelete::CheckDeleteNonEmptyDirectory(const QFileInfoList *qfilSources, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectory, qint64 *qi64Total)
-{
-	ecDeleteNonEmptyDirectoryCurrent = cDeleteNonEmptyDirectory::Ask;
-
-	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
-		emit ShowDeleteNonEmptyDirectoryDialog(qfilSources->at(0).filePath());
-		// wait for answer
-		qsPause.acquire();
-
-		switch (ecDeleteNonEmptyDirectoryCurrent) {
-			case cDeleteNonEmptyDirectory::YesToAll:
-				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
-				break;
-			case cDeleteNonEmptyDirectory::NoToAll:
-				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
-			default:
-				;
-		} // switch
-	} // if
-
-	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
-		// do not delete this list of sources
-		*qi64Total += qfilSources->count();
-		return cFileOperation::NextFile;
-	} // if
-	if (ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
-		// delete canceled
-		return cFileOperation::Cancel;
-	} // if
-		// else can remove this list of sources
-
-	return cFileOperation::Nothing;
-} // CheckDeleteNonEmptyDirectory
-
 // create widget for background operation
 void cLocalDelete::CreateWidget()
 {
@@ -92,7 +57,6 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	// delete non empty directory
-	connect(this, SIGNAL(ShowDeleteNonEmptyDirectoryDialog(const QString &)), &cdnedDeleteNonEmptyDir, SLOT(Show(const QString &)));
 	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
 
 	start();
@@ -164,12 +128,7 @@ void cLocalDelete::run()
 	ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
 #endif
 	ecRetry = cRetry::Ask;
-	// get default delete non empty directory answer
-	if (csSettings->GetAskToDeleteNonEmptyDirectory()) {
-		ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::Ask;
-	} else {
-		ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
-	} // if else
+	ecDeleteNonEmptyDirectory = cFileOperation::GetDefaultDeleteNonEmptyDirectory(csSettings);
 
 	qi64Total = 0;
 	// main process - go through list of sources
@@ -182,8 +141,9 @@ void cLocalDelete::run()
 
 		// check if source contains more items
 		if (qfilSources->count() > 1) {
-			ecrCheck = CheckDeleteNonEmptyDirectory(qfilSources, &ecDeleteNonEmptyDirectory, &qi64Total);
+			ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(&cdnedDeleteNonEmptyDir, qfilSources->at(0).filePath(), &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
+				qi64Total += qfilSources->count();
 				continue;
 			} else {
 				if (ecrCheck == cFileOperation::Cancel) {

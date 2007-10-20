@@ -103,6 +103,44 @@ const cFileOperation::eCheckResult cFileOperation::CheckConflict(const cFileOper
 	return cFileOperation::Nothing;
 } // CheckConflict
 
+// delete non empty directory check
+const cFileOperation::eCheckResult cFileOperation::CheckDeleteNonEmptyDirectory(const cDeleteNonEmptyDirectory *cdnedDeleteNonEmptyDir, const QString &qsPath, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectory, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectoryCurrent, QSemaphore *qsPause)
+{
+	*ecDeleteNonEmptyDirectoryCurrent = cDeleteNonEmptyDirectory::Ask;
+
+	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
+		cFileOperation cfoFileOperation;
+
+		// delete non empty directory dialog
+		connect(&cfoFileOperation, SIGNAL(ShowDeleteNonEmptyDirectoryDialog(const QString &)), cdnedDeleteNonEmptyDir, SLOT(Show(const QString &)));
+		emit cfoFileOperation.ShowDeleteNonEmptyDirectoryDialog(qsPath);
+		// wait for answer
+		qsPause->acquire();
+
+		switch (*ecDeleteNonEmptyDirectoryCurrent) {
+			case cDeleteNonEmptyDirectory::YesToAll:
+				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::YesToAll;
+				break;
+			case cDeleteNonEmptyDirectory::NoToAll:
+				*ecDeleteNonEmptyDirectory = cDeleteNonEmptyDirectory::NoToAll;
+			default:
+				;
+		} // switch
+	} // if
+
+	if (*ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::NoToAll || *ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::No) {
+		// do not delete this list of sources
+		return cFileOperation::NextFile;
+	} // if
+	if (*ecDeleteNonEmptyDirectoryCurrent == cDeleteNonEmptyDirectory::Cancel) {
+		// delete canceled
+		return cFileOperation::Cancel;
+	} // if
+		// else can remove this list of sources
+
+	return cFileOperation::Nothing;
+} // CheckDeleteNonEmptyDirectory
+
 // check disk space
 const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause)
 {
@@ -228,6 +266,16 @@ const cFileOperation::eCheckResult cFileOperation::CheckRetry(const cRetry *crRe
 
 	return cFileOperation::Nothing;
 } // CheckRetry
+
+// default delete non empty directory mode from settings file
+const cDeleteNonEmptyDirectory::eChoice cFileOperation::GetDefaultDeleteNonEmptyDirectory(cSettings *csSettings)
+{
+	if (csSettings->GetAskToDeleteNonEmptyDirectory()) {
+		return cDeleteNonEmptyDirectory::Ask;
+	} else {
+		return cDeleteNonEmptyDirectory::YesToAll;
+	} // if else
+} // GetDefaultDeleteNonEmptyDirectory
 
 // default overwrite mode from settings file
 const cCopyMoveConflict::eChoice cFileOperation::GetDefaultOverwriteMode(cSettings *csSettings)

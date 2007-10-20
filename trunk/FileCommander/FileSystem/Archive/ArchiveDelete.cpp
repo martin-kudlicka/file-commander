@@ -1,5 +1,7 @@
 #include "FileSystem/Archive/ArchiveDelete.h"
 
+#include "FileSystem/DeleteNonEmptyDirectory.h"
+
 // constructor
 cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
@@ -43,8 +45,7 @@ void cArchiveDelete::Delete(const QList<tHeaderData> &qlSource, const QHash<QStr
 	} // if else
 
 	// delete non empty directory
-	//connect(this, SIGNAL(ShowDeleteNonEmptyDirectoryDialog(const QString &)), &cdnedDeleteNonEmptyDir, SLOT(Show(const QString &)));
-	//connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
+	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
 
 	start();
 } // Delete
@@ -58,6 +59,13 @@ void cArchiveDelete::on_cdDeleteDialog_Background()
 	cddDialog = NULL;
 } // on_cdDeleteDialog_Background
 
+// delete non empty directory dialog closed with user response
+void cArchiveDelete::on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse)
+{
+	ecDeleteNonEmptyDirectoryCurrent = ecResponse;
+	qsPause.release();
+} // on_cdnedDeleteNonEmptyDirectory_Finished
+
 // delete operation was canceled
 void cArchiveDelete::on_cLocalDelete_OperationCanceled()
 {
@@ -67,6 +75,38 @@ void cArchiveDelete::on_cLocalDelete_OperationCanceled()
 // separate thread process
 void cArchiveDelete::run()
 {
+	cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectory;
+
+	ecDeleteNonEmptyDirectory = cFileOperation::GetDefaultDeleteNonEmptyDirectory(csSettings);
+
+	// check if selected directories are empty
+	if (ecDeleteNonEmptyDirectory == cDeleteNonEmptyDirectory::Ask) {
+		int iI;
+
+		for (iI = qlSource.count() - 1; iI >= 0; iI--) {
+			const tHeaderData *thdSource;
+
+			thdSource = &qlSource.at(iI);
+			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
+				if (qhDirectories.value(thdSource->FileName)->count() > 1) {
+					// directory has more files than ".." only
+					cFileOperation::eCheckResult ecrCheck;
+
+					ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(&cdnedDeleteNonEmptyDir, thdSource->FileName, &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
+					if (ecrCheck == cFileOperation::NextFile) {
+						// skip this directory
+						qlSource.removeAt(iI);
+					} else {
+						if (ecrCheck == cFileOperation::Cancel) {
+							// cancel whole operation
+							break;
+						} // if
+					} // if
+				} // if
+			} // if
+		} // for
+	} // if
+
 	// close dialog or widget
 	if (cddDialog) {
 		cddDialog->deleteLater();
