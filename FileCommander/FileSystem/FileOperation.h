@@ -11,6 +11,7 @@
 #include "FileSystem/Rename.h"
 #include "FileControl/FileOperationDialog.h"
 #include "FileSystem/Retry.h"
+#include "FileSystem/DeleteNonEmptyDirectory.h"
 
 class cFileOperation : public QObject
 {
@@ -44,6 +45,14 @@ class cFileOperation : public QObject
 																				  \param ecConflictCurrent current conflict user answer
 																				  \param qsPause thread pause
 																				  \return action after conflict check */
+		static const eCheckResult CheckDeleteNonEmptyDirectory(const cDeleteNonEmptyDirectory *cdnedDeleteNonEmptyDir, const QString &qsPath, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectory, cDeleteNonEmptyDirectory::eChoice *ecDeleteNonEmptyDirectoryCurrent, QSemaphore *qsPause);
+																			///< delete non empty directory check
+																			/**< \param cdnedDeleteNonEmptyDir non empty directory dialog
+																				  \param qsPath path of non empty directory
+																				  \param ecDeleteNonEmptyDirectory permanent delete non empty directory user answer
+																				  \param ecDeleteNonEmptyDirectoryCurrent current delete non empty directory user answer
+																				  \param qsPause thread pause
+																				  \return action after conflict check */
 		static const eCheckResult CheckDiskSpace(const cDiskSpace *cdsDiskSpace, const QString &qsSource, const QString &qsTarget, const qint64 &qi64SourceSize, cDiskSpace::eChoice *ecDiskSpace, cDiskSpace::eChoice *ecDiskSpaceCurrent, QSemaphore *qsPause);
 																			///< check disk space
 																			/**< \param cdsDiskSpace disk space dialog
@@ -73,6 +82,10 @@ class cFileOperation : public QObject
 																						  \param ecRetryCurrent current retry user answer
 																						  \param qsPause thread pause
 																						  \return action after retry check */
+		static const cDeleteNonEmptyDirectory::eChoice GetDefaultDeleteNonEmptyDirectory(cSettings *csSettings);
+																			///< default delete non empty directory mode from settings file
+																			/**< \param csSettings settings file
+																				  \return default delete non empty directory mode from settings file */
 		static const cCopyMoveConflict::eChoice GetDefaultOverwriteMode(cSettings *csSettings);
 																			///< default overwrite mode from settings file
 																			/**< \param csSettings settings file
@@ -105,6 +118,9 @@ class cFileOperation : public QObject
 																				  \param qi64SourceSize source file size
 																				  \param qdtSourceLastModified source file last modified timestamp
 																				  \param qfiDestination destination file information */
+		void ShowDeleteNonEmptyDirectoryDialog(const QString &qsDirectory);
+																			///< show question dialog
+																			/**< \param qsDirectory directory to delete */
 		void ShowDiskSpaceDialog(const QString &qsFilename, const qint64 &qi64FileSize, const qint64 &qi64FreeSpace) const;
 																			///< show disk space dialog
 																			/**< \param qsFilename concerned file
