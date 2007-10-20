@@ -35,10 +35,10 @@ const void cArchiveCopy::CheckContinue(const int &iErrorCode, cContinue::eChoice
 } // CheckContinue
 
 // start of copy or move operation
-const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
+const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QString &qsArchiveFilePath, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
 {
 	this->qlOperation = qlOperation;
-	this->qfiArchive = qfiArchive;
+	this->qsArchiveFilePath = qsArchiveFilePath;
 	if (bFullPath) {
 		if (qsArchivePath != ".") {
 			this->qsArchivePath = qsArchivePath;
@@ -315,8 +315,8 @@ void cArchiveCopy::run()
 	ecDiskSpace = cDiskSpace::Ask;
 
 	// open archive
-	toadArchiveData.ArcName = new char[qfiArchive.filePath().length() + 1];
-	strcpy(toadArchiveData.ArcName, qfiArchive.filePath().toLatin1().constData());
+	toadArchiveData.ArcName = new char[qsArchiveFilePath.length() + 1];
+	strcpy(toadArchiveData.ArcName, qsArchiveFilePath.toLatin1().constData());
 	toadArchiveData.OpenMode = PK_OM_EXTRACT;
 	hArchive = spiPluginInfo.toaOpenArchive(&toadArchiveData);
 
@@ -338,7 +338,7 @@ void cArchiveCopy::run()
 
 		if (qslToExtract.contains(thdHeaderData.FileName) && cFileOperation::SuitsFilter(thdHeaderData.FileName, qsFilter)) {
 			// extract file
-			qsSource = qfiArchive.filePath() + '/' + thdHeaderData.FileName;
+			qsSource = qsArchiveFilePath + '/' + thdHeaderData.FileName;
 			if (bFullPath) {
 				qsTarget = thdHeaderData.FileName;
 			} else {

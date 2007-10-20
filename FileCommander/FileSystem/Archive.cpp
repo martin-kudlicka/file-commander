@@ -161,7 +161,7 @@ const void cArchive::Delete(const QString &qsFilter, const cFileOperation::eOper
 {
 	cadDelete = new cArchiveDelete(qmwParent, qhblOperations, csSettings);
 	connect(cadDelete, SIGNAL(finished()), SLOT(on_cArchiveDelete_OperationFinished()));
-	cadDelete->Delete(qlOperation, qhDirectories, qsFilter, eopPosition);
+	cadDelete->Delete(qfiArchive.filePath(), qlOperation, qhDirectories, qsFilter, spiPluginInfo, eopPosition);
 } // Delete
 
 // check if specified directory exists
@@ -642,7 +642,7 @@ const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, c
 {
 	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
 	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
-	cacCopy->Copy(qlOperation, qfiArchive, qhDirectories.key(qhPath), qsFilter, qhDirectories, qsDestination, cppPackerPlugin, spiPluginInfo, eopPosition, bFullPath);
+	cacCopy->Copy(qlOperation, qfiArchive.filePath(), qhDirectories.key(qhPath), qsFilter, qhDirectories, qsDestination, cppPackerPlugin, spiPluginInfo, eopPosition, bFullPath);
 } // Read
 
 // read archive files
