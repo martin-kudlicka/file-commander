@@ -28,10 +28,10 @@ class cArchiveCopy : public QThread
 																											  \param qhblOperations layout for background widget
 																											  \param csSettings application's configuration */
 
-		const void Copy(const QList<tHeaderData> &qlOperation, const QFileInfo &qfiArchive, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
+		const void Copy(const QList<tHeaderData> &qlOperation, const QString &qsArchiveFilePath, const QString &qsArchivePath, const QString &qsFilter, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsDestination, cPackerPlugin *cppPackerPlugin, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
 																											///< start of copy or move operation
 																											/**< \param qlOperation file list to extract
-																												  \param qfiArchive archive file path
+																												  \param qsArchiveFilePath archive file path
 																												  \param qsArchivePath startup path in archive
 																												  \param qsFilter destination path
 																												  \param qhDirectories list of all source archive files
@@ -58,7 +58,6 @@ class cArchiveCopy : public QThread
 		cPermission cpPermission;																	///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;												///< current permission dialog user's response
 #endif
-		QFileInfo qfiArchive;																		///< archive represented by this file system
 		static QHash<QString, cArchiveCopy *> qhCallback;									///< callback function table for several background operations
 		QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectories;		///< list of all source archive files
 		QHBoxLayout *qhblOperations;																///< layout for background operations
@@ -69,6 +68,7 @@ class cArchiveCopy : public QThread
 		QList<tHeaderData> qlOperation;															///< file list to extract
 		QMainWindow *qmwParent;																		///< parent window for foreground operation window
 		QSemaphore qsPause;																			///< to wait for answer on dialog
+		QString qsArchiveFilePath;																	///< archive represented by this file system
 		QString qsArchivePath;																		///< startup path in archive
 		QString qsDestination;																		///< destination path on local file system
 		QString qsFilter;																				///< filter for source files

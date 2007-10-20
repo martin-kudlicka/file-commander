@@ -2,6 +2,28 @@
 
 #include "FileSystem/DeleteNonEmptyDirectory.h"
 
+// add directory content to source list
+void cArchiveDelete::AddDirToSourceList(const char cDirectory[260])
+{
+	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
+
+	qhDirectory = qhDirectories.value(cDirectory);
+
+	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhDirectory);
+	while (qhiFile.hasNext()) {
+		qhiFile.next();
+
+		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
+			if (!QString(qhiFile.value().FileName).endsWith("..")) {
+				AddDirToSourceList(qhiFile.value().FileName);
+				qlSource.append(qhiFile.value());
+			} // if
+		} else {
+			qlSource.append(qhiFile.value());
+		} // if else
+	} // while
+} // AddDirToSourceList
+
 // constructor
 cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
@@ -23,11 +45,13 @@ void cArchiveDelete::CreateWidget()
 } // CreateWidget
 
 // start of delete operation
-void cArchiveDelete::Delete(const QList<tHeaderData> &qlSource, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
+void cArchiveDelete::Delete(const QString &qsArchiveFilePath, const QList<tHeaderData> &qlSource, const QHash<QString, QHash<QTreeWidgetItem *, tHeaderData> *> &qhDirectories, const QString &qsFilter, cPackerPlugin::sPluginInfo *spiPluginInfo, const cFileOperation::eOperationPosition &eopPosition)
 {
+	this->qsArchiveFilePath = qsArchiveFilePath;
 	this->qlSource = qlSource;
 	this->qhDirectories = qhDirectories;
 	this->qsFilter = qsFilter;
+	this->spiPluginInfo = spiPluginInfo;
 
 	if (eopPosition == cFileOperation::ForegroundOperation) {
 		cddDialog = new cDeleteDialog(qmwParent);
@@ -103,6 +127,20 @@ void cArchiveDelete::run()
 						} // if
 					} // if
 				} // if
+			} // if
+		} // for
+	} // if
+
+	if (ecDeleteNonEmptyDirectoryCurrent != cDeleteNonEmptyDirectory::Cancel) {
+		int iI;
+
+		// get source file list
+		for (iI = qlSource.count() - 1; iI >= 0; iI--) {
+			const tHeaderData *thdSource;
+
+			thdSource = &qlSource.at(iI);
+			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
+				AddDirToSourceList(thdSource->FileName);
 			} // if
 		} // for
 	} // if
