@@ -19,37 +19,6 @@ cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 } // cLocalCopyMove
 
-// retry if copy/move unsuccesfull
-const cFileOperation::eCheckResult cLocalCopyMove::CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue)
-{
-	if (*ecRetry != cRetry::SkipAll) {
-		QString qsInformation;
-
-		if (eoOperation == cFileOperationDialog::CopyOperation) {
-			qsInformation = tr("Can't copy following file:");
-		} else {
-			qsInformation = tr("Can't move following file:");
-		} // if else
-
-		emit ShowRetryDialog(qsInformation, qfiSource.filePath());
-		// wait for answer
-		qsPause.acquire();
-
-		if (ecRetryCurrent == cRetry::SkipAll) {
-			// memorize permanent answer
-			*ecRetry = cRetry::SkipAll;
-		} // if
-	} // if
-	if (*ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-		// skip this file
-		*qi64TotalValue += qfiSource.size();
-		emit SetTotalValue(*qi64TotalValue);
-		return cFileOperation::NextFile;
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckRetry
-
 // copy file
 const bool cLocalCopyMove::Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue)
 {
@@ -139,7 +108,6 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 #endif
 
 	// retry dialog
-	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	// disk space dialog
@@ -419,8 +387,10 @@ void cLocalCopyMove::run()
 				} // switch
 
 				if (!bCopyMoveSuccess) {
-					ecrCheck = CheckRetry(*qfiSource, &ecRetry, &qi64TotalValue);
+					ecrCheck = cFileOperation::CheckRetry(&crRetry, eoOperation, *qfiSource, &ecRetry, &ecRetryCurrent, &qsPause);
 					if (ecrCheck == cFileOperation::NextFile) {
+						qi64TotalValue += qfiSource->size();
+						emit SetTotalValue(qi64TotalValue);
 						break;
 					} // if
 					// else try once more

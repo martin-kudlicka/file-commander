@@ -65,12 +65,6 @@ class cLocalCopyMove : public QThread
 		QString qsTarget;														///< target of currently copied/moved file
 		QStringList qslSources;												///< source file list
 
-		const cFileOperation::eCheckResult CheckRetry(const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, qint64 *qi64TotalValue);
-																					///< retry if copy/move unsuccesfull
-																					/**< \param qfiSource source file to try to retry
-																						  \param ecRetry permanent retry user answer
-																						  \param qi64TotalValue total copied file size
-																						  \return action after retry check */
 		const bool Copy(const QString &qsSource, const QString &qsDestination, qint64 *qi64TotalValue);
 																					///< copy file
 																					/**< \param qsSource source file
@@ -93,10 +87,6 @@ class cLocalCopyMove : public QThread
 																					/**< \param qi64Value overall maximum */
 		void SetTotalValue(const qint64 &qi64Value) const;			///< set overall progress
 																					/**< \param qi64Value overall progress */
-		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename) const;
-																					///< show retry dialog
-																					/**< \param qsInformation question about file
-																						  \param qsFilename concerned file */
 
 	private slots:
 		const void on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &ecResponse);

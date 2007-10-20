@@ -65,18 +65,6 @@ class cLocalDelete : public QThread
 																			  \param ecDeleteNonEmptyDirectory permanent delete non empty directory user answer
 																			  \param qi64Total total deleted files
 																			  \return action after conflict check */
-#ifdef Q_WS_WIN
-		cFileOperation::eCheckResult CheckPermission(const QFileInfo *qfiSource, cPermission::eChoice *ecPermission);
-																		///< check target file permission
-																		/**< \param qfiSource source file to change permission
-																			  \param ecPermission permanent permission user answer
-																			  \return action after permission check */
-#endif
-		cFileOperation::eCheckResult CheckRetry(const QFileInfo *qfiSource, cRetry::eChoice *ecRetry);
-																		///< retry if delete unsuccesfull
-																		/**< \param qfiSource source file to try to retry
-																			  \param ecRetry permanent retry user answer
-																			  \return action after retry */
 		void CreateWidget();										///< create widget for background operation
 		void run();													///< separate thread process
 
@@ -90,10 +78,6 @@ class cLocalDelete : public QThread
 		void ShowDeleteNonEmptyDirectoryDialog(const QString &qsDirectory);
 																		///< show question dialog
 																		/**< \param qsDirectory directory to delete */
-		void ShowRetryDialog(const QString &qsInformation, const QString &qsFilename);
-																		///< show retry dialog
-																		/**< \param qsInformation question about file
-																			  \param qsFilename concerned file */
 
 	private slots:
 		void on_cLocalDelete_OperationCanceled();			///< delete operation was canceled

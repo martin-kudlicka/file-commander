@@ -51,35 +51,6 @@ cFileOperation::eCheckResult cLocalDelete::CheckDeleteNonEmptyDirectory(const QF
 	return cFileOperation::Nothing;
 } // CheckDeleteNonEmptyDirectory
 
-// retry if delete unsuccesfull
-cFileOperation::eCheckResult cLocalDelete::CheckRetry(const QFileInfo *qfiSource, cRetry::eChoice *ecRetry)
-{
-	if (*ecRetry != cRetry::SkipAll) {
-		QString qsInformation;
-
-		if (qfiSource->isDir()) {
-			qsInformation = tr("Can't remove following directory:");
-		} else {
-			qsInformation = tr("Can't delete following file:");
-		} // if else
-
-		emit ShowRetryDialog(qsInformation, qfiSource->filePath());
-		// wait for answer
-		qsPause.acquire();
-
-		if (ecRetryCurrent == cRetry::SkipAll) {
-			// memorize permanent answer
-			*ecRetry = cRetry::SkipAll;
-		} // if
-	} // if
-	if (*ecRetry == cRetry::SkipAll || ecRetryCurrent == cRetry::Skip || ecRetryCurrent == cRetry::Abort) {
-		// skip this file
-		return cFileOperation::NextFile;
-	} // if
-
-	return cFileOperation::Nothing;
-} // CheckRetry
-
 // create widget for background operation
 void cLocalDelete::CreateWidget()
 {
@@ -118,7 +89,6 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 #endif
 
 	// retry dialog
-	connect(this, SIGNAL(ShowRetryDialog(const QString &, const QString &)), &crRetry, SLOT(Show(const QString &, const QString &)));
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	// delete non empty directory
@@ -281,7 +251,7 @@ void cLocalDelete::run()
 
 				if (!bSuccess) {
 					// not successfuly removed - try to retry
-					ecrCheck = CheckRetry(qfiSource, &ecRetry);
+					ecrCheck = cFileOperation::CheckRetry(&crRetry, cFileOperationDialog::DeleteOperation, *qfiSource, &ecRetry, &ecRetryCurrent, &qsPause);
 					if (ecrCheck == cFileOperation::NextFile) {
 						break;
 					} // if
