@@ -3,7 +3,7 @@
 #include "FileSystem/DeleteNonEmptyDirectory.h"
 
 // add directory content to source list
-void cArchiveDelete::AddDirToSourceList(const char cDirectory[260])
+void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles)
 {
 	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
 
@@ -15,11 +15,11 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260])
 
 		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
 			if (!QString(qhiFile.value().FileName).endsWith("..")) {
-				AddDirToSourceList(qhiFile.value().FileName);
-				qlSource.append(qhiFile.value());
+				qslDirectories->prepend(qhiFile.value().FileName);
+				AddDirToSourceList(qhiFile.value().FileName, qslDirectories, qslFiles);
 			} // if
 		} else {
-			qlSource.append(qhiFile.value());
+			qslFiles->append(qhiFile.value().FileName);
 		} // if else
 	} // while
 } // AddDirToSourceList
@@ -132,7 +132,10 @@ void cArchiveDelete::run()
 	} // if
 
 	if (ecDeleteNonEmptyDirectoryCurrent != cDeleteNonEmptyDirectory::Cancel) {
+		char *cFileList;
 		int iI;
+		QStringList qslDirectories, qslFiles;
+		uint uiFileListPos, uiTotalLength;
 
 		// get source file list
 		for (iI = qlSource.count() - 1; iI >= 0; iI--) {
@@ -140,9 +143,37 @@ void cArchiveDelete::run()
 
 			thdSource = &qlSource.at(iI);
 			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
-				AddDirToSourceList(thdSource->FileName);
+				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles);
 			} // if
+			qslFiles.append(thdSource->FileName);
 		} // for
+
+		// get total length of file names to delete
+		uiTotalLength = 0;
+		for (iI = 0; iI < qslDirectories.count(); iI++) {
+			uiTotalLength += qslDirectories.at(iI).length();
+		} // for
+		for (iI = 0; iI < qslFiles.count(); iI++) {
+			uiTotalLength += qslFiles.at(iI).length();
+		} // for
+
+		// create file list to delete
+		cFileList = new char[uiTotalLength + qslDirectories.count() + qslFiles.count() + 1];
+		memset(cFileList, 0, uiTotalLength + qslDirectories.count() + qslFiles.count() + 1);
+		uiFileListPos = 0;
+		for (iI = 0; iI < qslFiles.count(); iI++) {
+			strcpy(cFileList + uiFileListPos, qslFiles.at(iI).toLocal8Bit().constData());
+			uiFileListPos += qslFiles.at(iI).length() + 1;
+		} // for
+		for (iI = 0; iI < qslDirectories.count(); iI++) {
+			strcpy(cFileList + uiFileListPos, qslDirectories.at(iI).toLocal8Bit().constData());
+			uiFileListPos += qslDirectories.at(iI).length() + 1;
+		} // for
+
+		// delete files
+		spiPluginInfo->tdfDeleteFiles(qsArchiveFilePath.toLocal8Bit().data(), cFileList);
+
+		delete cFileList;
 	} // if
 
 	// close dialog or widget
