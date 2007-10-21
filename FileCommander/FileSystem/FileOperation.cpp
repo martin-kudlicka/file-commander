@@ -190,7 +190,7 @@ const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpa
 const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause)
 {
 	*ecPermissionCurrent = cPermission::Ask;
-	if (QFile::permissions(qsTarget) & QFile::ReadOther) {
+	if (QFile::exists(qsTarget) && GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & FILE_ATTRIBUTE_READONLY) {
 		if (*ecPermission == cPermission::Ask) {
 			cFileOperation cfoFileOperation;
 
