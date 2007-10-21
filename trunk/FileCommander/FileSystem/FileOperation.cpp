@@ -185,12 +185,11 @@ const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpa
 	return cFileOperation::Nothing;
 } // CheckDiskSpace
 
-#ifdef Q_WS_WIN
 // check target file permission
-const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause)
+const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce /* false */)
 {
 	*ecPermissionCurrent = cPermission::Ask;
-	if (QFile::exists(qsTarget) && GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & FILE_ATTRIBUTE_READONLY) {
+	if (bForce || (QFile::exists(qsTarget) && GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & FILE_ATTRIBUTE_READONLY)) {
 		if (*ecPermission == cPermission::Ask) {
 			cFileOperation cfoFileOperation;
 
@@ -217,14 +216,15 @@ const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermis
 		if (*ecPermission == cPermission::NoToAll || *ecPermissionCurrent == cPermission::No) {
 			return cFileOperation::NextFile;
 		} else {
-			// remove target file readonly permission
-			SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & ~FILE_ATTRIBUTE_READONLY);
+			if (!bForce) {
+				// remove target file readonly permission
+				SetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode()), GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & ~FILE_ATTRIBUTE_READONLY);
+			} // if
 		} // if else
 	} // if
 
 	return cFileOperation::Nothing;
 } // CheckPermission
-#endif
 
 // retry if file operation unsuccesfull
 const cFileOperation::eCheckResult cFileOperation::CheckRetry(const cRetry *crRetry, const cFileOperationDialog::eOperation &eoOperation, const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, cRetry::eChoice *ecRetryCurrent, QSemaphore *qsPause)

@@ -24,6 +24,16 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 	} // while
 } // AddDirToSourceList
 
+// check target file permission
+const cFileOperation::eCheckResult cArchiveDelete::CheckPermission(const tHeaderData *thdFile, cPermission::eChoice *ecPermission)
+{
+	if (thdFile->FileAttr & cPackerPlugin::iREAD_ONLY) {
+		return cFileOperation::CheckPermission(&cpPermission, thdFile->FileName, ecPermission, &ecPermissionCurrent, &qsPause, true);
+	} else {
+		return cFileOperation::Nothing;
+	} // if else
+} // CheckPermission
+
 // constructor
 cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
 {
@@ -71,6 +81,9 @@ void cArchiveDelete::Delete(const QString &qsArchiveFilePath, const QList<tHeade
 	// delete non empty directory
 	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
 
+	// permission dialog
+	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
+
 	start();
 } // Delete
 
@@ -95,6 +108,13 @@ void cArchiveDelete::on_cLocalDelete_OperationCanceled()
 {
 	bCanceled = true;
 } // on_cLocalDelete_OperationCanceled
+
+// permission dialog closed with user response
+void cArchiveDelete::on_cpPermission_Finished(const cPermission::eChoice &ecResponse)
+{
+	ecPermissionCurrent = ecResponse;
+	qsPause.release();
+} // on_cpPermission_Finished
 
 // separate thread process
 void cArchiveDelete::run()
@@ -132,48 +152,67 @@ void cArchiveDelete::run()
 	} // if
 
 	if (ecDeleteNonEmptyDirectoryCurrent != cDeleteNonEmptyDirectory::Cancel) {
-		char *cFileList;
+		cPermission::eChoice ecPermission;
 		int iI;
 		QStringList qslDirectories, qslFiles;
-		uint uiFileListPos, uiTotalLength;
+
+		// get default readonly overwrite permission
+		ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
 
 		// get source file list
 		for (iI = qlSource.count() - 1; iI >= 0; iI--) {
 			const tHeaderData *thdSource;
+			cFileOperation::eCheckResult ecrCheck;
 
 			thdSource = &qlSource.at(iI);
+
+			// check readonly permission
+			ecrCheck = CheckPermission(thdSource, &ecPermission);
+			if (ecrCheck == cFileOperation::NextFile) {
+				continue;
+			} else {
+				if (ecrCheck == cFileOperation::Cancel) {
+					break;
+				} // if
+			} // if else
 			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
 				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles);
 			} // if
 			qslFiles.append(thdSource->FileName);
 		} // for
 
-		// get total length of file names to delete
-		uiTotalLength = 0;
-		for (iI = 0; iI < qslDirectories.count(); iI++) {
-			uiTotalLength += qslDirectories.at(iI).length();
-		} // for
-		for (iI = 0; iI < qslFiles.count(); iI++) {
-			uiTotalLength += qslFiles.at(iI).length();
-		} // for
+		// check if can continue
+		if (ecPermissionCurrent != cPermission::Cancel) {
+			char *cFileList;
+			uint uiFileListPos, uiTotalLength;
 
-		// create file list to delete
-		cFileList = new char[uiTotalLength + qslDirectories.count() + qslFiles.count() + 1];
-		memset(cFileList, 0, uiTotalLength + qslDirectories.count() + qslFiles.count() + 1);
-		uiFileListPos = 0;
-		for (iI = 0; iI < qslFiles.count(); iI++) {
-			strcpy(cFileList + uiFileListPos, qslFiles.at(iI).toLocal8Bit().constData());
-			uiFileListPos += qslFiles.at(iI).length() + 1;
-		} // for
-		for (iI = 0; iI < qslDirectories.count(); iI++) {
-			strcpy(cFileList + uiFileListPos, qslDirectories.at(iI).toLocal8Bit().constData());
-			uiFileListPos += qslDirectories.at(iI).length() + 1;
-		} // for
+			// get total length of file names to delete
+			uiTotalLength = 0;
+			for (iI = 0; iI < qslDirectories.count(); iI++) {
+				uiTotalLength += qslDirectories.at(iI).length();
+			} // for
+			for (iI = 0; iI < qslFiles.count(); iI++) {
+				uiTotalLength += qslFiles.at(iI).length();
+			} // for
 
-		// delete files
-		spiPluginInfo->tdfDeleteFiles(qsArchiveFilePath.toLocal8Bit().data(), cFileList);
+			// create file list to delete
+			cFileList = new char[uiTotalLength + qslDirectories.count() + qslFiles.count() + 1];
+			memset(cFileList, 0, uiTotalLength + qslDirectories.count() + qslFiles.count() + 1);
+			uiFileListPos = 0;
+			for (iI = 0; iI < qslFiles.count(); iI++) {
+				strcpy(cFileList + uiFileListPos, qslFiles.at(iI).toLocal8Bit().constData());
+				uiFileListPos += qslFiles.at(iI).length() + 1;
+			} // for
+			for (iI = 0; iI < qslDirectories.count(); iI++) {
+				strcpy(cFileList + uiFileListPos, qslDirectories.at(iI).toLocal8Bit().constData());
+				uiFileListPos += qslDirectories.at(iI).length() + 1;
+			} // for
 
-		delete cFileList;
+			// delete files
+			spiPluginInfo->tdfDeleteFiles(qsArchiveFilePath.toLocal8Bit().data(), cFileList);
+
+			delete cFileList;
+		} // if
 	} // if
 
 	// close dialog or widget

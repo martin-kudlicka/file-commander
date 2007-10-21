@@ -37,6 +37,8 @@ class cArchiveDelete : public QThread
 		cDeleteDialog *cddDialog;								///< delete dialog
 		cDeleteNonEmptyDirectory cdnedDeleteNonEmptyDir;///< delete non empty directory dialog
 		cDeleteWidget *cdwWidget;								///< delete widget
+		cPermission cpPermission;								///< permission dialog
+		cPermission::eChoice ecPermissionCurrent;			///< current permission dialog user's response
 		cSettings *csSettings;									///< application's configuration
 		cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectoryCurrent;
 																		///< delete non empty directory dialog user's response
@@ -54,6 +56,11 @@ class cArchiveDelete : public QThread
 		void AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles);
 																		///< add directory content to source list
 																		/**< \param cDirectory directory name */
+		const cFileOperation::eCheckResult CheckPermission(const tHeaderData *thdFile, cPermission::eChoice *ecPermission);
+																		///< check target file permission
+																		/**< \param thdFile target file path
+																			  \param ecPermissionCurrent current permission user answer
+																			  \return action after permission check */
 		void CreateWidget();										///< create widget for background operation
 		void run();													///< separate thread process
 
@@ -71,6 +78,9 @@ class cArchiveDelete : public QThread
 																		///< delete non empty directory dialog closed with user response
 																		/**< \param ecResponse dialog result */
 		void on_cLocalDelete_OperationCanceled();			///< delete operation was canceled
+		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
+																		///< permission dialog closed with user response
+																		/**< \param ecResponse dialog result */
 }; // cArchiveDelete
 
 #endif
