@@ -63,25 +63,24 @@ class cFileOperation : public QObject
 																				  \param ecDiskSpaceCurrent disk space current user answer
 																				  \param qsPause thread pause
 																				  \return action after disk space check */
-#ifdef Q_WS_WIN
-		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause);
-																					///< check target file permission
-																					/**< \param cpPermission permission dialog
-																						  \param qsTarget target file path
-																						  \param ecPermission permanent permission user answer
-																						  \param ecPermissionCurrent current permission user answer
-																						  \param qsPause thread pause
-																						  \return action after permission check */
-#endif
+		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce = false);
+																			///< check target file permission
+																			/**< \param cpPermission permission dialog
+																				  \param qsTarget target file path
+																				  \param ecPermission permanent permission user answer
+																				  \param ecPermissionCurrent current permission user answer
+																				  \param qsPause thread pause
+																				  \param bForce force dialog to show
+																				  \return action after permission check */
 		static const eCheckResult CheckRetry(const cRetry *crRetry, const cFileOperationDialog::eOperation &eoOperation, const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, cRetry::eChoice *ecRetryCurrent, QSemaphore *qsPause);
-																					///< retry if file operation unsuccesfull
-																					/**< \param crRetry retry dialog
-																						  \param eoOperation file operation type
-																						  \param qfiSource source file to try to retry
-																						  \param ecRetry permanent retry user answer
-																						  \param ecRetryCurrent current retry user answer
-																						  \param qsPause thread pause
-																						  \return action after retry check */
+																			///< retry if file operation unsuccesfull
+																			/**< \param crRetry retry dialog
+																				  \param eoOperation file operation type
+																				  \param qfiSource source file to try to retry
+																				  \param ecRetry permanent retry user answer
+																				  \param ecRetryCurrent current retry user answer
+																				  \param qsPause thread pause
+																				  \return action after retry check */
 		static const cDeleteNonEmptyDirectory::eChoice GetDefaultDeleteNonEmptyDirectory(cSettings *csSettings);
 																			///< default delete non empty directory mode from settings file
 																			/**< \param csSettings settings file
