@@ -392,7 +392,7 @@ void cArchiveCopy::run()
 
 #ifdef Q_WS_WIN
 				// check readonly permission
-				ecrCheck = cFileOperation::CheckPermission(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
+				ecrCheck = cFileOperation::CheckReadOnlyAttribute(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
 				if (ecrCheck == cFileOperation::NextFile) {
 					qi64TotalValue += thdHeaderData.UnpSize;
 					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);

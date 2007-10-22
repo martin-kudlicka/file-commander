@@ -169,7 +169,7 @@ void cLocalDelete::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = cFileOperation::CheckPermission(&cpPermission, qfiSource->filePath(), &ecPermission, &ecPermissionCurrent, &qsPause);
+			ecrCheck = cFileOperation::CheckReadOnlyAttribute(&cpPermission, qfiSource->filePath(), &ecPermission, &ecPermissionCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				continue;
 			} else {

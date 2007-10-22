@@ -56,8 +56,8 @@ class cArchiveDelete : public QThread
 		void AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles);
 																		///< add directory content to source list
 																		/**< \param cDirectory directory name */
-		const cFileOperation::eCheckResult CheckPermission(const tHeaderData *thdFile, cPermission::eChoice *ecPermission);
-																		///< check target file permission
+		const cFileOperation::eCheckResult CheckReadOnlyAttribute(const tHeaderData *thdFile, cPermission::eChoice *ecPermission);
+																		///< check target file read only attribute
 																		/**< \param thdFile target file path
 																			  \param ecPermissionCurrent current permission user answer
 																			  \return action after permission check */
