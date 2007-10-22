@@ -53,11 +53,12 @@ class cArchiveDelete : public QThread
 		QString qsFilter;											///< filter for input files
 		cPackerPlugin::sPluginInfo *spiPluginInfo;		///< packer plugin interface
 
-		void AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, cPermission::eChoice *ecPermission);
+		void AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, QStringList *qslIgnore, cPermission::eChoice *ecPermission);
 																		///< add directory content to source list
 																		/**< \param cDirectory directory name
 																			  \param qslDirectories directories to delete
 																			  \param qslFiles files to delete
+																			  \param qslIgnore directories to ignore
 																			  \param ecPermission permanent permission user answer */
 		const cFileOperation::eCheckResult CheckReadOnlyAttribute(const tHeaderData *thdFile, cPermission::eChoice *ecPermission);
 																		///< check target file read only attribute
