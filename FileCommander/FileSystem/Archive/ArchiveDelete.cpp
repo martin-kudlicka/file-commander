@@ -1,9 +1,10 @@
 #include "FileSystem/Archive/ArchiveDelete.h"
 
 #include "FileSystem/DeleteNonEmptyDirectory.h"
+#include <QtCore/QDir>
 
 // add directory content to source list
-void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, cPermission::eChoice *ecPermission)
+void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, QStringList *qslIgnore, cPermission::eChoice *ecPermission)
 {
 	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
 
@@ -18,6 +19,9 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 		// check readonly permission
 		ecrCheck = CheckReadOnlyAttribute(&qhiFile.value(), ecPermission);
 		if (ecrCheck == cFileOperation::NextFile) {
+			if (!(qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY)) {
+				qslIgnore->append(QDir::toNativeSeparators(QFileInfo(qhiFile.value().FileName).path()));
+			} // if
 			continue;
 		} else {
 			if (ecrCheck == cFileOperation::Cancel) {
@@ -28,7 +32,7 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
 			if (!QString(qhiFile.value().FileName).endsWith("..")) {
 				qslDirectories->prepend(qhiFile.value().FileName);
-				AddDirToSourceList(qhiFile.value().FileName, qslDirectories, qslFiles, ecPermission);
+				AddDirToSourceList(qhiFile.value().FileName, qslDirectories, qslFiles, qslIgnore, ecPermission);
 			} // if
 		} else {
 			qslFiles->append(qhiFile.value().FileName);
@@ -166,7 +170,7 @@ void cArchiveDelete::run()
 	if (ecDeleteNonEmptyDirectoryCurrent != cDeleteNonEmptyDirectory::Cancel) {
 		cPermission::eChoice ecPermission;
 		int iI;
-		QStringList qslDirectories, qslFiles;
+		QStringList qslDirectories, qslFiles, qslIgnore;
 
 		// get default readonly overwrite permission
 		ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
@@ -189,15 +193,28 @@ void cArchiveDelete::run()
 			} // if else
 
 			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
-				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles, &ecPermission);
-			} // if
-			qslFiles.append(thdSource->FileName);
+				qslDirectories.append(thdSource->FileName);
+				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles, &qslIgnore, &ecPermission);
+			} else {
+				qslFiles.append(thdSource->FileName);
+			} // if else
 		} // for
 
 		// check if can continue
 		if (ecPermissionCurrent != cPermission::Cancel) {
 			char *cFileList;
 			uint uiFileListPos, uiTotalLength;
+
+			// check ignore list and extend it
+			for (iI = qslIgnore.count() - 1; iI >= 0; iI--) {
+				QString qsPath;
+
+				qsPath = qslIgnore.at(iI);
+				while (qsPath != ".") {
+					qslDirectories.removeAll(qsPath);
+					qsPath = QFileInfo(qsPath).path();
+				} // while
+			} // for
 
 			// get total length of file names to delete
 			uiTotalLength = 0;
