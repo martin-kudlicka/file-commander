@@ -24,15 +24,15 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 	} // while
 } // AddDirToSourceList
 
-// check target file permission
-const cFileOperation::eCheckResult cArchiveDelete::CheckPermission(const tHeaderData *thdFile, cPermission::eChoice *ecPermission)
+// check target file read only attribute
+const cFileOperation::eCheckResult cArchiveDelete::CheckReadOnlyAttribute(const tHeaderData *thdFile, cPermission::eChoice *ecPermission)
 {
 	if (thdFile->FileAttr & cPackerPlugin::iREAD_ONLY) {
-		return cFileOperation::CheckPermission(&cpPermission, thdFile->FileName, ecPermission, &ecPermissionCurrent, &qsPause, true);
+		return cFileOperation::CheckReadOnlyAttribute(&cpPermission, thdFile->FileName, ecPermission, &ecPermissionCurrent, &qsPause, true);
 	} else {
 		return cFileOperation::Nothing;
 	} // if else
-} // CheckPermission
+} // CheckReadOnlyAttribute
 
 // constructor
 cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings)
@@ -167,7 +167,7 @@ void cArchiveDelete::run()
 			thdSource = &qlSource.at(iI);
 
 			// check readonly permission
-			ecrCheck = CheckPermission(thdSource, &ecPermission);
+			ecrCheck = CheckReadOnlyAttribute(thdSource, &ecPermission);
 			if (ecrCheck == cFileOperation::NextFile) {
 				continue;
 			} else {

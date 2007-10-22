@@ -185,8 +185,8 @@ const cFileOperation::eCheckResult cFileOperation::CheckDiskSpace(const cDiskSpa
 	return cFileOperation::Nothing;
 } // CheckDiskSpace
 
-// check target file permission
-const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce /* false */)
+// check target file read only attribute
+const cFileOperation::eCheckResult cFileOperation::CheckReadOnlyAttribute(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce /* false */)
 {
 	*ecPermissionCurrent = cPermission::Ask;
 	if (bForce || (QFile::exists(qsTarget) && GetFileAttributes(reinterpret_cast<LPCWSTR>(qsTarget.unicode())) & FILE_ATTRIBUTE_READONLY)) {
@@ -224,7 +224,7 @@ const cFileOperation::eCheckResult cFileOperation::CheckPermission(const cPermis
 	} // if
 
 	return cFileOperation::Nothing;
-} // CheckPermission
+} // CheckReadOnlyAttribute
 
 // retry if file operation unsuccesfull
 const cFileOperation::eCheckResult cFileOperation::CheckRetry(const cRetry *crRetry, const cFileOperationDialog::eOperation &eoOperation, const QFileInfo &qfiSource, cRetry::eChoice *ecRetry, cRetry::eChoice *ecRetryCurrent, QSemaphore *qsPause)

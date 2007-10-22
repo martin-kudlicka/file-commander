@@ -63,8 +63,8 @@ class cFileOperation : public QObject
 																				  \param ecDiskSpaceCurrent disk space current user answer
 																				  \param qsPause thread pause
 																				  \return action after disk space check */
-		static const eCheckResult CheckPermission(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce = false);
-																			///< check target file permission
+		static const eCheckResult CheckReadOnlyAttribute(const cPermission *cpPermission, const QString &qsTarget, cPermission::eChoice *ecPermission, cPermission::eChoice *ecPermissionCurrent, QSemaphore *qsPause, const bool &bForce = false);
+																			///< check target file read only attribute
 																			/**< \param cpPermission permission dialog
 																				  \param qsTarget target file path
 																				  \param ecPermission permanent permission user answer
