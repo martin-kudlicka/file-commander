@@ -3,7 +3,7 @@
 #include "FileSystem/DeleteNonEmptyDirectory.h"
 
 // add directory content to source list
-void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles)
+void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, cPermission::eChoice *ecPermission)
 {
 	QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
 
@@ -11,12 +11,24 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 
 	QHashIterator<QTreeWidgetItem *, tHeaderData> qhiFile(*qhDirectory);
 	while (qhiFile.hasNext()) {
+		cFileOperation::eCheckResult ecrCheck;
+
 		qhiFile.next();
+
+		// check readonly permission
+		ecrCheck = CheckReadOnlyAttribute(&qhiFile.value(), ecPermission);
+		if (ecrCheck == cFileOperation::NextFile) {
+			continue;
+		} else {
+			if (ecrCheck == cFileOperation::Cancel) {
+				break;
+			} // if
+		} // if else
 
 		if (qhiFile.value().FileAttr & cPackerPlugin::iDIRECTORY) {
 			if (!QString(qhiFile.value().FileName).endsWith("..")) {
 				qslDirectories->prepend(qhiFile.value().FileName);
-				AddDirToSourceList(qhiFile.value().FileName, qslDirectories, qslFiles);
+				AddDirToSourceList(qhiFile.value().FileName, qslDirectories, qslFiles, ecPermission);
 			} // if
 		} else {
 			qslFiles->append(qhiFile.value().FileName);
@@ -160,7 +172,7 @@ void cArchiveDelete::run()
 		ecPermission = cFileOperation::GetDefaultReadonlyOverwritePermission(csSettings);
 
 		// get source file list
-		for (iI = qlSource.count() - 1; iI >= 0; iI--) {
+		for (iI = qlSource.count() - 1; iI >= 0 && ecPermissionCurrent != cPermission::Cancel; iI--) {
 			const tHeaderData *thdSource;
 			cFileOperation::eCheckResult ecrCheck;
 
@@ -175,8 +187,9 @@ void cArchiveDelete::run()
 					break;
 				} // if
 			} // if else
+
 			if (thdSource->FileAttr & cPackerPlugin::iDIRECTORY) {
-				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles);
+				AddDirToSourceList(thdSource->FileName, &qslDirectories, &qslFiles, &ecPermission);
 			} // if
 			qslFiles.append(thdSource->FileName);
 		} // for
