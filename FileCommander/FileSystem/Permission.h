@@ -4,6 +4,7 @@
 #define PERMISSION_H
 
 #include <QtCore/QObject>
+#include <QtGui/QMainWindow>
 
 class cPermission : public QObject
 {
@@ -19,6 +20,12 @@ class cPermission : public QObject
 			NoToAll,																								///< no to all
 			Cancel																								///< cancel
 		};
+
+		cPermission(QMainWindow *qmwParent);															///< constructor
+																													/**< \param qmwParent parent window of this dialog */
+
+	private:
+		QMainWindow *qmwParent;																				///< parent window of this dialog
 
 	signals:
 		void Finished(const cPermission::eChoice &ecResponse) const;							///< dialog closed with user response

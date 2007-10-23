@@ -44,7 +44,7 @@ void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList 
 const cFileOperation::eCheckResult cArchiveDelete::CheckReadOnlyAttribute(const tHeaderData *thdFile, cPermission::eChoice *ecPermission)
 {
 	if (thdFile->FileAttr & cPackerPlugin::iREAD_ONLY) {
-		return cFileOperation::CheckReadOnlyAttribute(&cpPermission, thdFile->FileName, ecPermission, &ecPermissionCurrent, &qsPause, true);
+		return cFileOperation::CheckReadOnlyAttribute(cpPermission, thdFile->FileName, ecPermission, &ecPermissionCurrent, &qsPause, true);
 	} else {
 		return cFileOperation::Nothing;
 	} // if else
@@ -56,7 +56,10 @@ cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
+
 	bCanceled = false;
+	cdnedDeleteNonEmptyDir = new cDeleteNonEmptyDirectory(qmwParent);
+	cpPermission = new cPermission(qmwParent);
 } // cLocalDelete
 
 // create widget for background operation
@@ -95,10 +98,10 @@ void cArchiveDelete::Delete(const QString &qsArchiveFilePath, const QList<tHeade
 	} // if else
 
 	// delete non empty directory
-	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
+	connect(cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
 
 	// permission dialog
-	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
+	connect(cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 
 	start();
 } // Delete
@@ -152,7 +155,7 @@ void cArchiveDelete::run()
 					// directory has more files than ".." only
 					cFileOperation::eCheckResult ecrCheck;
 
-					ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(&cdnedDeleteNonEmptyDir, thdSource->FileName, &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
+					ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(cdnedDeleteNonEmptyDir, thdSource->FileName, &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
 					if (ecrCheck == cFileOperation::NextFile) {
 						// skip this directory
 						qlSource.removeAt(iI);
@@ -251,4 +254,6 @@ void cArchiveDelete::run()
 	} else {
 		cdwWidget->deleteLater();
 	} // if else
+	cdnedDeleteNonEmptyDir->deleteLater();
+	cpPermission->deleteLater();
 } // run

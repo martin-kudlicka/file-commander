@@ -38,12 +38,12 @@ class cLocalDelete : public QThread
 	private:
 		bool bCanceled;												///< true if operation is canceled
 		cDeleteDialog *cddDialog;									///< delete dialog
-		cDeleteNonEmptyDirectory cdnedDeleteNonEmptyDir;	///< delete non empty directory dialog
+		cDeleteNonEmptyDirectory *cdnedDeleteNonEmptyDir;	///< delete non empty directory dialog
 		cDeleteNonEmptyDirectory::eChoice ecDeleteNonEmptyDirectoryCurrent;
 																			///< delete non empty directory dialog user's response
 		cDeleteWidget *cdwWidget;									///< delete widget
 #ifdef Q_WS_WIN
-		cPermission cpPermission;									///< permission dialog
+		cPermission *cpPermission;									///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;				///< current permission dialog user's response
 #endif
 		cRetry crRetry;												///< retry dialog
