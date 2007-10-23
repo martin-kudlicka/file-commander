@@ -76,7 +76,11 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 #endif
 
 	// get plugin's capabilites
-	spiPluginInfo.iCapabilities = spiPluginInfo.tgpcGetPackerCaps();
+	if (spiPluginInfo.tgpcGetPackerCaps) {
+		spiPluginInfo.iCapabilities = spiPluginInfo.tgpcGetPackerCaps();
+	} else {
+		spiPluginInfo.iCapabilities = 0;
+	} // if else
 	// set default parameters
 	if (spiPluginInfo.tpsdpPackSetDefaultParams) {
 		PackDefaultParamStruct pdpsParams;

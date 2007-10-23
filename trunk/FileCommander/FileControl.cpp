@@ -312,7 +312,7 @@ const QString cFileControl::GetDialogDestinationPath(cFileSystem *cfsSource, con
 		qsNewDestination = qsDestinationDragAndDrop + "/*.*";
 	} // if else
 
-	return qsNewDestination;
+	return qsNewDestination.replace("//", "/");
 } // GetDialogDestinationPath
 
 // get accessible drives
