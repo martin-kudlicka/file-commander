@@ -648,12 +648,18 @@ const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, c
 // read archive files
 const void cArchive::ReadArchiveFiles(const HANDLE &hArchive)
 {
+	bool bEmpty;
 	tHeaderData thdHeaderData;
 
 	memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	// go through archive files
+	bEmpty = true;
 	while (!spiPluginInfo->trhReadHeader(hArchive, &thdHeaderData)) {
 		QHash<QTreeWidgetItem *, tHeaderData> *qhDirectory;
+
+		if (bEmpty) {
+			bEmpty = false;
+		} // if
 
 		// add directory
 		qhDirectory = AddDirectory(thdHeaderData);
@@ -666,6 +672,16 @@ const void cArchive::ReadArchiveFiles(const HANDLE &hArchive)
 		spiPluginInfo->tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
 		memset(&thdHeaderData, 0, sizeof(tHeaderData));
 	} // while
+
+	if (bEmpty) {
+		// archive is empty -> add at least ".." directory
+		tHeaderData thdDot;
+
+		strcpy(thdDot.FileName, ".");
+		thdDot.FileTime = ToPackerDateTime(QDateTime::currentDateTime());
+		thdDot.FileAttr = cPackerPlugin::iDIRECTORY;
+		AddDirectory(thdDot);
+	} // if
 } // ReadArchiveFiles
 
 // start retreiving of content delayed values
