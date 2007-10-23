@@ -12,6 +12,7 @@
 #include "FileSystem/DeleteDialog.h"
 #include "FileSystem/DeleteWidget.h"
 #include <QtGui/QTreeWidgetItem>
+#include "FileSystem/Archive/InformationDialog.h"
 
 class cArchiveDelete : public QThread
 {
@@ -37,6 +38,7 @@ class cArchiveDelete : public QThread
 		cDeleteDialog *cddDialog;									///< delete dialog
 		cDeleteNonEmptyDirectory *cdnedDeleteNonEmptyDir;	///< delete non empty directory dialog
 		cDeleteWidget *cdwWidget;									///< delete widget
+		cInformationDialog *cidInformationDialog;				///< information dialog
 		cPermission *cpPermission;									///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;				///< current permission dialog user's response
 		cSettings *csSettings;										///< application's configuration
@@ -81,6 +83,7 @@ class cArchiveDelete : public QThread
 		void on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse);
 																			///< delete non empty directory dialog closed with user response
 																			/**< \param ecResponse dialog result */
+		void on_cidInformationDialog_Finished();				///< information dialog closed
 		void on_cLocalDelete_OperationCanceled();				///< delete operation was canceled
 		void on_cpPermission_Finished(const cPermission::eChoice &ecResponse);
 																			///< permission dialog closed with user response

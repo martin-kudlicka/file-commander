@@ -24,7 +24,7 @@ const void cArchiveCopy::CheckContinue(const int &iErrorCode, cContinue::eChoice
 {
 	if (*ecContinue != cContinue::YesToAll) {
 		// show dialog
-		emit ShowContinueDialog(GetErrorString(iErrorCode), qsSource);
+		emit ShowContinueDialog(cArchiveCommon::GetErrorString(iErrorCode), qsSource);
 		// wait for answer
 		qsPause.acquire();
 
@@ -108,45 +108,6 @@ const void cArchiveCopy::CreateWidget()
 	connect(this, SIGNAL(SetTotalValue(const qint64 &)), ccmwWidget, SLOT(on_cCopyMove_SetTotalValue(const qint64 &)), Qt::BlockingQueuedConnection);
 	connect(ccmwWidget, SIGNAL(Cancel()), SLOT(on_cLocalCopyMove_OperationCanceled()));
 } // CreateWidget
-
-// get error string from error code
-const QString cArchiveCopy::GetErrorString(const int &iError) const
-{
-	switch (iError) {
-		case E_END_ARCHIVE:
-			return tr("no more files in archive");
-		case E_NO_MEMORY:
-			return tr("not enough memory");
-		case E_BAD_DATA:
-			return tr("data is bad");
-		case E_BAD_ARCHIVE:
-			return tr("CRC error in archive data");
-		case E_UNKNOWN_FORMAT:
-			return tr("archive format unknown");
-		case E_EOPEN:
-			return tr("Cannot open existing file");
-		case E_ECREATE:
-			return tr("cannot create file");
-		case E_ECLOSE:
-			return tr("error closing file");
-		case E_EREAD:
-			return tr("error reading from file");
-		case E_EWRITE:
-			return tr("error writing to file");
-		case E_SMALL_BUF:
-			return tr("buffer too small");
-		case E_EABORTED:
-			return tr("function aborted by user");
-		case E_NO_FILES:
-			return tr("no files found");
-		case E_TOO_MANY_FILES:
-			return tr("too many files to pack");
-		case E_NOT_SUPPORTED:
-			return tr("function not supported");
-	} // switch
-	
-	return QString();
-} // ///< get error string from error code
 
 // get file list to extract and count size of all those files
 const QStringList cArchiveCopy::GetFilesToExtractAndCountTotalSize()

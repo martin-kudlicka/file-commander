@@ -2,6 +2,7 @@
 
 #include "FileSystem/DeleteNonEmptyDirectory.h"
 #include <QtCore/QDir>
+#include "FileSystem/Archive/ArchiveCommon.h"
 
 // add directory content to source list
 void cArchiveDelete::AddDirToSourceList(const char cDirectory[260], QStringList *qslDirectories, QStringList *qslFiles, QStringList *qslIgnore, cPermission::eChoice *ecPermission)
@@ -60,6 +61,7 @@ cArchiveDelete::cArchiveDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	bCanceled = false;
 	cdnedDeleteNonEmptyDir = new cDeleteNonEmptyDirectory(qmwParent);
 	cpPermission = new cPermission(qmwParent);
+	cidInformationDialog = new cInformationDialog(qmwParent);
 } // cLocalDelete
 
 // create widget for background operation
@@ -103,6 +105,9 @@ void cArchiveDelete::Delete(const QString &qsArchiveFilePath, const QList<tHeade
 	// permission dialog
 	connect(cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 
+	// information dialog
+	connect(cidInformationDialog, SIGNAL(Finished()), SLOT(on_cidInformationDialog_Finished()));
+
 	start();
 } // Delete
 
@@ -121,6 +126,12 @@ void cArchiveDelete::on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEm
 	ecDeleteNonEmptyDirectoryCurrent = ecResponse;
 	qsPause.release();
 } // on_cdnedDeleteNonEmptyDirectory_Finished
+
+// information dialog closed
+void cArchiveDelete::on_cidInformationDialog_Finished()
+{
+	qsPause.release();
+} // on_cidInformationDialog_Finished
 
 // delete operation was canceled
 void cArchiveDelete::on_cLocalDelete_OperationCanceled()
@@ -206,6 +217,7 @@ void cArchiveDelete::run()
 		// check if can continue
 		if (ecPermissionCurrent != cPermission::Cancel) {
 			char *cFileList;
+			int iErrorCode;
 			uint uiFileListPos, uiTotalLength;
 
 			// check ignore list and extend it
@@ -242,7 +254,16 @@ void cArchiveDelete::run()
 			} // for
 
 			// delete files
-			spiPluginInfo->tdfDeleteFiles(qsArchiveFilePath.toLocal8Bit().data(), cFileList);
+			iErrorCode = spiPluginInfo->tdfDeleteFiles(qsArchiveFilePath.toLocal8Bit().data(), cFileList);
+
+			if (iErrorCode) {
+				// some error occured when deleting files from archive
+				QString qsInformation;
+
+				qsInformation = cArchiveCommon::GetErrorString(iErrorCode);
+				qsInformation = tr("Packer plugin: ") + qsInformation + '.';
+				cArchiveCommon::ShowInformationDialog(cidInformationDialog, QMessageBox::Critical, qsInformation, &qsPause);
+			} // if
 
 			delete cFileList;
 		} // if
@@ -256,4 +277,5 @@ void cArchiveDelete::run()
 	} // if else
 	cdnedDeleteNonEmptyDir->deleteLater();
 	cpPermission->deleteLater();
+	cidInformationDialog->deleteLater();
 } // run
