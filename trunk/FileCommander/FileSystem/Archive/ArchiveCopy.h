@@ -55,7 +55,7 @@ class cArchiveCopy : public QThread
 		cContinue::eChoice ecContinueCurrent;													///< current continue user's response
 		cDiskSpace::eChoice ecDiskSpaceCurrent;												///< current disk space user's response
 #ifdef Q_WS_WIN
-		cPermission cpPermission;																	///< permission dialog
+		cPermission *cpPermission;																	///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;												///< current permission dialog user's response
 #endif
 		static QHash<QString, cArchiveCopy *> qhCallback;									///< callback function table for several background operations

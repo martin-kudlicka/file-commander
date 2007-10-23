@@ -46,7 +46,7 @@ class cLocalCopyMove : public QThread
 		cDiskSpace::eChoice ecDiskSpaceCurrent;						///< current disk space user's response
 		cFileOperationDialog::eOperation eoOperation;				///< copy or move operation
 #ifdef Q_WS_WIN
-		cPermission cpPermission;											///< permission dialog
+		cPermission *cpPermission;											///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;						///< current permission dialog user's response
 #endif
 		cRename crRename;														///< rename dialog

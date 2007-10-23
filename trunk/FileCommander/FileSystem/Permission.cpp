@@ -2,12 +2,18 @@
 
 #include <QtGui/QMessageBox>
 
+// constructor
+cPermission::cPermission(QMainWindow *qmwParent)
+{
+	this->qmwParent = qmwParent;
+} // cPermission
+
 // show permission dialog
 const void cPermission::Show(const QString &qsFilename, const QString &qsInformation) const
 {
 	eChoice ecResponse;
 
-	switch (QMessageBox::warning(NULL, tr("Permission"), tr("File %1 %2 Continue?").arg(qsFilename).arg(qsInformation),
+	switch (QMessageBox::warning(qmwParent, tr("Permission"), tr("File %1 %2 Continue?").arg(qsFilename).arg(qsInformation),
 										  QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll | QMessageBox::Cancel)) {
 		case QMessageBox::Yes:
 			ecResponse = Yes;

@@ -4,6 +4,7 @@
 #define DELETE_NON_EMPTY_DIRECTORY_H
 
 #include <QtCore/QObject>
+#include <QtGui/QMainWindow>
 
 class cDeleteNonEmptyDirectory : public QObject
 {
@@ -19,6 +20,12 @@ class cDeleteNonEmptyDirectory : public QObject
 			NoToAll,																						///< no to all
 			Cancel																						///< cancel
 		};
+
+		cDeleteNonEmptyDirectory(QMainWindow *qmwParent);									///< constructor
+																											/**< \param qmwParent parent window of this dialog */
+
+	private:
+		QMainWindow *qmwParent;																		///< parent window of this dialog
 
 	signals:
 		void Finished(const cDeleteNonEmptyDirectory::eChoice &ecResponse) const;	///< dialog closed with user response

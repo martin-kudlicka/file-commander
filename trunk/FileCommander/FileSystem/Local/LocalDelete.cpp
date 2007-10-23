@@ -12,8 +12,11 @@ cLocalDelete::cLocalDelete(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	this->qmwParent = qmwParent;
 	this->qhblOperations = qhblOperations;
 	this->csSettings = csSettings;
+
 	bCanceled = false;
 	qi64TotalMaximum = 0;
+	cdnedDeleteNonEmptyDir = new cDeleteNonEmptyDirectory(qmwParent);
+	cpPermission = new cPermission(qmwParent);
 } // cLocalDelete
 
 // create widget for background operation
@@ -50,14 +53,14 @@ void cLocalDelete::Delete(const QFileInfoList &qfilSource, const QString &qsFilt
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
+	connect(cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
 	// retry dialog
 	connect(&crRetry, SIGNAL(Finished(const cRetry::eChoice &)), SLOT(on_crRetry_Finished(const cRetry::eChoice &)));
 
 	// delete non empty directory
-	connect(&cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
+	connect(cdnedDeleteNonEmptyDir, SIGNAL(Finished(const cDeleteNonEmptyDirectory::eChoice &)), SLOT(on_cdnedDeleteNonEmptyDirectory_Finished(const cDeleteNonEmptyDirectory::eChoice &)));
 
 	start();
 } // Delete
@@ -141,7 +144,7 @@ void cLocalDelete::run()
 
 		// check if source contains more items
 		if (qfilSources->count() > 1) {
-			ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(&cdnedDeleteNonEmptyDir, qfilSources->at(0).filePath(), &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
+			ecrCheck = cFileOperation::CheckDeleteNonEmptyDirectory(cdnedDeleteNonEmptyDir, qfilSources->at(0).filePath(), &ecDeleteNonEmptyDirectory, &ecDeleteNonEmptyDirectoryCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				qi64Total += qfilSources->count();
 				continue;
@@ -169,7 +172,7 @@ void cLocalDelete::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = cFileOperation::CheckReadOnlyAttribute(&cpPermission, qfiSource->filePath(), &ecPermission, &ecPermissionCurrent, &qsPause);
+			ecrCheck = cFileOperation::CheckReadOnlyAttribute(cpPermission, qfiSource->filePath(), &ecPermission, &ecPermissionCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				continue;
 			} else {
@@ -238,4 +241,6 @@ void cLocalDelete::run()
 	} else {
 		cdwWidget->deleteLater();
 	} // if else
+	cdnedDeleteNonEmptyDir->deleteLater();
+	cpPermission->deleteLater();
 } // run

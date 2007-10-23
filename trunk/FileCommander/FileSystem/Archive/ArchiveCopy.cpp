@@ -16,6 +16,7 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 
 	bCanceled = false;
 	qi64TotalMaximum = 0;
+	cpPermission = new cPermission(qmwParent);
 } // cArchiveCopy
 
 // continue after unsuccessfull file extraction
@@ -79,7 +80,7 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QStri
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
+	connect(cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
 	// continue dialog
@@ -392,7 +393,7 @@ void cArchiveCopy::run()
 
 #ifdef Q_WS_WIN
 				// check readonly permission
-				ecrCheck = cFileOperation::CheckReadOnlyAttribute(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
+				ecrCheck = cFileOperation::CheckReadOnlyAttribute(cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
 				if (ecrCheck == cFileOperation::NextFile) {
 					qi64TotalValue += thdHeaderData.UnpSize;
 					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
@@ -457,4 +458,5 @@ void cArchiveCopy::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
+	cpPermission->deleteLater();
 } // run

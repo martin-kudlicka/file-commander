@@ -17,6 +17,7 @@ cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	bCanceled = false;
 	qi64TotalMaximum = 0;
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
+	cpPermission = new cPermission(qmwParent);
 } // cLocalCopyMove
 
 // copy file
@@ -104,7 +105,7 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 
 #ifdef Q_WS_WIN
 	// permission dialog
-	connect(&cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
+	connect(cpPermission, SIGNAL(Finished(const cPermission::eChoice &)), SLOT(on_cpPermission_Finished(const cPermission::eChoice &)));
 #endif
 
 	// retry dialog
@@ -304,7 +305,7 @@ void cLocalCopyMove::run()
 
 #ifdef Q_WS_WIN
 			// check readonly permission
-			ecrCheck = cFileOperation::CheckReadOnlyAttribute(&cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
+			ecrCheck = cFileOperation::CheckReadOnlyAttribute(cpPermission, qsTarget, &ecPermission, &ecPermissionCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				qi64TotalValue += qfiSource->size();
 				continue;
@@ -418,4 +419,5 @@ void cLocalCopyMove::run()
 	} else {
 		ccmwWidget->deleteLater();
 	} // if else
+	cpPermission->deleteLater();
 } // run

@@ -2,12 +2,18 @@
 
 #include <QtGui/QMessageBox>
 
+// constructor
+cDeleteNonEmptyDirectory::cDeleteNonEmptyDirectory(QMainWindow *qmwParent)
+{
+	this->qmwParent = qmwParent;
+} // cDeleteNonEmptyDirectory
+
 // show conflict dialog
 const void cDeleteNonEmptyDirectory::Show(const QString &qsDirectory) const
 {
 	eChoice ecResponse;
 
-	switch (QMessageBox::warning(NULL, tr("Delete non empty directory"), tr("Delete %1 directory?").arg(qsDirectory),
+	switch (QMessageBox::warning(qmwParent, tr("Delete non empty directory"), tr("Delete %1 directory?").arg(qsDirectory),
 										  QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll | QMessageBox::Cancel)) {
 		case QMessageBox::Yes:
 			ecResponse = Yes;
