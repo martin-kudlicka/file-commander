@@ -38,6 +38,7 @@ const void cPanel::ActualizeDrives() const
 		qsDrive = qcbDrive->currentText();
 		qcbDrive->blockSignals(true);
 
+		qcbDrive->clear();
 		for (iI = 0; iI < qlDrives.count(); iI++) {
 			qcbDrive->addItem(qlDrives.at(iI).first);
 		} // for
