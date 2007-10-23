@@ -7,7 +7,6 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QHBoxLayout>
 #include "Settings.h"
-#include "Plugins/WCXHead.h"
 #include "Plugins/PackerPlugin.h"
 #include <QtCore/QFileInfo>
 #include "FileSystem/FileOperation.h"
@@ -82,9 +81,6 @@ class cArchiveCopy : public QThread
 																												  \param iErrorCode error code to get error string from
 																												  \param ecContinue continue permanent user answer */
 		const void CreateWidget();																	///< create widget for background operation
-		const QString GetErrorString(const int &iError) const;							///< get error string from error code
-																											/**< \param iError error code
-																												  \return error string */
 		const QStringList GetFilesToExtractAndCountTotalSize();							///< get file list to extract and count size of all those files
 																											/**< \return file list to extract */
 		const QStringList GetFilesToExtractAndCountTotalSizeInDirectory(const char *cDirectory);

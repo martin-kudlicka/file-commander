@@ -61,6 +61,7 @@ HEADERS = MainWindow.h \
 			 FileSystem/Archive/ArchiveDelete.h \
 			 FileSystem/Archive/Continue.h \
 			 FileSystem/Archive/UnpackFilesDialog.h \
+			 FileSystem/Archive/InformationDialog.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
@@ -118,6 +119,7 @@ SOURCES = FileCommander.cpp \
 			 FileSystem/Archive/ArchiveDelete.cpp \
 			 FileSystem/Archive/Continue.cpp \
 			 FileSystem/Archive/UnpackFilesDialog.cpp \
+			 FileSystem/Archive/InformationDialog.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \
