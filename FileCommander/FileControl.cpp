@@ -609,7 +609,7 @@ const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperat
 		soOperation.cfsSource = GetFileSystem(cFileSystem::Local);
 	} // if else
 	if (eoOperation != cFileOperationDialog::DeleteOperation) {
-		soOperation.cfsDestination = CopyFileSystem(cfsSource, qsDestination);
+		soOperation.cfsDestination = CopyFileSystem(soOperation.cfsSource, qsDestination);
 	} else {
 		soOperation.cfsDestination = NULL;
 	} // if else
