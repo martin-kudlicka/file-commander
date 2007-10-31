@@ -9,6 +9,7 @@
 #include <QtGui/QApplication>
 #include "FindFilesDialog/FindFilesThread.h"
 #include <QtCore/QUrl>
+#include <QtCore/QDir>
 
 QStackedWidget *cPanel::qswLastActive;	///< last active panel (static class variable)
 cSettings::sSort cPanel::ssSort;			///< sort information (static class variable)
@@ -1101,7 +1102,7 @@ const void cPanel::on_ctwTree_KeyPressed(QKeyEvent *qkeEvent)
 		case Qt::Key_Return:
 			if (static_cast<bool>(qkeEvent->modifiers() & Qt::ControlModifier) && static_cast<bool>(qkeEvent->modifiers() & Qt::ShiftModifier)) {
 				// ctrl+shift+enter -> copy filePath to command line
-				qsName = stTab->cfsFileSystem->GetFilePath(ctwDir->currentItem());
+				qsName = QDir::toNativeSeparators(stTab->cfsFileSystem->GetFilePath(ctwDir->currentItem()));
 			} else {
 				// ctrl+enter -> copy fileName to command line
 				qsName = stTab->cfsFileSystem->GetFileName(ctwDir->currentItem(), false);
