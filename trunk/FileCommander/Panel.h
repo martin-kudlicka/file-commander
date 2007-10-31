@@ -105,7 +105,7 @@ class cPanel : public QObject
 		const void SetFocus() const;										///< set focus to current directory view
 		const void SetHistoryDirectory(const int &iPosition);		///< set path by directory from history list
 																					/**< \param iPosition directory position in history list */
-		const void SetPath(const QString &qsPath) const;			///< set new path for current dir view on selected drive
+		const void SetPath(const QString &qsPath);					///< set new path for current dir view on selected drive
 																					/**< \param qsPath new path */
 		const void SetTabIndex(const int &iTabIndex) const;		///< switch tabs
 																					/**< \param iTabIndex new tab index */

@@ -174,16 +174,6 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 		iIndex = qswDirs->insertWidget(qswDirs->currentIndex() + 1, ctwTree);
 	} // if else
 
-	// connect signals to slots
-	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
-	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
-	connect(ctwTree, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
-	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *)));
-	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
-	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)));
-	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
-	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));
-
 	// drive letter in combo
 	if (bStartUp && iIndex == 0) {
 		// only for the first drive
@@ -199,7 +189,21 @@ const int cPanel::AddTab(const cSettings::sTabInfo &stiTabInfo, const bool &bSta
 		stTab.cfsFileSystem = cfsFileSystem;
 	} else {
 		stTab.cfsFileSystem = cfcFileControl->GetFileSystem(stiTabInfo.qsDrive, stiTabInfo.qsPath);
+		while (!stTab.cfsFileSystem) {
+			// drive does not exist -> get new one
+			cfcFileControl->ChangeFileSystem(&stTab.cfsFileSystem, qcbDrive, stiTabInfo.qsDrive, stiTabInfo.qsPath);
+		} // while
 	} // if else
+
+	// connect signals to slots
+	connect(ctwTree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(on_ctwTree_customContextMenuRequested(const QPoint &)));
+	connect(ctwTree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), SLOT(on_ctwTree_itemActivated(QTreeWidgetItem *, int)));
+	connect(ctwTree, SIGNAL(itemSelectionChanged()), SLOT(on_ctwTree_itemSelectionChanged()));
+	connect(ctwTree, SIGNAL(KeyPressed(QKeyEvent *)), SLOT(on_ctwTree_KeyPressed(QKeyEvent *)));
+	connect(ctwTree, SIGNAL(GotFocus()), SLOT(on_ctwTree_GotFocus()));
+	connect(ctwTree, SIGNAL(DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)), SLOT(on_ctwTree_DropEvent(const cTreeWidget::eDropAction &, const QList<QUrl> &, const QString &, QTreeWidgetItem *)));
+	connect(ctwTree, SIGNAL(DragEvent()), SLOT(on_ctwTree_DragEvent()));
+	connect(ctwTree, SIGNAL(MoveEvent(QTreeWidgetItem *)), SLOT(on_ctwTree_MoveEvent(QTreeWidgetItem *)));
 
 	// history
 	stTab.shHistory = stiTabInfo.shHistory;
@@ -1640,7 +1644,7 @@ const void cPanel::SetHistoryDirectory(const int &iPosition)
 	SetPath(stTab->shHistory.qlLastPaths.at(iPosition).qsPath);
 } // SetHistoryDirectory
 
-const void cPanel::SetPath(const QString &qsPath) const
+const void cPanel::SetPath(const QString &qsPath)
 {
 	cFileControl::sPathInfo spiPathInfo;
 	int iIndex;
@@ -1650,11 +1654,11 @@ const void cPanel::SetPath(const QString &qsPath) const
 	iIndex = qcbDrive->findText(spiPathInfo.qsDrive);
 	if (iIndex != -1) {
 		// drive exists -> proceed with set path
-		const sTab *stTab;
+		sTab *stTab;
 
-		stTab = &qlTabs.at(qswDirs->currentIndex());
+		stTab = &qlTabs[qswDirs->currentIndex()];
 		// change drive and possible change of file system
-		if (cfcFileControl->ChangeFileSystem(stTab->cfsFileSystem, qcbDrive, spiPathInfo.qsDrive, qsPath)) {
+		if (cfcFileControl->ChangeFileSystem(&stTab->cfsFileSystem, qcbDrive, spiPathInfo.qsDrive, qsPath)) {
 			ConnectFileSystem(stTab->cfsFileSystem);
 		} // if
 	} // if
