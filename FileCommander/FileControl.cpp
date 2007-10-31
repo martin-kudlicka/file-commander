@@ -31,54 +31,46 @@ cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 } // cFileControl
 
 // change file system according to new drive with last path there
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive)
+const bool cFileControl::ChangeFileSystem(cFileSystem **cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive)
 {
 	QString qsPath;
 
 	if (qhLastPaths.contains(qsDrive)) {
 		qsPath = qhLastPaths.value(qsDrive);
 	} else {
-		int iI;
-		QList<QPair<QString, sDrive> > qlDrives;
-
-		qlDrives = GetDrives();
-
-		for (iI = 0; iI < qlDrives.count(); iI++) {
-			const QPair<QString, sDrive> *qpDrive;
-
-			qpDrive = &qlDrives.at(iI);
-			if (qpDrive->first == qsDrive) {
-				qsPath = qpDrive->second.qsPath;
-			} // if
-		} // for
+		qsPath = GetDrivePath(qsDrive);
 	} // if else
 
 	return ChangeFileSystem(cfsFileSystem, qcbDrive, qsDrive, qsPath);
 } // ChangeFileSystem
 
 // change file system according to new drive
-const bool cFileControl::ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath)
+const bool cFileControl::ChangeFileSystem(cFileSystem **cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath)
 {
 	// TODO ChangeFileSystem do this after implementing other than local file system (delete old one, create new one, watch FS list) (copy FTP, at least logon info if same drive as existing FTP)
 	sPathInfo spiPathInfo;
 
 	spiPathInfo = GetPathInfo(qsPath);
 
-	if (cfsFileSystem->TryPath(qsPath)) {
+	if (*cfsFileSystem && (*cfsFileSystem)->TryPath(qsPath)) {
 		// remember last path
-		qhLastPaths.insert(cfsFileSystem->GetDrive(), cfsFileSystem->GetPath());
+		qhLastPaths.insert((*cfsFileSystem)->GetDrive(), (*cfsFileSystem)->GetPath());
 		// change drive combo box
 		qcbDrive->blockSignals(true);
 		qcbDrive->setCurrentIndex(qcbDrive->findText(qsDrive));
 		qcbDrive->blockSignals(false);
 		// set path
-		cfsFileSystem->SetPath(qsDrive, spiPathInfo.qsRootPath, qsPath);
+		(*cfsFileSystem)->SetPath(qsDrive, spiPathInfo.qsRootPath, qsPath);
 	} else {
 		QString qsNewDrive;
 
 		qsNewDrive = SelectDrive(qsDrive);
 		if (qsNewDrive.isEmpty()) {
 			qsNewDrive = qsDrive;
+		} // if
+
+		if (!*cfsFileSystem) {
+			*cfsFileSystem = GetFileSystem(qsNewDrive, GetDrivePath(qsNewDrive));
 		} // if
 		return ChangeFileSystem(cfsFileSystem, qcbDrive, qsNewDrive);
 	} // if else
@@ -314,6 +306,26 @@ const QString cFileControl::GetDialogDestinationPath(cFileSystem *cfsSource, con
 
 	return qsNewDestination.replace("//", "/");
 } // GetDialogDestinationPath
+
+// find root path for the drive
+const QString cFileControl::GetDrivePath(const QString &qsDrive) const
+{
+	int iI;
+	QList<QPair<QString, sDrive> > qlDrives;
+
+	qlDrives = GetDrives();
+
+	for (iI = 0; iI < qlDrives.count(); iI++) {
+		const QPair<QString, sDrive> *qpDrive;
+
+		qpDrive = &qlDrives.at(iI);
+		if (qpDrive->first == qsDrive) {
+			return qpDrive->second.qsPath;
+		} // if
+	} // for
+
+	return QString();
+} // GetDrivePath
 
 // get accessible drives
 const QList<QPair<QString, cFileControl::sDrive> > cFileControl::GetDrives() const

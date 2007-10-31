@@ -264,6 +264,7 @@ cMainWindow::cMainWindow()
 const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDrive) const
 {
 	bool bChangeFileSystem;
+	cFileSystem *cfsFileSystem;
 	cPanel *cpOther;
 	QComboBox *qcbDrive;
 
@@ -285,10 +286,11 @@ const void cMainWindow::DriveIndexChanged(cPanel *cpPanel, const QString &qsDriv
 		return;
 	} // if
 
+	cfsFileSystem = cpPanel->GetFileSystem();
 	if (qsDrive == cpOther->GetFileSystem()->GetDrive()) {
-		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, qsDrive, cpOther->GetFileSystem()->GetPath());
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(&cfsFileSystem, qcbDrive, qsDrive, cpOther->GetFileSystem()->GetPath());
 	} else {
-		bChangeFileSystem = cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, qsDrive);
+		bChangeFileSystem = cfcFileControl->ChangeFileSystem(&cfsFileSystem, qcbDrive, qsDrive);
 	} // if else
 
 	if (bChangeFileSystem) {
@@ -448,6 +450,7 @@ const void cMainWindow::on_cPanel_Delete() const
 // panel's file system unaccessible
 const void cMainWindow::on_cPanel_FileSystemUnaccessible(cPanel *cpPanel) const
 {
+	cFileSystem *cfsFileSystem;
 	QComboBox *qcbDrive;
 
 	if (cpPanel == cpLeft) {
@@ -456,7 +459,8 @@ const void cMainWindow::on_cPanel_FileSystemUnaccessible(cPanel *cpPanel) const
 		qcbDrive = qcbRightDrive;
 	} // if else
 
-	if (cfcFileControl->ChangeFileSystem(cpPanel->GetFileSystem(), qcbDrive, cpPanel->GetFileSystem()->GetDrive())) {
+	cfsFileSystem = cpPanel->GetFileSystem();
+	if (cfcFileControl->ChangeFileSystem(&cfsFileSystem, qcbDrive, cpPanel->GetFileSystem()->GetDrive())) {
 		// TODO on_cPanel_FileSystemUnaccessible connect new file system
 	} // if
 } // on_cPanel_FileSystemUnaccessible

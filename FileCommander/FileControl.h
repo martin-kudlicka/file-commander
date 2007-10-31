@@ -42,13 +42,13 @@ class cFileControl : public QObject
 																							  \param clpListerPlugin lister plugin interface
 																							  \param cppPackerPlugin packer plugin interace */
 
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive);
+		const bool ChangeFileSystem(cFileSystem **cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive);
 																						///< change file system according to new drive with last path there
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qcbDrive drive combo box
 																							  \param qsDrive drive to get file system for
 																							  \return true if cfsFileSystem was changed */
-		const bool ChangeFileSystem(cFileSystem *cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath);
+		const bool ChangeFileSystem(cFileSystem **cfsFileSystem, QComboBox *qcbDrive, const QString &qsDrive, const QString &qsPath);
 																						///< change file system according to new drive
 																						/**< \param cfsFileSystem currently set file system
 																							  \param qcbDrive drive combo box
@@ -154,6 +154,9 @@ class cFileControl : public QObject
 																							  \param qsDestinationPath default destination path
 																							  \param qsDestinationDragAndDrop default destination path for drag and drop operation
 																							  \return prepared destination path */
+		const QString GetDrivePath(const QString &qsDrive) const;	///< find root path for the drive
+																						/**< \param qsDrive drive to find path for
+																							  \return root path for the drive */
 		const sTypeCount GetFilesTypeCount(const cFileSystem *cfsFileSystem, const QList<QTreeWidgetItem *> qlFiles) const;
 																						///< count files type
 																						/**< \param cfsFileSystem file system
