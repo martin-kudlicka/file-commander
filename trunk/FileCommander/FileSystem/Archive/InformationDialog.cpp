@@ -27,6 +27,8 @@ const void cInformationDialog::Show(const enum QMessageBox::Icon &iIcon, const Q
 			break;
 		case QMessageBox::Warning:
 			qsTitle = tr("Warning");
+		default:
+			;
 	} // switch
 	qmbDialog = new QMessageBox(iIcon, qsTitle, qsInformation, QMessageBox::Ok, qmwParent);
 

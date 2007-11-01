@@ -36,6 +36,7 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 		cPanel *cpTabBarAction;														///< selected tab bar for action with tabs
 		cPlugins *cpPlugins;															///< application's plugins
 		cSettings csSettings;														///< accessing application's settings
+		cSettings::ePosition epFavourite;										///< favourite for specified panel's position
 		int iTabBarIndex;																///< selected tab for actions on tab bar
 		QAction *qaTabBarCloseAllOtherTabs;										///< close all other tabs
 		QAction *qaTabBarCloseTab;													///< close current tab
@@ -182,6 +183,8 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbEdit_clicked(bool checked = false) const;		///< edit button is clicked on
 																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbLeftFavourites_clicked(bool checked = false);	///< left favourite button is clicked on
+																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbLeftRootDir_clicked(bool checked = false) const;
 																							///< left root dir button is clicked on
 																							/**< \param checked true if button is checkable and checked */
@@ -192,6 +195,9 @@ class cMainWindow : public QMainWindow, private Ui::qmwMainWindow
 																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbNewDirectory_clicked(bool checked = false) const;
 																							///< new directory button is clicked on
+																							/**< \param checked true if button is checkable and checked */
+		const void on_qpbRightFavourites_clicked(bool checked = false);
+																							///< right favourite button is clicked on
 																							/**< \param checked true if button is checkable and checked */
 		const void on_qpbRightRootDir_clicked(bool checked = false) const;
 																							///< right root dir button is clicked on

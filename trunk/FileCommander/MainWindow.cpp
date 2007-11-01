@@ -766,9 +766,19 @@ const void cMainWindow::on_qmColumnSets_triggered(QAction *action) const
 // selected favourite directory from favourites context menu
 const void cMainWindow::on_qmFavouriteDirectories_triggered(QAction *action) const
 {
-	cpSource->SetPath(qhFavouriteDirectories.value(action).qsSource);
+	cPanel *cpFavouriteDestination, *cpFavouriteSource;
+
+	if (epFavourite == cSettings::PositionLeft) {
+		cpFavouriteSource = cpLeft;
+		cpFavouriteDestination = cpRight;
+	} else {
+		cpFavouriteSource = cpRight;
+		cpFavouriteDestination = cpLeft;
+	} // if else
+
+	cpFavouriteSource->SetPath(qhFavouriteDirectories.value(action).qsSource);
 	if (qhFavouriteDirectories.value(action).bTarget) {
-		cpDestination->SetPath(qhFavouriteDirectories.value(action).qsTarget);
+		cpFavouriteDestination->SetPath(qhFavouriteDirectories.value(action).qsTarget);
 	} // if
 } // on_qmFavouriteDirectories_triggered
 
@@ -818,6 +828,12 @@ const void cMainWindow::on_qpbEdit_clicked(bool checked /* false */) const
 	cfcFileControl->Edit(cpSource->GetFileSystem(), cpSource->GetSelectedFiles());
 } // on_qpbEdit_clicked
 
+// left favourite button is clicked on
+const void cMainWindow::on_qpbLeftFavourites_clicked(bool checked /* false */)
+{
+	epFavourite = cSettings::PositionLeft;
+} // on_qpbLeftFavourites_clicked
+
 // left root dir button is clicked on
 const void cMainWindow::on_qpbLeftRootDir_clicked(bool checked /* false */) const
 {
@@ -849,6 +865,12 @@ const void cMainWindow::on_qpbNewDirectory_clicked(bool checked /* false */) con
 		cpSource->GoToFile(qsName.left(qsName.indexOf(QDir::separator())));
 	} // if
 } // on_qpbNewDirectory_clicked
+
+// right favourite button is clicked on
+const void cMainWindow::on_qpbRightFavourites_clicked(bool checked /* false */)
+{
+	epFavourite = cSettings::PositionRight;
+} // on_qpbRightFavourites_clicked
 
 // right root dir button is clicked on
 const void cMainWindow::on_qpbRightRootDir_clicked(bool checked /* false */) const
