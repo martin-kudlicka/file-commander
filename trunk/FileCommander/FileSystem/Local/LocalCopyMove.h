@@ -49,7 +49,7 @@ class cLocalCopyMove : public QThread
 		cPermission *cpPermission;											///< permission dialog
 		cPermission::eChoice ecPermissionCurrent;						///< current permission dialog user's response
 #endif
-		cRename crRename;														///< rename dialog
+		cRename *crRename;													///< rename dialog
 		cRetry crRetry;														///< retry dialog
 		cRetry::eChoice ecRetryCurrent;									///< current retry dialog user's response
 		cSettings *csSettings;												///< application's configuration

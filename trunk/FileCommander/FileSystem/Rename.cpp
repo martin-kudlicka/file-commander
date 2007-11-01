@@ -2,10 +2,16 @@
 
 #include <QtGui/QInputDialog>
 
+// constructor
+cRename::cRename(QMainWindow *qmwParent)
+{
+	this->qmwParent = qmwParent;
+} // cRename
+
 // show conflict dialog
 const void cRename::Show(QString *qsNewFilename) const
 {
-	*qsNewFilename = QInputDialog::getText(NULL, tr("Rename"), tr("New filename:"));
+	*qsNewFilename = QInputDialog::getText(qmwParent, tr("Rename"), tr("New filename:"), QLineEdit::Normal, *qsNewFilename);
 
 	emit Finished();
 } // Show

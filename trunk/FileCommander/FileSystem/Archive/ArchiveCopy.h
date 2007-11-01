@@ -48,7 +48,7 @@ class cArchiveCopy : public QThread
 		cCopyMoveDialog *ccmdDialog;																///< copy/move dialog
 		cCopyMoveWidget *ccmwWidget;																///< copy/move widget
 		cDiskSpace cdsDiskSpace;																	///< disk space dialog
-		cRename crRename;																				///< rename dialog
+		cRename *crRename;																			///< rename dialog
 		cSettings *csSettings;																		///< application's configuration
 		cCopyMoveConflict::eChoice ecConflictCurrent;										///< current conflict user's response
 		cContinue::eChoice ecContinueCurrent;													///< current continue user's response
