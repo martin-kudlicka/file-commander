@@ -703,6 +703,8 @@
     <addaction name="separator" />
     <addaction name="qaBranchView" />
     <addaction name="separator" />
+    <addaction name="qaTargetAsSource" />
+    <addaction name="separator" />
     <addaction name="qaFullScreen" />
    </widget>
    <widget class="QMenu" name="qmPanel" >
@@ -838,6 +840,17 @@
   <action name="qaHistoryDirectoryList" >
    <property name="text" >
     <string>&amp;History directory list</string>
+   </property>
+  </action>
+  <action name="qaTargetAsSource" >
+   <property name="text" >
+    <string>Target as source</string>
+   </property>
+   <property name="iconText" >
+    <string>Target as source</string>
+   </property>
+   <property name="toolTip" >
+    <string>Target as source</string>
    </property>
   </action>
  </widget>

@@ -49,6 +49,7 @@ const QStringList qslSHORTCUTS__MAIN_MENU__COMMANDS = QStringList() << qsSHORTCU
 																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES
 																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST
 																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW
+																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__TARGET_AS_SOURCE
 																						  << qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN;
 const QStringList qslSHORTCUTS__MAIN_MENU__PANEL = QStringList() << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_FIRST_COLUMN
 																					  << qsSHORTCUT__MAIN_MENU__PANEL__SORT_BY_SECOND_COLUMN
