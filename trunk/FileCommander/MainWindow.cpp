@@ -103,6 +103,7 @@ const void cMainWindow::AssignShortcuts()
 	qaFavouriteDirectories->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FAVOURITE_DIRECTORIES)));
 	qaHistoryDirectoryList->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__HISTORY_DIRECTORY_LIST)));
 	qaBranchView->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__BRANCH_VIEW)));
+	qaTargetAsSource->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__TARGET_AS_SOURCE)));
 	qaFullScreen->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__COMMANDS__FULLSCREEN)));
 	qaReverseOrder->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REVERSE_ORDER)));
 	qaRefresh->setShortcut(QKeySequence(csSettings.GetShortcut(cSettings::MainMenuCategory, qsSHORTCUT__MAIN_MENU__PANEL__REFRESH)));
@@ -719,6 +720,12 @@ const void cMainWindow::on_qaTabBarDuplicateTab_triggered(bool checked /* false 
 		} // if else
 	} // if
 } // on_qaTabBarDuplicateTab_triggered
+
+// set target panel as source
+const void cMainWindow::on_qaTargetAsSource_triggered(bool checked /* false */) const
+{
+	cpDestination->SetPath(cpSource->GetFileSystem()->GetPath());
+} // on_qaTargetAsSource_triggered
 
 // unpack selected files chosen
 const void cMainWindow::on_qaUnpackSelectedFiles_triggered(bool checked /* false */) const
