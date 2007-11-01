@@ -18,6 +18,7 @@ cLocalCopyMove::cLocalCopyMove(QMainWindow *qmwParent, QHBoxLayout *qhblOperatio
 	qi64TotalMaximum = 0;
 	iBufferSize = csSettings->GetCopyMoveBufferSize() * 1024;
 	cpPermission = new cPermission(qmwParent);
+	crRename = new cRename(qmwParent);
 } // cLocalCopyMove
 
 // copy file
@@ -101,7 +102,7 @@ const void cLocalCopyMove::CopyMove(const cFileOperationDialog::eOperation &eoOp
 	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
-	connect(&crRename, SIGNAL(Finished()), SLOT(on_crRename_Finished()));
+	connect(crRename, SIGNAL(Finished()), SLOT(on_crRename_Finished()));
 
 #ifdef Q_WS_WIN
 	// permission dialog
@@ -283,7 +284,7 @@ void cLocalCopyMove::run()
 			} // if else
 
 			// conflict solving
-			ecrCheck = cFileOperation::CheckConflict(eoOperation, &ccmcConflict, &crRename, qfiSource->fileName(), qfiSource->size(), qfiSource->lastModified(), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
+			ecrCheck = cFileOperation::CheckConflict(eoOperation, &ccmcConflict, crRename, qfiSource->fileName(), qfiSource->size(), qfiSource->lastModified(), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
 			if (ecrCheck == cFileOperation::NextFile) {
 				qi64TotalValue += qfiSource->size();
 				continue;
@@ -420,4 +421,5 @@ void cLocalCopyMove::run()
 		ccmwWidget->deleteLater();
 	} // if else
 	cpPermission->deleteLater();
+	crRename->deleteLater();
 } // run

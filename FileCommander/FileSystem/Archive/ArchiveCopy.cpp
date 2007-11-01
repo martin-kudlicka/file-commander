@@ -17,6 +17,7 @@ cArchiveCopy::cArchiveCopy(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, 
 	bCanceled = false;
 	qi64TotalMaximum = 0;
 	cpPermission = new cPermission(qmwParent);
+	crRename = new cRename(qmwParent);
 } // cArchiveCopy
 
 // continue after unsuccessfull file extraction
@@ -76,7 +77,7 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QStri
 	connect(&ccmcConflict, SIGNAL(Finished(const cCopyMoveConflict::eChoice &)), SLOT(on_ccmcConflict_Finished(const cCopyMoveConflict::eChoice &)));
 
 	// rename dialog
-	connect(&crRename, SIGNAL(Finished()), SLOT(on_crRename_Finished()));
+	connect(crRename, SIGNAL(Finished()), SLOT(on_crRename_Finished()));
 
 #ifdef Q_WS_WIN
 	// permission dialog
@@ -341,7 +342,7 @@ void cArchiveCopy::run()
 				} // if else
 
 				// conflict solving
-				ecrCheck = cFileOperation::CheckConflict(cFileOperationDialog::CopyOperation, &ccmcConflict, &crRename, QFileInfo(qsSource).fileName(), thdHeaderData.UnpSize, cArchiveCommon::ToQDateTime(thdHeaderData.FileTime), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
+				ecrCheck = cFileOperation::CheckConflict(cFileOperationDialog::CopyOperation, &ccmcConflict, crRename, QFileInfo(qsSource).fileName(), thdHeaderData.UnpSize, cArchiveCommon::ToQDateTime(thdHeaderData.FileTime), qsTarget, &ecConflict, &ecConflictCurrent, &qsPause);
 				if (ecrCheck == cFileOperation::NextFile) {
 					qi64TotalValue += thdHeaderData.UnpSize;
 					spiPluginInfo.tpfProcessFile(hArchive, PK_SKIP, NULL, NULL);
@@ -420,4 +421,5 @@ void cArchiveCopy::run()
 		ccmwWidget->deleteLater();
 	} // if else
 	cpPermission->deleteLater();
+	crRename->deleteLater();
 } // run

@@ -48,6 +48,9 @@ const cFileOperation::eCheckResult cFileOperation::CheckConflict(const cFileOper
 					// rename
 					QString qsNewFilename;
 
+					// show current file name to allow modification of it
+					qsNewFilename = QFileInfo(qsTarget).fileName();
+
 					// rename dialog
 					connect(&cfoFileOperation, SIGNAL(ShowRenameDialog(QString *)), crRename, SLOT(Show(QString *)));
 					emit cfoFileOperation.ShowRenameDialog(&qsNewFilename);
