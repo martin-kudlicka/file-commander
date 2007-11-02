@@ -79,9 +79,9 @@ const bool cFileControl::ChangeFileSystem(cFileSystem **cfsFileSystem, QComboBox
 } // ChangeFileSystem
 
 // close used file system
-const void cFileControl::CloseFileSystem(cFileSystem *cfsFileSystem) const
+const void cFileControl::CloseFileSystem(cFileSystem *cfsFileSystem)
 {
-	// TODO CloseFileSystem - later - delete local (and from FS list later) (watch for copied FTPs?)
+	qlFileSystems.removeAll(cfsFileSystem);
 	cfsFileSystem->deleteLater();
 } // CloseFileSystem
 
@@ -157,7 +157,7 @@ const void cFileControl::CompareDirectories(cFileSystem *cfsLeft, cFileSystem *c
 } // CompareDirectories
 
 // copy specified file system
-cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath /* "" */) const
+cFileSystem *cFileControl::CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath /* "" */)
 {
 	cFileSystem *cfsCopy;
 	QString qsDrive, qsPath;
@@ -370,9 +370,12 @@ const cFileControl::sTypeCount cFileControl::GetFilesTypeCount(const cFileSystem
 } // GetFilesTypeCount
 
 // get specified file system type
-cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath /* QFileInfo() */) const
+cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath /* QFileInfo() */)
 {
-	// TODO GetFileSystem add FS to some FS list later
+	cFileSystem *cfsFileSystem;
+
+	cfsFileSystem = NULL;
+
 	if (etType == cFileSystem::Local) {
 		// local file system
 		int iI;
@@ -385,28 +388,29 @@ cFileSystem *cFileControl::GetFileSystem(const cFileSystem::eType &etType, const
 
 			qpDrive = &qlDrives.at(iI);
 			if (qpDrive->second.etType == etType) {
-				return new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+				cfsFileSystem = new cLocal(qpDrive->first, qpDrive->second.qsPath, qpDrive->second.qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+				break;
 			} // if
 		} // for
 	} else {
 		// archive file system
-		cArchive *caArchive;
-
-		caArchive = new cArchive("", "", qfiArchivePath, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
-		if (caArchive->SetPath("", true)) {
-			return caArchive;
-		} else {
-			CloseFileSystem(caArchive);
-			return NULL;
-		} // if else
+		cfsFileSystem = new cArchive("", "", qfiArchivePath, "", qmwParent, qhblOperations, csSettings, cppPackerPlugin);
+		if (!cfsFileSystem->SetPath("", true)) {
+			CloseFileSystem(cfsFileSystem);
+			cfsFileSystem = NULL;
+		} // if
 	} // if else
 
-	return NULL;
+	if (cfsFileSystem) {
+		// add new file system to file system list
+		qlFileSystems.append(cfsFileSystem);
+	} // if
+
+	return cfsFileSystem;
 } // GetFileSystem
 
-cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath) const
+cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &qsPath)
 {
-	// TODO GetFileSystem add FS to some FS list later
 	cFileSystem *cfsFileSystem;
 	int iI;
 	QList<QPair<QString, sDrive> > qlDrives;
@@ -421,13 +425,15 @@ cFileSystem *cFileControl::GetFileSystem(const QString &qsDrive, const QString &
 		if (qpDrive->first == qsDrive) {
 			if (qpDrive->second.etType == cFileSystem::Local) {
 				cfsFileSystem = new cLocal(qsDrive, qpDrive->second.qsPath, qsPath, qmwParent, qhblOperations, csSettings, ccpContentPlugin, cppPackerPlugin);
+				break;
 			} // if
 		} // if
-
-		if (cfsFileSystem) {
-			break;
-		} // if
 	} // for
+
+	if (cfsFileSystem) {
+		// add new file system to file system list
+		qlFileSystems.append(cfsFileSystem);
+	} // if
 
 	return cfsFileSystem;
 } // GetFileSystem
