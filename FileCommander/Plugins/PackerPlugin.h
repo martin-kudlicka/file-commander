@@ -23,6 +23,14 @@ class cPackerPlugin
 		typedef HANDLE (__stdcall *tOpenArchive)(tOpenArchiveData *toadArchiveData);			///< open archive
 																														/**< \param toadArchiveData archive open mode
 																															  \return handle representing archive */
+		typedef int (__stdcall *tPackFiles)(char *cPackedFile, char *cSubPath, char *cSrcPath, char *cAddList, int iFlags);
+																														///< pack files to new or existing archive
+																														/**< \param cPackedFile archive to pack in
+																															  \param cSubPath subdirectory in archive
+																															  \param cSrcPath path to source files
+																															  \param cAddList list of source files
+																															  \param iFlags packing flags
+																															  \return error value */
 		typedef void (__stdcall *tPackSetDefaultParams)(PackDefaultParamStruct *pdpsParams);
 																														///< set parameters for plugin
 																														/**< \param pdpsParams plugin's parameters */
@@ -59,6 +67,7 @@ class cPackerPlugin
 			tDeleteFiles tdfDeleteFiles;																		///< DeleteFiles function
 			tGetPackerCaps tgpcGetPackerCaps;																///< GetPackerCaps function
 			tOpenArchive toaOpenArchive;																		///< OpenArchive function
+			tPackFiles tpfPackFiles;																			///< PackFiles function
 			tPackSetDefaultParams tpsdpPackSetDefaultParams;											///< PackSetDefaultParams function
 			tProcessFile tpfProcessFile;																		///< ProcessFile function
 			tReadHeader trhReadHeader;																			///< ReadHeader function
