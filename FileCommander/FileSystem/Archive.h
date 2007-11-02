@@ -46,6 +46,7 @@ class cArchive : public cFileSystem
 																								/**< \param bClearCustomOnly just clear custom file list if true */
 		const void FreeOperationList(void *vFileList) const;					///< free file operation list from memory
 																								/**< \param vFileList pointer to file operation list in memory */
+		const void ForceRefresh();														///< force reload of file system content
 		const QFileInfo &GetArchiveFilePath() const;								///< archive file path
 																								/**< \return archive file path if archive file system */
 		const QList<QTreeWidgetItem *> GetCustomFileList() const;			///< custom file list
@@ -160,6 +161,7 @@ class cArchive : public cFileSystem
 																								///< add directory into directory table if it's not there already
 																								/**< \param thdHeaderData directory to add
 																									  \return created (or already existing) directory */
+		const void ClearArchiveFileTable();											///< clear archive file table
 		const void ClearFileTable(QHash<QTreeWidgetItem *, tHeaderData> &qhTable) const;
 																								///< clear file table before next fill of it
 																								/**< \param qhTable file table to clear */

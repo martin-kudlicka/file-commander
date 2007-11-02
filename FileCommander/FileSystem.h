@@ -63,6 +63,7 @@ class cFileSystem : public QObject
 																										/**< \param bClearCustomOnly just clear custom file list if true */
 		virtual const void FreeOperationList(void *vFileList) const = 0;			///< free file operation list from memory
 																										/**< \param vFileList pointer to file operation list in memory */
+		virtual const void ForceRefresh() = 0;												///< force reload of file system content
 		virtual const QFileInfo &GetArchiveFilePath() const = 0;						///< archive file path
 																										/**< \return archive file path if archive file system */
 		virtual const QString GetContentPluginValue(const sContentPluginRequest &sContent) = 0;
@@ -152,6 +153,8 @@ class cFileSystem : public QObject
 		virtual const bool IsFile(QTreeWidgetItem *qtwiFile) const = 0;			///< check if file is really file
 																										/**< \param qtwiFile file to check
 																											  \return true if file */
+		const bool IsInPanel() const;															///< check if file system is connected to a panel
+																										/**< \return true if file system is connected to a panel */
 		virtual const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath) = 0;
 																										///< write local files to this file system
 																										/**< \param eoOperation operation type
