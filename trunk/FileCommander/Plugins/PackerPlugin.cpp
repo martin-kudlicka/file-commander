@@ -68,6 +68,7 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 	spiPluginInfo.tdfDeleteFiles = (tDeleteFiles)spiPluginInfo.qlLibrary->resolve("DeleteFiles");
 	spiPluginInfo.tgpcGetPackerCaps = (tGetPackerCaps)spiPluginInfo.qlLibrary->resolve("GetPackerCaps");
 	spiPluginInfo.toaOpenArchive = (tOpenArchive)spiPluginInfo.qlLibrary->resolve("OpenArchive");
+	spiPluginInfo.tpfPackFiles = (tPackFiles)spiPluginInfo.qlLibrary->resolve("PackFiles");
 	spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)spiPluginInfo.qlLibrary->resolve("PackSetDefaultParams");
 	spiPluginInfo.tpfProcessFile = (tProcessFile)spiPluginInfo.qlLibrary->resolve("ProcessFile");
 	spiPluginInfo.trhReadHeader = (tReadHeader)spiPluginInfo.qlLibrary->resolve("ReadHeader");
