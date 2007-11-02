@@ -8,12 +8,7 @@
 // destructor
 cArchive::~cArchive()
 {
-	QHashIterator<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectory(qhDirectories);
-	while (qhDirectory.hasNext()) {
-		qhDirectory.next();
-		ClearFileTable(*qhDirectory.value());
-		delete qhDirectory.value();
-	} // while
+	ClearArchiveFileTable();
 
 	if (bCustom) {
 		ClearFileTable(qhFiles);
@@ -139,6 +134,18 @@ cArchive::cArchive(const QString &qsDrive, const QString &qsRootPath, const QFil
 	SetPath(qsDrive, qsRootPath, qsPath);
 } // cArchive
 
+// clear archive file table
+const void cArchive::ClearArchiveFileTable()
+{
+	QHashIterator<QString, QHash<QTreeWidgetItem *, tHeaderData> *> qhDirectory(qhDirectories);
+	while (qhDirectory.hasNext()) {
+		qhDirectory.next();
+		ClearFileTable(*qhDirectory.value());
+		delete qhDirectory.value();
+	} // while
+	qhDirectories.clear();
+} // ClearArchiveFileTable
+
 // clear file table before next fill of it
 const void cArchive::ClearFileTable(QHash<QTreeWidgetItem *, tHeaderData> &qhTable) const
 {
@@ -201,6 +208,17 @@ const void cArchive::FreeOperationList(void *vFileList) const
 {
 	delete static_cast<QList<tHeaderData> *>(vFileList);
 } // FreeOperationList
+
+// force reload of file system content
+const void cArchive::ForceRefresh()
+{
+	QString qsPath;
+
+	qsPath = qhDirectories.key(qhPath);
+	ClearArchiveFileTable();
+	OpenArchive();
+	SetPath(qsPath);
+} // ForceRefresh
 
 // archive file path
 const QFileInfo &cArchive::GetArchiveFilePath() const

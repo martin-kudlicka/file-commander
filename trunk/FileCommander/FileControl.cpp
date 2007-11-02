@@ -484,11 +484,28 @@ const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSy
 		soOperation = &qlOperations.at(iI);
 		if (soOperation->cfsSource == cfsFileSystem || soOperation->cfsDestination == cfsFileSystem) {
 			// found finished operation
+			int iJ;
+
 			if (soOperation->cfsSource == cfsInQueue) {
 				// it's queued operation
 				cfsInQueue = NULL;
 				ProcessQueue();
 			} // if
+
+			// check file systems in panel to refresh
+			for (iJ = 0; iJ < qlFileSystems.count(); iJ++) {
+				cFileSystem *cfsInPanel;
+
+				cfsInPanel = qlFileSystems[iJ];
+				if (cfsInPanel->IsInPanel()) {
+					// force resfresh of file system content in some occasions
+					if (cfsInPanel->Type() == cFileSystem::Archive && soOperation->cfsSource->Type() == cFileSystem::Archive && cfsInPanel->GetArchiveFilePath() == soOperation->cfsSource->GetArchiveFilePath() && soOperation->eoType == cFileOperationDialog::DeleteOperation) {
+						// force refresh when deleting files from archive
+						cfsInPanel->ForceRefresh();
+					} // if
+				} // if
+			} // for
+
 			CloseFileSystem(soOperation->cfsSource);
 			CloseFileSystem(soOperation->cfsDestination);
 			qlOperations.removeAt(iI);

@@ -241,6 +241,14 @@ const void cLocal::FreeOperationList(void *vFileList) const
 	delete static_cast<QFileInfoList *>(vFileList);
 } // FreeOperationList
 
+// force reload of file system content
+const void cLocal::ForceRefresh()
+{
+	if (saArchive.caArchive) {
+		return saArchive.caArchive->ForceRefresh();
+	} // if
+} // ForceRefresh
+
 // archive file path
 const QFileInfo &cLocal::GetArchiveFilePath() const
 {
