@@ -55,8 +55,7 @@ class cFileControl : public QObject
 																							  \param qsDrive drive to get file system for
 																							  \param startup path
 																							  \return true if cfsFileSystem was changed */
-		const void CloseFileSystem(cFileSystem *cfsFileSystem) const;
-																						///< close used file system
+		const void CloseFileSystem(cFileSystem *cfsFileSystem);		///< close used file system
 																						/**< \param cfsFileSystem file system to close */
 		const void CompareDirectories(cFileSystem *cfsLeft, cFileSystem *cfsRight) const;
 																						///< compare directories in both panels
@@ -71,7 +70,7 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlSelectedFiles files to edit */
 		const QList<QPair<QString, sDrive> > GetDrives() const;		///< get accessible drives
-		cFileSystem *GetFileSystem(const QString &qsDrive, const QString &qsPath) const;
+		cFileSystem *GetFileSystem(const QString &qsDrive, const QString &qsPath);
 																						///< get file system for specified drive
 																						/**< \param qsDrive drive to get file system for
 																							  \param qsPath startup path
@@ -131,11 +130,12 @@ class cFileControl : public QObject
 		cSettings *csSettings;													///< application's configuration
 		QHash<QString, QString> qhLastPaths;								///< last path table on drives
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
+		QList<cFileSystem *> qlFileSystems;									///< list of created file systems
 		QList<sOperation> qlOperations;										///< operations in processing
 		QQueue<QPair<QListWidgetItem *, sOperation> > qqOperations;	///< queued operations
 		QMainWindow *qmwParent;													///< parent window for dialogs
 
-		cFileSystem *CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath = "") const;
+		cFileSystem *CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath = "");
 																						///< copy specified file system
 																						/**< \param cfsSource file system to copy
 																							  \param qsNewPath new path on copied file system
@@ -162,7 +162,7 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system
 																							  \param qlFiles files to count
 																							  \return files type count */
-		cFileSystem *GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath = QFileInfo()) const;
+		cFileSystem *GetFileSystem(const cFileSystem::eType &etType, const QFileInfo &qfiArchivePath = QFileInfo());
 																						///< get specified file system type
 																						/**< \param etType type of file system to obtain
 																							  \param qfiArchivePath path to archive if archive file system type
