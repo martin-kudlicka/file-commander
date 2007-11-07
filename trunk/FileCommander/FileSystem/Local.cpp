@@ -79,7 +79,7 @@ const void cLocal::BeginSearch()
 	qhCustom.clear();
 } // BeginSearch
 
-// file system can copy files to local file system
+/*// file system can copy files to local file system
 const bool cLocal::CanCopy() const
 {
 	if (saArchive.caArchive) {
@@ -87,7 +87,7 @@ const bool cLocal::CanCopy() const
 	} // if
 
 	return true;
-} // CanCopy
+} // CanCopy*/
 
 // file system can create directory in current location
 const bool cLocal::CanCreateDir() const

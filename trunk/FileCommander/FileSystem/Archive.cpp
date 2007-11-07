@@ -104,11 +104,11 @@ const void cArchive::BeginSearch()
 	qhCustom.clear();
 } // BeginSearch
 
-// file system can copy files to local file system
+/*// file system can copy files to local file system
 const bool cArchive::CanCopy() const
 {
 	return true;
-} // CanCopy
+} // CanCopy*/
 
 // file system can create directory in current location
 const bool cArchive::CanCreateDir() const

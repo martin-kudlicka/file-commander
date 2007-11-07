@@ -558,8 +558,8 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 	if (cfsSource) {
 		// operation called by main button
-		if (eoOperation & cFileOperationDialog::CopyOperation && !cfsSource->CanCopy()
-			 || eoOperation & cFileOperationDialog::DeleteOperation && !cfsSource->CanDelete()) {
+		if (/*eoOperation & cFileOperationDialog::CopyOperation && !cfsSource->CanCopy()
+			 || */eoOperation & cFileOperationDialog::DeleteOperation && !cfsSource->CanDelete()) {
 			 // operation is not allowed
 			 return;
 		} // if
