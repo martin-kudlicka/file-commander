@@ -63,7 +63,7 @@ class cLocal : public cFileSystem
 																								/**< \param qtwiFile file to add to custom list
 																									  \return new item in custom list */
 		const void BeginSearch();														///< begin of searching files
-		const bool CanCopy() const;													///< file system can copy files to local file system
+		//const bool CanCopy() const;													///< file system can copy files to local file system
 		const bool CanCreateDir() const;												///< file system can create directory in current location
 		const bool CanDelete() const;													///< file system can delete files
 		const bool CheckPath();															///< check if current path available
