@@ -48,6 +48,7 @@ const QString qsNOT_OLDER_THAN = "NotOlderThan";
 const QString qsNOT_OLDER_THAN_COUNT = "NotOlderThanCount";
 const QString qsNOT_OLDER_THAN_TYPE = "NotOlderThanType";
 const QString qsOPERATIONS = "Operations";
+const QString qsPACK_FILES_DESTINATION = "PackFilesDestination";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
@@ -399,6 +400,9 @@ const QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
 		case FindFilesSearchIn:
 			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
 			break;
+		case PackFilesDestination:
+			qsSettings.beginGroup(qsPACK_FILES_DESTINATION);
+			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
 			break;
@@ -712,6 +716,9 @@ const QString cSettings::GetShortcut(const eShortcutCategory &escCategory, const
 
 		switch (escCategory) {
 			case MainMenuCategory:
+				if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__PACK) {
+					return "Alt+F5";
+				} // if
 				if (qsShortcut == qsSHORTCUT__MAIN_MENU__FILE__UNPACK_SELECTED_FILES) {
 					return "Alt+F9";
 				} // if
@@ -1044,6 +1051,9 @@ const void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const Q
 			break;
 		case FindFilesSearchIn:
 			qsSettings.beginGroup(qsFIND_FILES_SEARCH_IN);
+			break;
+		case PackFilesDestination:
+			qsSettings.beginGroup(qsPACK_FILES_DESTINATION);
 			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);

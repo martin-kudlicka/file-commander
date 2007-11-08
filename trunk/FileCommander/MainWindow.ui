@@ -671,6 +671,7 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
+    <addaction name="qaPack" />
     <addaction name="qaUnpackSelectedFiles" />
     <addaction name="separator" />
     <addaction name="qaQuit" />
@@ -851,6 +852,11 @@
    </property>
    <property name="toolTip" >
     <string>Target as source</string>
+   </property>
+  </action>
+  <action name="qaPack" >
+   <property name="text" >
+    <string>Pack...</string>
    </property>
   </action>
  </widget>

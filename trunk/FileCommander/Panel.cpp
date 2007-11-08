@@ -930,13 +930,13 @@ const void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaActio
 			qfilFiles.append(QFileInfo(qlUrls.at(iI).toLocalFile()));
 		} // for
 
-		cfcFileControl->Operation(eoOperation, NULL, QList<QTreeWidgetItem *>(), stTab->cfsFileSystem->GetPath(), qsDestination, qfilFiles);
+		cfcFileControl->Operation(eoOperation, NULL, QList<QTreeWidgetItem *>(), stTab->cfsFileSystem, qsDestination, qfilFiles);
 	} else {
 		// copy/move from another panel
 		cFileSystem *cfsSource;
 
 		cfsSource = reinterpret_cast<cFileSystem *>(qsSourceFileSystem.toInt());
-		cfcFileControl->Operation(eoOperation, cfsSource, cfsSource->GetSelectedFiles(), stTab->cfsFileSystem->GetPath(), qsDestination);
+		cfcFileControl->Operation(eoOperation, cfsSource, cfsSource->GetSelectedFiles(), stTab->cfsFileSystem, qsDestination);
 	} // if else
 
 	/*QFileInfoList qfilFiles;
