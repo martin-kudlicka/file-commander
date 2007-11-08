@@ -80,12 +80,12 @@ class cFileControl : public QObject
 		const sPathInfo GetPathInfo(const QString &qsPath) const;	///< information about path
 																						/**< \param qsPath path to detect information
 																							  \return path's information */
-		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop = "", QFileInfoList qfilLocalSource = QFileInfoList());
+		const void Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination = NULL, const QString &qsDestinationDragAndDrop = "", QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< file operation selected
 																						/**< \param eoOperation type of operation
 																							  \param cfsSource source file system
 																							  \param qlSource selected source files
-																							  \param qsDestinationPath destination file system's path
+																							  \param cfsDestination destination file system
 																							  \param qsDestinationDragAndDrop default destination path from drag & drop operation
 																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void StartTerminal(const QString &qsPath) const;		///< start shell command window
