@@ -4,6 +4,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
 #include "FindFilesDialog/DrivesDialog.h"
+#include "GUICommon.h"
 
 const QChar qcPATH_SEPARATOR = ';';
 const QString qsGIGABYTES2 = "gigabyte(s)";
@@ -434,32 +435,13 @@ const void cFindFilesDialog::on_qtwSavedFinds_itemSelectionChanged() const
 const void cFindFilesDialog::on_qpbStart_clicked(bool checked /* false */)
 {
 	bool bLocalIncluded;
-	int iI, iIndex;
-	QString qsSearchFor, qsSearchIn;
+	int iI;
 	QStringList qslPaths;
 	sToSearch stsLocal;
 
 	// save history
-	qsSearchFor = qcbSearchFor->currentText();
-	iIndex = qcbSearchFor->findText(qsSearchFor);
-	if (iIndex > 0) {
-		qcbSearchFor->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbSearchFor->insertItem(0, qsSearchFor);
-		qcbSearchFor->setEditText(qsSearchFor);
-	} // if
-	qsSearchIn = qcbSearchIn->currentText();
-	iIndex = qcbSearchIn->findText(qsSearchIn);
-	if (iIndex > 0) {
-		qcbSearchIn->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbSearchIn->insertItem(0, qsSearchIn);
-		qcbSearchIn->setEditText(qsSearchIn);
-	} // if
-	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchFor, qcbSearchFor);
-	csSettings->SetComboBoxHistory(cSettings::FindFilesSearchIn, qcbSearchIn);
+	cGUICommon::SetComboBoxHistory(cSettings::FindFilesSearchFor, qcbSearchFor, csSettings);
+	cGUICommon::SetComboBoxHistory(cSettings::FindFilesSearchIn, qcbSearchIn, csSettings);
 
 	// GUI settings
 	qpbStart->setEnabled(false);

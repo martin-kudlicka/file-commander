@@ -3,6 +3,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QDirModel>
 #include <QtGui/QLineEdit>
+#include "GUICommon.h"
 
 // constructor
 cFileOperationDialog::cFileOperationDialog(QMainWindow *qmwParent, cSettings *csSettings)
@@ -86,9 +87,6 @@ const cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const e
 	euaAction = static_cast<eUserAction>(exec());
 
 	if (euaAction != CancelAction) {
-		int iIndex;
-		QString qsDestinationHistory, qsFilterHistory;
-
 		if (eoOperation != DeleteOperation) {
 			*qsDestination = qcbDestination->currentText();
 		} // if
@@ -96,29 +94,9 @@ const cFileOperationDialog::eUserAction cFileOperationDialog::ShowDialog(const e
 
 		// save history
 		if (eoOperation != DeleteOperation) {
-			qsDestinationHistory = qcbDestination->currentText();
-			iIndex = qcbDestination->findText(qsDestinationHistory);
-			if (iIndex > 0) {
-				qcbDestination->removeItem(iIndex);
-			} // if
-			if (iIndex != 0) {
-				qcbDestination->insertItem(0, qsDestinationHistory);
-				qcbDestination->setEditText(qsDestinationHistory);
-			} // if
+			cGUICommon::SetComboBoxHistory(cSettings::FileOperationDestination, qcbDestination, csSettings);
 		} // if
-		qsFilterHistory = qcbFilter->currentText();
-		iIndex = qcbFilter->findText(qsFilterHistory);
-		if (iIndex > 0) {
-			qcbFilter->removeItem(iIndex);
-		} // if
-		if (iIndex != 0) {
-			qcbFilter->insertItem(0, qsFilterHistory);
-			qcbFilter->setEditText(qsFilterHistory);
-		} // if
-		if (eoOperation != DeleteOperation) {
-			csSettings->SetComboBoxHistory(cSettings::FileOperationDestination, qcbDestination);
-		} // if
-		csSettings->SetComboBoxHistory(cSettings::FileOperationFilter, qcbFilter);
+		cGUICommon::SetComboBoxHistory(cSettings::FileOperationFilter, qcbFilter, csSettings);
 	} // if
 
 	return euaAction;

@@ -67,6 +67,7 @@ HEADERS = MainWindow.h \
 			 Panel.h \
 			 Panel/TreeWidget.h \
 			 Panel/SelectFilesDialog.h \
+			 GUICommon.h \
 			 FindFilesDialog.h \
 			 FindFilesDialog/DrivesDialog.h \
 			 FindFilesDialog/FindFilesThread.h \
@@ -126,6 +127,7 @@ SOURCES = FileCommander.cpp \
 			 Panel.cpp \
 			 Panel/TreeWidget.cpp \
 			 Panel/SelectFilesDialog.cpp \
+			 GUICommon.cpp \
 			 FindFilesDialog.cpp \
 			 FindFilesDialog/DrivesDialog.cpp \
 			 FindFilesDialog/FindFilesThread.cpp \

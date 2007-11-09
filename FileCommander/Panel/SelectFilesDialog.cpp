@@ -2,6 +2,7 @@
 
 #include <QtGui/QHeaderView>
 #include "FindFilesDialog.h"
+#include "GUICommon.h"
 
 // constructor
 cSelectFilesDialog::cSelectFilesDialog(QMainWindow *qmwParent, const eSelectType &estType, cSettings *csSettings, cListerPlugin *clpListerPlugin)
@@ -53,19 +54,8 @@ const void cSelectFilesDialog::on_qpbDefine_clicked(bool checked /* false */)
 // OK button is clicked on
 const void cSelectFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
-	int iIndex;
-	QString qsFilter;
-
-	qsFilter = qcbFilter->currentText();
-	iIndex = qcbFilter->findText(qsFilter);
-	if (iIndex > 0) {
-		qcbFilter->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbFilter->insertItem(0, qsFilter);
-		qcbFilter->setEditText(qsFilter);
-	} // if
-	csSettings->SetComboBoxHistory(cSettings::SelectFilesFilter, qcbFilter);
+	// save history
+	cGUICommon::SetComboBoxHistory(cSettings::SelectFilesFilter, qcbFilter, csSettings);
 
 	accept();
 } // on_qpbOK_clicked

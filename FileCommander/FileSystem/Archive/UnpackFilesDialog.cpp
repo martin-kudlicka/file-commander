@@ -1,6 +1,7 @@
 #include "FileSystem/Archive/UnpackFilesDialog.h"
 
 #include <QtGui/QDirModel>
+#include "GUICommon.h"
 
 // constructor
 cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qsDestination, cSettings *csSettings)
@@ -24,29 +25,9 @@ cUnpackFilesDialog::cUnpackFilesDialog(QMainWindow *qmwParent, const QString &qs
 // OK button is clicked on
 const void cUnpackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
-	int iIndex;
-	QString qsDestination, qsFilter;
-
-	qsDestination = qcbDestination->currentText();
-	iIndex = qcbDestination->findText(qsDestination);
-	if (iIndex > 0) {
-		qcbDestination->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbDestination->insertItem(0, qsDestination);
-		qcbDestination->setEditText(qsDestination);
-	} // if
-	qsFilter = qcbFilter->currentText();
-	iIndex = qcbFilter->findText(qsFilter);
-	if (iIndex > 0) {
-		qcbFilter->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbFilter->insertItem(0, qsFilter);
-		qcbFilter->setEditText(qsFilter);
-	} // if
-	csSettings->SetComboBoxHistory(cSettings::UnpackFilesDestination, qcbDestination);
-	csSettings->SetComboBoxHistory(cSettings::UnpackFilesFilter, qcbFilter);
+	// save history
+	cGUICommon::SetComboBoxHistory(cSettings::UnpackFilesDestination, qcbDestination, csSettings);
+	cGUICommon::SetComboBoxHistory(cSettings::UnpackFilesFilter, qcbFilter, csSettings);
 
 	accept();
 } // on_qpbOK_clicked

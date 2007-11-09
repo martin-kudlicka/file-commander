@@ -2,6 +2,7 @@
 
 #include <QtGui/QDirModel>
 #include <QtGui/QHeaderView>
+#include "GUICommon.h"
 
 // constructor
 cPackFilesDialog::cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings)
@@ -25,19 +26,8 @@ cPackFilesDialog::cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings
 // OK button is clicked on
 const void cPackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 {
-	int iIndex;
-	QString qsDestination;
-
-	qsDestination = qcbDestination->currentText();
-	iIndex = qcbDestination->findText(qsDestination);
-	if (iIndex > 0) {
-		qcbDestination->removeItem(iIndex);
-	} // if
-	if (iIndex != 0) {
-		qcbDestination->insertItem(0, qsDestination);
-		qcbDestination->setEditText(qsDestination);
-	} // if
-	csSettings->SetComboBoxHistory(cSettings::UnpackFilesDestination, qcbDestination);
+	// save history
+	cGUICommon::SetComboBoxHistory(cSettings::PackFilesDestination, qcbDestination, csSettings);
 
 	accept();
 } // on_qpbOK_clicked
