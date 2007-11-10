@@ -7,6 +7,7 @@
 #include "FileControl/Process.h"
 #include <QtGui/QKeyEvent>
 #include "FindFilesDialog.h"
+#include "GUICommon.h"
 
 const QString qsFULL_SCREEN = "FullScreen";
 const QString qsMAXIMIZED = "Maximized";
@@ -17,6 +18,9 @@ cMainWindow::~cMainWindow()
 	if (csSettings.GetSaveSettingsOnQuit()) {
 		SaveSettings();
 	} // if
+
+	// save history
+	cGUICommon::SetComboBoxHistory(cSettings::CommandLineHistory, qcbCommand, &csSettings);
 
 	cpRight->deleteLater();
 	cpLeft->deleteLater();
@@ -212,6 +216,10 @@ cMainWindow::cMainWindow()
 	// history directory list context menu
 	qpbLeftHistory->setMenu(&qmLeftHistoryDirectoryList);
 	qpbRightHistory->setMenu(&qmRightHistoryDirectoryList);
+
+	// command line history
+	qcbCommand->addItems(csSettings.GetComboBoxHistory(cSettings::CommandLineHistory));
+	qcbCommand->lineEdit()->clear();
 
 	// column sets submenu
 	qaColumnSet->setMenu(&qmColumnSets);

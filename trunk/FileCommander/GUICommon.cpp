@@ -10,7 +10,7 @@ const void cGUICommon::SetComboBoxHistory(const cSettings::eHistoryType &ehtHist
 	if (iIndex > 0) {
 		qcbComboBox->removeItem(iIndex);
 	} // if
-	if (iIndex != 0) {
+	if (iIndex != 0 && !qsComboBox.isEmpty()) {
 		qcbComboBox->insertItem(0, qsComboBox);
 		qcbComboBox->setEditText(qsComboBox);
 	} // if
