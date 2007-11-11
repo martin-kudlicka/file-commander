@@ -12,6 +12,7 @@ const QString qsCOMMAND_LINE = "CommandLine";
 const QString qsDATE_TIME_BETWEEN = "DateTimeBetween";
 const QString qsDATE_TIME_FROM = "DateTimeFrom";
 const QString qsDATE_TIME_TO = "DateTimeTo";
+const QString qsDEFAULT_PACKER_PLUGIN = "DefaultPackerPlugin";
 #ifdef Q_WS_WIN
 const QString qsDELETE_TO_RECYCLE_BIN = "DeleteToRecycleBin";
 #endif
@@ -42,13 +43,17 @@ const QString qsFULL_TEXT_WHOLE_WORDS = "FullTextWholeWords";
 const QString qsHEIGHT = "Height";
 const QString qsHISTORY = "History";
 const QString qsIDENTIFIER = "Identifier";
+const QString qsINCLUDING_SUBDIRECTORIES = "IncludingSubdirectories";
 const QString qsLISTER = "Lister";
 const QString qsMAIN_MENU = "MainMenu";
+const QString qsMOVE_TO_ARCHIVE = "MoveToArchive";
 const QString qsNOT_OLDER_THAN = "NotOlderThan";
 const QString qsNOT_OLDER_THAN_COUNT = "NotOlderThanCount";
 const QString qsNOT_OLDER_THAN_TYPE = "NotOlderThanType";
+const QString qsONE_ARCHIVE_PER_FILE_OR_DIRECTORY = "OneArchivePerFileOrDirectory";
 const QString qsOPERATIONS = "Operations";
 const QString qsPACK_FILES_DESTINATION = "PackFilesDestination";
+const QString qsPACK_PATH_NAMES = "PackPathNames";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
 const QString qsPLUGIN = "Plugin";
@@ -578,6 +583,45 @@ const bool cSettings::GetOpenNewTabNextToCurrentTab() const
 {
 	return qsSettings.value(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB).toBool();
 } // GetOpenNewTabNextToCurrentTab
+
+// default packer plugin to use for packing files
+const cSettings::sDefaultPackerPlugin cSettings::GetPackerDefaultPlugin() const
+{
+	QStringList qslDefaultPackerPlugin;
+	sDefaultPackerPlugin sdppPlugin;
+
+	qslDefaultPackerPlugin = qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsDEFAULT_PACKER_PLUGIN).toString().split(';');
+	if (qslDefaultPackerPlugin.count() > 0) {
+		sdppPlugin.qsPlugin = qslDefaultPackerPlugin.at(0);
+		sdppPlugin.qsExtension = qslDefaultPackerPlugin.at(1);
+	} // if
+
+	return sdppPlugin;
+} // GetPackerDefaultPlugin
+
+// pack including subdirectories
+const bool cSettings::GetPackerIncludingSubdirectories() const
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsINCLUDING_SUBDIRECTORIES, true).toBool();
+} // GetPackerIncludingSubdirectories
+
+// delete source files when packing
+const bool cSettings::GetPackerMoveToArchive() const
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsMOVE_TO_ARCHIVE).toBool();
+} // GetPackerMoveToArchive
+
+// pack each source file or directory to one archive
+const bool cSettings::GetPackerOneArchivePerFileOrDirectory() const
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsONE_ARCHIVE_PER_FILE_OR_DIRECTORY).toBool();
+} // GetPackerOneArchivePerFileOrDirectory
+
+// pack source files with full path
+const bool cSettings::GetPackerPackPathNames() const
+{
+	return qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsPACK_PATH_NAMES, true).toBool();
+} // GetPackerPackPathNames
 
 // plugin date/time display format
 const QString cSettings::GetPluginDateTimeDisplay() const
@@ -1210,6 +1254,36 @@ const void cSettings::SetOpenNewTabNextToCurrentTab(const bool &bNextTo)
 {
 	qsSettings.setValue(qsTABS__OPEN_NEW_TAB_NEXT_TO_CURRENT_TAB, bNextTo);
 } // SetOpenNewTabNextToCurrentTab
+
+// default packer plugin to use for packing files
+const void cSettings::SetPackerDefaultPlugin(const cSettings::sDefaultPackerPlugin &sdppPlugin)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsDEFAULT_PACKER_PLUGIN, sdppPlugin.qsPlugin + ';' + sdppPlugin.qsExtension);
+} // SetPackerDefaultPlugin
+
+// pack including subdirectories
+const void cSettings::SetPackerIncludingSubdirectories(const bool &bIncludingSubdirectories)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsINCLUDING_SUBDIRECTORIES, bIncludingSubdirectories);
+} // SetPackerIncludingSubdirectories
+
+// delete source files when packing
+const void cSettings::SetPackerMoveToArchive(const bool &bMoveToArchive)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsMOVE_TO_ARCHIVE, bMoveToArchive);
+} // SetPackerMoveToArchive
+
+// pack each source file or directory to one archive
+const void cSettings::SetPackerOneArchivePerFileOrDirectory(const bool &bOneArchivePerFileOrDirectory)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsONE_ARCHIVE_PER_FILE_OR_DIRECTORY, bOneArchivePerFileOrDirectory);
+} // SetPackerOneArchivePerFileOrDirectory
+
+// pack source files with full path
+const void cSettings::SetPackerPackPathNames(const bool &bPackPathNames)
+{
+	qsSettings.setValue(qsPLUGINS__PACKER__SETTINGS__ + qsPACK_PATH_NAMES, bPackPathNames);
+} // SetPackerPackPathNames
 
 // plugin date/time display format
 const void cSettings::SetPluginDateTimeDisplay(const QString &qsDateTime)
