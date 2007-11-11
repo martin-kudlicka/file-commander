@@ -130,12 +130,18 @@ class cSettings : private QObject
 			ListerCategory																	///< lister shortcut category
 		};
 
+		/// panel's column information
 		struct sColumn {
 			QString qsIdentifier;														///< column identifier
 			QString qsName;																///< column name to show
 			QString qsPlugin;																///< plugin filename or "no" if native
 			QString qsUnit;																///< selected unit for column
 			int iWidth;																		///< column width
+		};
+		/// default packer plugin
+		struct sDefaultPackerPlugin {
+			QString qsPlugin;																///< plugin's file name
+			QString qsExtension;															///< plugin's extension
 		};
 		/// favourite directory
 		struct sFavouriteDirectory {
@@ -282,6 +288,16 @@ class cSettings : private QObject
 																								/** \return new tab by shortcut in foreground flag */
 		const bool GetOpenNewTabNextToCurrentTab() const;						///< open new tab next to current tab
 																								/**< \return open new tab next to current tab flag */
+		const sDefaultPackerPlugin GetPackerDefaultPlugin() const;			///< default packer plugin to use for packing files
+																								/**< \return default packer plugin to use for packing files */
+		const bool GetPackerIncludingSubdirectories() const;					///< pack including subdirectories
+																								/**< \return true if pack including subdirectories */
+		const bool GetPackerMoveToArchive() const;								///< delete source files when packing
+																								/**< \return true if delete source files when packing */
+		const bool GetPackerOneArchivePerFileOrDirectory() const;			///< pack each source file or directory to one archive
+																								/**< \return true if pack each source file or directory to one archive */
+		const bool GetPackerPackPathNames() const;								///< pack source files with full path
+																								/**< \return true if pack source files with full path */
 		const QString GetPluginDateTimeDisplay() const;							///< plugin date/time display format
 																								/**< \return plugin date/time display format */
 		const QList<sPlugin> GetPlugins(const ePlugin &epPlugin);			///< get plugin list
@@ -388,6 +404,19 @@ class cSettings : private QObject
 																								/**< \param bForeground new tab by shortcut in foreground flag */
 		const void SetOpenNewTabNextToCurrentTab(const bool &bNextTo);		///< open new tab next to current tab
 																								/**< \param bNextTo open new tab next to current tab flag */
+		const void SetPackerDefaultPlugin(const sDefaultPackerPlugin &sdppPlugin);
+																								///< default packer plugin to use for packing files
+																								/**< \param sdppPlugin default packer plugin to use for packing files */
+		const void SetPackerIncludingSubdirectories(const bool &bIncludingSubdirectories);
+																								///< pack including subdirectories
+																								/**< \param bIncludingSubdirectories pack including subdirectories */
+		const void SetPackerMoveToArchive(const bool &bMoveToArchive);		///< delete source files when packing
+																								/**< \param bMoveToArchive delete source files when packing */
+		const void SetPackerOneArchivePerFileOrDirectory(const bool &bOneArchivePerFileOrDirectory);
+																								///< pack each source file or directory to one archive
+																								/**< \param bOneArchivePerFileOrDirectory pack each source file or directory to one archive */
+		const void SetPackerPackPathNames(const bool &bPackPathNames);		///< pack source files with full path
+																								/**< \param bPackPathNames pack source files with full path */
 		const void SetPluginDateTimeDisplay(const QString &qsDateTime);	///< plugin date/time display format
 																								/**< \param qsDateTime user defined date/time display format */
 		const void SetPlugins(const ePlugin &epPlugin, const QList<sPlugin> qlPlugins);

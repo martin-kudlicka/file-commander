@@ -25,7 +25,7 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox" >
+  <widget class="QCheckBox" name="qcbPackPathNames" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -37,11 +37,8 @@
    <property name="text" >
     <string>Pack path names</string>
    </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_2" >
+  <widget class="QCheckBox" name="qcbIncludingSubdirectories" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -53,11 +50,8 @@
    <property name="text" >
     <string>Including subdirectories</string>
    </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_3" >
+  <widget class="QCheckBox" name="qcbMoveToArchive" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -70,7 +64,7 @@
     <string>Move to archive</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_4" >
+  <widget class="QCheckBox" name="qcbOneArchivePerFileOrDirectory" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -107,7 +101,7 @@
     </property>
    </column>
   </widget>
-  <widget class="QPushButton" name="pushButton" >
+  <widget class="QPushButton" name="qpbConfigure" >
    <property name="geometry" >
     <rect>
      <x>190</x>
