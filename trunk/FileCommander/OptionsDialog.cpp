@@ -501,6 +501,11 @@ const void cOptionsDialog::FillOptions()
 	// packer
 	FillPluginsTree(csSettings->GetPlugins(cSettings::PackerPlugins), qtwPackerPlugins);
 	qcbTreatArchivesLikeDirectories->setChecked(csSettings->GetTreatArchivesLikeDirectories());
+	qcbPackPathNames->setChecked(csSettings->GetPackerPackPathNames());
+	qcbIncludingSubdirectories->setChecked(csSettings->GetPackerIncludingSubdirectories());
+	qcbMoveToArchive->setChecked(csSettings->GetPackerMoveToArchive());
+	qcbOneArchivePerFileOrDirectory->setChecked(csSettings->GetPackerOneArchivePerFileOrDirectory());
+	qtwDefaultPackerPlugin->header()->hide();
 
 	// others
 	// favourite directories
@@ -1590,6 +1595,10 @@ const void cOptionsDialog::SaveOptions()
 	// packer
 	csSettings->SetPlugins(cSettings::PackerPlugins, GetPluginList(qtwPackerPlugins));
 	csSettings->SetTreatArchivesLikeDirectories(qcbTreatArchivesLikeDirectories->isChecked());
+	csSettings->SetPackerPackPathNames(qcbPackPathNames->isChecked());
+	csSettings->SetPackerIncludingSubdirectories(qcbIncludingSubdirectories->isChecked());
+	csSettings->SetPackerMoveToArchive(qcbMoveToArchive->isChecked());
+	csSettings->SetPackerOneArchivePerFileOrDirectory(qcbOneArchivePerFileOrDirectory->isChecked());
 
 	// others
 	// favourite directories
