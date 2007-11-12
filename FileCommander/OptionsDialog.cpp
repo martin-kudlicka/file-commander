@@ -166,7 +166,7 @@ const void cOptionsDialog::AddPluginIntoTree(const cSettings::sPlugin &spPlugin,
 } // AddPluginIntoTree
 
 // constructor
-cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin)
+cOptionsDialog::cOptionsDialog(QMainWindow *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin)
 {
 	setParent(qmwParent, windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	setupUi(this);
@@ -175,6 +175,7 @@ cOptionsDialog::cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cConte
 	this->ccpContentPlugin = ccpContentPlugin;
 
 	qpbColumnAdd->setMenu(&qmColumns);
+	qhPackerPlugins = cppPackerPlugin->GetPluginsInfo();
 
 	// remember original options
 	qlOldOptions = csSettings->GetAllSettings();
@@ -664,6 +665,23 @@ QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavour
 	return qlFavouriteDirectories;
 } // GetFavouriteDirectories
 
+// find packer plugin description (interface)
+const cPackerPlugin::sPluginInfo cOptionsDialog::GetPackerPluginInfo(const QString &qsPlugin) const
+{
+	QHashIterator<QString, cPackerPlugin::sPluginInfo> qhiPlugin(*qhPackerPlugins);
+
+	// find selected plugin
+	while (qhiPlugin.hasNext()) {
+		qhiPlugin.next();
+
+		if (QFileInfo(qhiPlugin.key()).completeBaseName() == qsPlugin) {
+			return qhiPlugin.value();
+		} // if
+	} // while
+
+	return cPackerPlugin::sPluginInfo();
+} // GetPackerPluginInfo
+
 // get info about specified plugins
 QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins) const
 {
@@ -1031,6 +1049,15 @@ const void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 	qfToDo |= RefreshHeader;
 } // on_qpbColumnUp_clicked
 
+// configure packer plugin button is clicked on in columns view
+const void cOptionsDialog::on_qpbConfigurePackerPlugin_clicked(bool checked /* false */)
+{
+	cPackerPlugin::sPluginInfo spiPluginInfo;
+
+	spiPluginInfo = GetPackerPluginInfo(qtwDefaultPackerPlugin->currentItem()->parent()->text(0));
+	spiPluginInfo.tcpConfigurePacker(this->winId(), 0);
+} // on_qpbConfigurePackerPlugin_clicked
+
 // external editor browse button is clicked on
 const void cOptionsDialog::on_qpbExternalEditorBrowse_clicked(bool checked /* false */)
 {
@@ -1237,9 +1264,20 @@ const void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged() const
 // another default packer plugin is selected
 const void cOptionsDialog::on_qtwDefaultPackerPlugin_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
-	if (!(current->flags() & Qt::ItemIsSelectable)) {
+	// Configure button enable/disable
+	if (current->flags() & Qt::ItemIsSelectable) {
+		cPackerPlugin::sPluginInfo spiPluginInfo;
+
+		spiPluginInfo = GetPackerPluginInfo(current->parent()->text(0));
+		if (spiPluginInfo.iCapabilities & PK_CAPS_OPTIONS) {
+			qpbConfigurePackerPlugin->setEnabled(true);
+		} else {
+			qpbConfigurePackerPlugin->setEnabled(false);
+		} // if else
+	} else {
+		// select extension instead of plugin
 		qtwDefaultPackerPlugin->setCurrentItem(current->child(0));
-	} // if
+	} // if else
 } // on_qtwDefaultPackerPlugin_currentItemChanged
 
 // another favourite directory is selected

@@ -1448,6 +1448,9 @@
             </column>
            </widget>
            <widget class="QPushButton" name="qpbConfigurePackerPlugin" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
             <property name="geometry" >
              <rect>
               <x>240</x>

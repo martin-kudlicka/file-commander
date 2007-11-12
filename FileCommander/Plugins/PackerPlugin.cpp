@@ -65,6 +65,7 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 
 	// fill plugin properties
 	spiPluginInfo.tcaCloseArchive = (tCloseArchive)spiPluginInfo.qlLibrary->resolve("CloseArchive");
+	spiPluginInfo.tcpConfigurePacker = (tConfigurePacker)spiPluginInfo.qlLibrary->resolve("ConfigurePacker");
 	spiPluginInfo.tdfDeleteFiles = (tDeleteFiles)spiPluginInfo.qlLibrary->resolve("DeleteFiles");
 	spiPluginInfo.tgpcGetPackerCaps = (tGetPackerCaps)spiPluginInfo.qlLibrary->resolve("GetPackerCaps");
 	spiPluginInfo.toaOpenArchive = (tOpenArchive)spiPluginInfo.qlLibrary->resolve("OpenArchive");

@@ -14,6 +14,9 @@ class cPackerPlugin
 		typedef int (__stdcall *tCloseArchive)(HANDLE hArcData);										///< close archive
 																														/**< \param hArcData handle representing archive
 																															  \return error value */
+		typedef void (__stdcall *tConfigurePacker)(HWND hwParent, HINSTANCE hiDllInstance);	///< configure packer
+																														/**< \param hwParent parent window for packer's options window
+																															  \param hiDllInstance packer's library instance */
 		typedef int (__stdcall *tDeleteFiles)(char *cPackedFile, char *cDeleteList);			///< delete files from archive
 																														/**< \param cPackedFile path name of the archive
 																															  \param cDeleteList files to delete
@@ -64,6 +67,7 @@ class cPackerPlugin
 		/// plugin info
 		struct sPluginInfo {
 			tCloseArchive tcaCloseArchive;																	///< CloseArchive function
+			tConfigurePacker tcpConfigurePacker;															///< ConfigurePacker function
 			tDeleteFiles tdfDeleteFiles;																		///< DeleteFiles function
 			tGetPackerCaps tgpcGetPackerCaps;																///< GetPackerCaps function
 			tOpenArchive toaOpenArchive;																		///< OpenArchive function
