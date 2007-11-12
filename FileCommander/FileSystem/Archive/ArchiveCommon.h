@@ -7,15 +7,25 @@
 #include "FileSystem/Archive/InformationDialog.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QSemaphore>
+#include <QtGui/QTreeWidget>
+#include "Settings.h"
 
 class cArchiveCommon : public QObject
 {
 	Q_OBJECT
 
 	public:
+		static const void CreatePluginsTree(QTreeWidget *qtwPlugins, cSettings *csSettings);
+																						///< create packer plugins tree to show in QTreeWidget
+																						/**< \param qtwPlugins tree of packer plugins
+																							  \param csSettings settings file */
 		static const QString GetErrorString(const int &iError);		///< get error string from error code
 																						/**< \param iError error code
 																							  \return error string */
+		static const void SelectDefaultPlugin(QTreeWidget *qtwPlugins, const cSettings *csSettings);
+																						///< find default packer plugin in plugin's tree
+																						/**< \param qtwPlugins tree of packer plugins
+																							  \param csSettings settings file */
 		static const void ShowInformationDialog(const cInformationDialog *cidInformationDialog, const enum QMessageBox::Icon &iIcon, const QString &qsInformation, QSemaphore *qsPause);
 																						///< show information dialog about processed action
 																						/**< \param cidInformationDialog information dialog

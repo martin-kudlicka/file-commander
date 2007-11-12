@@ -273,6 +273,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																							  \param column changed column of plugin list */
 		const void on_qtwContentPlugins_itemSelectionChanged() const;
 																						///< selected content plugin changed
+		const void on_qtwDefaultPackerPlugin_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+																						///< another default packer plugin is selected
+																						/**< \param current new packer plugin
+																							  \param previous old packer plugin */
 		const void on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 																						///< another favourite directory is selected
 																						/**< \param current new favourite directory

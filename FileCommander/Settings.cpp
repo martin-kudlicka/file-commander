@@ -591,7 +591,7 @@ const cSettings::sDefaultPackerPlugin cSettings::GetPackerDefaultPlugin() const
 	sDefaultPackerPlugin sdppPlugin;
 
 	qslDefaultPackerPlugin = qsSettings.value(qsPLUGINS__PACKER__SETTINGS__ + qsDEFAULT_PACKER_PLUGIN).toString().split(';');
-	if (qslDefaultPackerPlugin.count() > 0) {
+	if (qslDefaultPackerPlugin.count() == 2) {
 		sdppPlugin.qsPlugin = qslDefaultPackerPlugin.at(0);
 		sdppPlugin.qsExtension = qslDefaultPackerPlugin.at(1);
 	} // if

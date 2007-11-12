@@ -1,6 +1,40 @@
 #include "FileSystem/Archive/ArchiveCommon.h"
 
 #include "Plugins/WCXHead.h"
+#include <QtCore/QFileInfo>
+
+// create packer plugins tree to show in QTreeWidget
+const void cArchiveCommon::CreatePluginsTree(QTreeWidget *qtwPlugins, cSettings *csSettings)
+{
+	int iI;
+	QList<cSettings::sPlugin> qlPlugins;
+
+	qlPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
+	for (iI = 0; iI < qlPlugins.count(); iI++) {
+		const cSettings::sPlugin *spPlugin;
+
+		spPlugin = &qlPlugins.at(iI);
+		if (spPlugin->bEnabled) {
+			int iJ;
+			QStringList qslExtensions;
+			QTreeWidgetItem *qtwiPlugin;
+
+			qtwiPlugin = new QTreeWidgetItem(qtwPlugins);
+			qtwiPlugin->setText(0, QFileInfo(spPlugin->qsName).completeBaseName());
+			qtwiPlugin->setFlags(qtwiPlugin->flags() ^ Qt::ItemIsSelectable);
+
+			qslExtensions = spPlugin->qsExtensions.split(';');
+			for (iJ = 0; iJ < qslExtensions.count(); iJ++) {
+				QTreeWidgetItem *qtwiExtension;
+
+				qtwiExtension = new QTreeWidgetItem(qtwiPlugin);
+				qtwiExtension->setText(0, qslExtensions.at(iJ));
+			} // for
+		} // if
+	} // for
+
+	qtwPlugins->expandAll();
+} // CreatePluginsTree
 
 // get error string from error code
 const QString cArchiveCommon::GetErrorString(const int &iError)
@@ -40,6 +74,55 @@ const QString cArchiveCommon::GetErrorString(const int &iError)
 	
 	return QString();
 } // ///< get error string from error code
+
+// find default packer plugin in plugin's tree
+const void cArchiveCommon::SelectDefaultPlugin(QTreeWidget *qtwPlugins, const cSettings *csSettings)
+{
+	cSettings::sDefaultPackerPlugin sdppDefault;
+	QList<QTreeWidgetItem *> qlPlugins;
+	QTreeWidgetItem *qtwiPlugin;
+
+	sdppDefault = csSettings->GetPackerDefaultPlugin();
+
+	// find plugin
+	qlPlugins = qtwPlugins->findItems(sdppDefault.qsPlugin, Qt::MatchExactly);
+	if (qlPlugins.count() > 0) {
+		// default plugin found
+		qtwiPlugin = qlPlugins.at(0);
+	} else {
+		// default plugin not found
+		if (qtwPlugins->topLevelItemCount() > 0) {
+			// select first possible plugin
+			qtwiPlugin = qtwPlugins->topLevelItem(0);
+		} else {
+			qtwiPlugin = NULL;
+		} // if else
+	} // if else
+
+	// find extension
+	if (qtwiPlugin) {
+		bool bFound;
+		int iI;
+		QTreeWidgetItem *qtwiExtension;
+
+		bFound = false;
+		for (iI = 0; iI < qtwiPlugin->childCount(); iI++) {
+			qtwiExtension = qtwiPlugin->child(iI);
+			if (qtwiExtension->text(0) == sdppDefault.qsExtension) {
+				// default extension found
+				bFound = true;
+				break;
+			} // if
+		} // for
+
+		if (!bFound) {
+			// no default extension found -> select first possible one
+			qtwiExtension = qtwiPlugin->child(0);
+		} // if
+
+		qtwPlugins->setCurrentItem(qtwiExtension);
+	} // if
+} // SelectDefaultPlugin
 
 // show information dialog about processed action
 const void cArchiveCommon::ShowInformationDialog(const cInformationDialog *cidInformationDialog, const enum QMessageBox::Icon &iIcon, const QString &qsInformation, QSemaphore *qsPause)

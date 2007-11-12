@@ -9,6 +9,7 @@
 #include <QtGui/QInputDialog>
 #include <QtGui/QFontDialog>
 #include <QtGui/QDirModel>
+#include "FileSystem/Archive/ArchiveCommon.h"
 
 const QString qsEXTERNAL = "External";
 const QString qsNO_TO_ALL = "NoToAll";
@@ -506,6 +507,8 @@ const void cOptionsDialog::FillOptions()
 	qcbMoveToArchive->setChecked(csSettings->GetPackerMoveToArchive());
 	qcbOneArchivePerFileOrDirectory->setChecked(csSettings->GetPackerOneArchivePerFileOrDirectory());
 	qtwDefaultPackerPlugin->header()->hide();
+	cArchiveCommon::CreatePluginsTree(qtwDefaultPackerPlugin, csSettings);
+	cArchiveCommon::SelectDefaultPlugin(qtwDefaultPackerPlugin, csSettings);
 
 	// others
 	// favourite directories
@@ -1231,6 +1234,14 @@ const void cOptionsDialog::on_qtwContentPlugins_itemSelectionChanged() const
 	} // if else
 } // on_qtwContentPlugins_itemSelectionChanged
 
+// another default packer plugin is selected
+const void cOptionsDialog::on_qtwDefaultPackerPlugin_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (!(current->flags() & Qt::ItemIsSelectable)) {
+		qtwDefaultPackerPlugin->setCurrentItem(current->child(0));
+	} // if
+} // on_qtwDefaultPackerPlugin_currentItemChanged
+
 // another favourite directory is selected
 const void cOptionsDialog::on_qtwFavouriteDirectories_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
@@ -1480,8 +1491,9 @@ const void cOptionsDialog::SaveOption(const eOption &eoType) const
 // save changes into application's settings file
 const void cOptionsDialog::SaveOptions()
 {
-	cSettings::sLister slLister;
 	QString qsValue;
+	cSettings::sDefaultPackerPlugin sdppDefault;
+	cSettings::sLister slLister;
 
 	// panels
 	// display
@@ -1599,6 +1611,11 @@ const void cOptionsDialog::SaveOptions()
 	csSettings->SetPackerIncludingSubdirectories(qcbIncludingSubdirectories->isChecked());
 	csSettings->SetPackerMoveToArchive(qcbMoveToArchive->isChecked());
 	csSettings->SetPackerOneArchivePerFileOrDirectory(qcbOneArchivePerFileOrDirectory->isChecked());
+	if (qtwDefaultPackerPlugin->currentItem()) {
+		sdppDefault.qsPlugin = qtwDefaultPackerPlugin->currentItem()->parent()->text(0);
+		sdppDefault.qsExtension = qtwDefaultPackerPlugin->currentItem()->text(0);
+	} // if
+	csSettings->SetPackerDefaultPlugin(sdppDefault);
 
 	// others
 	// favourite directories
