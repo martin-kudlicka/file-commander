@@ -11,6 +11,7 @@
 #include <QtGui/QToolBar>
 #include "OptionsDialog/NewFavouriteDirectoryDialog.h"
 #include <QtGui/QCompleter>
+#include "Plugins/PackerPlugin.h"
 
 class cOptionsDialog : public QDialog, private Ui::qdOptions
 {
@@ -37,9 +38,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 			QString qsTarget;														///< path for destination panel
 		};
 
-		cOptionsDialog(QWidget *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin);
+		cOptionsDialog(QMainWindow *qmwParent, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cPackerPlugin *cppPackerPlugin);
 																						///< constructor
-																						/**< \param qmwParent parent widget (window) of this dialog
+																						/**< \param qmwParent parent window of this dialog
 																							  \param csSettings application's settings
 																							  \param ccpContentPlugin content plugins */
 		~cOptionsDialog();														///< destructor
@@ -75,6 +76,8 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		QActionGroup *qagToolBarActions;										///< group of all options in panel
 		QFlags<eToDo> qfToDo;													///< actions after confirmation changes
 		QFont qfListerFont;														///< lister font
+		QHash<QString, cPackerPlugin::sPluginInfo> *qhPackerPlugins;
+																						///< packer plugins table
 		QHash<QTreeWidgetItem *, sFavouriteDirectory> qhFavouriteDirectories;
 																						///< favourite directories
 		QMap <QString, QString> qlOldOptions;								///< original application's settings
@@ -129,6 +132,10 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< collect favourite directories
 																						/**< \param qtwiParent favourite to start with
 																							  \return list of favourites description */
+		const cPackerPlugin::sPluginInfo GetPackerPluginInfo(const QString &qsPlugin) const;
+																						///< find packer plugin description (interface)
+																						/**< \param qsPlugin plugin to find description (interface) for
+																							  \return plugins' description (interface) */
 		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins) const;
 																						///< get info about specified plugins
 																						/**< \param qtwPlugins plugins to get info
@@ -213,6 +220,9 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< column set remove button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		const void on_qpbColumnUp_clicked(bool checked = false);		///< column up button is clicked on in columns view
+																						/**< \param checked true if button is checkable and checked */
+		const void on_qpbConfigurePackerPlugin_clicked(bool checked = false);
+																						///< configure packer plugin button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		const void on_qpbExternalEditorBrowse_clicked(bool checked = false);
 																						///< external editor browse button is clicked on

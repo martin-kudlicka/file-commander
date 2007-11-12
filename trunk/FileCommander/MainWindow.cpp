@@ -561,7 +561,7 @@ const void cMainWindow::on_qaInvertSelection_triggered(bool checked /* false */)
 // options are selected
 const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 {
-	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccpContentPlugin);
+	cOptionsDialog codOptions(this, &csSettings, cpPlugins->ccpContentPlugin, cpPlugins->cppPackerPlugin);
 	QFlags<cOptionsDialog::eToDo> qfToDo;
 
 	qfToDo = static_cast<QFlags<cOptionsDialog::eToDo> >(codOptions.exec());
