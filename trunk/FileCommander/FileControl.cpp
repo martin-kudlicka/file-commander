@@ -10,6 +10,7 @@
 #include "FileSystem/Archive/UnpackFilesDialog.h"
 #include <QtGui/QMessageBox>
 #include "FileSystem/Archive/PackFilesDialog.h"
+#include "FileSystem/Archive/ArchiveCommon.h"
 
 // constructor
 cFileControl::cFileControl(QMainWindow *qmwParent, QHBoxLayout *qhblOperations, cSettings *csSettings, cContentPlugin *ccpContentPlugin, cListerPlugin *clpListerPlugin, cPackerPlugin *cppPackerPlugin)
@@ -623,35 +624,10 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 	} else {
 		// archive destination
 		cPackFilesDialog cpfdDialog(qmwParent, csSettings);
-		int iI;
-		QList<cSettings::sPlugin> qlPlugins;
 		QString qsDestination;
 
 		// build plugins tree
-		qlPlugins = csSettings->GetPlugins(cSettings::PackerPlugins);
-		for (iI = 0; iI < qlPlugins.count(); iI++) {
-			const cSettings::sPlugin *spPlugin;
-
-			spPlugin = &qlPlugins.at(iI);
-			if (spPlugin->bEnabled) {
-				int iJ;
-				QStringList qslExtensions;
-				QTreeWidgetItem *qtwiPlugin;
-
-				qtwiPlugin = new QTreeWidgetItem(cpfdDialog.qtwPlugins);
-				qtwiPlugin->setText(0, QFileInfo(spPlugin->qsName).completeBaseName());
-				qtwiPlugin->setFlags(qtwiPlugin->flags() ^ Qt::ItemIsSelectable);
-
-				qslExtensions = spPlugin->qsExtensions.split(';');
-				for (iJ = 0; iJ < qslExtensions.count(); iJ++) {
-					QTreeWidgetItem *qtwiExtension;
-
-					qtwiExtension = new QTreeWidgetItem(qtwiPlugin);
-					qtwiExtension->setText(0, qslExtensions.at(iJ));
-				} // for
-			} // if
-		} // for
-		cpfdDialog.qtwPlugins->expandAll();
+		cArchiveCommon::CreatePluginsTree(cpfdDialog.qtwPlugins, csSettings);
 
 		// prepare destination file name
 		if (cfsDestination->Type() == cFileSystem::Archive) {
