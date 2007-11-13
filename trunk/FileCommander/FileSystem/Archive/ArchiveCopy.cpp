@@ -91,7 +91,11 @@ const void cArchiveCopy::Copy(const QList<tHeaderData> &qlOperation, const QStri
 	// disk space dialog
 	connect(&cdsDiskSpace, SIGNAL(Finished(const cDiskSpace::eChoice &)), SLOT(on_cdsDiskSpace_Finished(const cDiskSpace::eChoice &)));
 
+#ifdef Q_WS_WIN
+	this->spiPluginInfo = cppPackerPlugin->LoadPlugin(spiPluginInfo->qsLibrary);
+#else
 	this->spiPluginInfo = cppPackerPlugin->LoadPlugin(spiPluginInfo->qlLibrary->fileName());
+#endif
 
 	start();
 } // Copy
@@ -411,8 +415,12 @@ void cArchiveCopy::run()
 	spiPluginInfo.tcaCloseArchive(hArchive);
 	delete toadArchiveData.ArcName;
 
+#ifdef Q_WS_WIN
+	FreeLibrary(spiPluginInfo.hmLibrary);
+#else
 	spiPluginInfo.qlLibrary->unload();
 	spiPluginInfo.qlLibrary->deleteLater();
+#endif
 
 	// close dialog or widget
 	if (ccmdDialog) {

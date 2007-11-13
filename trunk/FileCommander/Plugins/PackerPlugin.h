@@ -79,7 +79,12 @@ class cPackerPlugin
 			tSetProcessDataProc tspdpSetProcessDataProc;													///< SetProcessDataProc function
 #endif
 			int iCapabilities;																					///< plugin's capabilities
+#ifdef Q_WS_WIN
+			HMODULE hmLibrary;																					///< library's instance
+			QString qsLibrary;																					///< file path of library
+#else
 			QLibrary *qlLibrary;																					///< library identifying this plugin
+#endif
 		};
 
 		cPackerPlugin(cSettings *csSettings);																///< constructor
