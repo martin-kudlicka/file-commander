@@ -593,7 +593,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // for
 	} // if else
 
-	if (cfsDestination->Type() == cFileSystem::Local) {
+	if (eoOperation & cFileOperationDialog::DeleteOperation || cfsDestination->Type() == cFileSystem::Local) {
 		// local destination
 		cFileOperationDialog cfodDialog(qmwParent, csSettings);
 		cFileOperationDialog::eUserAction euaAction;

@@ -56,14 +56,30 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 	QString qsCurrentPath;
 	sPluginInfo spiPluginInfo;
 
-	spiPluginInfo.qlLibrary = new QLibrary();
-
 	qsCurrentPath = QDir::currentPath();
 	QDir::setCurrent(QFileInfo(qsName).path());
+#ifdef Q_WS_WIN
+	spiPluginInfo.hmLibrary = LoadLibrary(reinterpret_cast<LPCWSTR>(qsName.unicode()));
+	spiPluginInfo.qsLibrary = qsName;
+#else
+	spiPluginInfo.qlLibrary = new QLibrary();
 	spiPluginInfo.qlLibrary->setFileName(qsName);
 	spiPluginInfo.qlLibrary->load();
+#endif
 
 	// fill plugin properties
+#ifdef Q_WS_WIN
+	spiPluginInfo.tcaCloseArchive = (tCloseArchive)GetProcAddress(spiPluginInfo.hmLibrary,"CloseArchive");
+	spiPluginInfo.tcpConfigurePacker = (tConfigurePacker)GetProcAddress(spiPluginInfo.hmLibrary,"ConfigurePacker");
+	spiPluginInfo.tdfDeleteFiles = (tDeleteFiles)GetProcAddress(spiPluginInfo.hmLibrary,"DeleteFiles");
+	spiPluginInfo.tgpcGetPackerCaps = (tGetPackerCaps)GetProcAddress(spiPluginInfo.hmLibrary,"GetPackerCaps");
+	spiPluginInfo.toaOpenArchive = (tOpenArchive)GetProcAddress(spiPluginInfo.hmLibrary,"OpenArchive");
+	spiPluginInfo.tpfPackFiles = (tPackFiles)GetProcAddress(spiPluginInfo.hmLibrary,"PackFiles");
+	spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)GetProcAddress(spiPluginInfo.hmLibrary,"PackSetDefaultParams");
+	spiPluginInfo.tpfProcessFile = (tProcessFile)GetProcAddress(spiPluginInfo.hmLibrary,"ProcessFile");
+	spiPluginInfo.trhReadHeader = (tReadHeader)GetProcAddress(spiPluginInfo.hmLibrary,"ReadHeader");
+	spiPluginInfo.tspdpSetProcessDataProc = (tSetProcessDataProc)GetProcAddress(spiPluginInfo.hmLibrary, "SetProcessDataProc");
+#else
 	spiPluginInfo.tcaCloseArchive = (tCloseArchive)spiPluginInfo.qlLibrary->resolve("CloseArchive");
 	spiPluginInfo.tcpConfigurePacker = (tConfigurePacker)spiPluginInfo.qlLibrary->resolve("ConfigurePacker");
 	spiPluginInfo.tdfDeleteFiles = (tDeleteFiles)spiPluginInfo.qlLibrary->resolve("DeleteFiles");
@@ -73,8 +89,6 @@ const cPackerPlugin::sPluginInfo cPackerPlugin::LoadPlugin(const QString &qsName
 	spiPluginInfo.tpsdpPackSetDefaultParams = (tPackSetDefaultParams)spiPluginInfo.qlLibrary->resolve("PackSetDefaultParams");
 	spiPluginInfo.tpfProcessFile = (tProcessFile)spiPluginInfo.qlLibrary->resolve("ProcessFile");
 	spiPluginInfo.trhReadHeader = (tReadHeader)spiPluginInfo.qlLibrary->resolve("ReadHeader");
-#ifdef Q_WS_WIN
-	spiPluginInfo.tspdpSetProcessDataProc = (tSetProcessDataProc)spiPluginInfo.qlLibrary->resolve("SetProcessDataProc");
 #endif
 
 	// get plugin's capabilites
@@ -108,8 +122,12 @@ const void cPackerPlugin::Unload()
 	while (qhiPlugin.hasNext()) {
 		qhiPlugin.next();
 
+#ifdef Q_WS_WIN
+		FreeLibrary(qhiPlugin.value().hmLibrary);
+#else
 		qhiPlugin.value().qlLibrary->unload();
 		qhiPlugin.value().qlLibrary->deleteLater();
+#endif
 	} // while
 
 	qhPlugins.clear();

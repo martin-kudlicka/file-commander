@@ -1052,10 +1052,13 @@ const void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 // configure packer plugin button is clicked on in columns view
 const void cOptionsDialog::on_qpbConfigurePackerPlugin_clicked(bool checked /* false */)
 {
+#ifdef Q_WS_WIN
 	cPackerPlugin::sPluginInfo spiPluginInfo;
 
 	spiPluginInfo = GetPackerPluginInfo(qtwDefaultPackerPlugin->currentItem()->parent()->text(0));
-	spiPluginInfo.tcpConfigurePacker(this->winId(), 0);
+	spiPluginInfo.tcpConfigurePacker(this->winId(), spiPluginInfo.hmLibrary);
+#endif
+	// TODO on_qpbConfigurePackerPlugin_clicked other than Windows OS
 } // on_qpbConfigurePackerPlugin_clicked
 
 // external editor browse button is clicked on
