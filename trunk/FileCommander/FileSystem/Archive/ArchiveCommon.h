@@ -9,12 +9,18 @@
 #include <QtCore/QSemaphore>
 #include <QtGui/QTreeWidget>
 #include "Settings.h"
+#include "Plugins/PackerPlugin.h"
 
 class cArchiveCommon : public QObject
 {
 	Q_OBJECT
 
 	public:
+		static const cPackerPlugin::sPluginInfo GetPackerPluginInfo(const QString &qsPlugin, QHash<QString, cPackerPlugin::sPluginInfo> *qhPackerPlugins);
+																						///< find packer plugin description (interface)
+																						/**< \param qsPlugin plugin to find description (interface) for
+																							  \param qhPackerPlugins packer plugin table
+																							  \return plugins' description (interface) */
 		static const void CreatePluginsTree(QTreeWidget *qtwPlugins, cSettings *csSettings);
 																						///< create packer plugins tree to show in QTreeWidget
 																						/**< \param qtwPlugins tree of packer plugins

@@ -3,6 +3,23 @@
 #include "Plugins/WCXHead.h"
 #include <QtCore/QFileInfo>
 
+// find packer plugin description (interface)
+const cPackerPlugin::sPluginInfo cArchiveCommon::GetPackerPluginInfo(const QString &qsPlugin, QHash<QString, cPackerPlugin::sPluginInfo> *qhPackerPlugins)
+{
+	QHashIterator<QString, cPackerPlugin::sPluginInfo> qhiPlugin(*qhPackerPlugins);
+
+	// find selected plugin
+	while (qhiPlugin.hasNext()) {
+		qhiPlugin.next();
+
+		if (QFileInfo(qhiPlugin.key()).completeBaseName() == qsPlugin) {
+			return qhiPlugin.value();
+		} // if
+	} // while
+
+	return cPackerPlugin::sPluginInfo();
+} // GetPackerPluginInfo
+
 // create packer plugins tree to show in QTreeWidget
 const void cArchiveCommon::CreatePluginsTree(QTreeWidget *qtwPlugins, cSettings *csSettings)
 {

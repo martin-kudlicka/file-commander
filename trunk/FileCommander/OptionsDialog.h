@@ -132,10 +132,6 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 																						///< collect favourite directories
 																						/**< \param qtwiParent favourite to start with
 																							  \return list of favourites description */
-		const cPackerPlugin::sPluginInfo GetPackerPluginInfo(const QString &qsPlugin) const;
-																						///< find packer plugin description (interface)
-																						/**< \param qsPlugin plugin to find description (interface) for
-																							  \return plugins' description (interface) */
 		QList<cSettings::sPlugin> GetPluginList(const QTreeWidget *qtwPlugins) const;
 																						///< get info about specified plugins
 																						/**< \param qtwPlugins plugins to get info
@@ -222,7 +218,7 @@ class cOptionsDialog : public QDialog, private Ui::qdOptions
 		const void on_qpbColumnUp_clicked(bool checked = false);		///< column up button is clicked on in columns view
 																						/**< \param checked true if button is checkable and checked */
 		const void on_qpbConfigurePackerPlugin_clicked(bool checked = false);
-																						///< configure packer plugin button is clicked on in columns view
+																						///< configure packer plugin button is clicked on
 																						/**< \param checked true if button is checkable and checked */
 		const void on_qpbExternalEditorBrowse_clicked(bool checked = false);
 																						///< external editor browse button is clicked on

@@ -44,5 +44,8 @@ const void cContentPluginDelayed::Start(const QQueue<sParameters> &qqParameters)
 {
 	this->qqParameters = qqParameters;
 	bStop = false;
-	start();
+
+	if (!qqParameters.isEmpty()) {
+		start();
+	} // if
 } // Start

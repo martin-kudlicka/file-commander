@@ -6,23 +6,26 @@
     <x>0</x>
     <y>0</y>
     <width>274</width>
-    <height>192</height>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Pack files</string>
   </property>
-  <widget class="QLabel" name="label" >
+  <widget class="QLabel" name="qlPack" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>46</width>
-     <height>14</height>
+     <width>91</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text" >
     <string>TextLabel</string>
+   </property>
+   <property name="buddy" >
+    <cstring>qcbDestination</cstring>
    </property>
   </widget>
   <widget class="QCheckBox" name="qcbPackPathNames" >
@@ -83,7 +86,7 @@
      <x>190</x>
      <y>10</y>
      <width>71</width>
-     <height>101</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="selectionBehavior" >
@@ -101,24 +104,11 @@
     </property>
    </column>
   </widget>
-  <widget class="QPushButton" name="qpbConfigure" >
-   <property name="geometry" >
-    <rect>
-     <x>190</x>
-     <y>120</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Configure</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="qpbOK" >
    <property name="geometry" >
     <rect>
      <x>110</x>
-     <y>160</y>
+     <y>150</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -127,11 +117,11 @@
     <string>OK</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3" >
+  <widget class="QPushButton" name="qpbCancel" >
    <property name="geometry" >
     <rect>
      <x>190</x>
-     <y>160</y>
+     <y>150</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -149,8 +139,44 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="editable" >
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qpbConfigurePackerPlugin" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>190</x>
+     <y>110</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Configure</string>
+   </property>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>qpbCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>qdPackFiles</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>227</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>136</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
