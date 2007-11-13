@@ -665,23 +665,6 @@ QList<QPair<QString, cSettings::sFavouriteDirectory> > cOptionsDialog::GetFavour
 	return qlFavouriteDirectories;
 } // GetFavouriteDirectories
 
-// find packer plugin description (interface)
-const cPackerPlugin::sPluginInfo cOptionsDialog::GetPackerPluginInfo(const QString &qsPlugin) const
-{
-	QHashIterator<QString, cPackerPlugin::sPluginInfo> qhiPlugin(*qhPackerPlugins);
-
-	// find selected plugin
-	while (qhiPlugin.hasNext()) {
-		qhiPlugin.next();
-
-		if (QFileInfo(qhiPlugin.key()).completeBaseName() == qsPlugin) {
-			return qhiPlugin.value();
-		} // if
-	} // while
-
-	return cPackerPlugin::sPluginInfo();
-} // GetPackerPluginInfo
-
 // get info about specified plugins
 QList<cSettings::sPlugin> cOptionsDialog::GetPluginList(const QTreeWidget *qtwPlugins) const
 {
@@ -1049,13 +1032,13 @@ const void cOptionsDialog::on_qpbColumnUp_clicked(bool checked /* false */)
 	qfToDo |= RefreshHeader;
 } // on_qpbColumnUp_clicked
 
-// configure packer plugin button is clicked on in columns view
+// configure packer plugin button is clicked on
 const void cOptionsDialog::on_qpbConfigurePackerPlugin_clicked(bool checked /* false */)
 {
 #ifdef Q_WS_WIN
 	cPackerPlugin::sPluginInfo spiPluginInfo;
 
-	spiPluginInfo = GetPackerPluginInfo(qtwDefaultPackerPlugin->currentItem()->parent()->text(0));
+	spiPluginInfo = cArchiveCommon::GetPackerPluginInfo(qtwDefaultPackerPlugin->currentItem()->parent()->text(0), qhPackerPlugins);
 	spiPluginInfo.tcpConfigurePacker(this->winId(), spiPluginInfo.hmLibrary);
 #endif
 	// TODO on_qpbConfigurePackerPlugin_clicked other than Windows OS
@@ -1271,7 +1254,7 @@ const void cOptionsDialog::on_qtwDefaultPackerPlugin_currentItemChanged(QTreeWid
 	if (current->flags() & Qt::ItemIsSelectable) {
 		cPackerPlugin::sPluginInfo spiPluginInfo;
 
-		spiPluginInfo = GetPackerPluginInfo(current->parent()->text(0));
+		spiPluginInfo = cArchiveCommon::GetPackerPluginInfo(current->parent()->text(0), qhPackerPlugins);
 		if (spiPluginInfo.iCapabilities & PK_CAPS_OPTIONS) {
 			qpbConfigurePackerPlugin->setEnabled(true);
 		} else {

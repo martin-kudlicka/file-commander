@@ -9,7 +9,6 @@
 #include "FileControl/SelectDriveDialog.h"
 #include "FileSystem/Archive/UnpackFilesDialog.h"
 #include <QtGui/QMessageBox>
-#include "FileSystem/Archive/PackFilesDialog.h"
 #include "FileSystem/Archive/ArchiveCommon.h"
 
 // constructor
@@ -522,6 +521,37 @@ const void cFileControl::on_cListerMainWindow_Close(cListerMainWindow *clmwListe
 	clmwLister->deleteLater();
 } // on_cListerMainWindow_Close
 
+// configure packer plugin button is clicked on
+const void cFileControl::on_cpfdDialog_qpbConfigurePackerPlugin_clicked(bool checked /* false */)
+{
+#ifdef Q_WS_WIN
+	cPackerPlugin::sPluginInfo spiPluginInfo;
+
+	spiPluginInfo = cArchiveCommon::GetPackerPluginInfo(cpfdDialog->qtwPlugins->currentItem()->parent()->text(0), cppPackerPlugin->GetPluginsInfo());
+	spiPluginInfo.tcpConfigurePacker(cpfdDialog->winId(), spiPluginInfo.hmLibrary);
+#endif
+	// TODO on_qpbConfigurePackerPlugin_clicked other than Windows OS
+} // on_cpfdDialog_qpbConfigurePackerPlugin_clicked
+
+// another packer plugin is selected
+const void cFileControl::on_cpfdDialog_qtwPlugins_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	// Configure button enable/disable
+	if (current->flags() & Qt::ItemIsSelectable) {
+		cPackerPlugin::sPluginInfo spiPluginInfo;
+
+		spiPluginInfo = cArchiveCommon::GetPackerPluginInfo(current->parent()->text(0), cppPackerPlugin->GetPluginsInfo());
+		if (spiPluginInfo.iCapabilities & PK_CAPS_OPTIONS) {
+			cpfdDialog->qpbConfigurePackerPlugin->setEnabled(true);
+		} else {
+			cpfdDialog->qpbConfigurePackerPlugin->setEnabled(false);
+		} // if else
+	} else {
+		// select extension instead of plugin
+		cpfdDialog->qtwPlugins->setCurrentItem(current->child(0));
+	} // if else
+} // on_cpfdDialog_qtwPlugins_currentItemChanged
+
 // remove queued items (operations)
 const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems)
 {
@@ -553,6 +583,7 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOperation, cFileSystem *cfsSource, QList<QTreeWidgetItem *> qlSource, const cFileSystem *cfsDestination /* NULL */, const QString &qsDestinationDragAndDrop /* "" */, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
 	sTypeCount stcTypeCount;
+	QString qsSource;
 
 	if (cfsSource) {
 		// operation called by main button
@@ -593,8 +624,20 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // for
 	} // if else
 
+	// source label
+	switch (eoOperation) {
+		case cFileOperationDialog::DeleteOperation:
+			qsSource = tr("&Delete %1 files and %2 directories.").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType);
+			break;
+		case cFileOperationDialog::CopyOperation:
+			qsSource = tr("Co&py %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType);
+			break;
+		case cFileOperationDialog::MoveOperation:
+			qsSource = tr("&Move %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType);
+	} // switch
+
 	if (eoOperation & cFileOperationDialog::DeleteOperation || cfsDestination->Type() == cFileSystem::Local) {
-		// local destination
+		// delete operation or local destination
 		cFileOperationDialog cfodDialog(qmwParent, csSettings);
 		cFileOperationDialog::eUserAction euaAction;
 		QString qsDestination, qsFilter;
@@ -607,13 +650,13 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		euaAction = cFileOperationDialog::CancelAction;
 		switch (eoOperation) {
 			case cFileOperationDialog::DeleteOperation:
-				euaAction = cfodDialog.ShowDialog(eoOperation, tr("&Delete %1 files and %2 directories.").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+				euaAction = cfodDialog.ShowDialog(eoOperation, qsSource, &qsDestination, &qsFilter);
 				break;
 			case cFileOperationDialog::CopyOperation:
-				euaAction = cfodDialog.ShowDialog(eoOperation, tr("Co&py %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+				euaAction = cfodDialog.ShowDialog(eoOperation, qsSource, &qsDestination, &qsFilter);
 				break;
 			case cFileOperationDialog::MoveOperation:
-				euaAction = cfodDialog.ShowDialog(eoOperation, tr("&Move %1 files and %2 directories to:").arg(stcTypeCount.FileType).arg(stcTypeCount.DirectoryType), &qsDestination, &qsFilter);
+				euaAction = cfodDialog.ShowDialog(eoOperation, qsSource, &qsDestination, &qsFilter);
 		} // switch
 
 		if (euaAction == cFileOperationDialog::CancelAction) {
@@ -623,29 +666,51 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		PreProcessOperation(eoOperation, euaAction, cfsSource, qlSource, qsFilter, qsDestination, true, qfilLocalSource);
 	} else {
 		// archive destination
-		cPackFilesDialog cpfdDialog(qmwParent, csSettings);
 		QString qsDestination;
 
+		cpfdDialog = new cPackFilesDialog(qmwParent, csSettings);
+		connect(cpfdDialog->qtwPlugins, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), SLOT(on_cpfdDialog_qtwPlugins_currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+		connect(cpfdDialog->qpbConfigurePackerPlugin, SIGNAL(clicked(bool)), SLOT(on_cpfdDialog_qpbConfigurePackerPlugin_clicked(bool)));
+
 		// build plugins tree
-		cArchiveCommon::CreatePluginsTree(cpfdDialog.qtwPlugins, csSettings);
+		cArchiveCommon::CreatePluginsTree(cpfdDialog->qtwPlugins, csSettings);
+		cArchiveCommon::SelectDefaultPlugin(cpfdDialog->qtwPlugins, csSettings);
+
+		// label
+		cpfdDialog->qlPack->setText(qsSource);
 
 		// prepare destination file name
 		if (cfsDestination->Type() == cFileSystem::Archive) {
+			// destination is already archive -> update archive
 			qsDestination = cfsDestination->GetArchiveFilePath().filePath();
 		} else {
+			// destination is local -> new archive
 			if (cfsSource) {
 				qsDestination = cfsSource->GetPath();
 				if (qlSource.count() == 1) {
-					qsDestination += '/' + cfsSource->GetFileName(qlSource.at(0));
+					qsDestination += '/' + QFileInfo(cfsSource->GetFileName(qlSource.at(0))).completeBaseName();
 				} // if
 			} else {
 				if (qfilLocalSource.count() == 1) {
 					qsDestination += '/' + qfilLocalSource.at(0).completeBaseName();
 				} // if
 			} // if else
+			// add extension
+			qsDestination += '.' + cpfdDialog->qtwPlugins->currentItem()->text(0);
 		} // if else
+		cpfdDialog->qcbDestination->setEditText(qsDestination);
 
-		//cpfdDialog.exec();
+		// default dialog settings
+		cpfdDialog->qcbPackPathNames->setChecked(csSettings->GetPackerPackPathNames());
+		cpfdDialog->qcbIncludingSubdirectories->setChecked(csSettings->GetPackerIncludingSubdirectories());
+		if (eoOperation == cFileOperationDialog::MoveOperation) {
+			cpfdDialog->qcbMoveToArchive->setChecked(true);
+		} // if
+		cpfdDialog->qcbOneArchivePerFileOrDirectory->setChecked(csSettings->GetPackerOneArchivePerFileOrDirectory());
+
+		//cpfdDialog->exec();
+
+		cpfdDialog->deleteLater();
 	} // if else
 } // Operation
 

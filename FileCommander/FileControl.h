@@ -14,6 +14,7 @@
 #include "FileControl/QueueWidget.h"
 #include "ListerMainWindow.h"
 #include "Plugins/PackerPlugin.h"
+#include "FileSystem/Archive/PackFilesDialog.h"
 
 class cFileControl : public QObject
 {
@@ -126,6 +127,7 @@ class cFileControl : public QObject
 		cFileSystem *cfsInQueue;												///< source file system processed in queue
 		cListerPlugin *clpListerPlugin;										///< lister plugin interface
 		cPackerPlugin *cppPackerPlugin;										///< packer plugin interface
+		cPackFilesDialog *cpfdDialog;											///< pack files dialog
 		cQueueWidget cqwQueue;													///< list of queued operations
 		cSettings *csSettings;													///< application's configuration
 		QHash<QString, QString> qhLastPaths;								///< last path table on drives
@@ -196,6 +198,13 @@ class cFileControl : public QObject
 		const void on_cListerMainWindow_Close(cListerMainWindow *clmwLister) const;
 																						///< closing lister window
 																						/**< \param clmwLister lister window to close */
+		const void on_cpfdDialog_qpbConfigurePackerPlugin_clicked(bool checked = false);
+																						///< configure packer plugin button is clicked on
+																						/**< \param checked true if button is checkable and checked */
+		const void on_cpfdDialog_qtwPlugins_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+																						///< another packer plugin is selected
+																						/**< \param current new packer plugin
+																							  \param previous old packer plugin */
 		const void on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetItem *> &qlItems);
 																						///< remove queued items (operations)
 																						/**< \param qlItems operations to remove */
