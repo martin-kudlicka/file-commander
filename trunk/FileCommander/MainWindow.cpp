@@ -598,7 +598,13 @@ const void cMainWindow::on_qaOptions_triggered(bool checked /* false */)
 	} // if
 } // on_qaOptions_triggered
 
-///< refresh is selected
+// pack is selected
+const void cMainWindow::on_qaPack_triggered(bool checked /* false */) const
+{
+	cfcFileControl->Operation(cFileOperationDialog::CopyOperation, cpSource->GetFileSystem(), cpSource->GetSelectedFiles(), cpDestination->GetFileSystem(), true);
+} // on_qaPack_triggered
+
+// refresh is selected
 const void cMainWindow::on_qaRefresh_triggered(bool checked /* false */) const
 {
 	cpSource->RefreshContent();
