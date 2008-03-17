@@ -930,46 +930,14 @@ const void cPanel::on_ctwTree_DropEvent(const cTreeWidget::eDropAction &edaActio
 			qfilFiles.append(QFileInfo(qlUrls.at(iI).toLocalFile()));
 		} // for
 
-		cfcFileControl->Operation(eoOperation, NULL, QList<QTreeWidgetItem *>(), stTab->cfsFileSystem, qsDestination, qfilFiles);
+		cfcFileControl->Operation(eoOperation, NULL, QList<QTreeWidgetItem *>(), stTab->cfsFileSystem, false, qsDestination, qfilFiles);
 	} else {
 		// copy/move from another panel
 		cFileSystem *cfsSource;
 
 		cfsSource = reinterpret_cast<cFileSystem *>(qsSourceFileSystem.toInt());
-		cfcFileControl->Operation(eoOperation, cfsSource, cfsSource->GetSelectedFiles(), stTab->cfsFileSystem, qsDestination);
+		cfcFileControl->Operation(eoOperation, cfsSource, cfsSource->GetSelectedFiles(), stTab->cfsFileSystem, false, qsDestination);
 	} // if else
-
-	/*QFileInfoList qfilFiles;
-
-	if (clUrls.count() > 0) {
-		// copy/move from local directory
-		int iI;
-
-		// get list of source files
-		for (iI = 0; iI < clUrls.count(); iI++) {
-			qfilFiles.append(QFileInfo(clUrls.at(iI).toLocalFile()));
-		} // for
-
-		cfoFileOperation->Operate(eoOperation, qfilFiles, qsDestination);
-	} else {
-		// copy/move from archive
-		cArchiveOperation caoArchiveOperation(qmwParent, csSettings);
-		int iI;
-		QList<tHeaderData> qlSourceSelected;
-		QStringList qslToExtract;
-		cArchiveOperation::sArchive *saArchive;
-
-		saArchive = reinterpret_cast<cArchiveOperation::sArchive *>(qsArchiveInformation.toInt());
-		// get list of source files
-		qslToExtract = qsArchiveFiles.split(qcFILE_SEPARATOR);
-		for (iI = 0; iI < saArchive->qlFiles.count(); iI++) {
-			if (qslToExtract.contains(saArchive->qlFiles.at(iI).FileName)) {
-				qlSourceSelected.append(saArchive->qlFiles.at(iI));
-			} // if
-		} // for
-
-		caoArchiveOperation.Operate(cArchiveOperation::Extract, *saArchive, qlSourceSelected, qsDestination);
-	} // if else*/
 } // on_ctwTree_DropEvent
 
 // dir view got focus
