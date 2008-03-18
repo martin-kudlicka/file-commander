@@ -107,6 +107,7 @@ class cSettings : private QObject
 			FindFilesSearchFor,															///< find files's search for
 			FindFilesSearchIn,															///< find files's search in
 			PackFilesDestination,														///< pack files's destination
+			PackFilesFilter,																///< pack files's filter
 			SelectFilesFilter,															///< select files's filter
 			UnpackFilesFilter,															///< unpack files's filter
 			UnpackFilesDestination														///< unpack files's destination

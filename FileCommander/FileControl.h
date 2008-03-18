@@ -109,14 +109,22 @@ class cFileControl : public QObject
 	private:
 		static const int iQUEUE_WIDGET_POS = 0;							///< position of queue widget on top layout
 
+		/// destination parameters
+		struct sDestinationParameters {
+			cFileSystem *cfsDestination;										///< destination file system
+			QString qsDestination;												///< destination for copy/move operation
+			bool bFullPath;														///< preserve full file path
+		};
+		/// source parameters
+		struct sSourceParameters {
+			cFileSystem *cfsSource;												///< source file system
+			QString qsFilter;														///< filter for source files
+		};
 		/// operation description
 		struct sOperation {
 			cFileOperationDialog::eOperation eoType;						///< type of operation
-			cFileSystem *cfsSource;												///< source file system
-			cFileSystem *cfsDestination;										///< destination file system
-			QString qsFilter;														///< filter for source files
-			QString qsDestination;												///< destination for copy/move operation
-			bool bFullPath;														///< preserve full file path
+			sSourceParameters sspSource;										///< source parameters
+			sDestinationParameters sdpDestination;							///< destination parameters
 		};
 		/// count of file types
 		struct sTypeCount {
@@ -170,15 +178,13 @@ class cFileControl : public QObject
 																						/**< \param etType type of file system to obtain
 																							  \param qfiArchivePath path to archive if archive file system type
 																							  \return file system handling class */
-		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem *cfsSource, const QList<QTreeWidgetItem *> &qlSource, const QString &qsFilter, QString &qsDestination, const bool &bFullPath, QFileInfoList qfilLocalSource = QFileInfoList());
+		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const sSourceParameters &sspSource, const QList<QTreeWidgetItem *> &qlSource, sDestinationParameters &sdpDestination, QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< preprocess file operation
 																						/**< \param eoOperation type of operation
 																							  \param euaAction user's action in file operation dialog
-																							  \param cfsSource source file system
+																							  \param sspSource source parameters
 																							  \param qlSource selected source files
-																							  \param qsFilter filter for source files
-																							  \param qsDestination destination path
-																							  \param bFullPath extract files with full path if true
+																							  \param sdpDestination destination parameters
 																							  \param qfilLocalSource local sources from drag & drop operation */
 		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
 																						///< process file operation
