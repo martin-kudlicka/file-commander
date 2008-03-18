@@ -14,6 +14,13 @@ class cPackFilesDialog : public QDialog, public Ui::qdPackFiles
 	Q_OBJECT
 
 	public:
+		/// action done by user
+		enum eUserAction {
+			CancelAction,												///< cancel button selected
+			OkAction,													///< OK button selected
+			EnqueueAction												///< enqueue button selected
+		};
+
 		cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings);
 																			///< constructor
 																			/**< \param qmwParent parent widget (window) of this dialog
@@ -24,6 +31,12 @@ class cPackFilesDialog : public QDialog, public Ui::qdPackFiles
 		QCompleter qcDestination;									///< completer for destination combo box
 
 	private slots:
+		const void on_qpbCancel_clicked(bool checked = false);
+																			///< Cancel button clicked on
+																			/**< \param checked true if button is checkable and checked */
+		const void on_qpbEnqueue_clicked(bool checked = false);
+																			///< Enqueue button clicked on
+																			/**< \param checked true if button is checkable and checked */
 		const void on_qpbOK_clicked(bool checked = false);	///< OK button is clicked on
 																			/**< \param checked true if button is checkable and checked */
 }; // cPackFilesDialog

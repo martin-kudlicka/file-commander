@@ -53,6 +53,7 @@ const QString qsNOT_OLDER_THAN_TYPE = "NotOlderThanType";
 const QString qsONE_ARCHIVE_PER_FILE_OR_DIRECTORY = "OneArchivePerFileOrDirectory";
 const QString qsOPERATIONS = "Operations";
 const QString qsPACK_FILES_DESTINATION = "PackFilesDestination";
+const QString qsPACK_FILES_FILTER = "PackFilesFilter";
 const QString qsPACK_PATH_NAMES = "PackPathNames";
 const QString qsPANELS = "Panels";
 const QString qsPATH = "Path";
@@ -407,6 +408,9 @@ const QStringList cSettings::GetComboBoxHistory(const eHistoryType &ehtHistory)
 			break;
 		case PackFilesDestination:
 			qsSettings.beginGroup(qsPACK_FILES_DESTINATION);
+			break;
+		case PackFilesFilter:
+			qsSettings.beginGroup(qsPACK_FILES_FILTER);
 			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
@@ -1098,6 +1102,9 @@ const void cSettings::SetComboBoxHistory(const eHistoryType &ehtHistory, const Q
 			break;
 		case PackFilesDestination:
 			qsSettings.beginGroup(qsPACK_FILES_DESTINATION);
+			break;
+		case PackFilesFilter:
+			qsSettings.beginGroup(qsPACK_FILES_FILTER);
 			break;
 		case SelectFilesFilter:
 			qsSettings.beginGroup(qsSELECT_FILES_FILTER);
