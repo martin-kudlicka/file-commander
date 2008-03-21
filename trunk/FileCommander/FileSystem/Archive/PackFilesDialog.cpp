@@ -3,6 +3,7 @@
 #include <QtGui/QDirModel>
 #include <QtGui/QHeaderView>
 #include "GUICommon.h"
+#include "FileControl/FileOperationDialog.h"
 
 // constructor
 cPackFilesDialog::cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings)
@@ -31,13 +32,13 @@ cPackFilesDialog::cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings
 // Cancel button clicked on
 const void cPackFilesDialog::on_qpbCancel_clicked(bool checked /* false */)
 {
-	done(CancelAction);
+	done(cFileOperationDialog::CancelAction);
 } // on_qpbCancel_clicked
 
 // Enqueue button clicked on
 const void cPackFilesDialog::on_qpbEnqueue_clicked(bool checked /* false */)
 {
-	done(EnqueueAction);
+	done(cFileOperationDialog::EnqueueAction);
 } // on_qpbEnqueue_clicked
 
 // OK button is clicked on
@@ -47,5 +48,5 @@ const void cPackFilesDialog::on_qpbOK_clicked(bool checked /* false */)
 	cGUICommon::SetComboBoxHistory(cSettings::PackFilesDestination, qcbDestination, csSettings);
 	cGUICommon::SetComboBoxHistory(cSettings::PackFilesFilter, qcbFilter, csSettings);
 
-	done(OkAction);
+	done(cFileOperationDialog::OkAction);
 } // on_qpbOK_clicked

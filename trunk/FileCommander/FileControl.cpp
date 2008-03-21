@@ -675,7 +675,7 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // if
 	} else {
 		// archive destination
-		cPackFilesDialog::eUserAction euaAction;
+		cFileOperationDialog::eUserAction euaAction;
 		QString qsDestination;
 
 		cpfdDialog = new cPackFilesDialog(qmwParent, csSettings);
@@ -729,9 +729,19 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // if else
 		cpfdDialog->qcbOneArchivePerFileOrDirectory->setChecked(csSettings->GetPackerOneArchivePerFileOrDirectory());
 
-		euaAction = static_cast<cPackFilesDialog::eUserAction>(cpfdDialog->exec());
-		if (euaAction != cPackFilesDialog::CancelAction) {
-			//PreProcessOperation(eoOperation, euaAction, cfsSource, qlSource, qsFilter, qsDestination, true, qfilLocalSource);
+		euaAction = static_cast<cFileOperationDialog::eUserAction>(cpfdDialog->exec());
+		if (euaAction != cFileOperationDialog::CancelAction) {
+			sDestinationParameters sdpDestination;
+			sSourceParameters sspSource;
+
+			sspSource.cfsSource = cfsSource;
+			sspSource.qsFilter = cpfdDialog->qcbFilter->currentText();
+			sspSource.bSubdirectories = cpfdDialog->qcbIncludingSubdirectories->isChecked();
+			sdpDestination.qsDestination = cpfdDialog->qcbDestination->currentText();
+			sdpDestination.bFullPath = cpfdDialog->qcbPackPathNames->isChecked();
+			sdpDestination.bMoveTo = cpfdDialog->qcbMoveToArchive->isChecked();
+			sdpDestination.bOneArchivePerSource = cpfdDialog->qcbOneArchivePerFileOrDirectory->isChecked();
+			PreProcessOperation(cFileOperationDialog::PackOperation, euaAction, sspSource, qlSource, sdpDestination, qfilLocalSource);
 		} // if
 
 		cpfdDialog->deleteLater();
@@ -803,11 +813,18 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 		// copy or move
 		qlOperations.append(soOperation);
 		if (soOperation.sspSource.cfsSource->Type() == cFileSystem::Local) {
+			// local file system
 			connect(soOperation.sdpDestination.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
 			soOperation.sdpDestination.cfsDestination->Write(soOperation.eoType, soOperation.sspSource.cfsSource->GetOperationStringList(), soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition);
 		} else {
-			connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-			soOperation.sspSource.cfsSource->Read(soOperation.eoType, soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition, soOperation.sdpDestination.bFullPath);
+			// archive file system
+			if (soOperation.eoType == cFileOperationDialog::PackOperation) {
+				connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+				//soOperation.sspSource.cfsSource->Write(soOperation.eoType, soOperation.sspSource.cfsSource->GetOperationStringList(), soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition);
+			} else {
+				connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
+				soOperation.sspSource.cfsSource->Read(soOperation.eoType, soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition, soOperation.sdpDestination.bFullPath);
+			} // if else
 		} // if else
 	} // if else
 } // ProcessOperation

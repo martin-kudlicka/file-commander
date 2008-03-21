@@ -14,13 +14,6 @@ class cPackFilesDialog : public QDialog, public Ui::qdPackFiles
 	Q_OBJECT
 
 	public:
-		/// action done by user
-		enum eUserAction {
-			CancelAction,												///< cancel button selected
-			OkAction,													///< OK button selected
-			EnqueueAction												///< enqueue button selected
-		};
-
 		cPackFilesDialog(QMainWindow *qmwParent, cSettings *csSettings);
 																			///< constructor
 																			/**< \param qmwParent parent widget (window) of this dialog
