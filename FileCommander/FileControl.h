@@ -114,11 +114,14 @@ class cFileControl : public QObject
 			cFileSystem *cfsDestination;										///< destination file system
 			QString qsDestination;												///< destination for copy/move operation
 			bool bFullPath;														///< preserve full file path
+			bool bMoveTo;															///< move to destination from source
+			bool bOneArchivePerSource;											///< one output archive file per source file or directory
 		};
 		/// source parameters
 		struct sSourceParameters {
 			cFileSystem *cfsSource;												///< source file system
 			QString qsFilter;														///< filter for source files
+			bool bSubdirectories;												///< including subdirectories
 		};
 		/// operation description
 		struct sOperation {

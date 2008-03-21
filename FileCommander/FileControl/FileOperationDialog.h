@@ -18,7 +18,8 @@ class cFileOperationDialog : public QDialog, private Ui::qdFileOperation
 		enum eOperation {
 			CopyOperation = 1,							///< copy
 			DeleteOperation = 2,							///< delete
-			MoveOperation = 3								///< move
+			MoveOperation = 3,							///< move
+			PackOperation = 4								///< pack
 		};
 		Q_DECLARE_FLAGS(eOperations, eOperation);
 		/// action done by user
