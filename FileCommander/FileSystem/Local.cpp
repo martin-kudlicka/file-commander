@@ -186,15 +186,15 @@ const void cLocal::CreateDir(const QString &qsName)
 } // CreateDir
 
 // delete files in operation file list
-const void cLocal::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
+const void cLocal::Delete(const sOperation &soOperation)
 {
 	if (saArchive.caArchive) {
-		return saArchive.caArchive->Delete(qsFilter, eopPosition);
+		return saArchive.caArchive->Delete(soOperation);
 	} // if
 
 	cldDelete = new cLocalDelete(qmwParent, qhblOperations, csSettings);
 	connect(cldDelete, SIGNAL(finished()), SLOT(on_cLocalDelete_OperationFinished()));
-	cldDelete->Delete(qfilOperation, qsFilter, eopPosition);
+	cldDelete->Delete(qfilOperation, soOperation.sspSource.qsFilter, soOperation.eopPosition);
 } // Delete
 
 // check if specified directory exists
@@ -832,12 +832,12 @@ const bool cLocal::PathExists(const QString &qsPath) const
 } // PathExists
 #endif
 
-// write local files to this file system
-const void cLocal::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
+// read local files to this file system
+const void cLocal::Read(const sOperation &soOperation)
 {
 	if (saArchive.caArchive) {
 		connect(saArchive.caArchive, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_caArchive_OperationFinished(cFileSystem *)));
-		saArchive.caArchive->Read(eoOperation, qsFilter, qsDestination, eopPosition, bFullPath);
+		saArchive.caArchive->Read(soOperation);
 	} // if
 } // Read
 
@@ -1041,9 +1041,9 @@ const cFileSystem::eType cLocal::Type() const
 } // Type
 
 // write local files to this file system
-const void cLocal::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+const void cLocal::Write(const sOperation &soOperation)
 {
 	clcmCopyMove = new cLocalCopyMove(qmwParent, qhblOperations, csSettings);
 	connect(clcmCopyMove, SIGNAL(finished()), SLOT(on_cLocalCopyMove_OperationFinished()));
-	clcmCopyMove->CopyMove(eoOperation, qslSources, qsFilter, qsDestination, eopPosition);
+	clcmCopyMove->CopyMove(soOperation.eoType, soOperation.sspSource.cfsSource->GetOperationStringList(), soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, soOperation.eopPosition);
 } // Write

@@ -37,6 +37,27 @@ class cFileSystem : public QObject
 			qint64 qi64Free;																		///< free disk space
 			qint64 qi64Total;																		///< total disk space
 		};
+		/// destination parameters
+		struct sDestinationParameters {
+			cFileSystem *cfsDestination;										///< destination file system
+			QString qsDestination;												///< destination for copy/move operation
+			bool bFullPath;														///< preserve full file path
+			bool bMoveTo;															///< move to destination from source
+			bool bOneArchivePerSource;											///< one output archive file per source file or directory
+		};
+		/// source parameters
+		struct sSourceParameters {
+			cFileSystem *cfsSource;												///< source file system
+			QString qsFilter;														///< filter for source files
+			bool bSubdirectories;												///< including subdirectories
+		};
+		/// operation description
+		struct sOperation {
+			cFileOperationDialog::eOperation eoType;						///< type of operation
+			sSourceParameters sspSource;										///< source parameters
+			sDestinationParameters sdpDestination;							///< destination parameters
+			cFileOperation::eOperationPosition eopPosition;				///< operation's position
+		};
 
 		virtual ~cFileSystem();																	///< destructor
 
@@ -52,10 +73,8 @@ class cFileSystem : public QObject
 		virtual const bool CanDelete() const = 0;											///< file system can delete files
 		virtual const void CreateDir(const QString &qsName) = 0;						///< create new directory
 																										/**< \param qsName new directory name */
-		virtual const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition) = 0;
-																										///< delete files in operation file list
-																										/**< \param qsFilter filter to chose files by
-																											  \param eopPosition operation position type */
+		virtual const void Delete(const sOperation &soOperation) = 0;				///< delete files in operation file list
+																										/**< \param soOperation operation description */
 		virtual const bool DirExists(const QString &qsDirectory) const = 0;		///< check if specified directory exists
 																										/**< \param qsDirectory directory to check
 																											  \return true if directory exists */
@@ -155,13 +174,8 @@ class cFileSystem : public QObject
 																											  \return true if file */
 		const bool IsInPanel() const;															///< check if file system is connected to a panel
 																										/**< \return true if file system is connected to a panel */
-		virtual const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath) = 0;
-																										///< write local files to this file system
-																										/**< \param eoOperation operation type
-																											  \param qsFilter filter to chose files by
-																											  \param qsDestination destination path on this file system
-																											  \param eopPosition operation position type
-																											  \param bFullPath extract files with full path if true */
+		virtual const void Read(const sOperation &soOperation) = 0;					///< read local files to this file system
+																										/**< \param soOperation operation description */
 		virtual const void RetreiveContentDelayedValues() = 0;						///< start retreiving of content delayed values
 		virtual const void SetOperationFileList(void *vFileList) = 0;				///< set file list for file operation
 																										/**< \param vFileList file list to store */
@@ -188,13 +202,8 @@ class cFileSystem : public QObject
 																										/**< \param qsPath path to check
 																											  \return true if possible to set path to qsPath */
 		virtual const eType Type() const = 0;												///< file system type
-		virtual const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition) = 0;
-																										///< write local files to this file system
-																										/**< \param eoOperation operation type
-																											  \param qslSources file path list of local source files to write
-																											  \param qsFilter filter to chose files by
-																											  \param qsDestination destination path on this file system
-																											  \param eopPosition operation position type */
+		virtual const void Write(const sOperation &soOperation) = 0;				///< write local files to this file system
+																										/**< \param soOperation operation description */
 
 	protected:
 		cSettings *csSettings;																	///< main settings
