@@ -248,7 +248,7 @@ const void cFileControl::Edit(const cFileSystem *cfsFileSystem, const QList<QTre
 } // Edit
 
 // place operation into queue
-const void cFileControl::Enqueue(const sOperation &soOperation)
+const void cFileControl::Enqueue(const cFileSystem::sOperation &soOperation)
 {
 	QListWidgetItem *qlwiOperation;
 	QString qsItem;
@@ -271,7 +271,7 @@ const void cFileControl::Enqueue(const sOperation &soOperation)
 
 	// add new item into queue
 	qlwiOperation = new QListWidgetItem(qsItem);
-	qqOperations.enqueue(QPair<QListWidgetItem *, sOperation>(qlwiOperation, soOperation));
+	qqOperations.enqueue(QPair<QListWidgetItem *, cFileSystem::sOperation>(qlwiOperation, soOperation));
 	emit AddIntoQueueList(qlwiOperation);
 
 	ProcessQueue();
@@ -480,7 +480,7 @@ const void cFileControl::on_cFileSystem_OperationFinished(cFileSystem *cfsFileSy
 	int iI;
 
 	for (iI = 0; iI < qlOperations.count(); iI++) {
-		const sOperation *soOperation;
+		const cFileSystem::sOperation *soOperation;
 
 		soOperation = &qlOperations.at(iI);
 		if (soOperation->sspSource.cfsSource == cfsFileSystem || soOperation->sdpDestination.cfsDestination == cfsFileSystem) {
@@ -565,7 +565,7 @@ const void cFileControl::on_cqwQueue_RemoveQueuedItems(const QList<QListWidgetIt
 
 		// remove from queued operations
 		for (iJ = 0; iJ < qqOperations.count(); iJ++) {
-			const QPair<QListWidgetItem *, sOperation> *qpOperation;
+			const QPair<QListWidgetItem *, cFileSystem::sOperation> *qpOperation;
 
 			qpOperation = &qqOperations.at(iJ);
 			if (qpOperation->first == qlItems.at(iI)) {
@@ -664,8 +664,8 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 		} // switch
 
 		if (euaAction != cFileOperationDialog::CancelAction) {
-			sSourceParameters sspSource;
-			sDestinationParameters sdpDestination;
+			cFileSystem::sSourceParameters sspSource;
+			cFileSystem::sDestinationParameters sdpDestination;
 
 			sspSource.cfsSource = cfsSource;
 			sspSource.qsFilter = qsFilter;
@@ -731,8 +731,8 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 
 		euaAction = static_cast<cFileOperationDialog::eUserAction>(cpfdDialog->exec());
 		if (euaAction != cFileOperationDialog::CancelAction) {
-			sDestinationParameters sdpDestination;
-			sSourceParameters sspSource;
+			cFileSystem::sDestinationParameters sdpDestination;
+			cFileSystem::sSourceParameters sspSource;
 
 			sspSource.cfsSource = cfsSource;
 			sspSource.qsFilter = cpfdDialog->qcbFilter->currentText();
@@ -749,9 +749,9 @@ const void cFileControl::Operation(const cFileOperationDialog::eOperation &eoOpe
 } // Operation
 
 // preprocess file operation
-const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const sSourceParameters &sspSource, const QList<QTreeWidgetItem *> &qlSource, sDestinationParameters &sdpDestination, QFileInfoList qfilLocalSource /* QFileInfoList() */)
+const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem::sSourceParameters &sspSource, const QList<QTreeWidgetItem *> &qlSource, cFileSystem::sDestinationParameters &sdpDestination, QFileInfoList qfilLocalSource /* QFileInfoList() */)
 {
-	sOperation soOperation;
+	cFileSystem::sOperation soOperation;
 
 	// create file systems for file operation
 	if (sspSource.cfsSource) {
@@ -791,9 +791,11 @@ const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperat
 	// process
 	switch (euaAction) {
 		case cFileOperationDialog::OkAction:
-			ProcessOperation(soOperation, cFileOperation::ForegroundOperation);
+			soOperation.eopPosition = cFileOperation::ForegroundOperation;
+			ProcessOperation(soOperation);
 			break;
 		case cFileOperationDialog::EnqueueAction:
+			soOperation.eopPosition = cFileOperation::BackgroundOperation;
 			Enqueue(soOperation);
 			break;
 		default:
@@ -802,28 +804,28 @@ const void cFileControl::PreProcessOperation(const cFileOperationDialog::eOperat
 } // PreProcessOperation
 
 // process file operation
-const void cFileControl::ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition)
+const void cFileControl::ProcessOperation(const cFileSystem::sOperation &soOperation)
 {
 	if (soOperation.eoType == cFileOperationDialog::DeleteOperation) {
 		// delete
 		qlOperations.append(soOperation);
 		connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-		soOperation.sspSource.cfsSource->Delete(soOperation.sspSource.qsFilter, eopPosition);
+		soOperation.sspSource.cfsSource->Delete(soOperation);
 	} else {
 		// copy or move
 		qlOperations.append(soOperation);
 		if (soOperation.sspSource.cfsSource->Type() == cFileSystem::Local) {
 			// local file system
 			connect(soOperation.sdpDestination.cfsDestination, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-			soOperation.sdpDestination.cfsDestination->Write(soOperation.eoType, soOperation.sspSource.cfsSource->GetOperationStringList(), soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition);
+			soOperation.sdpDestination.cfsDestination->Write(soOperation);
 		} else {
 			// archive file system
 			if (soOperation.eoType == cFileOperationDialog::PackOperation) {
 				connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-				//soOperation.sspSource.cfsSource->Write(soOperation.eoType, soOperation.sspSource.cfsSource->GetOperationStringList(), soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition);
+				//soOperation.sspSource.cfsSource->Write(soOperation);
 			} else {
 				connect(soOperation.sspSource.cfsSource, SIGNAL(OperationFinished(cFileSystem *)), SLOT(on_cFileSystem_OperationFinished(cFileSystem *)));
-				soOperation.sspSource.cfsSource->Read(soOperation.eoType, soOperation.sspSource.qsFilter, soOperation.sdpDestination.qsDestination, eopPosition, soOperation.sdpDestination.bFullPath);
+				soOperation.sspSource.cfsSource->Read(soOperation);
 			} // if else
 		} // if else
 	} // if else
@@ -833,13 +835,13 @@ const void cFileControl::ProcessOperation(const sOperation &soOperation, const c
 const void cFileControl::ProcessQueue()
 {
 	if (cfsInQueue == NULL && !qqOperations.isEmpty()) {
-		QPair<QListWidgetItem *, sOperation> qpOperation;
+		QPair<QListWidgetItem *, cFileSystem::sOperation> qpOperation;
 
 		qpOperation = qqOperations.dequeue();
 		delete qpOperation.first;
 		cfsInQueue = qpOperation.second.sspSource.cfsSource;
 
-		ProcessOperation(qpOperation.second, cFileOperation::BackgroundOperation);
+		ProcessOperation(qpOperation.second);
 	} // if
 
 	if (!qqOperations.isEmpty()) {
@@ -939,8 +941,8 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 				if (cfsArchive) {
 					QList<QTreeWidgetItem *> qlFiles;
 					QString qsExtractPath;
-					sDestinationParameters sdpDestination;
-					sSourceParameters sspSource;
+					cFileSystem::sDestinationParameters sdpDestination;
+					cFileSystem::sSourceParameters sspSource;
 
 					if (cufdDialog->qcbSeparatedSubdirectory->isChecked()) {
 						// modify destination path
@@ -972,8 +974,8 @@ const void cFileControl::UnpackSelectedFiles(cFileSystem *cfsFileSystem, const Q
 			} // for
 		} else {
 			// nonlocal -> (probably) already in archive
-			sDestinationParameters sdpDestination;
-			sSourceParameters sspSource;
+			cFileSystem::sDestinationParameters sdpDestination;
+			cFileSystem::sSourceParameters sspSource;
 
 			sspSource.cfsSource = cfsFileSystem;
 			sspSource.qsFilter = cufdDialog->qcbFilter->currentText();

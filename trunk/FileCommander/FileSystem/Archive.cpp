@@ -164,11 +164,11 @@ const void cArchive::CreateDir(const QString &qsName)
 } // CreateDir
 
 // delete files in operation file list
-const void cArchive::Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition)
+const void cArchive::Delete(const sOperation &soOperation)
 {
 	cadDelete = new cArchiveDelete(qmwParent, qhblOperations, csSettings);
 	connect(cadDelete, SIGNAL(finished()), SLOT(on_cArchiveDelete_OperationFinished()));
-	cadDelete->Delete(qfiArchive.filePath(), qlOperation, qhDirectories, qsFilter, spiPluginInfo, eopPosition);
+	cadDelete->Delete(qfiArchive.filePath(), qlOperation, qhDirectories, soOperation.sspSource.qsFilter, spiPluginInfo, soOperation.eopPosition);
 } // Delete
 
 // check if specified directory exists
@@ -655,12 +655,12 @@ const bool cArchive::OpenArchive()
 	return false;
 } // OpenArchive
 
-// write local files to this file system
-const void cArchive::Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath)
+// read local files to this file system
+const void cArchive::Read(const sOperation &soOperation)
 {
 	cacCopy = new cArchiveCopy(qmwParent, qhblOperations, csSettings);
 	connect(cacCopy, SIGNAL(finished()), SLOT(on_cArchiveCopy_OperationFinished()));
-	cacCopy->Copy(qlOperation, qfiArchive.filePath(), qhDirectories.key(qhPath), qsFilter, qhDirectories, qsDestination, cppPackerPlugin, spiPluginInfo, eopPosition, bFullPath);
+	cacCopy->Copy(qlOperation, qfiArchive.filePath(), qhDirectories.key(qhPath), soOperation.sspSource.qsFilter, qhDirectories, soOperation.sdpDestination.qsDestination, cppPackerPlugin, spiPluginInfo, soOperation.eopPosition, soOperation.sdpDestination.bFullPath);
 } // Read
 
 // read archive files
@@ -825,7 +825,7 @@ const cFileSystem::eType cArchive::Type() const
 } // Type
 
 // write local files to this file system
-const void cArchive::Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition)
+const void cArchive::Write(const sOperation &soOperation)
 {
 	// TODO Write
 } // Write

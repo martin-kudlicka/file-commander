@@ -109,26 +109,6 @@ class cFileControl : public QObject
 	private:
 		static const int iQUEUE_WIDGET_POS = 0;							///< position of queue widget on top layout
 
-		/// destination parameters
-		struct sDestinationParameters {
-			cFileSystem *cfsDestination;										///< destination file system
-			QString qsDestination;												///< destination for copy/move operation
-			bool bFullPath;														///< preserve full file path
-			bool bMoveTo;															///< move to destination from source
-			bool bOneArchivePerSource;											///< one output archive file per source file or directory
-		};
-		/// source parameters
-		struct sSourceParameters {
-			cFileSystem *cfsSource;												///< source file system
-			QString qsFilter;														///< filter for source files
-			bool bSubdirectories;												///< including subdirectories
-		};
-		/// operation description
-		struct sOperation {
-			cFileOperationDialog::eOperation eoType;						///< type of operation
-			sSourceParameters sspSource;										///< source parameters
-			sDestinationParameters sdpDestination;							///< destination parameters
-		};
 		/// count of file types
 		struct sTypeCount {
 			uint FileType;															///< file
@@ -145,8 +125,9 @@ class cFileControl : public QObject
 		QHash<QString, QString> qhLastPaths;								///< last path table on drives
 		QHBoxLayout *qhblOperations;											///< background and queued operation windows
 		QList<cFileSystem *> qlFileSystems;									///< list of created file systems
-		QList<sOperation> qlOperations;										///< operations in processing
-		QQueue<QPair<QListWidgetItem *, sOperation> > qqOperations;	///< queued operations
+		QList<cFileSystem::sOperation> qlOperations;						///< operations in processing
+		QQueue<QPair<QListWidgetItem *, cFileSystem::sOperation> > qqOperations;
+																						///< queued operations
 		QMainWindow *qmwParent;													///< parent window for dialogs
 
 		cFileSystem *CopyFileSystem(const cFileSystem *cfsSource, const QString &qsNewPath = "");
@@ -159,7 +140,8 @@ class cFileControl : public QObject
 																						/**< \param cfsFileSystem file system to check path in
 																							  \param qsPath path to correct
 																							  \return corrected path */
-		const void Enqueue(const sOperation &soOperation);				///< place operation into queue
+		const void Enqueue(const cFileSystem::sOperation &soOperation);
+																						///< place operation into queue
 																						/**< \param soOperation operation description */
 		const QString GetDialogDestinationPath(cFileSystem *cfsSource, const QList<QTreeWidgetItem *> qlSource, const QString &qsDestinationPath, const QString &qsDestinationDragAndDrop = "") const;
 																						///< prepare destination path for dialog
@@ -181,7 +163,7 @@ class cFileControl : public QObject
 																						/**< \param etType type of file system to obtain
 																							  \param qfiArchivePath path to archive if archive file system type
 																							  \return file system handling class */
-		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const sSourceParameters &sspSource, const QList<QTreeWidgetItem *> &qlSource, sDestinationParameters &sdpDestination, QFileInfoList qfilLocalSource = QFileInfoList());
+		const void PreProcessOperation(const cFileOperationDialog::eOperation &eoOperation, const cFileOperationDialog::eUserAction &euaAction, const cFileSystem::sSourceParameters &sspSource, const QList<QTreeWidgetItem *> &qlSource, cFileSystem::sDestinationParameters &sdpDestination, QFileInfoList qfilLocalSource = QFileInfoList());
 																						///< preprocess file operation
 																						/**< \param eoOperation type of operation
 																							  \param euaAction user's action in file operation dialog
@@ -189,10 +171,9 @@ class cFileControl : public QObject
 																							  \param qlSource selected source files
 																							  \param sdpDestination destination parameters
 																							  \param qfilLocalSource local sources from drag & drop operation */
-		const void ProcessOperation(const sOperation &soOperation, const cFileOperation::eOperationPosition &eopPosition);
+		const void ProcessOperation(const cFileSystem::sOperation &soOperation);
 																						///< process file operation
-																						/**< \param soOperation operation description
-																							  \param eopPosition position of operation */
+																						/**< \param soOperation operation description */
 		const void ProcessQueue();												///< process first queued operation
 		const QString SelectDrive(const QString &qsDrive) const;		///< show change drive dialog to set new drive for file system
 																						/**< \param const QString &qsDrive default selected drive in dialog */

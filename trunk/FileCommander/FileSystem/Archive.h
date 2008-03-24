@@ -35,10 +35,8 @@ class cArchive : public cFileSystem
 		//const bool CanCopy() const;													///< file system can copy files to local file system
 		const bool CanCreateDir() const;												///< file system can create directory in current location
 		const bool CanDelete() const;													///< file system can delete files
-		const void Delete(const QString &qsFilter, const cFileOperation::eOperationPosition &eopPosition);
-																								///< delete files in operation file list
-																								/**< \param qsFilter filter to chose files by
-																									  \param eopPosition operation position type */
+		const void Delete(const sOperation &soOperation);						///< delete files in operation file list
+																								/**< \param soOperation operation description */
 		const bool DirExists(const QString &qsDirectory) const;				///< check if specified directory exists
 																								/**< \param qsDirectory directory to check
 																									  \return true if directory exists */
@@ -113,13 +111,8 @@ class cArchive : public cFileSystem
 		const bool IsFile(QTreeWidgetItem *qtwiFile) const;					///< check if file is really file
 																								/**< \param qtwiFile file to check
 																									  \return true if file */
-		const void Read(const cFileOperationDialog::eOperation &eoOperation, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition, const bool &bFullPath);
-																								///< write local files to this file system
-																								/**< \param eoOperation operation type
-																									  \param qsFilter filter to chose files by
-																									  \param qsDestination destination path on this file system
-																									  \param eopPosition operation position type
-																									  \param bFullPath extract files with full path if true */
+		const void Read(const sOperation &soOperation);							///< read local files to this file system
+																								/**< \param soOperation operation description */
 		const void SetOperationFileList(void *vFileList);						///< set file list for file operation
 																								/**< \param vFileList file list to store */
 		const void SetPath(const QString &qsDrive, const QString &qsRootPath, const QString &qsPath, const bool &bStartup = false);
@@ -202,13 +195,8 @@ class cArchive : public cFileSystem
 		const bool TryPath(const QString &qsPath) const;						///< try if path exists on file system
 																								/**< \param qsPath path to check
 																									  \return true if possible to set path to qsPath */
-		const void Write(const cFileOperationDialog::eOperation &eoOperation, const QStringList &qslSources, const QString &qsFilter, const QString &qsDestination, const cFileOperation::eOperationPosition &eopPosition);
-																								///< write local files to this file system
-																								/**< \param eoOperation operation type
-																									  \param qslSources file path list of local source files to write
-																									  \param qsFilter filter to chose files by
-																									  \param qsDestination destination path on this file system
-																									  \param eopPosition operation position type */
+		const void Write(const sOperation &soOperation);						///< write local files to this file system
+																								/**< \param soOperation operation description */
 
 	signals:
 		void LeaveFileSystem() const;													///< leaving file system
